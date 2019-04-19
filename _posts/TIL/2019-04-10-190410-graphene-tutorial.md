@@ -1,11 +1,13 @@
 ---
 layout: post
-title: "10th, Apr. Django에서 GraphQL을 써봅시다."
+title: "Today I Learned: 10th Apr, 2019"
 categories: til
 tags: [TIL, Django]
 ---
 
-# What is GraphQL?
+# Django에서 GraphQL을 써봅시다.
+
+## What is GraphQL?
 
 *language-independent query language* 이다. 무슨 언어, 무슨 DB든 간에 의미한 쿼리를 하도록 하는 것이 목적.
 
@@ -23,7 +25,7 @@ GraphQL은 SQL을 대체하는 것이 아니라 REST API를 대체하는 개념�
 
 보다 자세한 의견은 이 링크도 참조할 것. [My GraphQL Thoughts After Almost Two Years](https://apievangelist.com/2018/04/16/graphql-thoughts-after-almost-two-years/)
 
-# Graphene 설치과정
+## Graphene 설치과정
 
 모든 프로젝트는 virtualenv로 스타트하자!
 
@@ -76,7 +78,7 @@ odict_items([('isStaff', True)])
 2. `graphene.Boolean(name='is_staff')`로 명시화
 
 
-# 본격적인 예시
+## 본격적인 예시
 
 유저의 정보를 담는 `User` 클래스를 만들고 작업해보자. 소스코드는 아래와 같다.
 
@@ -121,7 +123,7 @@ items = dict(result.data.items())
 print(json.dumps(items, indent=4))
 ```
 
-# Mutations를 통한 쿼리수행 예시
+## Mutations를 통한 쿼리수행 예시
 
 ```python
 from datetime import datetime
@@ -187,7 +189,7 @@ items = dict(result.data.items())
 print(json.dumps(items, indent=4))
 ```
 
-# context를 넣고 사용하는 방법
+## context를 넣고 사용하는 방법
 
 ```python
 from datetime import datetime
@@ -258,8 +260,15 @@ print(json.dumps(items, indent=4))
 
 ```
 
-# 쟝고에선 어떻게 쓰나?
+## 쟝고에선 어떻게 쓰나?
 
 GraphiQL 주소 세팅
-
 schema.py에 쿼리 세팅
+
+그후 쿼리 조립해서 graphql 제공하는 API 엔드포인트 제공
+
+## 추후 연재될 요소
+
+`Relay`와 `GraphQL`을 함께 써봅시다!
+
+언제하냐구요? 최대한 빨리 해보겠습니다..
