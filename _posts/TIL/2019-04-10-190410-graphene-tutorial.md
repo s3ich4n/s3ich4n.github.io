@@ -1,5 +1,6 @@
 ---
 layout: post
+comments: true
 title: "Today I Learned: 10th Apr, 2019"
 categories: til
 tags: [TIL, Django]

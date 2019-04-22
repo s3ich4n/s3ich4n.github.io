@@ -1,5 +1,6 @@
 ---
 layout: post
+comments: true
 title: "실용주의 프로그래머 pt. 4"
 categories: devlog
 tags: [book-review]
