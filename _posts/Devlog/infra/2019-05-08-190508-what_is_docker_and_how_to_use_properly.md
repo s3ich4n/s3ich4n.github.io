@@ -6,6 +6,8 @@ categories: devlog
 tags: [infra]
 ---
 
+![docker main](/assets/img/docker-logo.png)
+
 # 도커가 당최 무어야?
 
 ## What is Docker?
