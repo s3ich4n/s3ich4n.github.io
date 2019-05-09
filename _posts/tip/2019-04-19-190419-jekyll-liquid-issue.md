@@ -2,7 +2,7 @@
 layout: post
 title: "Django 코드를 Jekyll에 작성할 때 Liquid syntax error가 뜬다면?"
 categories: tip
-tags: [tip, Jekyll]
+tags: [tip, jekyll]
 ---
 
 # Liquid syntax error (line 26): Unknown tag 'url' ?
