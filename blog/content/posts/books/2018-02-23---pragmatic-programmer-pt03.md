@@ -1,9 +1,13 @@
 ---
-layout: post
-comments: true
 title: "실용주의 프로그래머 pt. 3"
-categories: devlog
-tags: [book-review]
+date: "2018-02-23T00:00:00.000Z"
+template: "post"
+draft: false
+slug: "pragmatic-programmer-pt-3"
+category: "devlog"
+tags: 
+  - "book-review"
+description: "실용주의 프로그래머 2nd edition을 읽은 후... pt. 3"
 ---
 
 ### 읽기에 앞서...

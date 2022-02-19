@@ -1,8 +1,14 @@
 ---
-layout: post
 title: "Django 코드를 Jekyll에 작성할 때 Liquid syntax error가 뜬다면?"
-categories: tip
-tags: [tip, jekyll]
+date: "2019-04-19T12:00:00.000Z"
+template: "post"
+draft: false
+slug: "docker-explained-pt02"
+category: "tips"
+tags: 
+  - "tips"
+  - "jekyll"
+description: "Python 코드를 Jekyll에 작성 시, Liquid syntax error가 뜬다면?"
 ---
 
 # Liquid syntax error (line 26): Unknown tag 'url' ?

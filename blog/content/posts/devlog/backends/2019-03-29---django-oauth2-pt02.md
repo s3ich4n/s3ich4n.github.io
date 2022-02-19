@@ -1,9 +1,13 @@
 ---
-layout: post
-comments: true
-title: "Autentication OAuth2 w/ django-social-auth cont`d"
-categories: devlog
-tags: [Django]
+title: "Autentication OAuth2 w/ django-social-auth pt. 1"
+date: "2019-03-29T12:00:00.000Z"
+template: "post"
+draft: false
+slug: "oauth2-with-django-social-auth-pt2"
+category: "devlog"
+tags: 
+  - "Django"
+description: "Django에서 django-social-auth를 사용하여 OAuth2 인증을 사용하는 방법에 대해 이어서 설명합니다."
 ---
 
 # Pipeline, Strategy and Storage

@@ -1,12 +1,14 @@
 ---
-layout: post
-comments: true
 title: "Docker pt.01 도커란 무엇이며, 어떻게 쓰는가?"
-categories: devlog
-tags: [infra]
+date: "2019-05-18T12:00:00.000Z"
+template: "post"
+draft: false
+slug: "docker-explained-pt02"
+category: "devlog"
+tags: 
+  - "DevOps"
+description: "Docker를 알아봅시다. (1번째 글)"
 ---
-
-![docker main](/assets/img/docker-logo.png)
 
 # 도커가 당최 무어야?
 

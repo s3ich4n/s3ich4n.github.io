@@ -1,12 +1,14 @@
 ---
-layout: post
-comments: true
 title: "Docker pt.02 도커를 자세히 알아보자"
-categories: devlog
-tags: [infra]
+date: "2019-05-18T12:00:00.000Z"
+template: "post"
+draft: false
+slug: "docker-explained-pt02"
+category: "devlog"
+tags: 
+  - "DevOps"
+description: "Docker를 알아봅시다. (2번째 글)"
 ---
-
-![docker main](/assets/img/docker-logo.png)
 
 # 도커의 개념에 대해 알아보자
 
