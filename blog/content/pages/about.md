@@ -11,10 +11,10 @@ socialImage: "/media/me.jpg"
 ![me-at-the-azit](/media/me.jpg)
 
 ## 현재 회사
-* 주식회사 쏘마, Back-end Developer(2019.05 ~)
+* 주식회사 쏘마, Back-end Developer (2019.05 ~)
 
-## 다녀본 회사
-* 딜리버리히어로코리아, Tech Internship(2018.09 ~ 2018.12)
+## 다녔던 회사
+* 딜리버리히어로코리아, Tech Internship (2018.09 ~ 2018.12)
 
 # 어떤 일을 했나요?
 * 주식회사 쏘마
