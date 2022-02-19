@@ -1,13 +1,27 @@
 ---
 title: "About me"
 template: "page"
-socialImage: "/media/image-2.jpg"
+socialImage: "/media/me.jpg"
 ---
 
-Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante.
+# 소개
 
-![Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo. Quisque sit amet est et sapien ullamcorper pharetra. Vestibulum erat wisi, condimentum sed, commodo vitae, ornare sit amet, wisi.](/media/image-2.jpg)
+3년차 개발자.
 
-*Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo. Quisque sit amet est et sapien ullamcorper pharetra. Vestibulum erat wisi, condimentum sed, commodo vitae, ornare sit amet, wisi.*
+![me-at-the-azit](/media/me.jpg)
 
-Aenean fermentum, elit eget tincidunt condimentum, eros ipsum rutrum orci, sagittis tempus lacus enim ac dui. Donec non enim in turpis pulvinar facilisis. Ut felis. Praesent dapibus, neque id cursus faucibus, tortor neque egestas augue, eu vulputate magna eros eu erat. Aliquam erat volutpat. Nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus
+## 현재 회사
+* 주식회사 쏘마, Back-end Developer(2019.05 ~)
+
+## 다녀본 회사
+* 딜리버리히어로코리아, Tech Internship(2018.09 ~ 2018.12)
+
+# 어떤 일을 했나요?
+* 주식회사 쏘마
+    * 백엔드 시스템 개발
+    * 데이터 파이프라인 시스템 개발
+    * 외부 프로젝트 다수 참여
+        * 공공기관 백엔드 시스템 개발
+        * 국방과학연구소 프로젝트 참여
+* 딜리버리히어로코리아
+    * 사내 달력시스템 프로젝트 협업경험
