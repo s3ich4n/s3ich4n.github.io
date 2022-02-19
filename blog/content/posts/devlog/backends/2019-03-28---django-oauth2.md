@@ -1,0 +1,168 @@
+---
+title: "Autentication OAuth2 w/ django-social-auth pt. 1"
+date: "2019-03-28T12:00:00.000Z"
+template: "post"
+draft: false
+slug: "oauth2-with-django-social-auth-pt1"
+category: "devlog"
+tags: 
+  - "Django"
+description: "Django에서 django-social-auth를 사용하여 OAuth2 인증을 사용하는 방법에 대해 설명합니다."
+---
+
+# Django에서 oauth2를 통해 소셜로그인을 하는 법
+
+TBA
+
+# python-social-auth 공식문서
+
+python-social-auth (psa)가 어떻게 쓰이는지 알아보도록 하자.
+
+## 1. PSA의 URL에 대하여
+
+`urls.py` 안에서 어떻게 세팅해야하는가?
+
+```python
+
+from django.contrib.auth import views as auth
+
+(중략)
+path('oauth/', include('social_django.urls', 'namespace=social')),
+path('login/', auth.auth_login, name='login'),
+```
+
+이런식으로 다른 서비스들과 OAuth2 정보를 주고받을 엔드포인트 주소를 설정한다.
+로그인 링크는 본인이 사용할 템플릿 파일에 다음과같이 설정해주면 된다.
+
+{% raw %}
+```django
+<a href="{% url 'social:begin' 'oauth2-provider-name' %}">Login</a>
+```
+{% endraw %}
+
+예를들어..
+Github라면: `/auth/complete/github/` 같은 엔드포인트를,
+Google이라면: `/auth/complete/google-oauth2/` 같은 엔드포인트를 거친다.
+
+## 2. `Backends`에 대하여
+
+Django의 경우에는 아래의 경우를 추가해주어야 한다.
+
+1. `SOCIAL_AUTH_{backend}`를 `settings.py`에 넣어준다.
+    * Google OAuth2의 경우?
+        * `SOCIAL_AUTH_GOOGLE_OAUTH2_KEY`
+        * `SOCIAL_AUTH_GOOGLE_OAUTH2_SECERT`
+    * Github OAuth2의 경우?
+        * `SOCIAL_AUTH_GITHUB_KEY`
+        * `SOCIAL_AUTH_GITHUB_SECRET`
+    * 그 외 사항은 구현하고자 하는 백엔드에 맞추어 검색하고 옵션을 추가한다.
+2. `AUTHENTICATION_BACKENDS`에 사용하려는 백엔드 값을 넣어준다.
+
+```python
+AUTHENTICATION_BACKENDS = (
+    # 지원하는 백엔드 인증방식들
+    'social_core.backends.open_id.OpenIdAuth',
+    'social_core.backends.google.GoogleOpenId',
+    'social_core.backends.google.GoogleOAuth2',
+    'social_core.backends.github.GithubOAuth2',
+    'social_core.backends.facebook.FacebookOAuth2',
+    # django.contrib.auth 앱을 추가해야 기본 로그인기능 사용가능
+    'django.contrib.auth.backends.ModelBackend',
+)
+```
+
+## 3. Pipeline에 대하여
+
+{% raw %}`{% url 'social:begin' 'github' %}`{% endraw %}같은 링크를 reverse하면 다음과 같다.
+
+> `http://example.com/login/github`
+
+이 링크를 누르면 "파이프라인"이 시작된다. 파이프라인은 유저에 대한 정보를 모으는 함수들의 리스트다. 모은 정보를 통해 인증 프로세스를 진행한다.
+
+파이프라인을 거치는 일련의 과정은 이렇다.
+`social_core/backends/base.py` 파일의 `run_pipeline()`을 보며 분석하면 더욱 좋다.
+
+1. 파이프라인은 4개의 딕셔너리를 가지고 시작한다. 이는 각각의 함수의 리턴값으로 업데이트된다. 최초 4가지 변수는 다음과 같다.
+    * `strategy`
+        * `strategy` 객체를 포함한다.
+    * `backend`
+        * 파이프라인이 작동할 동안 쓰일 백엔드를 포함한다.
+    * `request`
+        * 리쿼스트 키에 대한 딕셔너리를 포함한다. `self.strategy.request_data()`의 결과값을 말한다.
+    * `details`
+        * 빈 딕셔너리를 가진다.
+
+2. 함수가 딕셔너리 혹은 False스러운 값을 리턴하면 딕셔너리 속에 추가로 딕셔너리를 더한다. (`run_pipeline`의 `out`) 그 후 추가된 딕셔너리 값을 가지고 파이프라인의 다음 과정을 부른다.
+
+3. 뭔가 리턴되면(`HttpResponse의 서브클래스 같은것들`), 브라우저로 리턴한다.
+
+4. 파이프라인이 끝나고난 뒤, 유저가 인증된다. 즉 파이프라인이 돌고있을 때 인증된 유저객체를 찾으면, 파이프 라인이 시작될 때 사용자가 로그인되었음을 의미한다.
+
+백엔드 관련 로직이 있다면, 필요에 따라 따로 파이프라인을 거치지 않아도 되는 파이프 라인 단계를 만들어야한다.
+
+## 4. 파이프라인 인터럽트(뷰와의 통신)
+
+파이프라인 사이에 추가과정을 넣고싶다면 `@partial` 데코레이터를 통해 진행할 수 있다. 이는 다시말해 파이프라인이 어딘지 쫓아올 수 있다는 말이고, 과정을 이어서 재시작할 수도 있다는 말이다.
+
+이를 위해 할 일은 뷰가 파이프라인과 통신하도록 세팅하는 것이다. `settings.py`에 어느 값이 세션과 파이프라인 사이에 왔다갔다할지 세팅해주면 된다.
+
+파이프 라인에 사용자 지정 단계를 추가하려는 경우, 나중에 사용자가 직접 사이트를 방문 할 수 있도록 암호를 설정해야한다고 해보자. 그렇다면 `settings.py`와 `pipeline.py`, `views.py`에는 각각 이렇게 세팅해주면 될 것이다.
+
+* `settings.py`의 경우
+
+`SOCIAL_AUTH_FIELDS_STORED_IN_SESSION = ['local_password',]`
+
+`SOCIAL_AUTH_FIELDS_STORED_IN_SESSION`은 [해당 링크](https://buildmedia.readthedocs.org/media/pdf/python-social-auth/stable/python-social-auth.pdf)에서 검색하면 상세히 나오니 참조하길 바란다.
+
+* `pipeline.py`의 경우
+
+```python
+from django.shortcuts import redirect
+from django.contrib.auth.models import User
+from social_core.pipeline.partial import partial
+
+# partial은, '인터럽트를 걸지만 다시 돌아오겠다' 하는 의미
+@partial
+def collect_password(strategy, backend, request, details, *args, **kwargs):
+    # 'local_password'세션은 파이프라인에 의해 오고가도록 세팅 되어있다.
+    local_password = strategy.session_get('local_password', None)
+    if not local_password:
+        # 만약 딕셔너리나 None이외의 것이 리턴되면 유저에게 리턴된다.
+        # 이 경우, 패스워드로 쓸 수 있는 뷰로 리디렉션 될 것이다.
+        return redirect("myapp.views.collect_password")
+
+    # email address was captured in an earlier step.)
+    # 유저 객체를 DB로부터 가져오고(아직 로그인 되어있지 않음), 비밀번호를 세팅한다(이메일정보는 이전에 가져왔다고 가정하자).
+    user = User.objects.get(email=kwargs['email'])
+    user.set_password(local_password)
+    user.save()
+
+    # 파이프라인을 재개한다.
+    return
+```
+
+* `views.py`의 경우
+
+```python
+class PasswordForm(forms.Form):
+    secret_word = forms.CharField(max_length=10)
+
+def get_user_password(request):
+    if request.method == 'POST':
+        form = PasswordForm(request.POST)
+        if form.is_valid():
+            # FIELDS_STORED_IN_SESSION 때문에, 파이프라인이 재개되면
+            # request dictionary로 복사될 것이다.
+            request.session['local_password'] = form.cleaned_data['secret_word']
+
+            # 일단 세션에 숨겨진 비밀번호를 얻을 수 있다면,
+            # 파이프라인이 완성된 엔드포인트를 이용해 재개하도록 명령할 수 있다.
+            return redirect(reverse('social:complete', args=("backend_name,")))
+    else:
+        form = PasswordForm()
+
+    return render(request, "password_form.html")
+```
+
+여기서 `social:complete`는 파이프라인에 인터럽트된 동일 함수에 다시 들어갈 것이다.
+
