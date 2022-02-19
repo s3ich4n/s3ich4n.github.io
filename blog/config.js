@@ -1,14 +1,13 @@
 'use strict';
 
 module.exports = {
-  url: 'https://blog.s3ich4n.me`',
+  url: 'https://blog.s3ich4n.me',
   pathPrefix: '/',
-  title: 's3ich4n\'s arsenal',
-  subtitle: 'Die Grenzen meiner Sprache bedeuten die Grenzen meinen Welt. - Ludwig Wittgenstein',
+  title: '팔공산 창고',
+  subtitle: 'Veritas vos liberabit.',
   copyright: '© All rights reserved.',
   disqusShortname: '',
   postsPerPage: 5,
-  // googleAnalyticsId: 'UA-73379983-2',
   useKatex: false,
   menu: [
     {
@@ -27,7 +26,7 @@ module.exports = {
   author: {
     name: 'Seongeun Yu',
     photo: '/dinergate.gif',
-    bio: 'he/him/his',
+    bio: 'Backend Developer (he/his/him)',
     contacts: {
       email: 's3ich4n@gmail.com',
       facebook: '',
