@@ -4,9 +4,9 @@ date: "2022-02-19T04:30:00.000Z"
 template: "post"
 draft: false
 slug: "migrate-from-jekyll-to-gatsby"
-category: "Blog"
+category: "devlog"
 tags:
-  - "Blog"
+  - "devlog"
   - "Frontends"
 description: "주인장이 어쩌다가 Gatsby 로 가게되었는지 설명합니다."
 socialImage: "/media/42-line-bible.jpg"
