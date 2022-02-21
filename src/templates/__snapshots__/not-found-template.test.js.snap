@@ -240,7 +240,7 @@ exports[`NotFoundTemplate renders correctly 1`] = `
         className="page__body"
       >
         <p>
-          You just hit a route that doesn't exist... the sadness.
+          엥? 여긴 어떻게..?
         </p>
       </div>
     </div>
