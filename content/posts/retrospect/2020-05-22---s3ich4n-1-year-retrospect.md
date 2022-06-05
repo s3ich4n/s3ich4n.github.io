@@ -7,7 +7,7 @@ slug: "s3ich4n-1-year-retrospect"
 category: "retrospect"
 tags:
   - "devlife"
-description: "20190527 ~ 20200526"
+description: "처음 쏘마 입사 후 1년간 어떻게 살아왔는지에 대한 이야기입니다. (노잼)"
 socialImage: "/media/image-0.jpg"
 ---
 
@@ -92,6 +92,10 @@ socialImage: "/media/image-0.jpg"
 3. 쏟아지는 일 완벽하게 해내는 법 (Getting Things Done)
 
 일을 어떻게 처리할 것인가? 에 대한 주요 방향성을 알 수 있었습니다. 정신없이 치고오는 일에 대해, 빠르게 쳐낼지/플랜을 세울지/타인에게 부탁할지/미룰지 를 판단하게 두어서, 빠르게 쳐내도록 하는 방법론이지요. 제게는 개인적으로 상당히 도움이 되어서, 제 습관으로 체득화하기 위해 노력중입니다.
+
+4. TDD 실천법과 도구
+
+[이 책](https://repo.yona.io/doortts/blog/issue/1)입니다. 온라인으로 나온 책이고, Java였어서, 개념을 잡는데 보다 더 큰 주안점을 두고 읽었던 기억이 납니다. 제가 먼저 읽고, 나중에 동료분들이나 혹은 아는 동생들에게 가르쳐주고 싶네요.
 
 ## 과연 나는 나아졌나?
 
