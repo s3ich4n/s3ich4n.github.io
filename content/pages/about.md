@@ -6,7 +6,7 @@ socialImage: "/media/myself.jpg"
 
 # 소개
 
-3년차 개발자.
+4년차 개발자.
 
 ![me-at-the-azit](/media/myself.jpg)
 
