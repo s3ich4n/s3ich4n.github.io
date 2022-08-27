@@ -119,20 +119,20 @@ user.user_details|기존 인증 서비스로부터 변경된 유저 레코드 �
 
 ```json
 {
-    'username': 'foobar',
-    'access_token': 'CAAD...',
-    'first_name': 'Foo',
-    'last_name': 'Bar',
-    'verified': True,
-    'name': 'Foo Bar',
-    'locale': 'en_US',
-    'gender': 'male',
-    'expires': '5183999',
-    'email': 'foo@bar.com',
-    'updated_time': '2014-01-14T15:58:35+0000',
-    'link': 'https://www.facebook.com/foobar',
-    'timezone': -3,
-    'id': '100000126636010',
+    "username": "foobar",
+    "access_token": "CAAD...",
+    "first_name": "Foo",
+    "last_name": "Bar",
+    "verified":"Tru",
+    "name": "Foo Bar",
+    "locale": "en_US",
+    "gender": "male",
+    "expires": "5183999",
+    "email": "foo@bar.com",
+    "updated_time": "2014-01-14T15:58:35+0000",
+    "link": "https://www.facebook.com/foobar",
+    "timezone":"-",
+    "id": "100000126636010",
 }
 ```
 
