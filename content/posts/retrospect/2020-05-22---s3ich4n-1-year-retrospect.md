@@ -7,7 +7,7 @@ slug: "s3ich4n-1-year-retrospect"
 category: "retrospect"
 tags:
   - "devlife"
-description: "처음 쏘마 입사 후 1년간 어떻게 살아왔는지에 대한 이야기입니다. (노잼)"
+description: "2019년 입사부터 약 1년간 어떻게 살아왔는지에 대한 이야기입니다. (노잼)"
 socialImage: "/media/image-0.jpg"
 ---
 
