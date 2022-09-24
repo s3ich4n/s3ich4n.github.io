@@ -1,2 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[11],{"76aL":function(t,e,n){"use strict";n.r(e);var a=n("q1tI"),l=n.n(a),c=n("/d1K"),i=n("Zttt"),r=n("RXmK"),u=n("gGy4");e.default=function(){var t=Object(u.b)(),e=t.title,n=t.subtitle;return l.a.createElement(i.a,{title:"Not Found - "+e,description:n},l.a.createElement(c.a,null),l.a.createElement(r.a,{title:"NOT FOUND"},l.a.createElement("p",null,"엥? 여긴 어떻게..?")))}}}]);
-//# sourceMappingURL=component---src-templates-not-found-template-js-4b2606ae7efcef313403.js.map

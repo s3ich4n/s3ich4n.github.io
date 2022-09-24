@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+Sitemap: https://blog.s3ich4n.me/sitemap/sitemap-index.xml
+Host: https://blog.s3ich4n.me
