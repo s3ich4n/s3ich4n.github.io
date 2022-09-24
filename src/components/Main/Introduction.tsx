@@ -68,8 +68,8 @@ const Introduction: FunctionComponent<IntroductionProps> = function ({
         <ProfileImage profileImage={profileImage} />
 
         <div>
-          <SubTitle>React 기반 Gatsby로 기술블로그 개발하기</SubTitle>
-          <Title>뭐요</Title>
+          <SubTitle>완전히 리뉴얼된</SubTitle>
+          <Title>s3ich4n의 기술 블로그</Title>
         </div>
       </Wrapper>
     </Background>

@@ -19,8 +19,8 @@ const Footer: FunctionComponent = function () {
   return (
     <FooterWrapper>
       보안이슈 때문에 화딱지나서 직접 만들음.
-      <br />Developed since 2022 ~
-      <br />Powered by Gatsby
+      <br />Developed since 2022.
+      <br />Powered by <a href="https://www.gatsbyjs.com/">Gatsby</a>
     </FooterWrapper>
   )
 }

@@ -1,8 +1,9 @@
 ---
-title: "실용주의 프로그래머 pt. 1"
-date: "2018-02-21T00:00:00.000Z"
-categories: ["books"]
-description: "실용주의 프로그래머 2nd edition을 읽은 후... pt. 1"
+title: '실용주의 프로그래머 pt. 1'
+date: '2018-02-21T00:00:00.000Z'
+categories: ['books']
+description: '실용주의 프로그래머 2nd edition을 읽은 후... pt. 1'
+thumbnail: './gwangheungchang.jpg'
 ---
 
 ### 읽기에 앞서...
