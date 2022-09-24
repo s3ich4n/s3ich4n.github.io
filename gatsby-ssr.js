@@ -1,3 +1,9 @@
-'use strict';
+/**
+ * Implement Gatsby's SSR (Server Side Rendering) APIs in this file.
+ *
+ * See: https://www.gatsbyjs.com/docs/ssr-apis/
+ */
 
-exports.onRenderBody = require('./gatsby/on-render-body.js');
+exports.onRenderBody = ({ setHtmlAttributes }) => {
+  setHtmlAttributes({ lang: `en` })
+}

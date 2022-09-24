@@ -1,244 +1,115 @@
-'use strict';
-
-const siteConfig = require('./config.js');
-const postCssPlugins = require('./postcss-config.js');
-
 module.exports = {
-  pathPrefix: siteConfig.pathPrefix,
   siteMetadata: {
-    url: siteConfig.url,
-    title: siteConfig.title,
-    subtitle: siteConfig.subtitle,
-    copyright: siteConfig.copyright,
-    disqusShortname: siteConfig.disqusShortname,
-    menu: siteConfig.menu,
-    author: siteConfig.author
+    title: `s3ich4n's tech blog`,
+    description: `s3ich4n의 기술 블로그`,
+    author: `@s3ich4n`,
+    siteUrl: `https://blog.s3ich4n.me/`,
   },
+  //필요한 라이브러리 설치하기
+
+
+  //위에서 기술한 모든 라이브러리를 아래의 커맨드를 통해 다운로드 받으면 됩니다.
+
+  //yarn add gatsby-transformer-remark gatsby-remark-images gatsby-remark-prismjs prismjs gatsby-remark-smartypants gatsby-remark-copy-linked-files gatsby-remark-external-links
+  //yarn add gatsby-plugin-react-helmet react-helmet (이거 빠져있음ㅋㅋㅋㅋ아)
+  //yarn add gatsby-plugin-image gatsby-plugin-sharp gatsby-transformer-sharp (gatsby-image가 deprecated 되어서 삭제함)
+  //yarn add query-string
+  //yarn add @fortawesome/fontawesome-svg-core @fortawesome/free-solid-svg-icons @fortawesome/react-fontawesome
+  //yarn add @types/react-helmet
+  //yarn add gatsby-plugin-canonical-urls
+  //yarn add gatsby-plugin-sitemap
+  //yarn add gatsby-plugin-robots-txt
+  //yarn add gh-pages --dev
+
+  //하지만 Gatsby에서 해당 라이브러리를 사용하기 위해서는 추가적으로 해줘야 할 설정 작업이 존재합니다.
   plugins: [
     {
-      resolve: 'gatsby-source-filesystem',
+      resolve: 'gatsby-plugin-typescript',
       options: {
+        isTSX: true,
+        allExtensions: true,
+      },
+    },
+    `gatsby-plugin-react-helmet`,
+    {
+      resolve: `gatsby-source-filesystem`,
+      options: {
+        name: `contents`,
+        path: `${__dirname}/contents`,
+      },
+    },
+    {
+      resolve: `gatsby-source-filesystem`,
+      options: {
+        name: `images`,
         path: `${__dirname}/static`,
-        name: 'assets'
-      }
+      },
     },
+    `gatsby-plugin-emotion`,
+    `gatsby-plugin-image`,
     {
-      resolve: 'gatsby-source-filesystem',
+      resolve: `gatsby-plugin-sharp`,
       options: {
-        path: `${__dirname}/static/media`,
-        name: 'media'
+        defaults: {
+          formats: ['auto', 'webp'],
+          quality: 100,
+          placeholder: 'blurred',
+        }
       }
     },
+    `gatsby-transformer-sharp`,
+    `gatsby-plugin-sharp`,
     {
-      resolve: 'gatsby-source-filesystem',
-      options: {
-        path: `${__dirname}/content`,
-        name: 'pages'
-      }
-    },
-    {
-      resolve: 'gatsby-source-filesystem',
-      options: {
-        name: 'css',
-        path: `${__dirname}/static/css`
-      }
-    },
-    {
-      resolve: 'gatsby-plugin-feed',
-      options: {
-        query: `
-          {
-            site {
-              siteMetadata {
-                site_url: url
-                title
-                description: subtitle
-              }
-            }
-          }
-        `,
-        feeds: [{
-          serialize: ({ query: { site, allMarkdownRemark } }) => (
-            allMarkdownRemark.edges.map((edge) => ({
-              ...edge.node.frontmatter,
-              description: edge.node.frontmatter.description,
-              date: edge.node.frontmatter.date,
-              url: site.siteMetadata.site_url + edge.node.fields.slug,
-              guid: site.siteMetadata.site_url + edge.node.fields.slug,
-              custom_elements: [{ 'content:encoded': edge.node.html }]
-            }))
-          ),
-          query: `
-              {
-                allMarkdownRemark(
-                  limit: 1000,
-                  sort: { order: DESC, fields: [frontmatter___date] },
-                  filter: { frontmatter: { template: { eq: "post" }, draft: { ne: true } } }
-                ) {
-                  edges {
-                    node {
-                      html
-                      fields {
-                        slug
-                      }
-                      frontmatter {
-                        title
-                        date
-                        template
-                        draft
-                        description
-                      }
-                    }
-                  }
-                }
-              }
-            `,
-          output: '/rss.xml',
-          title: siteConfig.title
-        }]
-      }
-    },
-    {
-      resolve: 'gatsby-transformer-remark',
+      resolve: `gatsby-transformer-remark`,
       options: {
         plugins: [
-          'gatsby-remark-relative-images',
           {
-            resolve: 'gatsby-remark-katex',
+            resolve: 'gatsby-remark-smartypants',
             options: {
-              strict: 'ignore'
-            }
+              dashes: 'oldschool',
+            },
+          },
+          {
+            resolve: 'gatsby-remark-prismjs',
+            options: {
+              classPrefix: 'language-',
+            },
           },
           {
             resolve: 'gatsby-remark-images',
             options: {
-              maxWidth: 960,
-              withWebp: true
-            }
+              maxWidth: 768,
+              quality: 100,
+              withWebp: true,
+            },
           },
           {
-            resolve: 'gatsby-remark-responsive-iframe',
-            options: { wrapperStyle: 'margin-bottom: 1.0725rem' }
+            resolve: 'gatsby-remark-copy-linked-files',
+            options: {},
           },
-          'gatsby-remark-autolink-headers',
-          'gatsby-remark-prismjs',
-          'gatsby-remark-copy-linked-files',
-          'gatsby-remark-smartypants',
-          'gatsby-remark-external-links'
-        ]
-      }
-    },
-    'gatsby-transformer-sharp',
-    'gatsby-plugin-sharp',
-    'gatsby-plugin-netlify',
-    {
-      resolve: 'gatsby-plugin-netlify-cms',
-      options: {
-        modulePath: `${__dirname}/src/cms/index.js`
-      }
-    },
-    {
-      resolve: 'gatsby-plugin-google-gtag',
-      options: {
-        trackingIds: [siteConfig.googleAnalyticsId],
-        pluginConfig: {
-          head: true
-        }
-      }
-    },
-    {
-      resolve: 'gatsby-plugin-sitemap',
-      options: {
-        query: `
           {
-            site {
-              siteMetadata {
-                siteUrl: url
-              }
-            }
-            allSitePage(
-              filter: {
-                path: { regex: "/^(?!/404/|/404.html|/dev-404-page/)/" }
-              }
-            ) {
-              edges {
-                node {
-                  path
-                }
-              }
-            }
-          }
-        `,
-        output: '/sitemap.xml',
-        serialize: ({ site, allSitePage }) => allSitePage.edges.map((edge) => ({
-          url: site.siteMetadata.siteUrl + edge.node.path,
-          changefreq: 'daily',
-          priority: 0.7
-        }))
-      }
-    },
-    {
-      resolve: 'gatsby-plugin-manifest',
-      options: {
-        name: siteConfig.title,
-        short_name: siteConfig.title,
-        start_url: '/',
-        background_color: '#FFF',
-        theme_color: '#F7A046',
-        display: 'standalone',
-        icon: 'static/dinergate.gif'
+            resolve: 'gatsby-remark-external-links',
+            options: {
+              target: '_blank',
+              rel: 'nofollow',
+            },
+          },
+        ],
       },
     },
     {
-      resolve: 'gatsby-plugin-offline',
+      resolve: 'gatsby-plugin-canonical-urls',
       options: {
-        workboxConfig: {
-          runtimeCaching: [{
-            // Use cacheFirst since these don't need to be revalidated (same RegExp
-            // and same reason as above)
-            urlPattern: /(\.js$|\.css$|[^:]static\/)/,
-            handler: 'CacheFirst',
-          },
-          {
-            // page-data.json files, static query results and app-data.json
-            // are not content hashed
-            urlPattern: /^https?:.*\/page-data\/.*\.json/,
-            handler: 'StaleWhileRevalidate',
-          },
-          {
-            // Add runtime caching of various other page resources
-            urlPattern: /^https?:.*\.(png|jpg|jpeg|webp|svg|gif|tiff|js|woff|woff2|json|css)$/,
-            handler: 'StaleWhileRevalidate',
-          },
-          {
-            // Google Fonts CSS (doesn't end in .css so we need to specify it)
-            urlPattern: /^https?:\/\/fonts\.googleapis\.com\/css/,
-            handler: 'StaleWhileRevalidate',
-          },
-          ],
-        },
+        siteUrl: 'https://blog.s3ich4n.me/',
+        stripQueryString: true,
       },
     },
-    'gatsby-plugin-catch-links',
-    'gatsby-plugin-react-helmet',
+    `gatsby-plugin-sitemap`,
     {
-      resolve: 'gatsby-plugin-sass',
+      resolve: 'gatsby-plugin-robots-txt',
       options: {
-        implementation: require('sass'),
-        postCssPlugins: [...postCssPlugins],
-        cssLoaderOptions: {
-          camelCase: false
-        }
-      }
+        policy: [{ userAgent: '*', allow: '/' }],
+      },
     },
-    {
-      resolve: '@sentry/gatsby',
-      options: {
-        dsn: process.env.SENTRY_DSN,
-        tracesSampleRate: 1
-      }
-    },
-    'gatsby-plugin-flow',
-    'gatsby-plugin-optimize-svgs'
-  ]
-};
+  ],
+}
