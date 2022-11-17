@@ -1,0 +1,54 @@
+{
+  "title": "팔공산 창고",
+  "url": "https://blog.s3ich4n.me",
+  "subtitle": "Non scholæ sed vitæ discimus.",
+  "copyright": "Powered by gatsby-starter-lumen. \r\n MIT License",
+  "googleAnalyticsId": "",
+  "disqusShortname": "",
+  "postsLimit": 5,
+  "pathPrefix": "/",
+  "menu": [
+    {
+      "label": "Articles",
+      "path": "/"
+    },
+    {
+      "label": "About me",
+      "path": "/pages/about"
+    },
+    {
+      "label": "Categories",
+      "path": "/categories"
+    },
+    {
+      "label": "Tags",
+      "path": "/tags"
+    },
+    {
+      "label": "Contact me",
+      "path": "/pages/contacts"
+    }
+  ],
+  "author": {
+    "name": "s3ich4n",
+    "photo": "/photo.png",
+    "bio": "his/him",
+    "contacts": {
+      "rss": "",
+      "email": "s3ich4n@gmail.com",
+      "github": "s3ich4n",
+      "facebook": "",
+      "telegram": "",
+      "twitter": "",
+      "linkedin": "s3ich4n",
+      "instagram": "",
+      "line": "",
+      "weibo": "",
+      "gitlab": "",
+      "medium": "",
+      "youtube": "",
+      "codepen": "",
+      "soundcloud": ""
+    }
+  }
+}
