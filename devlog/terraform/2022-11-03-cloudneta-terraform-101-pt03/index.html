@@ -1,0 +1,445 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="ie=edge"/><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/><meta name="generator" content="Gatsby 4.24.8"/><meta name="description" content="Terraform 의 상태값에 대한 격리 방안에 대한 내용을 담고있습니다. 아울러 속성값 참고와 내장 함수에 대한 설명을 함께 추가하였습니다." data-gatsby-head="true"/><meta name="twitter:card" content="summary_large_image" data-gatsby-head="true"/><meta name="twitter:title" content="[CloudNet@] 테라폼 스터디 3주차 - Terraform 상태 격리방안 - 팔공산 창고" data-gatsby-head="true"/><meta name="twitter:description" content="Terraform 의 상태값에 대한 격리 방안에 대한 내용을 담고있습니다. 아울러 속성값 참고와 내장 함수에 대한 설명을 함께 추가하였습니다." data-gatsby-head="true"/><meta name="og:title" content="[CloudNet@] 테라폼 스터디 3주차 - Terraform 상태 격리방안 - 팔공산 창고" data-gatsby-head="true"/><meta name="og:type" content="website" data-gatsby-head="true"/><meta name="og:description" content="Terraform 의 상태값에 대한 격리 방안에 대한 내용을 담고있습니다. 아울러 속성값 참고와 내장 함수에 대한 설명을 함께 추가하였습니다." data-gatsby-head="true"/><meta name="image" content="https://blog.s3ich4n.me/static/f76f45557215b30ae70126439a5e8b31/terraform03.jpg" data-gatsby-head="true"/><meta name="og:image" content="https://blog.s3ich4n.me/static/f76f45557215b30ae70126439a5e8b31/terraform03.jpg" data-gatsby-head="true"/><meta name="twitter:image" content="https://blog.s3ich4n.me/static/f76f45557215b30ae70126439a5e8b31/terraform03.jpg" data-gatsby-head="true"/><meta name="theme-color" content="hsl(31, 92%, 62%)"/><style data-href="/styles.3b47e1408077d170b933.css" data-identity="gatsby-global-css">:after,:before,:root{--color-white:#fff;--color-primary:#5c92ff;--color-secondary:#f7a145;--color-prism-background:#eaeaeb;--color-typographic-base-font:#242933;--color-typographic-link-p-font:#5c92ff;--color-typographic-link-s-font:#f7a145;--color-page-border:#eaeaeb;--color-page-background:#fff;--color-sidebar-border:#eaeaeb;--color-sidebar-border-fade:#fff;--color-contacts-border:#eaeaeb;--color-button-border:#eaeaeb;--color-button-color:#242933;--color-theme-switcher:#3f485a;--color-theme-switcher-hover:#5c92ff}.dark :after,.dark :before,:root.dark{--color-white:#fff;--color-primary:#5c92ff;--color-secondary:#f7a145;--color-prism-background:#191d24;--color-typographic-base-font:#fff;--color-typographic-link-p-font:#5c92ff;--color-typographic-link-s-font:#f7a145;--color-page-border:#3f485a;--color-page-background:#242933;--color-sidebar-border:#3f485a;--color-sidebar-border-fade:#242933;--color-contacts-border:#3f485a;--color-button-border:#3f485a;--color-button-color:#fff;--color-theme-switcher:#eaeaeb;--color-theme-switcher-hover:#5c92ff}html{font-size:100}body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;background:var(--color-page-background);color:var(--color-typographic-base-font);font-size:16px;line-height:1.625;margin:0 0 0 calc(100vw - 100%);text-rendering:optimizelegibility}body,h1,h2,h3,h4,h5,h6{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif}h1,h2,h3,h4,h5,h6{font-weight:600}h1{font-size:40px;line-height:52px;margin-bottom:26px;margin-top:104px}h2{font-size:27px;line-height:39px}h2,h3{margin-bottom:13px;margin-top:52px}h3{font-size:22px;line-height:26px}h4{font-size:19.2px;margin-top:39px}h4,h5{line-height:26px;margin-bottom:13px}h5,h6{font-size:16px;margin-top:65px}h6{line-height:26px;margin-bottom:13px}img{max-width:100%}hr,img{border:0;display:block}hr{background-image:linear-gradient(180deg,transparent 1px,transparent 11px,#242933 0,#242933 15px,transparent 0,transparent 26px);background-size:100% 26px;color:var(--color-typographic-base-font);height:26px;margin:52px auto;width:100px}a{color:var(--color-typographic-link-p-font);text-decoration:none}a:active,a:focus,a:hover{color:var(--color-typographic-link-s-font)}b,strong{font-weight:600}ul{list-style:square;margin-bottom:26px}ul li{margin-bottom:10px;padding:0 5px}p{line-height:26px;margin-bottom:26px}blockquote{font-style:italic;padding:0;text-align:center}figure{display:block;height:auto;width:100%}figcaption{color:var(--color-typographic-base-font);font-size:14px;font-style:italic;line-height:19.5px;margin-bottom:0;margin-top:6.5px;text-align:center}@media screen and (min-width:685px){figure.float-left,figure.float-right{max-width:310px;padding:0 26px}.float-right{float:right}.float-left{float:left}}code[class*=language-],pre[class*=language-]{word-wrap:normal;color:#657b83;font-family:Consolas,Monaco,Andale Mono,Ubuntu Mono,monospace;font-size:1em;-webkit-hyphens:none;hyphens:none;line-height:1.5;-o-tab-size:4;tab-size:4;text-align:left;white-space:pre;word-break:normal;word-spacing:normal}pre[class*=language-]{border-radius:.3em;margin:.5em 0;overflow:auto;padding:1em}:not(pre)>code[class*=language-],pre[class*=language-]{background-color:var(--color-prism-background)}:not(pre)>code[class*=language-]{border-radius:.3em;padding:.1em}code[class*=language-] ::selection,code[class*=language-]::selection,pre[class*=language-] ::selection,pre[class*=language-]::selection{background:#073642}.token.cdata,.token.comment,.token.doctype,.token.prolog{color:#93a1a1}.token.punctuation{color:#586e75}.namespace{opacity:.7}.token.boolean,.token.constant,.token.deleted,.token.number,.token.property,.token.symbol,.token.tag{color:#268bd2}.token.attr-name,.token.builtin,.token.char,.token.inserted,.token.selector,.token.string,.token.url{color:#2aa198}.token.entity{background:#eee8d5;color:#657b83;cursor:help}.token.atrule,.token.attr-value,.token.keyword{color:#859900}.token.class-name,.token.function{color:#b58900}.token.important,.token.regex,.token.variable{color:#cb4b16}.token.bold,.token.important{font-weight:700}.token.italic{font-style:italic}.Feed-module--feed--a6204 .Feed-module--item--c7a63{margin-bottom:32.5px}.Feed-module--feed--a6204 .Feed-module--item--c7a63:last-child{margin-bottom:13px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f{font-size:27px;line-height:39px;margin-bottom:13px;margin-top:0}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f .Feed-module--link--6123b{color:var(--color-typographic-base-font)}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f .Feed-module--link--6123b:focus,.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f .Feed-module--link--6123b:hover{border-bottom:1px solid #242933;color:var(--color-typographic-base-font)}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--description--57348{font-size:16px;line-height:26px;margin-bottom:19.5px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--time--72864{color:var(--color-typographic-base-font);font-size:14px;font-weight:600;text-transform:uppercase}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--divider--81a18{margin:0 13px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--category--59f58 .Feed-module--link--6123b{color:var(--color-secondary);font-size:14px;font-weight:600;text-transform:uppercase}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--category--59f58 .Feed-module--link--6123b:focus,.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--category--59f58 .Feed-module--link--6123b:hover{color:#5c92ff}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--more--51a4e{color:var(--color-primary);font-size:16px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--more--51a4e:focus,.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--more--51a4e:hover{border-bottom:1px solid #5c92ff;color:var(--color-primary)}.Layout-module--layout--2c933{margin-left:auto;margin-right:auto;max-width:1070px}.Layout-module--layout--2c933:before{content:"";display:table}.Layout-module--layout--2c933:after{clear:both;content:"";display:table}.Page-module--page--24e03{margin-bottom:52px}.Page-module--page--24e03 .Page-module--inner--4b31d{padding:26px 19.5px 0}.Page-module--page--24e03 .Page-module--title--90338{font-size:40px;font-weight:600;line-height:52px;margin-bottom:37.7px;margin-top:0}.Page-module--page--24e03 .Page-module--body--561c4{font-size:16px;line-height:26px;margin:0 0 26px}@media screen and (min-width:685px){.Page-module--page--24e03{width:calc(58.275% - 12.5px)}.Page-module--page--24e03:nth-child(1n){clear:none;float:left;margin-right:30px}.Page-module--page--24e03:last-child{margin-right:0}.Page-module--page--24e03:nth-child(12n){float:right;margin-right:0}.Page-module--page--24e03:nth-child(12n+1){clear:both}.Page-module--page--24e03 .Page-module--inner--4b31d{padding:32.5px 19.5px 0}}@media screen and (min-width:960px){.Page-module--page--24e03{width:calc(66.6% - 10px)}.Page-module--page--24e03:nth-child(1n){clear:none;float:left;margin-right:30px}.Page-module--page--24e03:last-child{margin-right:0}.Page-module--page--24e03:nth-child(3n){float:right;margin-right:0}.Page-module--page--24e03:nth-child(3n+1){clear:both}.Page-module--page--24e03 .Page-module--inner--4b31d{padding:39px 26px 0}}.Pagination-module--pagination--d61cb{display:flex;margin-top:52px}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b{text-align:left;width:50%}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d{color:var(--color-secondary);font-size:26px;font-weight:700}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d:focus,.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d:hover{color:var(--color-primary)}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d.Pagination-module--disable--7e105{color:#3f485a;pointer-events:none}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8{text-align:right;width:50%}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff{color:var(--color-secondary);font-size:26px;font-weight:700}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff:focus,.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff:hover{color:var(--color-primary)}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff.Pagination-module--disable--7e105{color:#3f485a;pointer-events:none}.Button-module--button--b1113{border:1px solid var(--color-button-border);border-radius:20px;color:var(--color-button-color);display:inline-block;font-size:16px;font-weight:400;height:40px;line-height:40px;margin-left:auto;margin-right:auto;padding:0 26px;text-align:center;text-decoration:none}.Button-module--button--b1113:focus,.Button-module--button--b1113:hover{color:#5c92ff}.ThemeSwitcher-module--themeSwitcher--8a77f{--color:var(--color-theme-switcher)}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--button--7cb7b{align-items:center;background:transparent;border:0;cursor:pointer;display:flex;justify-content:center;outline:0}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--button--7cb7b svg{stroke:var(--color);pointer-events:none;transition:stroke .4s}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--button--7cb7b:hover{--color:var(--color-theme-switcher-hover)}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--moon--10537{stroke-dasharray:0 1px;opacity:0;transition:stroke-dasharray .2s ease-in,opacity .4s ease-in}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--sun--2163a{stroke-dasharray:1px 1px;opacity:1;transition:stroke-dasharray .2s ease-in,opacity .4s ease-in}.ThemeSwitcher-module--themeSwitcher--8a77f.ThemeSwitcher-module--dark--6db0c .ThemeSwitcher-module--moon--10537{stroke-dasharray:1px 1px;opacity:1}.ThemeSwitcher-module--themeSwitcher--8a77f.ThemeSwitcher-module--dark--6db0c .ThemeSwitcher-module--sun--2163a{stroke-dasharray:0 1px;opacity:0}.Author-module--author--cbd31 .Author-module--photo--9787b{background-clip:padding-box;border-radius:50%;display:inline-block;height:75px;margin-bottom:0;width:75px}.Author-module--author--cbd31 .Author-module--photo--9787b img{border-radius:50%}.Author-module--author--cbd31 .Author-module--title--cf7e5{font-size:18px;font-weight:600;line-height:29.25px;margin:0}.Author-module--author--cbd31 .Author-module--title--cf7e5 .Author-module--link--09c17,.Author-module--author--cbd31 .Author-module--title--cf7e5 .Author-module--link--09c17:focus,.Author-module--author--cbd31 .Author-module--title--cf7e5 .Author-module--link--09c17:hover{color:var(--color-typographic-base-font)}.Author-module--author--cbd31 .Author-module--bio--8168d,.Author-module--author--cbd31 .Author-module--subtitle--86ec5{color:#7f8ba4;line-height:26px;margin-bottom:26px}.Author-module--author--cbd31 .Author-module--titleContainer--4f576{align-items:center;display:flex;justify-content:space-between;margin:13px 0}.Categories-module--categories--f3389{color:#7f8ba4;font-size:14px}.Icon-module--icon--1d7da{fill:currentcolor;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;speak:none;stroke:currentcolor;stroke-width:0;display:inline-block;font-style:normal;font-variant:normal;font-weight:400;height:1em;line-height:1em;text-align:center;text-transform:none;width:1em}.Contacts-module--contacts--09178{margin-bottom:26px}.Contacts-module--contacts--09178 .Contacts-module--list--9670b{display:flex;flex-flow:row wrap;flex-grow:0;flex-shrink:0;list-style:none;margin:13px 0;max-width:165px;padding:0}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0{align-content:center;align-items:center;border:1px solid var(--color-contacts-border);border-radius:50%;display:flex;height:40px;justify-content:center;line-height:40px;margin:6.5px;padding:0;text-align:center;width:40px}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0:nth-child(3n+1){margin-left:0}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0 .Contacts-module--link--de1e0{border:0;color:var(--color-typographic-base-font);display:flex}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0 .Contacts-module--link--de1e0:focus,.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0 .Contacts-module--link--de1e0:hover{color:var(--color-typographic-link-p-font)}.Copyright-module--copyright--2c602{color:#7f8ba4;font-size:14px}.Menu-module--menu--113a9{margin-bottom:26px}.Menu-module--menu--113a9 .Menu-module--list--e1ae3{list-style:none;margin:0;padding:0}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679{margin:13px 0;padding:0}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02{border:0;color:var(--color-typographic-base-font);font-size:16px;font-weight:400}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02:focus,.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02:hover{border-bottom:1px solid #5c92ff;color:#5c92ff}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02.Menu-module--active--6cb74{border-bottom:1px solid var(--color-typographic-base-font);color:var(--color-typographic-base-font)}.Tags-module--tags--28a57{color:#7f8ba4;font-size:14px}.Sidebar-module--sidebar--1bfa1{width:100%}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0{padding:26px 19.5px 0;position:relative}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0:after{background:var(--color-sidebar-border);background:linear-gradient(to bottom,var(--color-sidebar-border) 0,var(--color-sidebar-border) 48%,var(--color-sidebar-border-fade) 100%)}@media screen and (min-width:685px){.Sidebar-module--sidebar--1bfa1{width:calc(41.625% - 17.5px)}.Sidebar-module--sidebar--1bfa1:nth-child(1n){clear:none;float:left;margin-right:30px}.Sidebar-module--sidebar--1bfa1:last-child{margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(12n){float:right;margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(12n+1){clear:both}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0{padding:32.5px 19.5px 0}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0:after{bottom:0;content:"";height:540px;position:absolute;right:-10px;top:30px;width:1px}}@media screen and (min-width:960px){.Sidebar-module--sidebar--1bfa1{width:calc(33.3% - 20px)}.Sidebar-module--sidebar--1bfa1:nth-child(1n){clear:none;float:left;margin-right:30px}.Sidebar-module--sidebar--1bfa1:last-child{margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(3n){float:right;margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(3n+1){clear:both}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0{padding:39px}}.Author-module--author--1c58d{border-top:1px solid var(--color-page-border);line-height:26px;margin-bottom:52px;margin-top:26px;max-width:640px;padding-top:26px}.Author-module--author--1c58d .Author-module--bio--08950 .Author-module--twitter--90647{display:block;text-decoration:underline}.Author-module--author--1c58d .Author-module--bio--08950 .Author-module--twitter--90647:focus,.Author-module--author--1c58d .Author-module--bio--08950 .Author-module--twitter--90647:hover{color:var(--color-typographic-link-s-font)}@media screen and (min-width:685px){.Author-module--author--1c58d{margin-left:auto;margin-right:auto}}.Content-module--content--80d58{margin:0 auto;max-width:945px;padding:0 13px}.Content-module--content--80d58 .Content-module--title--09504{font-size:32px;font-weight:600;line-height:42.9px;margin:26px auto 0;max-width:640px;text-align:center}.Content-module--content--80d58 .Content-module--body--726c2 figure{margin-bottom:26px}.Content-module--content--80d58 .Content-module--body--726c2 figure blockquote{font-style:italic;margin-top:0;padding:26px 0;text-align:center}.Content-module--content--80d58 .Content-module--body--726c2 figure blockquote p{font-size:26.9072px;line-height:39px;margin-bottom:26px;margin-top:0;max-width:640px}.Content-module--content--80d58 .Content-module--body--726c2 a{text-decoration:underline}.Content-module--content--80d58 .Content-module--body--726c2 *{margin-left:auto;margin-right:auto;max-width:640px}.Content-module--content--80d58 .Content-module--body--726c2 h2>a{visibility:hidden}.Content-module--content--80d58 .Content-module--body--726c2 h2>a>svg{fill:var(--color-typographic-base-font)}.Content-module--content--80d58 .Content-module--body--726c2 img{max-width:100%}@media screen and (min-width:960px){.Content-module--content--80d58{padding:0}.Content-module--content--80d58 .Content-module--title--09504{font-size:48px;line-height:58.5px;margin-bottom:39px;margin-top:58.5px}.Content-module--content--80d58 .Content-module--body--726c2,.Content-module--content--80d58 .Content-module--body--726c2 p{font-size:18px;line-height:29.25px;margin-bottom:29.25px}.Content-module--content--80d58 .Content-module--body--726c2 h2>a{padding-right:13px;visibility:unset}}.Meta-module--meta--dae0a .Meta-module--date--4d30d{font-style:italic}.Tags-module--tags--18589{margin-bottom:13px}.Tags-module--tags--18589 .Tags-module--list--82ae6{list-style:none;padding:0}.Tags-module--tags--18589 .Tags-module--list--82ae6 .Tags-module--item--52015{display:inline-block;margin:6.5px 0}@media screen and (min-width:685px){.Tags-module--tags--18589 .Tags-module--list--82ae6 .Tags-module--item--52015:first-child{margin-left:0;padding-left:0}}.Post-module--post--3a994 .Post-module--content--3c6e5{margin:0 auto}.Post-module--post--3a994 .Post-module--comments--d3b99,.Post-module--post--3a994 .Post-module--footer--f8705{margin:0 auto;max-width:640px;padding:0 13px}.Post-module--post--3a994 .Post-module--buttons--2972d{align-items:center;display:flex;justify-content:center;margin:26px 0 0;text-align:center}.Post-module--post--3a994 .Post-module--buttons--2972d .Post-module--buttonArticles--d793a{margin:0 13px 0 0}@media screen and (min-width:960px){.Post-module--post--3a994 .Post-module--comments--d3b99,.Post-module--post--3a994 .Post-module--footer--f8705{padding:0}.Post-module--post--3a994 .Post-module--buttons--2972d{left:30px;margin:0 13px 0 0;max-width:none;position:fixed;top:30px}}</style><title data-gatsby-head="true">[CloudNet@] 테라폼 스터디 3주차 - Terraform 상태 격리방안 - 팔공산 창고</title><link rel="alternate" type="application/rss+xml" title="팔공산 창고" href="/rss.xml"/><style type="text/css">
+    .anchor.before {
+      position: absolute;
+      top: 0;
+      left: 0;
+      transform: translateX(-100%);
+      padding-right: 4px;
+    }
+    .anchor.after {
+      display: inline-block;
+      padding-left: 4px;
+    }
+    h1 .anchor svg,
+    h2 .anchor svg,
+    h3 .anchor svg,
+    h4 .anchor svg,
+    h5 .anchor svg,
+    h6 .anchor svg {
+      visibility: hidden;
+    }
+    h1:hover .anchor svg,
+    h2:hover .anchor svg,
+    h3:hover .anchor svg,
+    h4:hover .anchor svg,
+    h5:hover .anchor svg,
+    h6:hover .anchor svg,
+    h1 .anchor:focus svg,
+    h2 .anchor:focus svg,
+    h3 .anchor:focus svg,
+    h4 .anchor:focus svg,
+    h5 .anchor:focus svg,
+    h6 .anchor:focus svg {
+      visibility: visible;
+    }
+  </style><script>
+    document.addEventListener("DOMContentLoaded", function(event) {
+      var hash = window.decodeURI(location.hash.replace('#', ''))
+      if (hash !== '') {
+        var element = document.getElementById(hash)
+        if (element) {
+          var scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+          var clientTop = document.documentElement.clientTop || document.body.clientTop || 0
+          var offset = element.getBoundingClientRect().top + scrollTop - clientTop
+          // Wait for the browser to finish rendering before scrolling.
+          setTimeout((function() {
+            window.scrollTo(0, offset - 0)
+          }), 0)
+        }
+      }
+    })
+  </script><link rel="preconnect" href="https://www.googletagmanager.com"/><link rel="dns-prefetch" href="https://www.googletagmanager.com"/><script async="" src="https://www.googletagmanager.com/gtag/js?id="></script><script>
+      
+      
+      if(true) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){window.dataLayer && window.dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', '', {"send_page_view":false});
+      }
+      </script><link rel="sitemap" type="application/xml" href="/sitemap/sitemap-index.xml"/><link rel="icon" href="/favicon-32x32.png?v=4c2c993a06ee0fd0ee953020b09128a9" type="image/png"/><link rel="manifest" href="/manifest.webmanifest" crossorigin="anonymous"/><link rel="apple-touch-icon" sizes="48x48" href="/icons/icon-48x48.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="72x72" href="/icons/icon-72x72.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="96x96" href="/icons/icon-96x96.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="144x144" href="/icons/icon-144x144.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192x192.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="256x256" href="/icons/icon-256x256.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="384x384" href="/icons/icon-384x384.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="512x512" href="/icons/icon-512x512.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><style>.gatsby-image-wrapper{position:relative;overflow:hidden}.gatsby-image-wrapper picture.object-fit-polyfill{position:static!important}.gatsby-image-wrapper img{bottom:0;height:100%;left:0;margin:0;max-width:none;padding:0;position:absolute;right:0;top:0;width:100%;object-fit:cover}.gatsby-image-wrapper [data-main-image]{opacity:0;transform:translateZ(0);transition:opacity .25s linear;will-change:opacity}.gatsby-image-wrapper-constrained{display:inline-block;vertical-align:top}</style><noscript><style>.gatsby-image-wrapper noscript [data-main-image]{opacity:1!important}.gatsby-image-wrapper [data-placeholder-image]{opacity:0!important}</style></noscript><script type="module">const e="undefined"!=typeof HTMLImageElement&&"loading"in HTMLImageElement.prototype;e&&document.body.addEventListener("load",(function(e){const t=e.target;if(void 0===t.dataset.mainImage)return;if(void 0===t.dataset.gatsbyImageSsr)return;let a=null,n=t;for(;null===a&&n;)void 0!==n.parentNode.dataset.gatsbyImageWrapper&&(a=n.parentNode),n=n.parentNode;const o=a.querySelector("[data-placeholder-image]"),r=new Image;r.src=t.currentSrc,r.decode().catch((()=>{})).then((()=>{t.style.opacity=1,o&&(o.style.opacity=0,o.style.transition="opacity 500ms linear")}))}),!0);</script></head><body><script>
+          void function() {
+            var cachedMode;
+
+            try {
+              var preferredTheme = JSON.parse(localStorage.getItem('diesel:theme-atom'));
+
+              if (preferredTheme && preferredTheme.mode) {
+                cachedMode = preferredTheme.mode;
+              }
+            } catch (err) { }
+
+            function setTheme(newTheme) {
+              document.documentElement.className = newTheme;
+            }
+
+            var darkQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+            setTheme(cachedMode || (darkQuery.matches ? 'dark' : 'light'));
+          }()
+        </script><div id="___gatsby"><div style="outline:none" tabindex="-1" id="gatsby-focus-wrapper"><div class="Layout-module--layout--2c933"><div class="Post-module--post--3a994"><div class="Post-module--buttons--2972d"><a class="Button-module--button--b1113 Post-module--buttonArticles--d793a" href="/">All Articles</a></div><div class="Post-module--content--3c6e5"><div class="Content-module--content--80d58"><h1 class="Content-module--title--09504">[CloudNet@] 테라폼 스터디 3주차 - Terraform 상태 격리방안</h1><div class="Content-module--body--726c2"><p>이 내용은 CloudNet@ 에서 진행하는 테라폼 기초 입문 스터디에 대한 연재글입니다.</p>
+<p>스터디에서 사용하는 교재는 Terraform Up &#x26; Running 2nd Edition 입니다.</p>
+<hr>
+<h1 id="prerequisites" style="position:relative;"><a href="#prerequisites" aria-label="prerequisites permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Prerequisites</h1>
+<ul>
+<li><a href="https://docs.aws.amazon.com/ko_kr/AmazonS3/latest/userguide/Welcome.html" target="_blank" rel="nofollow noopener noreferrer">AWS S3</a>
+<ul>
+<li>오브젝트를 버킷 단위로 저장하는 클라우드 스토리지</li>
+</ul>
+</li>
+<li>AWS DynamoDB
+<ul>
+<li>AWS에서 제공하는 NoSQL 데이터베이스 서버</li>
+</ul>
+</li>
+<li>(스포!) 원격지에 테라폼의 “상태”를 기록하기 위해 사용합니다!</li>
+</ul>
+<p>아래에서 3주차 스터디 내용을 공유합니다.</p>
+<p>교재의 3장을 다룹니다.</p>
+<h1 id="들어가며" style="position:relative;"><a href="#%EB%93%A4%EC%96%B4%EA%B0%80%EB%A9%B0" aria-label="들어가며 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>들어가며…</h1>
+<p>테라폼의 상태 관리에 대해 정리하고자 합니다. 왜 상태관리를 해야하는지, 어떤방안이 있으며 어떤식으로 작성하면 좋은지 작성합니다.</p>
+<h2 id="테라폼-상태관리의-필요성" style="position:relative;"><a href="#%ED%85%8C%EB%9D%BC%ED%8F%BC-%EC%83%81%ED%83%9C%EA%B4%80%EB%A6%AC%EC%9D%98-%ED%95%84%EC%9A%94%EC%84%B1" aria-label="테라폼 상태관리의 필요성 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>테라폼 상태관리의 필요성</h2>
+<p>테라폼은 기본적으로 생성한 인프라에 대한 정보를 상태파일에 기록합니다.</p>
+<ul>
+<li><code class="language-text">terraform.tfstate</code> 파일로 기록됩니다.</li>
+<li>상태 파일은 프라이빗 API 임에 유의합니다!
+<ul>
+<li>배포할 때 마다 테라폼이 알아서 작성하는 파일입니다. <strong>임의로 건들여서는 안됩니다</strong>!</li>
+</ul>
+</li>
+</ul>
+<p>본격적으로 테라폼을 도입하고, 코드를 작성/배포하다 보면 자연스럽게 여러 사람들이 작업하겠지요. 그렇다면 자연스레 아래와 같은 요구사항이 발생할 수 있습니다.</p>
+<ul>
+<li>상태파일 저장을 위한 <em>“공유 스토리지”</em> 사용 필요</li>
+<li>상태파일 잠금(Locking)이 필요
+<ul>
+<li>한번에 한 명령만 실행; 경쟁 상태(<em>race condition</em>) 방지 필요</li>
+</ul>
+</li>
+<li>상태파일을 격리가 필요
+<ul>
+<li>개발환경, 테스트환경, 스테이징 환경, 프로덕션 환경 등이 잘 분리되어있어야 함</li>
+</ul>
+</li>
+</ul>
+<h2 id="테라폼-상태-공유-방법" style="position:relative;"><a href="#%ED%85%8C%EB%9D%BC%ED%8F%BC-%EC%83%81%ED%83%9C-%EA%B3%B5%EC%9C%A0-%EB%B0%A9%EB%B2%95" aria-label="테라폼 상태 공유 방법 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>테라폼 상태 공유 방법</h2>
+<p>운영, 프로덕션 레벨에서 팀 단위로 인프라 구성 코드를 공유하는 방법은 여러가지가 있습니다.</p>
+<h3 id="git-등의-vcs를-이용하면" style="position:relative;"><a href="#git-%EB%93%B1%EC%9D%98-vcs%EB%A5%BC-%EC%9D%B4%EC%9A%A9%ED%95%98%EB%A9%B4" aria-label="git 등의 vcs를 이용하면 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Git 등의 VCS를 이용하면?</h3>
+<ul>
+<li>push/pull 시 실수로 파일을 빼먹거나 해서 문제가 발생할 수 있습니다.
+<ul>
+<li>버그를 잡은 코드가 다시 들어가거나</li>
+<li>그로인해 인프라가 복제되거나, 사라지거나… :scream:</li>
+</ul>
+</li>
+<li>락을 걸 수 없음(<code class="language-text">terraform apply</code> 에 대한 락을 의미)
+<ul>
+<li>한번 한 명령만 실행할 수 없습니다.</li>
+</ul>
+</li>
+<li>시크릿 파일 관리가 곤란함
+<ul>
+<li>테라폼의 모든 데이터는 평문으로 쓰임</li>
+<li>주요 기밀정보가 <strong>평문으로 기록</strong>됩니다! :scream:</li>
+</ul>
+</li>
+</ul>
+<p>이런 문제를 해결하기 위해선, 원격 백엔드를 사용합니다. 1장에서 배운 “backend”의 저장공간을 원격 저장소로 설정하는 것을 의미합니다.</p>
+<h3 id="테라폼의-원격-백엔드-를-사용하면" style="position:relative;"><a href="#%ED%85%8C%EB%9D%BC%ED%8F%BC%EC%9D%98-%EC%9B%90%EA%B2%A9-%EB%B0%B1%EC%97%94%EB%93%9C-%EB%A5%BC-%EC%82%AC%EC%9A%A9%ED%95%98%EB%A9%B4" aria-label="테라폼의 원격 백엔드 를 사용하면 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>테라폼의 원격 백엔드 를 사용하면?</h3>
+<ul>
+<li><code class="language-text">.tfstate</code> 파일을 원격지에 두고 관리할 수 있습니다.
+<ul>
+<li>AWS S3
+<ul>
+<li>GCP 클라우드 스토리지</li>
+<li>Azure storage</li>
+<li>HashiCorp 사의
+<ul>
+<li>Terraform Cloud (비싸고 좋고 추천받음)</li>
+<li>Terraform Pro</li>
+<li>Terraform Enterprise</li>
+</ul>
+</li>
+<li>etc.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>본 교재에서는 AWS S3와 DynamoDB의 결합을 이용하여 소개합니다.</li>
+</ul>
+<h1 id="테라폼-상태-관리" style="position:relative;"><a href="#%ED%85%8C%EB%9D%BC%ED%8F%BC-%EC%83%81%ED%83%9C-%EA%B4%80%EB%A6%AC" aria-label="테라폼 상태 관리 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>테라폼 상태 관리</h1>
+<p>그렇다면, 원격 백엔드를 활용한 상태관리를 살펴봅시다.</p>
+<p>제 3장의 예시를 보면 dev, staging 환경을 S3, DynamoDB로 분리하긴 했지만, 상태파일 자체가 단일인 상황은 막을 수 없습니다. 따라서, 책에서는 상태 격리에 대해서는 두가지 접근법을 함께 사용하기를 제안합니다.</p>
+<ol>
+<li>
+<p>테라폼의 <code class="language-text">Workspace</code> (이하 워크스페이스) 라는 개념</p>
+<ul>
+<li>복수개의/분리된/이름이 지정된 워크스페이스를 사용하여 상태파일을 격리합니다.</li>
+</ul>
+</li>
+<li>
+<p>분리된 파일 레이아웃 지정</p>
+<ul>
+<li>개발환경, 스테이징 환경, 실제 프로덕션 환경(!)에 대한 분리를 통해 실수를 방지할 수 있습니다.</li>
+<li>디렉토리 구조를 통한 분리를 의미합니다.
+<ul>
+<li>[예습!] 이는 모듈화 및 테라폼 내의 <code class="language-text">function</code> 기능과도 밀접한 영향을 가집니다. 필요한 사항에 대해서는 프로그램을 작성하거나 모듈화를 잘 하여 반복되는 코드를 없애자는 것이 주요 골자죠.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h2 id="상태관리-1-workspace-설정" style="position:relative;"><a href="#%EC%83%81%ED%83%9C%EA%B4%80%EB%A6%AC-1-workspace-%EC%84%A4%EC%A0%95" aria-label="상태관리 1 workspace 설정 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>상태관리 (1): Workspace 설정</h2>
+<p>그렇다면, 상태관리를 가능하게 하는 방법 중 하나인 <code class="language-text">Workspace</code>를 알아봅시다.</p>
+<p>테라폼은 기본적으로 <code class="language-text">default</code> 라는 워크스페이스를 사용합니다. 새 작업공간을 만들기 위해서는 <code class="language-text">terraform workspace</code> 커맨드를 사용합니다.</p>
+<p>그렇다면 워크스페이스를 변경하는 것은 어떤 의미를 가질까요?</p>
+<ul>
+<li><strong>다른 작업 공간으로 전환</strong>하는 것은 <strong>상태 파일이 저장된 경로를 변경</strong>하는 것과 같습니다.</li>
+<li>작업 공간은 코드 리팩토링을 시도하는 것 같이 이미 <strong>배포되어 있는 인프라에 영향을 주지 않고 테라폼 모듈을 테스트</strong> 할 때 유용합니다.</li>
+<li>다시말해, 새로운 작업 공간을 생성하여 완전히 <strong>동일한 인프라의 복사본을 배포</strong>할 수 있지만 상태 정보는 별도의 파일에 저장합니다.</li>
+</ul>
+<p>상술하였듯, 워크스페이스 지정<strong>만</strong>으로는 문제를 해결할 수 없습니다. 후술할 파일 레이아웃을 함께 지정하여 작업하는 것이 권장됩니다. 어떤 이유로 인해 워크스페이스 만을 사용할 수 없는지 아래에서 설명하겠습니다:</p>
+<ol>
+<li>먼저, 모든 작업 공간의 상태 파일은 동일한 백엔드(예. 동일한 S3 버킷)에 저장합니다. 모든 작업 공간이 동일한 인증과 접근 통제를 사용합니다.
+<ul>
+<li>E.g., 테스트 환경과 프로덕션 환경이 다른 백엔드를 사용하는 경우, 백엔드에 다른 보안 수준의 통제 설정을 수행하는 것은 불가능합니다.</li>
+</ul>
+</li>
+<li>코드나 터미널에 현재 작업 공간에 대한 정보가 표시 되지 않습니다. 코드 탐색 시 한 작업 공간에 배치된 모듈은 다른 모든 작업 공간에 배치된 모듈과 동일합니다.
+<ul>
+<li>이로 인해 인프라를 제대로 파악하기 어려워 유지 관리가 어렵게 됩니다.</li>
+</ul>
+</li>
+<li>위 두 항목의 결합된 문제가 발생 할 수 있음. 예를 들면 테스트 환경이 아닌 프로덕션 환경에서 <code class="language-text">terraform destroy</code> <strong>명령을 실행</strong> 할 수 있습니다… :scream_cat:
+<ul>
+<li>검증과 운영 환경이 동일한 인증 매커니즘을 사용하기 때문에 위 오류에서 보호할 방법이 없습니다.</li>
+</ul>
+</li>
+<li>따라서 <strong>파일 레이아웃</strong>을 이용한 격리를 함께 사용할 것을 권장합니다.</li>
+</ol>
+<h2 id="상태관리-2-파일-레이아웃을-이용한-구성파일-격리" style="position:relative;"><a href="#%EC%83%81%ED%83%9C%EA%B4%80%EB%A6%AC-2-%ED%8C%8C%EC%9D%BC-%EB%A0%88%EC%9D%B4%EC%95%84%EC%9B%83%EC%9D%84-%EC%9D%B4%EC%9A%A9%ED%95%9C-%EA%B5%AC%EC%84%B1%ED%8C%8C%EC%9D%BC-%EA%B2%A9%EB%A6%AC" aria-label="상태관리 2 파일 레이아웃을 이용한 구성파일 격리 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>상태관리 (2): 파일 레이아웃을 이용한 구성파일 격리</h2>
+<p>상태관리 방법 중 또다른 하나는 파일 레이아웃을 잡는 것입니다. 핵심은 아래와 같습니다.</p>
+<ul>
+<li>테라폼 프로젝트를 생성하고, 파일레이아웃을 잡습니다.
+<ul>
+<li>각 구성파일을 분리된 폴더에 넣습니다(E.g., staging, production, etc.).</li>
+<li>필요에 따라 디렉토리 별로에 서로 다른 백엔드 환경을 구성합니다(E.g., S3 버킷 백엔드의 AWS 계정분리).</li>
+</ul>
+</li>
+</ul>
+<p>예시를 위해, 아래와 같은 구조를 가진다고 하죠.</p>
+<div class="gatsby-highlight" data-language="text"><pre class="language-text"><code class="language-text">.
+├── global
+│   └── s3
+│       ├── main.tf
+│       └── outputs.tf
+├── mgmt
+│   ├── services
+│   └── vpc
+├── prod
+│   ├── services
+│   └── vpc
+└── stage
+    ├── data-stores
+    │   └── mysql
+    │       ├── main-vpgsg.tf
+    │       ├── main.tf
+    │       ├── outputs.tf
+    │       ├── terraform.tfstate
+    │       └── variables.tf
+    └── services
+        └── webserver-cluster
+            ├── main.tf
+            └── user-data.sh</code></pre></div>
+<ul>
+<li>
+<p>최상위 폴더</p>
+<ul>
+<li><strong>stage</strong> : 테스트 환경과 같은 사전 프로덕션 워크로드 workload 환경</li>
+<li><strong>prod</strong> : 사용자용 맵 같은 프로덕션 워크로드 환경</li>
+<li><strong>mgmt</strong> : 베스천 호스트(Bastion Host), 젠킨스(Jenkins) 와 같은 데브옵스 도구 환경</li>
+<li><strong>global</strong> : S3, IAM과 같이 모든 환경에서 사용되는 리소스를 배치</li>
+</ul>
+</li>
+<li>
+<p>각 환경별 구성 요소</p>
+<ul>
+<li><strong>vpc</strong> : 해당 환경을 위한 네트워크 토폴로지</li>
+<li><strong>services</strong> : 해당 환경에서 서비스되는 애플리케이션, 각 앱은 자체 폴더에 위치하여 다른 앱과 분리</li>
+<li><strong>data-storage</strong> : 해당 환경 별 데이터 저장소. 각 데이터 저장소 역시 자체 폴더에 위치하여 다른 데이터 저장소와 분리</li>
+</ul>
+</li>
+<li>
+<p>명명 규칙 naming conventions (예시)</p>
+<ul>
+<li><strong>variables.tf</strong> : 입력 변수</li>
+<li><strong>outputs.tf</strong> : 출력 변수</li>
+<li><strong>main-xxx.tf</strong> : 리소스 → 개별 테라폼 파일 규모가 커지면 특정 기능을 기준으로 <strong>별도 파일</strong>로 분리
+<ul>
+<li>E.g., main-iam.tf, main-s3.tf 등</li>
+<li>후에 배울 <strong>모듈</strong> 단위로 나눌 수 있습니다.</li>
+</ul>
+</li>
+<li><strong>dependencies.tf</strong> : 데이터 소스</li>
+<li><strong>providers.tf</strong> : 공급자</li>
+</ul>
+</li>
+</ul>
+<h1 id="상태관리-예제-1" style="position:relative;"><a href="#%EC%83%81%ED%83%9C%EA%B4%80%EB%A6%AC-%EC%98%88%EC%A0%9C-1" aria-label="상태관리 예제 1 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>상태관리 예제 (1)</h1>
+<p>이 문단에서는 ELB, ASG, 그리고 RDS가 구축된 환경을 만들고, 이에 대해 디렉토리 구조를 아래와 같이 작성하여 실습하도록 하겠습니다.</p>
+<div class="gatsby-highlight" data-language="text"><pre class="language-text"><code class="language-text">├── global
+│   └── s3
+│       ├── main.tf
+│       └── outputs.tf
+└── stage
+    ├── data-stores
+    │   └── mysql
+    │       ├── main-vpgsg.tf
+    │       ├── main.tf
+    │       ├── outputs.tf
+    │       └── variables.tf
+    └── services
+        └── webserver-cluster
+            ├── main.tf
+            └── user-data.sh</code></pre></div>
+<p>코드의 위치는 아래와 같습니다:</p>
+<ul>
+<li><a href="https://github.com/s3ich4n/terraform-study-101/tree/main/chapter03/example03-file-layout" target="_blank" rel="nofollow noopener noreferrer">https://github.com/s3ich4n/terraform-study-101/tree/main/chapter03/example03-file-layout</a></li>
+</ul>
+<h2 id="rds-생성-도중-배울-요소" style="position:relative;"><a href="#rds-%EC%83%9D%EC%84%B1-%EB%8F%84%EC%A4%91-%EB%B0%B0%EC%9A%B8-%EC%9A%94%EC%86%8C" aria-label="rds 생성 도중 배울 요소 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>RDS 생성 도중 배울 요소</h2>
+<ul>
+<li>리소스에 전달해야 되는 매개변수 중 <strong>패스워드</strong> 처럼 <strong>민감정보</strong>는 코드에 직접 <strong>평문 입력을 하는 대신 전달 할 수 있는 방안</strong>을 모색해야 합니다. 방법은 아래와 같습니다.
+<ul>
+<li>다양한 <strong>시크릿 저장소를 활용</strong>
+E.g.,
+AWS Secret Manager, AWS SSM Parameter
+GCP KMS 와 KMS Secrets
+Azure Key Vault 와 Vault Secret, etc.
+<ul>
+<li>최소한의 일만 하는 계정을 만들기: 분리와 역할, 필요하면 추가
+<ul>
+<li>스테이징: 스테이징 프로비저닝에 필요한 AWS 서비스 일부만 허용</li>
+<li>프로덕션: 상기 내용과 마찬가지(권한은 모두 막고, 필요한 단편적인 기능만을 허용하여 넓혀가는 것이 좋습니다.)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>테라폼 <strong>외부에서 환경 변수</strong>를 통해 시크릿 값을 테라폼에 전달
+(테스트나 빠르게 개발할 때만 쓰고, 현업에선 <strong>절대</strong> 사용하지 맙시다!)
+<ul>
+<li><code class="language-text">export TF_VAR_db_password="(YOUR_DB_PASSWORD)"</code></li>
+<li>혹은 <code class="language-text">direnv</code> 의 <code class="language-text">.envrc</code> 파일에 상기 명령과 같은 환경변수를 넣어놓고 사용합니다.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="웹-서버-클러스터-배포-중-배울-요소" style="position:relative;"><a href="#%EC%9B%B9-%EC%84%9C%EB%B2%84-%ED%81%B4%EB%9F%AC%EC%8A%A4%ED%84%B0-%EB%B0%B0%ED%8F%AC-%EC%A4%91-%EB%B0%B0%EC%9A%B8-%EC%9A%94%EC%86%8C" aria-label="웹 서버 클러스터 배포 중 배울 요소 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>웹 서버 클러스터 배포 중 배울 요소</h2>
+<p>웹 서버 클러스터를 배포하며 <code class="language-text">terraform_remote_state</code> 라는 값과, 테라폼의 내장 함수(build-in function)에 대해 살펴봅시다.</p>
+<ul>
+<li>백엔드에 상태 파일(위에서 살펴본 RDS 정보)를 읽어서 웹 서버 클러스터 구성을 합니다. 이 때 변환 데이터는 읽기 전용입니다.</li>
+<li>모든 데이터베이스의 출력 변수는 상태 파일에 저장되며 아래와 같은 형식의 속성 참조를 이용해 <code class="language-text">terraform_remote_state</code> 데이터 소스에서 읽을 수 있으며, 그 양식은 아래와 같습니다.</li>
+</ul>
+<blockquote>
+<div class="gatsby-highlight" data-language="text"><pre class="language-text"><code class="language-text">data.terraform_remote_state.&lt;NAME>.outputs.&lt;ATTRIBUTE></code></pre></div>
+</blockquote>
+<ul>
+<li>E.g., <code class="language-text">terraform_remote_state</code> 데이터 소스에서 데이터베이스 주소와 포트 정보를 가져와서 HTTP 응답에 정보를 노출</li>
+</ul>
+<div class="gatsby-highlight" data-language="bash"><pre class="language-bash"><code class="language-bash">user_data <span class="token operator">=</span> <span class="token operator">&lt;&lt;</span><span class="token string">EOF
+#!/bin/bash
+echo "Hello, World" >> index.html
+echo "<span class="token variable">${data.terraform_remote_state.db.outputs.address}</span>" >> index.html
+echo "<span class="token variable">${data.terraform_remote_state.db.outputs.port}</span>" >> index.html
+nohup busybox httpd -f -p <span class="token variable">${var.server_port}</span> &amp;
+EOF</span></code></pre></div>
+<ul>
+<li><strong>사용자 데이터 스크립트</strong>가 길어지면 인라인으로 정의가 복잡해집니다. 이럴 때는 관련 코드를 외부화하는 것이 코드의 복잡도를 떨어뜨리는 방법입니다. 테라폼의 <strong>내장 함수</strong>와 <code class="language-text">template_file</code> 라는 데이터 소스를 사용해봅시다.</li>
+<li>테라폼에는 표현식을 사용하여 실행할 수 있는 여러 <strong>내장 함수</strong>(built-in functions)들이 있습니다. 함수 사용법은 아래와 같습니다.
+<ul>
+<li><a href="https://developer.hashicorp.com/terraform/language/functions" target="_blank" rel="nofollow noopener noreferrer">내장 함수에 대한 링크</a>를 참고하셔서, 필요한 내장 함수가 있는지 확인해보시고 적재적소에 사용합시다.</li>
+<li><a href="https://en.wikipedia.org/wiki/Reinventing_the_wheel" target="_blank" rel="nofollow noopener noreferrer">바퀴를 두번 만들 필요는 없지요!</a></li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<div class="gatsby-highlight" data-language="text"><pre class="language-text"><code class="language-text">function_name()</code></pre></div>
+</blockquote>
+<ul>
+<li>E.g., <a href="https://developer.hashicorp.com/terraform/language/functions/format" target="_blank" rel="nofollow noopener noreferrer"><code class="language-text">format</code></a> 함수는 아래 처럼 사용합니다. 문자열 FMT의 <code class="language-text">sprintf</code> 구문에 따라 <code class="language-text">ARGS</code> 인수를 형식화하는 호출방식입니다.</li>
+</ul>
+<blockquote>
+<div class="gatsby-highlight" data-language="text"><pre class="language-text"><code class="language-text">format(&lt;FMT>, &lt;ARGS>, ...)</code></pre></div>
+</blockquote>
+<ul>
+<li>내장 함수는 테라폼 콘솔을 실행 후, 대화형 콘솔을 사용해서 질의한 결과를 바로 확인하는 것으로 디버깅할 수 있습니다.</li>
+<li>테라폼 콘솔은 <strong>읽기 전용</strong>입니다. 실수로 인프라나 상태가 변경되지 않습니다. 안심하세요!</li>
+</ul>
+<div class="gatsby-highlight" data-language="bash"><pre class="language-bash"><code class="language-bash"><span class="token comment"># 참고: 테라폼 콘솔 사용에 관하여</span>
+terraform console
+<span class="token operator">></span> format<span class="token punctuation">(</span><span class="token string">"%.3f"</span>, <span class="token number">3.14159265359</span><span class="token punctuation">)</span>
+<span class="token string">"3.142"</span></code></pre></div>
+<ul>
+<li>그 외에도 테라폼에는 문자열, 숫자, 리스트, 맵 등을 조작하는 데 사용할 수 있는 많은 내장 함수가 존재합니다. 예시에서는 <a href="https://developer.hashicorp.com/terraform/language/functions/templatefile" target="_blank" rel="nofollow noopener noreferrer"><code class="language-text">templatefile</code></a> 함수를 살펴봅시다.</li>
+<li><code class="language-text">templatefile</code> 함수는 PATH 에서 파일을 읽고 그 내용을 문자열로 반환합니다.</li>
+</ul>
+<blockquote>
+<div class="gatsby-highlight" data-language="text"><pre class="language-text"><code class="language-text">templatefile(&lt;PATH>, &lt;VARS>)</code></pre></div>
+</blockquote>
+<ul>
+<li>E.g., 스크립트 파일을 넣고 stage/services/webserver-cluster/user-data.sh 파일을 넣고 문자열로 내용을 읽을 수 있습니다.</li>
+</ul>
+<div class="gatsby-highlight" data-language="bash"><pre class="language-bash"><code class="language-bash"><span class="token shebang important">#!/bin/bash</span>
+
+<span class="token function">cat</span> <span class="token operator">></span> index.html <span class="token operator">&lt;&lt;</span><span class="token string">EOF
+&lt;h1>Hello, World&lt;/h1>
+&lt;p>DB address: <span class="token variable">${db_address}</span>&lt;/p>
+&lt;p>DB port: <span class="token variable">${db_port}</span>&lt;/p>
+EOF</span>
+
+<span class="token function">nohup</span> busybox httpd <span class="token parameter variable">-f</span> <span class="token parameter variable">-p</span> <span class="token variable">${server_port}</span> <span class="token operator">&amp;</span></code></pre></div>
+<ul>
+<li>사용자 데이터 스크립트에 동적인 데이터는 참조와 보간을 활용. 아래는 ASG 코드 예시</li>
+<li><code class="language-text">templatefile</code> 데이터 소스의 vars 맵에 있는 변수만 사용 가능</li>
+</ul>
+<div class="gatsby-highlight" data-language="bash"><pre class="language-bash"><code class="language-bash">resource <span class="token string">"aws_launch_configuration"</span> <span class="token string">"example"</span> <span class="token punctuation">{</span>
+  image_id        <span class="token operator">=</span> <span class="token string">"ami-0fb653ca2d3203ac1"</span>
+  instance_type   <span class="token operator">=</span> <span class="token string">"t2.micro"</span>
+  security_groups <span class="token operator">=</span> <span class="token punctuation">[</span>aws_security_group.instance.id<span class="token punctuation">]</span>
+
+  <span class="token comment"># Render the User Data script as a template</span>
+  user_data <span class="token operator">=</span> templatefile<span class="token punctuation">(</span><span class="token string">"user-data.sh"</span>, <span class="token punctuation">{</span>
+    server_port <span class="token operator">=</span> var.server_port
+    db_address  <span class="token operator">=</span> data.terraform_remote_state.db.outputs.address
+    db_port     <span class="token operator">=</span> data.terraform_remote_state.db.outputs.port
+  <span class="token punctuation">}</span><span class="token punctuation">)</span>
+
+  <span class="token comment"># Required when using a launch configuration with an auto scaling group.</span>
+  lifecycle <span class="token punctuation">{</span>
+    create_before_destroy <span class="token operator">=</span> <span class="token boolean">true</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre></div>
+<h1 id="lessons-learned" style="position:relative;"><a href="#lessons-learned" aria-label="lessons learned permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Lessons Learned</h1>
+<p>제 3장에서는 아래의 내용을 반드시 기억하셨으면 좋겠습니다.</p>
+<ol>
+<li>테라폼 파일을 다수의 사람과 함께 관리할 때 상태관리는 선택이 아닌 필수입니다.
+<ol>
+<li>워크스페이스 설정을 수행합니다.</li>
+<li>파일 레이아웃을 함께 잡아, 실수를 최대한으로 줄입시다.</li>
+</ol>
+</li>
+<li>민감정보는 시크릿 저장소와 같은 서비스를 활용합시다.</li>
+<li>속성 참조와 내장함수를 통해, 코드반복을 대폭축소합시다.</li>
+</ol>
+<h1 id="tips-and-tricks" style="position:relative;"><a href="#tips-and-tricks" aria-label="tips and tricks permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Tips and tricks</h1>
+<ul>
+<li>테라폼 코드도 컨벤션이 있습니다!
+<ul>
+<li><a href="https://developer.hashicorp.com/terraform/language/syntax/style" target="_blank" rel="nofollow noopener noreferrer">테라폼 컨벤션</a>에 대한 이해를 하고, lint 도 할 수 있다는 말이겠군요.</li>
+<li>그렇다면 pre-commit hook 도 당연히 있을겁니다.</li>
+<li>그렇다면 테스트에도 쓰일 수 있겠군요.</li>
+</ul>
+</li>
+</ul>
+<p>이것으로 제 3장을 마칩니다. 긴 글 읽어주셔서 감사합니다.</p></div></div></div><div class="Post-module--footer--f8705"><div class="Meta-module--meta--dae0a"><p class="Meta-module--date--4d30d">Published<!-- --> <!-- -->Nov 4, 2022</p></div><div class="Tags-module--tags--18589"><ul class="Tags-module--list--82ae6"><li class="Tags-module--item--52015"><a class="Button-module--button--b1113" href="/tag/terraform/">terraform</a></li><li class="Tags-module--item--52015"><a class="Button-module--button--b1113" href="/tag/iac/">iac</a></li><li class="Tags-module--item--52015"><a class="Button-module--button--b1113" href="/tag/devops/">devops</a></li></ul></div><div class="Author-module--author--1c58d"><p class="Non scholæ sed vitæ discimus.">Non scholæ sed vitæ discimus.</p><p class="Author-module--bio--08950">his/him<a class="Author-module--twitter--90647" href="https://www.twitter.com/" rel="noopener noreferrer" target="_blank"><strong>s3ich4n</strong> on Twitter</a></p></div></div><div class="Post-module--comments--d3b99"></div></div></div></div><div id="gatsby-announcer" style="position:absolute;top:0;width:1px;height:1px;padding:0;overflow:hidden;clip:rect(0, 0, 0, 0);white-space:nowrap;border:0" aria-live="assertive" aria-atomic="true"></div></div><script id="gatsby-script-loader">/*<![CDATA[*/window.pagePath="/devlog/terraform/2022-11-03-cloudneta-terraform-101-pt03";window.___webpackCompilationHash="e9ba9828502e4a855388";/*]]>*/</script><script id="gatsby-chunk-mapping">/*<![CDATA[*/window.___chunkMapping={"polyfill":["/polyfill-d2180604bf06a006eef1.js"],"app":["/app-9ac132e7e136b6ecb0de.js"],"component---cache-caches-gatsby-plugin-offline-app-shell-js":["/component---cache-caches-gatsby-plugin-offline-app-shell-js-0c915c7b1bdb5eac4fdf.js"],"component---src-templates-categories-template-categories-template-tsx":["/component---src-templates-categories-template-categories-template-tsx-e2d2add397e32e3517ca.js"],"component---src-templates-category-template-category-template-tsx":["/component---src-templates-category-template-category-template-tsx-078f2adfba160a34229f.js"],"component---src-templates-index-template-index-template-tsx":["/component---src-templates-index-template-index-template-tsx-83380c7954c9f6621026.js"],"component---src-templates-not-found-template-not-found-template-tsx":["/component---src-templates-not-found-template-not-found-template-tsx-682a8d418e3a0285d34e.js"],"component---src-templates-page-template-page-template-tsx":["/component---src-templates-page-template-page-template-tsx-c6c21d7369a9356db3a1.js"],"component---src-templates-post-template-post-template-tsx":["/component---src-templates-post-template-post-template-tsx-b988b5e8e213fff61e5b.js"],"component---src-templates-tag-template-tag-template-tsx":["/component---src-templates-tag-template-tag-template-tsx-8d0b3090e775aa3c4584.js"],"component---src-templates-tags-template-tags-template-tsx":["/component---src-templates-tags-template-tags-template-tsx-30027e87af7d042f3afb.js"]};/*]]>*/</script><script src="/polyfill-d2180604bf06a006eef1.js" nomodule=""></script><script src="/app-9ac132e7e136b6ecb0de.js" async=""></script><script src="/framework-481a1b6416c14416b2fb.js" async=""></script><script src="/webpack-runtime-5cdc03a992cc3f365750.js" async=""></script></body></html>

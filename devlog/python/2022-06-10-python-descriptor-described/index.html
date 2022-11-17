@@ -1,0 +1,539 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="ie=edge"/><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/><meta name="generator" content="Gatsby 4.24.8"/><meta name="description" content="Python의 디스크립터에 대하여 공부한 내용을 정리하고자 글을 작성하였습니다. 2부에서는 실제 오픈소스들의 코드를 보고 해설할 예정입니다." data-gatsby-head="true"/><meta name="twitter:card" content="summary_large_image" data-gatsby-head="true"/><meta name="twitter:title" content="Python의 디스크립터에 대해 (1): 이론 - 팔공산 창고" data-gatsby-head="true"/><meta name="twitter:description" content="Python의 디스크립터에 대하여 공부한 내용을 정리하고자 글을 작성하였습니다. 2부에서는 실제 오픈소스들의 코드를 보고 해설할 예정입니다." data-gatsby-head="true"/><meta name="og:title" content="Python의 디스크립터에 대해 (1): 이론 - 팔공산 창고" data-gatsby-head="true"/><meta name="og:type" content="website" data-gatsby-head="true"/><meta name="og:description" content="Python의 디스크립터에 대하여 공부한 내용을 정리하고자 글을 작성하였습니다. 2부에서는 실제 오픈소스들의 코드를 보고 해설할 예정입니다." data-gatsby-head="true"/><meta name="image" content="https://blog.s3ich4n.me/static/f362749d11992f125f0cdfe8205b50ef/sangdo-dong.jpg" data-gatsby-head="true"/><meta name="og:image" content="https://blog.s3ich4n.me/static/f362749d11992f125f0cdfe8205b50ef/sangdo-dong.jpg" data-gatsby-head="true"/><meta name="twitter:image" content="https://blog.s3ich4n.me/static/f362749d11992f125f0cdfe8205b50ef/sangdo-dong.jpg" data-gatsby-head="true"/><meta name="theme-color" content="hsl(31, 92%, 62%)"/><style data-href="/styles.3b47e1408077d170b933.css" data-identity="gatsby-global-css">:after,:before,:root{--color-white:#fff;--color-primary:#5c92ff;--color-secondary:#f7a145;--color-prism-background:#eaeaeb;--color-typographic-base-font:#242933;--color-typographic-link-p-font:#5c92ff;--color-typographic-link-s-font:#f7a145;--color-page-border:#eaeaeb;--color-page-background:#fff;--color-sidebar-border:#eaeaeb;--color-sidebar-border-fade:#fff;--color-contacts-border:#eaeaeb;--color-button-border:#eaeaeb;--color-button-color:#242933;--color-theme-switcher:#3f485a;--color-theme-switcher-hover:#5c92ff}.dark :after,.dark :before,:root.dark{--color-white:#fff;--color-primary:#5c92ff;--color-secondary:#f7a145;--color-prism-background:#191d24;--color-typographic-base-font:#fff;--color-typographic-link-p-font:#5c92ff;--color-typographic-link-s-font:#f7a145;--color-page-border:#3f485a;--color-page-background:#242933;--color-sidebar-border:#3f485a;--color-sidebar-border-fade:#242933;--color-contacts-border:#3f485a;--color-button-border:#3f485a;--color-button-color:#fff;--color-theme-switcher:#eaeaeb;--color-theme-switcher-hover:#5c92ff}html{font-size:100}body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;background:var(--color-page-background);color:var(--color-typographic-base-font);font-size:16px;line-height:1.625;margin:0 0 0 calc(100vw - 100%);text-rendering:optimizelegibility}body,h1,h2,h3,h4,h5,h6{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif}h1,h2,h3,h4,h5,h6{font-weight:600}h1{font-size:40px;line-height:52px;margin-bottom:26px;margin-top:104px}h2{font-size:27px;line-height:39px}h2,h3{margin-bottom:13px;margin-top:52px}h3{font-size:22px;line-height:26px}h4{font-size:19.2px;margin-top:39px}h4,h5{line-height:26px;margin-bottom:13px}h5,h6{font-size:16px;margin-top:65px}h6{line-height:26px;margin-bottom:13px}img{max-width:100%}hr,img{border:0;display:block}hr{background-image:linear-gradient(180deg,transparent 1px,transparent 11px,#242933 0,#242933 15px,transparent 0,transparent 26px);background-size:100% 26px;color:var(--color-typographic-base-font);height:26px;margin:52px auto;width:100px}a{color:var(--color-typographic-link-p-font);text-decoration:none}a:active,a:focus,a:hover{color:var(--color-typographic-link-s-font)}b,strong{font-weight:600}ul{list-style:square;margin-bottom:26px}ul li{margin-bottom:10px;padding:0 5px}p{line-height:26px;margin-bottom:26px}blockquote{font-style:italic;padding:0;text-align:center}figure{display:block;height:auto;width:100%}figcaption{color:var(--color-typographic-base-font);font-size:14px;font-style:italic;line-height:19.5px;margin-bottom:0;margin-top:6.5px;text-align:center}@media screen and (min-width:685px){figure.float-left,figure.float-right{max-width:310px;padding:0 26px}.float-right{float:right}.float-left{float:left}}code[class*=language-],pre[class*=language-]{word-wrap:normal;color:#657b83;font-family:Consolas,Monaco,Andale Mono,Ubuntu Mono,monospace;font-size:1em;-webkit-hyphens:none;hyphens:none;line-height:1.5;-o-tab-size:4;tab-size:4;text-align:left;white-space:pre;word-break:normal;word-spacing:normal}pre[class*=language-]{border-radius:.3em;margin:.5em 0;overflow:auto;padding:1em}:not(pre)>code[class*=language-],pre[class*=language-]{background-color:var(--color-prism-background)}:not(pre)>code[class*=language-]{border-radius:.3em;padding:.1em}code[class*=language-] ::selection,code[class*=language-]::selection,pre[class*=language-] ::selection,pre[class*=language-]::selection{background:#073642}.token.cdata,.token.comment,.token.doctype,.token.prolog{color:#93a1a1}.token.punctuation{color:#586e75}.namespace{opacity:.7}.token.boolean,.token.constant,.token.deleted,.token.number,.token.property,.token.symbol,.token.tag{color:#268bd2}.token.attr-name,.token.builtin,.token.char,.token.inserted,.token.selector,.token.string,.token.url{color:#2aa198}.token.entity{background:#eee8d5;color:#657b83;cursor:help}.token.atrule,.token.attr-value,.token.keyword{color:#859900}.token.class-name,.token.function{color:#b58900}.token.important,.token.regex,.token.variable{color:#cb4b16}.token.bold,.token.important{font-weight:700}.token.italic{font-style:italic}.Feed-module--feed--a6204 .Feed-module--item--c7a63{margin-bottom:32.5px}.Feed-module--feed--a6204 .Feed-module--item--c7a63:last-child{margin-bottom:13px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f{font-size:27px;line-height:39px;margin-bottom:13px;margin-top:0}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f .Feed-module--link--6123b{color:var(--color-typographic-base-font)}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f .Feed-module--link--6123b:focus,.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f .Feed-module--link--6123b:hover{border-bottom:1px solid #242933;color:var(--color-typographic-base-font)}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--description--57348{font-size:16px;line-height:26px;margin-bottom:19.5px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--time--72864{color:var(--color-typographic-base-font);font-size:14px;font-weight:600;text-transform:uppercase}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--divider--81a18{margin:0 13px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--category--59f58 .Feed-module--link--6123b{color:var(--color-secondary);font-size:14px;font-weight:600;text-transform:uppercase}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--category--59f58 .Feed-module--link--6123b:focus,.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--category--59f58 .Feed-module--link--6123b:hover{color:#5c92ff}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--more--51a4e{color:var(--color-primary);font-size:16px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--more--51a4e:focus,.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--more--51a4e:hover{border-bottom:1px solid #5c92ff;color:var(--color-primary)}.Layout-module--layout--2c933{margin-left:auto;margin-right:auto;max-width:1070px}.Layout-module--layout--2c933:before{content:"";display:table}.Layout-module--layout--2c933:after{clear:both;content:"";display:table}.Page-module--page--24e03{margin-bottom:52px}.Page-module--page--24e03 .Page-module--inner--4b31d{padding:26px 19.5px 0}.Page-module--page--24e03 .Page-module--title--90338{font-size:40px;font-weight:600;line-height:52px;margin-bottom:37.7px;margin-top:0}.Page-module--page--24e03 .Page-module--body--561c4{font-size:16px;line-height:26px;margin:0 0 26px}@media screen and (min-width:685px){.Page-module--page--24e03{width:calc(58.275% - 12.5px)}.Page-module--page--24e03:nth-child(1n){clear:none;float:left;margin-right:30px}.Page-module--page--24e03:last-child{margin-right:0}.Page-module--page--24e03:nth-child(12n){float:right;margin-right:0}.Page-module--page--24e03:nth-child(12n+1){clear:both}.Page-module--page--24e03 .Page-module--inner--4b31d{padding:32.5px 19.5px 0}}@media screen and (min-width:960px){.Page-module--page--24e03{width:calc(66.6% - 10px)}.Page-module--page--24e03:nth-child(1n){clear:none;float:left;margin-right:30px}.Page-module--page--24e03:last-child{margin-right:0}.Page-module--page--24e03:nth-child(3n){float:right;margin-right:0}.Page-module--page--24e03:nth-child(3n+1){clear:both}.Page-module--page--24e03 .Page-module--inner--4b31d{padding:39px 26px 0}}.Pagination-module--pagination--d61cb{display:flex;margin-top:52px}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b{text-align:left;width:50%}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d{color:var(--color-secondary);font-size:26px;font-weight:700}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d:focus,.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d:hover{color:var(--color-primary)}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d.Pagination-module--disable--7e105{color:#3f485a;pointer-events:none}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8{text-align:right;width:50%}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff{color:var(--color-secondary);font-size:26px;font-weight:700}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff:focus,.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff:hover{color:var(--color-primary)}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff.Pagination-module--disable--7e105{color:#3f485a;pointer-events:none}.Button-module--button--b1113{border:1px solid var(--color-button-border);border-radius:20px;color:var(--color-button-color);display:inline-block;font-size:16px;font-weight:400;height:40px;line-height:40px;margin-left:auto;margin-right:auto;padding:0 26px;text-align:center;text-decoration:none}.Button-module--button--b1113:focus,.Button-module--button--b1113:hover{color:#5c92ff}.ThemeSwitcher-module--themeSwitcher--8a77f{--color:var(--color-theme-switcher)}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--button--7cb7b{align-items:center;background:transparent;border:0;cursor:pointer;display:flex;justify-content:center;outline:0}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--button--7cb7b svg{stroke:var(--color);pointer-events:none;transition:stroke .4s}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--button--7cb7b:hover{--color:var(--color-theme-switcher-hover)}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--moon--10537{stroke-dasharray:0 1px;opacity:0;transition:stroke-dasharray .2s ease-in,opacity .4s ease-in}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--sun--2163a{stroke-dasharray:1px 1px;opacity:1;transition:stroke-dasharray .2s ease-in,opacity .4s ease-in}.ThemeSwitcher-module--themeSwitcher--8a77f.ThemeSwitcher-module--dark--6db0c .ThemeSwitcher-module--moon--10537{stroke-dasharray:1px 1px;opacity:1}.ThemeSwitcher-module--themeSwitcher--8a77f.ThemeSwitcher-module--dark--6db0c .ThemeSwitcher-module--sun--2163a{stroke-dasharray:0 1px;opacity:0}.Author-module--author--cbd31 .Author-module--photo--9787b{background-clip:padding-box;border-radius:50%;display:inline-block;height:75px;margin-bottom:0;width:75px}.Author-module--author--cbd31 .Author-module--photo--9787b img{border-radius:50%}.Author-module--author--cbd31 .Author-module--title--cf7e5{font-size:18px;font-weight:600;line-height:29.25px;margin:0}.Author-module--author--cbd31 .Author-module--title--cf7e5 .Author-module--link--09c17,.Author-module--author--cbd31 .Author-module--title--cf7e5 .Author-module--link--09c17:focus,.Author-module--author--cbd31 .Author-module--title--cf7e5 .Author-module--link--09c17:hover{color:var(--color-typographic-base-font)}.Author-module--author--cbd31 .Author-module--bio--8168d,.Author-module--author--cbd31 .Author-module--subtitle--86ec5{color:#7f8ba4;line-height:26px;margin-bottom:26px}.Author-module--author--cbd31 .Author-module--titleContainer--4f576{align-items:center;display:flex;justify-content:space-between;margin:13px 0}.Categories-module--categories--f3389{color:#7f8ba4;font-size:14px}.Icon-module--icon--1d7da{fill:currentcolor;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;speak:none;stroke:currentcolor;stroke-width:0;display:inline-block;font-style:normal;font-variant:normal;font-weight:400;height:1em;line-height:1em;text-align:center;text-transform:none;width:1em}.Contacts-module--contacts--09178{margin-bottom:26px}.Contacts-module--contacts--09178 .Contacts-module--list--9670b{display:flex;flex-flow:row wrap;flex-grow:0;flex-shrink:0;list-style:none;margin:13px 0;max-width:165px;padding:0}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0{align-content:center;align-items:center;border:1px solid var(--color-contacts-border);border-radius:50%;display:flex;height:40px;justify-content:center;line-height:40px;margin:6.5px;padding:0;text-align:center;width:40px}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0:nth-child(3n+1){margin-left:0}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0 .Contacts-module--link--de1e0{border:0;color:var(--color-typographic-base-font);display:flex}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0 .Contacts-module--link--de1e0:focus,.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0 .Contacts-module--link--de1e0:hover{color:var(--color-typographic-link-p-font)}.Copyright-module--copyright--2c602{color:#7f8ba4;font-size:14px}.Menu-module--menu--113a9{margin-bottom:26px}.Menu-module--menu--113a9 .Menu-module--list--e1ae3{list-style:none;margin:0;padding:0}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679{margin:13px 0;padding:0}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02{border:0;color:var(--color-typographic-base-font);font-size:16px;font-weight:400}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02:focus,.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02:hover{border-bottom:1px solid #5c92ff;color:#5c92ff}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02.Menu-module--active--6cb74{border-bottom:1px solid var(--color-typographic-base-font);color:var(--color-typographic-base-font)}.Tags-module--tags--28a57{color:#7f8ba4;font-size:14px}.Sidebar-module--sidebar--1bfa1{width:100%}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0{padding:26px 19.5px 0;position:relative}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0:after{background:var(--color-sidebar-border);background:linear-gradient(to bottom,var(--color-sidebar-border) 0,var(--color-sidebar-border) 48%,var(--color-sidebar-border-fade) 100%)}@media screen and (min-width:685px){.Sidebar-module--sidebar--1bfa1{width:calc(41.625% - 17.5px)}.Sidebar-module--sidebar--1bfa1:nth-child(1n){clear:none;float:left;margin-right:30px}.Sidebar-module--sidebar--1bfa1:last-child{margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(12n){float:right;margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(12n+1){clear:both}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0{padding:32.5px 19.5px 0}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0:after{bottom:0;content:"";height:540px;position:absolute;right:-10px;top:30px;width:1px}}@media screen and (min-width:960px){.Sidebar-module--sidebar--1bfa1{width:calc(33.3% - 20px)}.Sidebar-module--sidebar--1bfa1:nth-child(1n){clear:none;float:left;margin-right:30px}.Sidebar-module--sidebar--1bfa1:last-child{margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(3n){float:right;margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(3n+1){clear:both}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0{padding:39px}}.Author-module--author--1c58d{border-top:1px solid var(--color-page-border);line-height:26px;margin-bottom:52px;margin-top:26px;max-width:640px;padding-top:26px}.Author-module--author--1c58d .Author-module--bio--08950 .Author-module--twitter--90647{display:block;text-decoration:underline}.Author-module--author--1c58d .Author-module--bio--08950 .Author-module--twitter--90647:focus,.Author-module--author--1c58d .Author-module--bio--08950 .Author-module--twitter--90647:hover{color:var(--color-typographic-link-s-font)}@media screen and (min-width:685px){.Author-module--author--1c58d{margin-left:auto;margin-right:auto}}.Content-module--content--80d58{margin:0 auto;max-width:945px;padding:0 13px}.Content-module--content--80d58 .Content-module--title--09504{font-size:32px;font-weight:600;line-height:42.9px;margin:26px auto 0;max-width:640px;text-align:center}.Content-module--content--80d58 .Content-module--body--726c2 figure{margin-bottom:26px}.Content-module--content--80d58 .Content-module--body--726c2 figure blockquote{font-style:italic;margin-top:0;padding:26px 0;text-align:center}.Content-module--content--80d58 .Content-module--body--726c2 figure blockquote p{font-size:26.9072px;line-height:39px;margin-bottom:26px;margin-top:0;max-width:640px}.Content-module--content--80d58 .Content-module--body--726c2 a{text-decoration:underline}.Content-module--content--80d58 .Content-module--body--726c2 *{margin-left:auto;margin-right:auto;max-width:640px}.Content-module--content--80d58 .Content-module--body--726c2 h2>a{visibility:hidden}.Content-module--content--80d58 .Content-module--body--726c2 h2>a>svg{fill:var(--color-typographic-base-font)}.Content-module--content--80d58 .Content-module--body--726c2 img{max-width:100%}@media screen and (min-width:960px){.Content-module--content--80d58{padding:0}.Content-module--content--80d58 .Content-module--title--09504{font-size:48px;line-height:58.5px;margin-bottom:39px;margin-top:58.5px}.Content-module--content--80d58 .Content-module--body--726c2,.Content-module--content--80d58 .Content-module--body--726c2 p{font-size:18px;line-height:29.25px;margin-bottom:29.25px}.Content-module--content--80d58 .Content-module--body--726c2 h2>a{padding-right:13px;visibility:unset}}.Meta-module--meta--dae0a .Meta-module--date--4d30d{font-style:italic}.Tags-module--tags--18589{margin-bottom:13px}.Tags-module--tags--18589 .Tags-module--list--82ae6{list-style:none;padding:0}.Tags-module--tags--18589 .Tags-module--list--82ae6 .Tags-module--item--52015{display:inline-block;margin:6.5px 0}@media screen and (min-width:685px){.Tags-module--tags--18589 .Tags-module--list--82ae6 .Tags-module--item--52015:first-child{margin-left:0;padding-left:0}}.Post-module--post--3a994 .Post-module--content--3c6e5{margin:0 auto}.Post-module--post--3a994 .Post-module--comments--d3b99,.Post-module--post--3a994 .Post-module--footer--f8705{margin:0 auto;max-width:640px;padding:0 13px}.Post-module--post--3a994 .Post-module--buttons--2972d{align-items:center;display:flex;justify-content:center;margin:26px 0 0;text-align:center}.Post-module--post--3a994 .Post-module--buttons--2972d .Post-module--buttonArticles--d793a{margin:0 13px 0 0}@media screen and (min-width:960px){.Post-module--post--3a994 .Post-module--comments--d3b99,.Post-module--post--3a994 .Post-module--footer--f8705{padding:0}.Post-module--post--3a994 .Post-module--buttons--2972d{left:30px;margin:0 13px 0 0;max-width:none;position:fixed;top:30px}}</style><title data-gatsby-head="true">Python의 디스크립터에 대해 (1): 이론 - 팔공산 창고</title><link rel="alternate" type="application/rss+xml" title="팔공산 창고" href="/rss.xml"/><style type="text/css">
+    .anchor.before {
+      position: absolute;
+      top: 0;
+      left: 0;
+      transform: translateX(-100%);
+      padding-right: 4px;
+    }
+    .anchor.after {
+      display: inline-block;
+      padding-left: 4px;
+    }
+    h1 .anchor svg,
+    h2 .anchor svg,
+    h3 .anchor svg,
+    h4 .anchor svg,
+    h5 .anchor svg,
+    h6 .anchor svg {
+      visibility: hidden;
+    }
+    h1:hover .anchor svg,
+    h2:hover .anchor svg,
+    h3:hover .anchor svg,
+    h4:hover .anchor svg,
+    h5:hover .anchor svg,
+    h6:hover .anchor svg,
+    h1 .anchor:focus svg,
+    h2 .anchor:focus svg,
+    h3 .anchor:focus svg,
+    h4 .anchor:focus svg,
+    h5 .anchor:focus svg,
+    h6 .anchor:focus svg {
+      visibility: visible;
+    }
+  </style><script>
+    document.addEventListener("DOMContentLoaded", function(event) {
+      var hash = window.decodeURI(location.hash.replace('#', ''))
+      if (hash !== '') {
+        var element = document.getElementById(hash)
+        if (element) {
+          var scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+          var clientTop = document.documentElement.clientTop || document.body.clientTop || 0
+          var offset = element.getBoundingClientRect().top + scrollTop - clientTop
+          // Wait for the browser to finish rendering before scrolling.
+          setTimeout((function() {
+            window.scrollTo(0, offset - 0)
+          }), 0)
+        }
+      }
+    })
+  </script><link rel="preconnect" href="https://www.googletagmanager.com"/><link rel="dns-prefetch" href="https://www.googletagmanager.com"/><script async="" src="https://www.googletagmanager.com/gtag/js?id="></script><script>
+      
+      
+      if(true) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){window.dataLayer && window.dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', '', {"send_page_view":false});
+      }
+      </script><link rel="sitemap" type="application/xml" href="/sitemap/sitemap-index.xml"/><link rel="icon" href="/favicon-32x32.png?v=4c2c993a06ee0fd0ee953020b09128a9" type="image/png"/><link rel="manifest" href="/manifest.webmanifest" crossorigin="anonymous"/><link rel="apple-touch-icon" sizes="48x48" href="/icons/icon-48x48.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="72x72" href="/icons/icon-72x72.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="96x96" href="/icons/icon-96x96.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="144x144" href="/icons/icon-144x144.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192x192.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="256x256" href="/icons/icon-256x256.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="384x384" href="/icons/icon-384x384.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="512x512" href="/icons/icon-512x512.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><style>.gatsby-image-wrapper{position:relative;overflow:hidden}.gatsby-image-wrapper picture.object-fit-polyfill{position:static!important}.gatsby-image-wrapper img{bottom:0;height:100%;left:0;margin:0;max-width:none;padding:0;position:absolute;right:0;top:0;width:100%;object-fit:cover}.gatsby-image-wrapper [data-main-image]{opacity:0;transform:translateZ(0);transition:opacity .25s linear;will-change:opacity}.gatsby-image-wrapper-constrained{display:inline-block;vertical-align:top}</style><noscript><style>.gatsby-image-wrapper noscript [data-main-image]{opacity:1!important}.gatsby-image-wrapper [data-placeholder-image]{opacity:0!important}</style></noscript><script type="module">const e="undefined"!=typeof HTMLImageElement&&"loading"in HTMLImageElement.prototype;e&&document.body.addEventListener("load",(function(e){const t=e.target;if(void 0===t.dataset.mainImage)return;if(void 0===t.dataset.gatsbyImageSsr)return;let a=null,n=t;for(;null===a&&n;)void 0!==n.parentNode.dataset.gatsbyImageWrapper&&(a=n.parentNode),n=n.parentNode;const o=a.querySelector("[data-placeholder-image]"),r=new Image;r.src=t.currentSrc,r.decode().catch((()=>{})).then((()=>{t.style.opacity=1,o&&(o.style.opacity=0,o.style.transition="opacity 500ms linear")}))}),!0);</script></head><body><script>
+          void function() {
+            var cachedMode;
+
+            try {
+              var preferredTheme = JSON.parse(localStorage.getItem('diesel:theme-atom'));
+
+              if (preferredTheme && preferredTheme.mode) {
+                cachedMode = preferredTheme.mode;
+              }
+            } catch (err) { }
+
+            function setTheme(newTheme) {
+              document.documentElement.className = newTheme;
+            }
+
+            var darkQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+            setTheme(cachedMode || (darkQuery.matches ? 'dark' : 'light'));
+          }()
+        </script><div id="___gatsby"><div style="outline:none" tabindex="-1" id="gatsby-focus-wrapper"><div class="Layout-module--layout--2c933"><div class="Post-module--post--3a994"><div class="Post-module--buttons--2972d"><a class="Button-module--button--b1113 Post-module--buttonArticles--d793a" href="/">All Articles</a></div><div class="Post-module--content--3c6e5"><div class="Content-module--content--80d58"><h1 class="Content-module--title--09504">Python의 디스크립터에 대해 (1): 이론</h1><div class="Content-module--body--726c2"><p>이 문서는 <a href="https://realpython.com/python-descriptors/" target="_blank" rel="nofollow noopener noreferrer">여기</a>와 이펙티브 파이썬 2nd edition의 내용을 발췌하여 요약한 내용이다.</p>
+<h1 id="목차" style="position:relative;"><a href="#%EB%AA%A9%EC%B0%A8" aria-label="목차 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>목차</h1>
+<ul>
+<li><a href="#%EB%A9%94%EC%86%8C%EB%93%9C-%EB%82%B4%EC%9D%98-python-descriptor%EC%99%80-%ED%95%A8%EC%88%98">메소드 내의 python descriptor와 함수</a></li>
+<li><a href="#attribute%EC%9D%B4-lookup-chain%EC%9D%84-%ED%86%B5%ED%95%B4-access-%EB%90%98%EB%8A%94-%EB%B0%A9%EC%8B%9D">Attribute이 lookup chain을 통해 access 되는 방식</a></li>
+<li><a href="#%ED%8C%8C%EC%9D%B4%EC%8D%AC%EC%9D%98-%EB%94%94%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%84%B0%EB%A5%BC-%EC%A0%9C%EB%8C%80%EB%A1%9C-%EC%93%B0%EB%A0%A4%EB%A9%B4">파이썬의 디스크립터를 제대로 쓰려면?</a></li>
+<li><a href="#%EB%94%94%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%84%B0%EB%A5%BC-%EC%93%B0%EB%8A%94-%EC%9D%B4%EC%9C%A0">디스크립터를 쓰는 이유?</a></li>
+<li><a href="#%EB%82%B4-%EB%82%98%EB%A6%84%EC%9D%98-%EA%B2%B0%EB%A1%A0">내 나름의 결론</a></li>
+</ul>
+<h2 id="메소드-내의-python-descriptor와-함수" style="position:relative;"><a href="#%EB%A9%94%EC%86%8C%EB%93%9C-%EB%82%B4%EC%9D%98-python-descriptor%EC%99%80-%ED%95%A8%EC%88%98" aria-label="메소드 내의 python descriptor와 함수 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>메소드 내의 python descriptor와 함수</h2>
+<ul>
+<li>
+<p>python의 메소드란?</p>
+<ul>
+<li>
+<p>메소드는 ‘object’ 인스턴스에 할당한 첫번째 arg를 가진 정규 함수다.</p>
+</li>
+<li>
+<p>메소드에 <code class="language-text">.</code> notation을 사용하여 접근하면, 다음 작동을 한다</p>
+<ol>
+<li>알맞은 함수를 호출한다</li>
+<li>object 인스턴스를 첫번째 파라미터로 전달한다</li>
+</ol>
+</li>
+</ul>
+</li>
+<li>
+<p><code class="language-text">obj.method(*args)</code>가 <code class="language-text">method(obj, *args)</code>로 호출되는 과정에는 function 오브젝트의 <code class="language-text">__get__()</code> 구현체가 쓰인다.</p>
+</li>
+<li>
+<p>이는 non-data descriptor 라고 부른다(후에 다시 설명될 것임).</p>
+</li>
+<li>
+<p>구체적으로 보면, <code class="language-text">function</code> 오브젝트는 <code class="language-text">__get__()</code> 오브젝트를 구현한다. 이는 <code class="language-text">.</code> notation으로 호출할 때 bound method를 리턴한다.</p>
+</li>
+<li>
+<p>다른 전체 아규먼트 호출을 하기위해 함수 호출에 따라오는 (*args) 가 필요하다.</p>
+</li>
+<li>
+<p><code class="language-text">CPython</code> 구현체를 python 형태로 풀어내면 다음과 같다:</p>
+</li>
+</ul>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token comment">#</span>
+<span class="token comment"># 참고링크</span>
+<span class="token comment"># https://docs.python.org/3/howto/descriptor.html#functions-and-methods</span>
+<span class="token comment">#</span>
+
+<span class="token keyword">import</span> types
+
+<span class="token keyword">class</span> <span class="token class-name">Function</span><span class="token punctuation">(</span><span class="token builtin">object</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+    <span class="token keyword">def</span> <span class="token function">__get__</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> obj<span class="token punctuation">,</span> objtype<span class="token operator">=</span><span class="token boolean">None</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token string">"Simulate func_descr_get() in Objects/funcobject.c"</span>
+        <span class="token keyword">if</span> obj <span class="token keyword">is</span> <span class="token boolean">None</span><span class="token punctuation">:</span>
+            <span class="token keyword">return</span> self
+        <span class="token keyword">return</span> types<span class="token punctuation">.</span>MethodType<span class="token punctuation">(</span>self<span class="token punctuation">,</span> obj<span class="token punctuation">)</span></code></pre></div>
+<p>함수가 <code class="language-text">.</code> notation 으로 호출되면 <code class="language-text">__get__()</code> 함수가 호출되고 bound method 가 리턴된다.</p>
+<p>이는 일반 인스턴스 메소드 호출에 대해 작동한다. class method나 static method 에 대해서도 마찬가지다.</p>
+<p>static method 를 <code class="language-text">obj.method(*args)</code> 형태로 호출할 때, 이는 자동으로 <code class="language-text">method(*args)</code> 형태로 바뀐다. 비슷하게, class method를 <code class="language-text">obj.method(type(obj), *args)</code> 형태로 호출할 때, 이는 자동으로 <code class="language-text">method(type(obj), *args)</code> 형식으로 변경된다.</p>
+<ul>
+<li><code class="language-text">@classmethod</code> 와 <code class="language-text">@staticmethod</code> 간의 차이를 알기 위해서는 아래 페이지를 참고한다
+<a href="https://blog.s3ich4n.me/devlog/python/2022-06-09---python-classmethod-and-staticmethod/" target="_blank" rel="nofollow noopener noreferrer"><code class="language-text">Python의 @classmethod</code> 와 <code class="language-text">@</code>staticmethod 에 대하여</a></li>
+</ul>
+<p>static method의 cpython 형태를 python 형식으로 바꿔보면 다음과 같다:</p>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token keyword">class</span> <span class="token class-name">StaticMethod</span><span class="token punctuation">(</span><span class="token builtin">object</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token string">"Emulate PyStaticMethod_Type() in Objects/funcobject.c"</span>
+    <span class="token keyword">def</span> <span class="token function">__init__</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> f<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        self<span class="token punctuation">.</span>f <span class="token operator">=</span> f
+
+    <span class="token keyword">def</span> <span class="token function">__get__</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> obj<span class="token punctuation">,</span> objtype<span class="token operator">=</span><span class="token boolean">None</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> self<span class="token punctuation">.</span>f</code></pre></div>
+<p>class method 구현체도 마찬가지:</p>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token keyword">class</span> <span class="token class-name">ClassMethod</span><span class="token punctuation">(</span><span class="token builtin">object</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token string">"Emulate PyClassMethod_Type() in Objects/funcobject.c"</span>
+    <span class="token keyword">def</span> <span class="token function">__init__</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> f<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        self<span class="token punctuation">.</span>f <span class="token operator">=</span> f
+
+    <span class="token keyword">def</span> <span class="token function">__get__</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> obj<span class="token punctuation">,</span> klass<span class="token operator">=</span><span class="token boolean">None</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">if</span> klass <span class="token keyword">is</span> <span class="token boolean">None</span><span class="token punctuation">:</span>
+            klass <span class="token operator">=</span> <span class="token builtin">type</span><span class="token punctuation">(</span>obj<span class="token punctuation">)</span>
+        <span class="token keyword">def</span> <span class="token function">newfunc</span><span class="token punctuation">(</span><span class="token operator">*</span>args<span class="token punctuation">)</span><span class="token punctuation">:</span>
+            <span class="token keyword">return</span> self<span class="token punctuation">.</span>f<span class="token punctuation">(</span>klass<span class="token punctuation">,</span> <span class="token operator">*</span>args<span class="token punctuation">)</span>
+        <span class="token keyword">return</span> newfunc</code></pre></div>
+<p>파이썬에서는 class method 는 단순히 class reference를 argument list 의 첫번째 argument로 받는 static method 일 뿐이다.</p>
+<h2 id="attribute이-lookup-chain을-통해-access-되는-방식" style="position:relative;"><a href="#attribute%EC%9D%B4-lookup-chain%EC%9D%84-%ED%86%B5%ED%95%B4-access-%EB%90%98%EB%8A%94-%EB%B0%A9%EC%8B%9D" aria-label="attribute이 lookup chain을 통해 access 되는 방식 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Attribute이 lookup chain을 통해 access 되는 방식</h2>
+<p>파이썬의 descriptor와 내부 방식을 알기위해선 attribute에 access할 때 일어나는 일을 알아야 한다.</p>
+<p>파이썬에서 모든 객체는 build-in <code class="language-text">__dict__</code> 객체 안에 담겨있다. 이는 객체 자체가 선언한 모든 객체를 담는 딕셔너리다.</p>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token keyword">class</span> <span class="token class-name">Vehicle</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    can_fly <span class="token operator">=</span> <span class="token boolean">False</span>
+    number_of_weels <span class="token operator">=</span> <span class="token number">0</span>
+
+<span class="token keyword">class</span> <span class="token class-name">Car</span><span class="token punctuation">(</span>Vehicle<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    number_of_weels <span class="token operator">=</span> <span class="token number">4</span>
+
+    <span class="token keyword">def</span> <span class="token function">__init__</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> color<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        self<span class="token punctuation">.</span>color <span class="token operator">=</span> color
+
+my_car <span class="token operator">=</span> Car<span class="token punctuation">(</span><span class="token string">"red"</span><span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>my_car<span class="token punctuation">.</span>__dict__<span class="token punctuation">)</span>   <span class="token comment"># 해당 클래스 인스턴스의 __dict__ 값</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span><span class="token builtin">type</span><span class="token punctuation">(</span>my_car<span class="token punctuation">)</span><span class="token punctuation">.</span>__dict__<span class="token punctuation">)</span>    <span class="token comment"># Car 클래스의 __dict__ 값</span></code></pre></div>
+<p>파이썬에서 모든 값은 ‘객체’ 다. 클래스도 마찬가지로 객체이며, <code class="language-text">__dict__</code> attribute을 가지고있다. 그 값은 모든 attribute과 method 를 가지고 있다.</p>
+<p>내부 객체에 실제로 접근할때는 어떤식으로 접근하는걸까? 아래 코드를 예시로 들어보자</p>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token comment"># lookup.py</span>
+<span class="token keyword">class</span> <span class="token class-name">Vehicle</span><span class="token punctuation">(</span><span class="token builtin">object</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    can_fly <span class="token operator">=</span> <span class="token boolean">False</span>
+    number_of_wheels <span class="token operator">=</span> <span class="token number">0</span>
+
+<span class="token keyword">class</span> <span class="token class-name">Car</span><span class="token punctuation">(</span>Vehicle<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    number_of_wheels <span class="token operator">=</span> <span class="token number">4</span>
+
+    <span class="token keyword">def</span> <span class="token function">__init__</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> color<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        self<span class="token punctuation">.</span>color <span class="token operator">=</span> color
+
+my_car <span class="token operator">=</span> Car<span class="token punctuation">(</span><span class="token string">"red"</span><span class="token punctuation">)</span>
+
+<span class="token keyword">print</span><span class="token punctuation">(</span>my_car<span class="token punctuation">.</span>color<span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>my_car<span class="token punctuation">.</span>number_of_wheels<span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>my_car<span class="token punctuation">.</span>can_fly<span class="token punctuation">)</span></code></pre></div>
+<p>결과야 쉽게 알 수 있을 것이다.</p>
+<p>내부적으로는 <code class="language-text">my_car</code> 변수의 <code class="language-text">color</code> 를 찾을 때, <code class="language-text">my_car</code> 의 <code class="language-text">__dict__</code> 객체 내부에서 ‘하나의’ 값을 찾는다. <code class="language-text">number_of_wheels</code> 에 접근할 떄는 <code class="language-text">Car</code> 객체의 <code class="language-text">__dict__</code> 에서 찾는 것이다. <code class="language-text">can_fly</code> 값은 <code class="language-text">Vehicle</code> 객체의 <code class="language-text">__dict__</code> 를 찾는 것이다.</p>
+<p>그러니까 실제로는 이렇다 이말임</p>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token comment"># lookup2.py</span>
+<span class="token keyword">class</span> <span class="token class-name">Vehicle</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    can_fly <span class="token operator">=</span> <span class="token boolean">False</span>
+    number_of_weels <span class="token operator">=</span> <span class="token number">0</span>
+
+<span class="token keyword">class</span> <span class="token class-name">Car</span><span class="token punctuation">(</span>Vehicle<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    number_of_weels <span class="token operator">=</span> <span class="token number">4</span>
+
+    <span class="token keyword">def</span> <span class="token function">__init__</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> color<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        self<span class="token punctuation">.</span>color <span class="token operator">=</span> color
+
+my_car <span class="token operator">=</span> Car<span class="token punctuation">(</span><span class="token string">"red"</span><span class="token punctuation">)</span>
+
+<span class="token keyword">print</span><span class="token punctuation">(</span>my_car<span class="token punctuation">.</span>__dict__<span class="token punctuation">[</span><span class="token string">'color'</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span><span class="token builtin">type</span><span class="token punctuation">(</span>my_car<span class="token punctuation">)</span><span class="token punctuation">.</span>__dict__<span class="token punctuation">[</span><span class="token string">'number_of_weels'</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span><span class="token builtin">type</span><span class="token punctuation">(</span>my_car<span class="token punctuation">)</span><span class="token punctuation">.</span>__base__<span class="token punctuation">.</span>__dict__<span class="token punctuation">[</span><span class="token string">'can_fly'</span><span class="token punctuation">]</span><span class="token punctuation">)</span></code></pre></div>
+<p>lookup chain 이 작동하는 방식을 풀면 다음과 같다:</p>
+<ul>
+<li>찾는 이름의 attribute가 가진 <strong>data descriptor</strong>의 <code class="language-text">__get__</code> 메소드로 결과를 얻는다.</li>
+<li>그게 잘 안되면, 찾는 이름의 attribute가 가진 object의 <code class="language-text">__dict__</code> 키값으로 값을 구한다.</li>
+<li>그게 잘 안되면, 찾는 이름의 attribute가 가진 <strong>non data descriptor</strong>의 <code class="language-text">__get__</code> 메소드로 결과를 얻는다.</li>
+<li>그게 잘 안되면, 찾는 이름의 attribute가 가진 object type의 <code class="language-text">__dict__</code> 키값으로 값을 구한다.</li>
+<li>그게 잘 안되면, 찾는 이름의 attribute가 가진 object 부모 type의 <code class="language-text">__dict__</code> 키값으로 값을 구한다.</li>
+<li>그게 잘 안되면, 위의 과정을 모든 부모의 type 에 대해 객체의 <a href="https://data-flair.training/blogs/python-multiple-inheritance/" target="_blank" rel="nofollow noopener noreferrer">MRO</a> 대로 반복한다.</li>
+<li>그러고도 안되면 <code class="language-text">AttributeError</code> Exception이 발생한다.</li>
+</ul>
+<h2 id="파이썬의-디스크립터를-제대로-쓰려면" style="position:relative;"><a href="#%ED%8C%8C%EC%9D%B4%EC%8D%AC%EC%9D%98-%EB%94%94%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%84%B0%EB%A5%BC-%EC%A0%9C%EB%8C%80%EB%A1%9C-%EC%93%B0%EB%A0%A4%EB%A9%B4" aria-label="파이썬의 디스크립터를 제대로 쓰려면 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>파이썬의 디스크립터를 제대로 쓰려면?</h2>
+<p>descriptor 프로토콜(비-데이터 디스크립터)은, 객체 안에 다음 함수를 구현하면 된다:</p>
+<ul>
+<li><code class="language-text">def __get__(self, obj, type=None) -> object</code></li>
+<li><code class="language-text">def __set__(self, obj, value) -> None</code></li>
+</ul>
+<p>디스크립터를 구현할 때, 다음 요소를 잘 기억해두어야 한다:</p>
+<ul>
+<li><code class="language-text">self</code> 값은 디스크립터 인스턴스이다</li>
+<li><code class="language-text">obj</code> 값은 디스크립터가 attach 하는 인스턴스이다</li>
+<li><code class="language-text">type</code> 값은 디스크립터가 atttach 하는 타입이다</li>
+</ul>
+<p><code class="language-text">__set__()</code> 에는 <code class="language-text">type</code> <a href="https://realpython.com/python-variables/" target="_blank" rel="nofollow noopener noreferrer">변수</a>를 가지고 있지 않아도 된다. 왜냐면 객체에서만 <code class="language-text">__set__()</code> 함수를 호출할 수 있기 때문이다. 반면, <code class="language-text">__get__()</code> 함수는 객체와 클래스 모두 호출할 수 있다.</p>
+<p>다른 중요한점. 파이썬의 디스크립터는 클래스별로 ‘딱 한번’ 초기화된다는 점이다. 이는, 디스크립터를 포함하는 모든 클래스 인스턴스는 디스크립터 인스턴스를 공유한다는 것이다. 이점은 자칫 잘못하면 아래의 실수를 할 수 있다는 점이다:</p>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token comment"># descriptors2.py</span>
+<span class="token keyword">class</span> <span class="token class-name">OneDigitNumericValue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">def</span> <span class="token function">__init__</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        self<span class="token punctuation">.</span>value <span class="token operator">=</span> <span class="token number">0</span>
+    <span class="token keyword">def</span> <span class="token function">__get__</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> obj<span class="token punctuation">,</span> <span class="token builtin">type</span><span class="token operator">=</span><span class="token boolean">None</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> <span class="token builtin">object</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> self<span class="token punctuation">.</span>value
+    <span class="token keyword">def</span> <span class="token function">__set__</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> obj<span class="token punctuation">,</span> value<span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> <span class="token boolean">None</span><span class="token punctuation">:</span>
+        <span class="token keyword">if</span> value <span class="token operator">></span> <span class="token number">9</span> <span class="token keyword">or</span> value <span class="token operator">&lt;</span> <span class="token number">0</span> <span class="token keyword">or</span> <span class="token builtin">int</span><span class="token punctuation">(</span>value<span class="token punctuation">)</span> <span class="token operator">!=</span> value<span class="token punctuation">:</span>
+            <span class="token keyword">raise</span> AttributeError<span class="token punctuation">(</span><span class="token string">"The value is invalid"</span><span class="token punctuation">)</span>
+        self<span class="token punctuation">.</span>value <span class="token operator">=</span> value
+
+<span class="token keyword">class</span> <span class="token class-name">Foo</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    number <span class="token operator">=</span> OneDigitNumericValue<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+my_foo_object <span class="token operator">=</span> Foo<span class="token punctuation">(</span><span class="token punctuation">)</span>
+my_second_foo_object <span class="token operator">=</span> Foo<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+my_foo_object<span class="token punctuation">.</span>number <span class="token operator">=</span> <span class="token number">3</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>my_foo_object<span class="token punctuation">.</span>number<span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>my_second_foo_object<span class="token punctuation">.</span>number<span class="token punctuation">)</span>
+
+my_third_foo_object <span class="token operator">=</span> Foo<span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>my_third_foo_object<span class="token punctuation">.</span>number<span class="token punctuation">)</span></code></pre></div>
+<p><code class="language-text">Foo</code> 클래스는 number attribute를 가지고있고 이는 디스크립터다. 이 디스크립터는 정수값을 받고, 디스크립터의 속성으로 저장한다.</p>
+<p>그런데 뜻대로 되지않을텐데, 이유는 모든 <code class="language-text">Foo</code> 인스턴스가 디스크립터 인스턴스를 공유하기 때문이다.</p>
+<p>결국 만든 것은 새로운 클래스 수준의 attribute 일 뿐이다.</p>
+<p><code class="language-text">my_foo_object.number</code> 속성이 설정된 후 마지막 인스턴스가 생성 되었음에도 불구하고 Foo의 모든 인스턴스가 속성 번호에 대해 동일한 값을 가지고 있음을 알 수 있다.</p>
+<p><code class="language-text">my_foo_object.number</code> attribute이 설정된 후 마지막 인스턴스가 생성 되었음에도 불구하고 모든 <code class="language-text">Foo</code> 인스턴스가 동일한 <code class="language-text">number</code> 값이 있음을 볼 수 있다.</p>
+<p>연결된 모든 객체에 대한 디스크립터의 모든 값을 저장하기 위해 딕셔너리를 쓰는게 낫겠다 싶다. 거기에다가 <code class="language-text">__get__</code> 해서 값 두고 <code class="language-text">__set__</code> 하면 되겠다 싶은데, 치명적인 단점이 있다.</p>
+<p>아래는 그 예시:</p>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token comment"># descriptors3.py</span>
+<span class="token keyword">class</span> <span class="token class-name">OneDigitNumericValue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">def</span> <span class="token function">__init__</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        self<span class="token punctuation">.</span>value <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+
+    <span class="token keyword">def</span> <span class="token function">__get__</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> obj<span class="token punctuation">,</span> <span class="token builtin">type</span><span class="token operator">=</span><span class="token boolean">None</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> <span class="token builtin">object</span><span class="token punctuation">:</span>
+        <span class="token keyword">try</span><span class="token punctuation">:</span>
+            <span class="token keyword">return</span> self<span class="token punctuation">.</span>value<span class="token punctuation">[</span>obj<span class="token punctuation">]</span>
+        <span class="token keyword">except</span><span class="token punctuation">:</span>
+            <span class="token keyword">return</span> <span class="token number">0</span>
+
+    <span class="token keyword">def</span> <span class="token function">__set__</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> obj<span class="token punctuation">,</span> value<span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> <span class="token boolean">None</span><span class="token punctuation">:</span>
+        <span class="token keyword">if</span> value <span class="token operator">></span> <span class="token number">9</span> <span class="token keyword">or</span> value <span class="token operator">&lt;</span> <span class="token number">0</span> <span class="token keyword">or</span> <span class="token builtin">int</span><span class="token punctuation">(</span>value<span class="token punctuation">)</span> <span class="token operator">!=</span> value<span class="token punctuation">:</span>
+            <span class="token keyword">raise</span> AttributeError<span class="token punctuation">(</span><span class="token string">"The value is invalid"</span><span class="token punctuation">)</span>
+        self<span class="token punctuation">.</span>value<span class="token punctuation">[</span>obj<span class="token punctuation">]</span> <span class="token operator">=</span> value
+
+<span class="token keyword">class</span> <span class="token class-name">Foo</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    number <span class="token operator">=</span> OneDigitNumericValue<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+my_foo_object <span class="token operator">=</span> Foo<span class="token punctuation">(</span><span class="token punctuation">)</span>
+my_second_foo_object <span class="token operator">=</span> Foo<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+my_foo_object<span class="token punctuation">.</span>number <span class="token operator">=</span> <span class="token number">3</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>my_foo_object<span class="token punctuation">.</span>number<span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>my_second_foo_object<span class="token punctuation">.</span>number<span class="token punctuation">)</span>
+
+my_third_foo_object <span class="token operator">=</span> Foo<span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>my_third_foo_object<span class="token punctuation">.</span>number<span class="token punctuation">)</span></code></pre></div>
+<p>값은 원하는대로 갖고있는데 단점이 있다. 이는, 디스크립터가 오너 오브젝트에 대한 strong reference를 갖고있다는 점이다.</p>
+<p>객체를 destroy해도 메모리가 release되지 않는다. 이는 <a href="https://realpython.com/python-memory-management/#garbage-collection" target="_blank" rel="nofollow noopener noreferrer">gc</a>가 객체안의 디스크립터에 대한 객체를 계속 찾기 때문이다.</p>
+<p>이러면… weak reference를 하면 되겠다 싶다. 그럴 수도 있지만 모든 값이 weak reference로 참조될 수 있는 것은 아니며, 객체가 (gc에 의해) 수집되면 딕셔너리에서 사라진다는 사실을 처리해야 한다.</p>
+<p>괜찮은 해결책은, 디스크립터 자체에 값을 두는게 아니라, 디스크립터가 붙는 <strong>객체</strong>에 저장하면 될 것이다.</p>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token comment"># descriptors4.py</span>
+<span class="token keyword">class</span> <span class="token class-name">OneDigitNumericValue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">def</span> <span class="token function">__init__</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> name<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        self<span class="token punctuation">.</span>name <span class="token operator">=</span> name
+
+    <span class="token keyword">def</span> <span class="token function">__get__</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> obj<span class="token punctuation">,</span> <span class="token builtin">type</span><span class="token operator">=</span><span class="token boolean">None</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> <span class="token builtin">object</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> obj<span class="token punctuation">.</span>__dict__<span class="token punctuation">.</span>get<span class="token punctuation">(</span>self<span class="token punctuation">.</span>name<span class="token punctuation">)</span> <span class="token keyword">or</span> <span class="token number">0</span>
+
+    <span class="token keyword">def</span> <span class="token function">__set__</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> obj<span class="token punctuation">,</span> value<span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> <span class="token boolean">None</span><span class="token punctuation">:</span>
+        obj<span class="token punctuation">.</span>__dict__<span class="token punctuation">[</span>self<span class="token punctuation">.</span>name<span class="token punctuation">]</span> <span class="token operator">=</span> value
+
+<span class="token keyword">class</span> <span class="token class-name">Foo</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    number <span class="token operator">=</span> OneDigitNumericValue<span class="token punctuation">(</span><span class="token string">"number"</span><span class="token punctuation">)</span>
+
+my_foo_object <span class="token operator">=</span> Foo<span class="token punctuation">(</span><span class="token punctuation">)</span>
+my_second_foo_object <span class="token operator">=</span> Foo<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+my_foo_object<span class="token punctuation">.</span>number <span class="token operator">=</span> <span class="token number">3</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>my_foo_object<span class="token punctuation">.</span>number<span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>my_second_foo_object<span class="token punctuation">.</span>number<span class="token punctuation">)</span>
+
+my_third_foo_object <span class="token operator">=</span> Foo<span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>my_third_foo_object<span class="token punctuation">.</span>number<span class="token punctuation">)</span></code></pre></div>
+<p>다 잘되는데 단점이 있다. 초기화를 할 때 항상 이런식으로 선언을 해줘야 한다는 점이다:</p>
+<p><code class="language-text">number = OneDigitNumericValue("number")</code> ← “number” 라는 값을 기입해줘야 함</p>
+<p>파이썬 3.6부터는 <code class="language-text">.__set_name__()</code> 이라는 걸출한게 <a href="https://www.python.org/dev/peps/pep-0487/" target="_blank" rel="nofollow noopener noreferrer">PEP 487</a>에 제안되었고, 정식 기능으로 생겼다.</p>
+<p>그 아래에는 메타클래스와 데코레이터로 할 수 있다. (사실 메타클래스는 제대로 쓰기에 너무 복잡해서, 필요하면 다시 공부하도록 하자…)</p>
+<p><code class="language-text">__set_name__(self, owner, name)</code> 을 사용한 예시코드는 아래와 같다:</p>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token comment"># descriptors5.py</span>
+<span class="token keyword">class</span> <span class="token class-name">OneDigitNumericValue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">def</span> <span class="token function">__set_name__</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> owner<span class="token punctuation">,</span> name<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        self<span class="token punctuation">.</span>name <span class="token operator">=</span> name
+
+    <span class="token keyword">def</span> <span class="token function">__get__</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> obj<span class="token punctuation">,</span> <span class="token builtin">type</span><span class="token operator">=</span><span class="token boolean">None</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> <span class="token builtin">object</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> obj<span class="token punctuation">.</span>__dict__<span class="token punctuation">.</span>get<span class="token punctuation">(</span>self<span class="token punctuation">.</span>name<span class="token punctuation">)</span> <span class="token keyword">or</span> <span class="token number">0</span>
+
+    <span class="token keyword">def</span> <span class="token function">__set__</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> obj<span class="token punctuation">,</span> value<span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> <span class="token boolean">None</span><span class="token punctuation">:</span>
+        obj<span class="token punctuation">.</span>__dict__<span class="token punctuation">[</span>self<span class="token punctuation">.</span>name<span class="token punctuation">]</span> <span class="token operator">=</span> value
+
+<span class="token keyword">class</span> <span class="token class-name">Foo</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    number <span class="token operator">=</span> OneDigitNumericValue<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+my_foo_object <span class="token operator">=</span> Foo<span class="token punctuation">(</span><span class="token punctuation">)</span>
+my_second_foo_object <span class="token operator">=</span> Foo<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+my_foo_object<span class="token punctuation">.</span>number <span class="token operator">=</span> <span class="token number">3</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>my_foo_object<span class="token punctuation">.</span>number<span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>my_second_foo_object<span class="token punctuation">.</span>number<span class="token punctuation">)</span>
+
+my_third_foo_object <span class="token operator">=</span> Foo<span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>my_third_foo_object<span class="token punctuation">.</span>number<span class="token punctuation">)</span></code></pre></div>
+<p>예상한대로 잘 됐고, <code class="language-text">__init__()</code> 도 없다.</p>
+<h2 id="디스크립터를-쓰는-이유" style="position:relative;"><a href="#%EB%94%94%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%84%B0%EB%A5%BC-%EC%93%B0%EB%8A%94-%EC%9D%B4%EC%9C%A0" aria-label="디스크립터를 쓰는 이유 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>디스크립터를 쓰는 이유?</h2>
+<p>API 작성같이 고수준의 로직을 풀거나 하는 케이스에서는 디스크립터를 쓸 일이 없다. 일반적인 유스케이스 보다 아래 케이스에서 사용을 고려할 수 있다.</p>
+<ul>
+<li>Lazy properties (for <strong>non-data descriptor</strong>)
+<ul>
+<li>이것은 최초로 액세스 하기 전까지에는 initial value가 로드되지 않는다는 것</li>
+<li>그 후에는 initial value를 로드하고 나중의 사용을 위해 값이 캐시된다는 것</li>
+</ul>
+</li>
+</ul>
+<p><code class="language-text">DeepThought</code> 라는 클래스가 <code class="language-text">meaning_of_life()</code> 라는 함수를 갖고있다고 치자. 이 함수는 3초쯤 쉬고 해답을 주는 함수다.</p>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token comment"># slow_properties.py</span>
+<span class="token keyword">import</span> time
+
+<span class="token keyword">class</span> <span class="token class-name">DeepThought</span><span class="token punctuation">:</span>
+    <span class="token keyword">def</span> <span class="token function">meaning_of_life</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        time<span class="token punctuation">.</span>sleep<span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span>
+        <span class="token keyword">return</span> <span class="token number">42</span>
+
+my_deep_thought_instance <span class="token operator">=</span> DeepThought<span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>my_deep_thought_instance<span class="token punctuation">.</span>meaning_of_life<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>my_deep_thought_instance<span class="token punctuation">.</span>meaning_of_life<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>my_deep_thought_instance<span class="token punctuation">.</span>meaning_of_life<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span></code></pre></div>
+<p>셋다 구동하려고 3초씩 매번 쉰다. 해답은 똑같은데 말이지. lazy property는 그 대신 이 메소드의 최초 실행시 연산 후 결과값을 캐싱한다. 디스크립터를 쓰면 이런 해답이 나온다:</p>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token comment"># lazy_properties.py</span>
+<span class="token keyword">import</span> time
+
+<span class="token keyword">class</span> <span class="token class-name">LazyProperty</span><span class="token punctuation">:</span>
+    <span class="token keyword">def</span> <span class="token function">__init__</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> function<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        self<span class="token punctuation">.</span>function <span class="token operator">=</span> function
+        self<span class="token punctuation">.</span>name <span class="token operator">=</span> function<span class="token punctuation">.</span>__name__
+
+    <span class="token keyword">def</span> <span class="token function">__get__</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> obj<span class="token punctuation">,</span> <span class="token builtin">type</span><span class="token operator">=</span><span class="token boolean">None</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> <span class="token builtin">object</span><span class="token punctuation">:</span>
+        obj<span class="token punctuation">.</span>__dict__<span class="token punctuation">[</span>self<span class="token punctuation">.</span>name<span class="token punctuation">]</span> <span class="token operator">=</span> self<span class="token punctuation">.</span>function<span class="token punctuation">(</span>obj<span class="token punctuation">)</span>
+        <span class="token keyword">return</span> obj<span class="token punctuation">.</span>__dict__<span class="token punctuation">[</span>self<span class="token punctuation">.</span>name<span class="token punctuation">]</span>
+
+<span class="token keyword">class</span> <span class="token class-name">DeepThought</span><span class="token punctuation">:</span>
+    <span class="token decorator annotation punctuation">@LazyProperty</span>
+    <span class="token keyword">def</span> <span class="token function">meaning_of_life</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        time<span class="token punctuation">.</span>sleep<span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span>
+        <span class="token keyword">return</span> <span class="token number">42</span>
+
+my_deep_thought_instance <span class="token operator">=</span> DeepThought<span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>my_deep_thought_instance<span class="token punctuation">.</span>meaning_of_life<span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>my_deep_thought_instance<span class="token punctuation">.</span>meaning_of_life<span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>my_deep_thought_instance<span class="token punctuation">.</span>meaning_of_life<span class="token punctuation">)</span></code></pre></div>
+<ol>
+<li><code class="language-text">DeepThought</code> 를 선언하면서 <code class="language-text">@LazyProperty</code> 를 타고간다.
+<ol>
+<li><del>데코레이터니까</del> non-data 디스크립터를 먼저 선언한다. <code class="language-text">__init__</code> 하면서 function 값을 읽어와서 넣고, name도 마찬가지로 넣는다
+<ol>
+<li>function에는 함수의 주소값이 담긴다</li>
+<li>name에는 함수의 이름이 담긴다</li>
+</ol>
+</li>
+</ol>
+</li>
+<li><code class="language-text">DeepThought</code> 를 초기화한다</li>
+<li>meaning_of_life를 호출하면 <code class="language-text">LazyProperty</code>의 <code class="language-text">__get__</code> 이 실행된다. 디스크립터가 붙는 객체에 함수 이름을 넣는다.
+<ol>
+<li><code class="language-text">self.function(obj)</code> 를 실행하면서 <code class="language-text">meaning_of_life</code> 함수를 구동한다.
+<code class="language-text">obj</code> 값은 <code class="language-text">DeepThought</code> 값이다
+그 결과는 <code class="language-text">obj.__dict__[self.name]</code> 에 담긴다.</li>
+<li>그 결과를 <code class="language-text">self.__name__</code> 에 저장한다.</li>
+</ol>
+</li>
+<li>나머지는 실행할 때마다 동일한 값을 공유한다.
+<ol>
+<li>이 때 파이썬은 <code class="language-text">lookup chain</code> 을 사용하여, <code class="language-text">__dict__</code> 내의 attribute 값을 찾는다.</li>
+</ol>
+</li>
+</ol>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token comment"># wrong_lazy_properties.py</span>
+<span class="token keyword">import</span> time
+
+<span class="token keyword">class</span> <span class="token class-name">LazyProperty</span><span class="token punctuation">:</span>
+    <span class="token keyword">def</span> <span class="token function">__init__</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> function<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        self<span class="token punctuation">.</span>function <span class="token operator">=</span> function
+        self<span class="token punctuation">.</span>name <span class="token operator">=</span> function<span class="token punctuation">.</span>__name__
+
+    <span class="token keyword">def</span> <span class="token function">__get__</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> obj<span class="token punctuation">,</span> <span class="token builtin">type</span><span class="token operator">=</span><span class="token boolean">None</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> <span class="token builtin">object</span><span class="token punctuation">:</span>
+        obj<span class="token punctuation">.</span>__dict__<span class="token punctuation">[</span>self<span class="token punctuation">.</span>name<span class="token punctuation">]</span> <span class="token operator">=</span> self<span class="token punctuation">.</span>function<span class="token punctuation">(</span>obj<span class="token punctuation">)</span>
+        <span class="token keyword">return</span> obj<span class="token punctuation">.</span>__dict__<span class="token punctuation">[</span>self<span class="token punctuation">.</span>name<span class="token punctuation">]</span>
+
+    <span class="token keyword">def</span> <span class="token function">__set__</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> obj<span class="token punctuation">,</span> value<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">pass</span>
+
+<span class="token keyword">class</span> <span class="token class-name">DeepThought</span><span class="token punctuation">:</span>
+    <span class="token decorator annotation punctuation">@LazyProperty</span>
+    <span class="token keyword">def</span> <span class="token function">meaning_of_life</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        time<span class="token punctuation">.</span>sleep<span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span>
+        <span class="token keyword">return</span> <span class="token number">42</span>
+
+my_deep_thought_instance <span class="token operator">=</span> DeepThought<span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>my_deep_thought_instance<span class="token punctuation">.</span>meaning_of_life<span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>my_deep_thought_instance<span class="token punctuation">.</span>meaning_of_life<span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>my_deep_thought_instance<span class="token punctuation">.</span>meaning_of_life<span class="token punctuation">)</span></code></pre></div>
+<p>다만 <strong>data descriptor</strong> 에선 작동하지 않는다.</p>
+<ul>
+<li>DRY 한 코드</li>
+</ul>
+<p>이런류의 코드에 대해서는 DRY 해진다. 아래는 data descriptor를 안 쓴 예시</p>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token comment"># properties.py</span>
+<span class="token keyword">class</span> <span class="token class-name">Values</span><span class="token punctuation">:</span>
+    <span class="token keyword">def</span> <span class="token function">__init__</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        self<span class="token punctuation">.</span>_value1 <span class="token operator">=</span> <span class="token number">0</span>
+        self<span class="token punctuation">.</span>_value2 <span class="token operator">=</span> <span class="token number">0</span>
+        self<span class="token punctuation">.</span>_value3 <span class="token operator">=</span> <span class="token number">0</span>
+        self<span class="token punctuation">.</span>_value4 <span class="token operator">=</span> <span class="token number">0</span>
+        self<span class="token punctuation">.</span>_value5 <span class="token operator">=</span> <span class="token number">0</span>
+
+    <span class="token decorator annotation punctuation">@property</span>
+    <span class="token keyword">def</span> <span class="token function">value1</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> self<span class="token punctuation">.</span>_value1
+
+    <span class="token decorator annotation punctuation">@value1<span class="token punctuation">.</span>setter</span>
+    <span class="token keyword">def</span> <span class="token function">value1</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> value<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        self<span class="token punctuation">.</span>_value1 <span class="token operator">=</span> value <span class="token keyword">if</span> value <span class="token operator">%</span> <span class="token number">2</span> <span class="token operator">==</span> <span class="token number">0</span> <span class="token keyword">else</span> <span class="token number">0</span>
+
+    <span class="token decorator annotation punctuation">@property</span>
+    <span class="token keyword">def</span> <span class="token function">value2</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> self<span class="token punctuation">.</span>_value2
+
+    <span class="token decorator annotation punctuation">@value2<span class="token punctuation">.</span>setter</span>
+    <span class="token keyword">def</span> <span class="token function">value2</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> value<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        self<span class="token punctuation">.</span>_value2 <span class="token operator">=</span> value <span class="token keyword">if</span> value <span class="token operator">%</span> <span class="token number">2</span> <span class="token operator">==</span> <span class="token number">0</span> <span class="token keyword">else</span> <span class="token number">0</span>
+
+    <span class="token decorator annotation punctuation">@property</span>
+    <span class="token keyword">def</span> <span class="token function">value3</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> self<span class="token punctuation">.</span>_value3
+
+    <span class="token decorator annotation punctuation">@value3<span class="token punctuation">.</span>setter</span>
+    <span class="token keyword">def</span> <span class="token function">value3</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> value<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        self<span class="token punctuation">.</span>_value3 <span class="token operator">=</span> value <span class="token keyword">if</span> value <span class="token operator">%</span> <span class="token number">2</span> <span class="token operator">==</span> <span class="token number">0</span> <span class="token keyword">else</span> <span class="token number">0</span>
+
+    <span class="token decorator annotation punctuation">@property</span>
+    <span class="token keyword">def</span> <span class="token function">value4</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> self<span class="token punctuation">.</span>_value4
+
+    <span class="token decorator annotation punctuation">@value4<span class="token punctuation">.</span>setter</span>
+    <span class="token keyword">def</span> <span class="token function">value4</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> value<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        self<span class="token punctuation">.</span>_value4 <span class="token operator">=</span> value <span class="token keyword">if</span> value <span class="token operator">%</span> <span class="token number">2</span> <span class="token operator">==</span> <span class="token number">0</span> <span class="token keyword">else</span> <span class="token number">0</span>
+
+    <span class="token decorator annotation punctuation">@property</span>
+    <span class="token keyword">def</span> <span class="token function">value5</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> self<span class="token punctuation">.</span>_value5
+
+    <span class="token decorator annotation punctuation">@value5<span class="token punctuation">.</span>setter</span>
+    <span class="token keyword">def</span> <span class="token function">value5</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> value<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        self<span class="token punctuation">.</span>_value5 <span class="token operator">=</span> value <span class="token keyword">if</span> value <span class="token operator">%</span> <span class="token number">2</span> <span class="token operator">==</span> <span class="token number">0</span> <span class="token keyword">else</span> <span class="token number">0</span>
+
+my_values <span class="token operator">=</span> Values<span class="token punctuation">(</span><span class="token punctuation">)</span>
+my_values<span class="token punctuation">.</span>value1 <span class="token operator">=</span> <span class="token number">1</span>
+my_values<span class="token punctuation">.</span>value2 <span class="token operator">=</span> <span class="token number">4</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>my_values<span class="token punctuation">.</span>value1<span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>my_values<span class="token punctuation">.</span>value2<span class="token punctuation">)</span></code></pre></div>
+<p>이걸 디스크립터로는 다음과 같이 줄일 수 있다:</p>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token comment"># properties2.py</span>
+<span class="token keyword">class</span> <span class="token class-name">EvenNumber</span><span class="token punctuation">:</span>
+    <span class="token keyword">def</span> <span class="token function">__set_name__</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> owner<span class="token punctuation">,</span> name<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        self<span class="token punctuation">.</span>name <span class="token operator">=</span> name
+
+    <span class="token keyword">def</span> <span class="token function">__get__</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> obj<span class="token punctuation">,</span> <span class="token builtin">type</span><span class="token operator">=</span><span class="token boolean">None</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> <span class="token builtin">object</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> obj<span class="token punctuation">.</span>__dict__<span class="token punctuation">.</span>get<span class="token punctuation">(</span>self<span class="token punctuation">.</span>name<span class="token punctuation">)</span> <span class="token keyword">or</span> <span class="token number">0</span>
+
+    <span class="token keyword">def</span> <span class="token function">__set__</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> obj<span class="token punctuation">,</span> value<span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> <span class="token boolean">None</span><span class="token punctuation">:</span>
+        obj<span class="token punctuation">.</span>__dict__<span class="token punctuation">[</span>self<span class="token punctuation">.</span>name<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">(</span>value <span class="token keyword">if</span> value <span class="token operator">%</span> <span class="token number">2</span> <span class="token operator">==</span> <span class="token number">0</span> <span class="token keyword">else</span> <span class="token number">0</span><span class="token punctuation">)</span>
+
+<span class="token keyword">class</span> <span class="token class-name">Values</span><span class="token punctuation">:</span>
+    value1 <span class="token operator">=</span> EvenNumber<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    value2 <span class="token operator">=</span> EvenNumber<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    value3 <span class="token operator">=</span> EvenNumber<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    value4 <span class="token operator">=</span> EvenNumber<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    value5 <span class="token operator">=</span> EvenNumber<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+my_values <span class="token operator">=</span> Values<span class="token punctuation">(</span><span class="token punctuation">)</span>
+my_values<span class="token punctuation">.</span>value1 <span class="token operator">=</span> <span class="token number">1</span>
+my_values<span class="token punctuation">.</span>value2 <span class="token operator">=</span> <span class="token number">4</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>my_values<span class="token punctuation">.</span>value1<span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>my_values<span class="token punctuation">.</span>value2<span class="token punctuation">)</span></code></pre></div>
+<h2 id="내-나름의-결론" style="position:relative;"><a href="#%EB%82%B4-%EB%82%98%EB%A6%84%EC%9D%98-%EA%B2%B0%EB%A1%A0" aria-label="내 나름의 결론 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>내 나름의 결론</h2>
+<p>이거… 제대로 쓰려면 상위 클래스에서 쓰고, 하위 클래스에서는 상속을 받고 써먹어야 하는 것 같다..</p>
+<p>코드가 dry 해지고, lazy properties 의 특징을 가지기야 한다만… 필요할 때 제대로 쓰자. 왜냐하면 평소엔 필요없을 것이기 때문이다.</p>
+<p>따라서, 좋은 라이브러리의 코드를 이해하고 타고들어갈 때, 혹은 저수준의 라이브러리/파이썬 스러운 인터페이스 설계 시에는 쓸 수 있으니 얼마든지 이런 방향을 알고는 있어야할 것이다.</p></div></div></div><div class="Post-module--footer--f8705"><div class="Meta-module--meta--dae0a"><p class="Meta-module--date--4d30d">Published<!-- --> <!-- -->Jun 10, 2022</p></div><div class="Tags-module--tags--18589"><ul class="Tags-module--list--82ae6"><li class="Tags-module--item--52015"><a class="Button-module--button--b1113" href="/tag/python/">python</a></li></ul></div><div class="Author-module--author--1c58d"><p class="Non scholæ sed vitæ discimus.">Non scholæ sed vitæ discimus.</p><p class="Author-module--bio--08950">his/him<a class="Author-module--twitter--90647" href="https://www.twitter.com/" rel="noopener noreferrer" target="_blank"><strong>s3ich4n</strong> on Twitter</a></p></div></div><div class="Post-module--comments--d3b99"></div></div></div></div><div id="gatsby-announcer" style="position:absolute;top:0;width:1px;height:1px;padding:0;overflow:hidden;clip:rect(0, 0, 0, 0);white-space:nowrap;border:0" aria-live="assertive" aria-atomic="true"></div></div><script id="gatsby-script-loader">/*<![CDATA[*/window.pagePath="/devlog/python/2022-06-10-python-descriptor-described";window.___webpackCompilationHash="e9ba9828502e4a855388";/*]]>*/</script><script id="gatsby-chunk-mapping">/*<![CDATA[*/window.___chunkMapping={"polyfill":["/polyfill-d2180604bf06a006eef1.js"],"app":["/app-9ac132e7e136b6ecb0de.js"],"component---cache-caches-gatsby-plugin-offline-app-shell-js":["/component---cache-caches-gatsby-plugin-offline-app-shell-js-0c915c7b1bdb5eac4fdf.js"],"component---src-templates-categories-template-categories-template-tsx":["/component---src-templates-categories-template-categories-template-tsx-e2d2add397e32e3517ca.js"],"component---src-templates-category-template-category-template-tsx":["/component---src-templates-category-template-category-template-tsx-078f2adfba160a34229f.js"],"component---src-templates-index-template-index-template-tsx":["/component---src-templates-index-template-index-template-tsx-83380c7954c9f6621026.js"],"component---src-templates-not-found-template-not-found-template-tsx":["/component---src-templates-not-found-template-not-found-template-tsx-682a8d418e3a0285d34e.js"],"component---src-templates-page-template-page-template-tsx":["/component---src-templates-page-template-page-template-tsx-c6c21d7369a9356db3a1.js"],"component---src-templates-post-template-post-template-tsx":["/component---src-templates-post-template-post-template-tsx-b988b5e8e213fff61e5b.js"],"component---src-templates-tag-template-tag-template-tsx":["/component---src-templates-tag-template-tag-template-tsx-8d0b3090e775aa3c4584.js"],"component---src-templates-tags-template-tags-template-tsx":["/component---src-templates-tags-template-tags-template-tsx-30027e87af7d042f3afb.js"]};/*]]>*/</script><script src="/polyfill-d2180604bf06a006eef1.js" nomodule=""></script><script src="/app-9ac132e7e136b6ecb0de.js" async=""></script><script src="/framework-481a1b6416c14416b2fb.js" async=""></script><script src="/webpack-runtime-5cdc03a992cc3f365750.js" async=""></script></body></html>
