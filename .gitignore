@@ -34,7 +34,7 @@ coverage
 .eslintcache
 
 # dependency directory
-node_modules
+node_modules/
 
 # only apps should have lockfiles
 npm-shrinkwrap.json
