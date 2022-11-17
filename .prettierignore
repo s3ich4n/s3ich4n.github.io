@@ -1,4 +1,10 @@
-.cache
-package.json
-package-lock.json
-public
+*.*
+!*.json
+!*.md
+!*.mdx
+!*.ts
+!*.tsx
+!*.yml
+!*.js
+/coverage/
+/public/
