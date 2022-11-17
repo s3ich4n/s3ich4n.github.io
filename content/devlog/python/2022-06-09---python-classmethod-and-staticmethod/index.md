@@ -6,7 +6,7 @@ draft: false
 slug: "/devlog/python/2022-06-09-python-classmethod-and-staticmethod"
 categories: "devlog"
 tags:
-  - "Python"
+  - "python"
 description: 'Python의 "@classmethod" 와 "@staticmethod"에 대해'
 socialImage: "./media/sangdo-dong.jpg"
 ---
