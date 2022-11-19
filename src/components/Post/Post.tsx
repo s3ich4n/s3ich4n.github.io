@@ -18,7 +18,7 @@ interface Props {
 
 const Post: React.FC<Props> = ({ post }: Props) => {
   const { html } = post;
-  const { tagSlugs, slug } = post.fields;
+  const { tagSlugs } = post.fields;
   const { tags, title, date } = post.frontmatter;
 
   return (
@@ -39,7 +39,7 @@ const Post: React.FC<Props> = ({ post }: Props) => {
       </div>
 
       <div className={styles.comments}>
-        <Comments postSlug={slug} postTitle={post.frontmatter.title} />
+        <Comments />
       </div>
     </div>
   );

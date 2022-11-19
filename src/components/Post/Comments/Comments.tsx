@@ -1,31 +1,43 @@
-import React from "react";
+/**
+ * 게시글의 Utterances 위젯을 담당하는 컴포넌트
+ *
+ * @created     2022-09-25 04:23:10
+ * @modified    2022-09-25 04:23:10
+ * @author      s3ich4n
+ */
 
-import { DiscussionEmbed } from "disqus-react";
+import React, { createRef, useLayoutEffect } from "react";
 
-import { useSiteMetadata } from "@/hooks";
+const src = "https://utteranc.es/client.js";
+const repo = "s3ich4n/s3ich4n.github.io";
+const theme = "dark-blue";
 
-interface Props {
-  postTitle: string;
-  postSlug: string;
-}
+const Utterances: React.FC = () => {
+  const containerRef = createRef<HTMLDivElement>();
 
-const Comments: React.FC<Props> = ({ postTitle, postSlug }: Props) => {
-  const { url, disqusShortname } = useSiteMetadata();
+  useLayoutEffect(() => {
+    const utterances = document.createElement("script");
 
-  if (!disqusShortname) {
-    return null;
-  }
+    const attributes = {
+      src,
+      repo,
+      theme,
+      "issue-term": "pathname",
+      label: "post-comments",
+      crossOrigin: "anonymous",
+      async: "true",
+    };
 
-  return (
-    <DiscussionEmbed
-      shortname={disqusShortname}
-      config={{
-        url: url + postSlug,
-        identifier: postTitle,
-        title: postTitle,
-      }}
-    />
-  );
+    Object.entries(attributes).forEach(([key, value]) => {
+      utterances.setAttribute(key, value);
+    });
+
+    containerRef.current!.appendChild(utterances);
+  }, [repo]);
+
+  return <div ref={containerRef} />;
 };
 
-export default Comments;
+Utterances.displayName = "Utterances";
+
+export default Utterances;
