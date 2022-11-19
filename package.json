@@ -31,7 +31,9 @@
     "start": "npm run clean && gatsby develop",
     "test": "jest --config ./internal/testing/jest-config.ts",
     "test:coverage": "jest --coverage --config ./internal/testing/jest-config.ts",
-    "test:watch": "jest --watch --config ./internal/testing/jest-config.ts"
+    "test:watch": "jest --watch --config ./internal/testing/jest-config.ts",
+    "predeploy": "npm run clean && npm run build",
+    "deploy": "gh-pages -d public"
   },
   "commitlint": {
     "extends": [
