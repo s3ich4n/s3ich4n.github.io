@@ -314,6 +314,7 @@ first_arn = "arn:aws:iam::240962124292:user/alice"
    2. 따라서 `count` 구문을 사용해서 이러한 태그를 반복하여 동적인 인라인 `tag` 블록을 생성하려고 시도할 수도 있지만, 인라인 블록 내에서는 count 사용은 지원하지 않습니다.
 
 2. 코드 재사용시 **치명적인** 문제가 있습니다. 아래 예시로 살펴봅시다.
+
    - `variables.tf`
 
 ```terraform
@@ -399,7 +400,7 @@ variable "user_names" {
        ]
    ```
 
-3. `count` 사용 시 목록 중간 항목을 제거하면 테라폼은 해당 항목 뒤에 있는 **모든 리소스를 삭제**한 다음 해당 리소스를 처음부터 다시 만듭니다.........
+3. `count` 사용 시 목록 중간 항목을 제거하면 테라폼은 해당 항목 뒤에 있는 **모든 리소스를 삭제**한 다음 해당 리소스를 처음부터 다시 만듭니다......... 😱😱
 
 ### `for_each` 표현식
 
@@ -572,11 +573,11 @@ list 내의 모든 이름을 대문자로 변환하는 예제를 통해 알아�
 ```terraform
 # 결과를 list 형식으로 리턴합니다.
 [for <ITEM> in <LIST> : <OUTPUT>]
-[for <ITEM> in <LIST> : <OUTPUT> if <EXPRESSION>]
+[for <ITEM> in <LIST> : <OUTPUT> if <EXPRESSION>] # 조건문 절에서 다시 살펴봅시다!
 
 # 결과를 map 형식으로 리턴합니다.
 {for <ITEM> in <LIST> : <OUTPUT_KEY> => <OUTPUT_VALUE>}
-{for <ITEM> in <LIST> : <OUTPUT_KEY> => <OUTPUT_VALUE> if <EXPRESSION>}
+{for <ITEM> in <LIST> : <OUTPUT_KEY> => <OUTPUT_VALUE> if <EXPRESSION>} # 조건문 절에서 다시 살펴봅시다!
 ```
 
 - LIST: 반복할 리스트
@@ -634,9 +635,6 @@ output "upper_prize_status" {
 
 # 인덱스를 추가할 수도 있습니다.
 %{ for <INDEX>, <ITEM> in <COLLECTION> }<BODY>%{ endfor }
-
-# if, if-else 구문의 사용방법입니다.
-%{ for <INDEX>, <ITEM> in <COLLECTION> }<BODY>%{if <EXPRESSION>}%{ else }%{ endif }%{ endfor }
 ```
 
 - COLLECTION: 반복할 리스트, 맵. 말 그대로 반복 가능한 컬렉션을 의미합니다.
@@ -661,33 +659,6 @@ output "for_directive_index" {
   # 파이썬의 enumerate() 을 쓰듯 사용할 수도 있군요!
   value = "%{ for i, name in var.names }(${i}) ${name}, %{ endfor }"
 }
-
-# if 구문을 사용하는 방법입니다.
-output "for_directive_index_if" {
-  value = <<EOF
-%{ for i, name in var.names }
-  ${name}%{ if i < length(var.names) - 1 }, %{ endif }
-%{ endfor }
-EOF
-}
-
-# 마지막 `,` 문자에 대해 strip을 할 수도 있습니다.
-output "for_directive_index_if_strip" {
-  value = <<EOF
-%{~ for i, name in var.names ~}
-${name}%{ if i < length(var.names) - 1 }, %{ endif }
-%{~ endfor ~}
-EOF
-}
-
-# 마지막 `,` 문자에 대해 strip을 할 수도 있습니다.
-output "for_directive_index_if_else_strip" {
-  value = <<EOF
-%{~ for i, name in var.names ~}
-${name}%{ if i < length(var.names) - 1 }, %{ else }.%{ endif }
-%{~ endfor ~}
-EOF
-}
 ```
 
 `terraform init && terraform apply`를 수행하면 아래와 같은 결과값을 보실 수 있습니다.
@@ -703,21 +674,7 @@ Outputs:
 
 for_directive = "alice, bob, charlie, "
 for_directive_index = "(0) alice, (1) bob, (2) charlie, "
-for_directive_index_if = <<EOT
-
-  alice,
-
-  bob,
-
-  charlie
-
-
-EOT
-for_directive_index_if_else_strip = "alice, bob, charlie."
-for_directive_index_if_strip = "alice, bob, charlie"
 ```
-
-## 조건문
 
 # Lessons Learned
 
