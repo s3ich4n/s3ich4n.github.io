@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[팔공산 창고]]></title><description><![CDATA[팔공산 창고]]></description><link>http://github.com/dylang/node-rss</link><generator>GatsbyJS</generator><lastBuildDate>Thu, 17 Nov 2022 20:12:56 GMT</lastBuildDate><item><title><![CDATA[[CloudNet@] 테라폼 스터디 5주차 - Terraform의 반복문과 조건문 (2) - 조건문]]></title><description><![CDATA[Terraform의 타입과 값이 어떻게 쓰이는지 알고있다는 가정 하에, 반복문과 조건문을 사용하여 로직을 표현하는 방법을 담았습니다. 그 중, 조건문을 살펴봅시다.]]></description><link>https://blog.s3ich4n.me/devlog/terraform/2022-11-19-cloudneta-terraform-101-pt05-2</link><guid isPermaLink="false">https://blog.s3ich4n.me/devlog/terraform/2022-11-19-cloudneta-terraform-101-pt05-2</guid><pubDate>Sat, 19 Nov 2022 21:59:57 GMT</pubDate><content:encoded>&lt;p&gt;이 내용은 CloudNet@ 에서 진행하는 테라폼 기초 입문 스터디에 대한 연재글입니다.&lt;/p&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[팔공산 창고]]></title><description><![CDATA[팔공산 창고]]></description><link>http://github.com/dylang/node-rss</link><generator>GatsbyJS</generator><lastBuildDate>Tue, 22 Nov 2022 07:29:16 GMT</lastBuildDate><item><title><![CDATA[[CloudNet@] 테라폼 스터디 5주차 - Terraform의 반복문과 조건문 (2) - 조건문]]></title><description><![CDATA[Terraform의 타입과 값이 어떻게 쓰이는지 알고있다는 가정 하에, 반복문과 조건문을 사용하여 로직을 표현하는 방법을 담았습니다. 그 중, 조건문을 살펴봅시다.]]></description><link>https://blog.s3ich4n.me/devlog/terraform/2022-11-19-cloudneta-terraform-101-pt05-2</link><guid isPermaLink="false">https://blog.s3ich4n.me/devlog/terraform/2022-11-19-cloudneta-terraform-101-pt05-2</guid><pubDate>Sat, 19 Nov 2022 23:52:57 GMT</pubDate><content:encoded>&lt;p&gt;이 내용은 CloudNet@ 에서 진행하는 테라폼 기초 입문 스터디에 대한 연재글입니다.&lt;/p&gt;
 &lt;p&gt;스터디에서 사용하는 교재는 &lt;a href=&quot;http://www.yes24.com/Product/Goods/101511312&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;Terraform Up &amp;#x26; Running 2nd Edition&lt;/a&gt; 입니다.&lt;/p&gt;
 &lt;hr&gt;
 &lt;h1 id=&quot;prerequisites&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#prerequisites&quot; aria-label=&quot;prerequisites permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Prerequisites&lt;/h1&gt;
@@ -16,28 +16,272 @@
 &lt;h1 id=&quot;본문&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EB%B3%B8%EB%AC%B8&quot; aria-label=&quot;본문 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;본문&lt;/h1&gt;
 &lt;p&gt;테라폼을 통해 마치 프로그램을 작성하듯 코드를 작성할 수 있습니다. 이번 챕터에서는 아래의 내용을 학습할 예정입니다:&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;반복, 조건문 사용방법&lt;/li&gt;
+&lt;li&gt;반복문, 조건문 사용방법
+&lt;ul&gt;
+&lt;li&gt;여기서는 조건문에 대해 설명합니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
 &lt;li&gt;무중단 배포에 필요한 요소들 사용방법&lt;/li&gt;
 &lt;li&gt;주의사항&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h2 id=&quot;조건문&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%A1%B0%EA%B1%B4%EB%AC%B8&quot; aria-label=&quot;조건문 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;조건문&lt;/h2&gt;
+&lt;p&gt;테라폼이 제공하는 조건문은 아래와 같이 구성되어 있습니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;count&lt;/code&gt; 매개변수를 이용하여 사용: 조건부 리소스에서 사용&lt;/li&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;for_each&lt;/code&gt; 와 &lt;code class=&quot;language-text&quot;&gt;for&lt;/code&gt; 표현식: 리소스 내의 조건부 리소스, 인라인 블록에 사용&lt;/li&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;if&lt;/code&gt; 문자열 지시자: 문자열 내의 조건문에 사용&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;count-매개변수&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#count-%EB%A7%A4%EA%B0%9C%EB%B3%80%EC%88%98&quot; aria-label=&quot;count 매개변수 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;&lt;code class=&quot;language-text&quot;&gt;count&lt;/code&gt; 매개변수&lt;/h3&gt;
+&lt;p&gt;앞서 살펴보았듯, &lt;code class=&quot;language-text&quot;&gt;count&lt;/code&gt; 매개변수를 사용하면 반복문을 사용할 수 있습니다. 이를 응용하여 조건문 작업 또한 수행할 수 있습니다.&lt;/p&gt;
+&lt;h4 id=&quot;count-매개변수를-사용한-if-구문&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#count-%EB%A7%A4%EA%B0%9C%EB%B3%80%EC%88%98%EB%A5%BC-%EC%82%AC%EC%9A%A9%ED%95%9C-if-%EA%B5%AC%EB%AC%B8&quot; aria-label=&quot;count 매개변수를 사용한 if 구문 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;&lt;code class=&quot;language-text&quot;&gt;count&lt;/code&gt; 매개변수를 사용한 &lt;code class=&quot;language-text&quot;&gt;if&lt;/code&gt; 구문&lt;/h4&gt;
+&lt;p&gt;일부 사용자들에게는 모듈을 생성하고, 나머지 사용자에게는 생성해주지 않기 위해선 &lt;strong&gt;분기 처리&lt;/strong&gt;를 수행합니다.&lt;/p&gt;
+&lt;p&gt;이를 위해서는 Boolean 입력 변수를 변수값으로 추가해주고, 아래와같은 조건 표현식(conditional expression)을 추가합니다.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;terraform&quot;&gt;&lt;pre class=&quot;language-terraform&quot;&gt;&lt;code class=&quot;language-terraform&quot;&gt;variable &amp;quot;enable_autoscaling&amp;quot; {
+  description = &amp;quot;If set to true, enable auto scaling&amp;quot;
+  type        = bool
+}
+
+&amp;lt;CONDITION&amp;gt; ? &amp;lt;TRUE_VAL&amp;gt; : &amp;lt;FALSE_VAL&amp;gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;CONDITION&lt;/code&gt;: boolean 판단 조건을 기재합니다.&lt;/li&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;TRUE_VAL&lt;/code&gt;: 판단 조건이 참일 때의 결과값입니다.&lt;/li&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;FALSE_VAL&lt;/code&gt;: 판단 조건이 거짓일 때의 결과값입니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;상기 조건을 조합하면 아래값처럼 &lt;code class=&quot;language-text&quot;&gt;webserver-cluster&lt;/code&gt; 모듈을 업데이트 할 수 있지요.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;terraform&quot;&gt;&lt;pre class=&quot;language-terraform&quot;&gt;&lt;code class=&quot;language-terraform&quot;&gt;resource &amp;quot;aws_autoscaling_schedule&amp;quot; &amp;quot;scale_out_during_business_hours&amp;quot; {
+  # enable_autoscaling 값이 참/거짓일 때에 따라 auto scaling을 허용/불허할 수 있습니다.
+  count = var.enable_autoscaling ? 1 : 0
+
+  scheduled_action_name  = &amp;quot;${var.cluster_name}-scale-out-during-business-hours&amp;quot;
+  min_size               = 2
+  max_size               = 10
+  desired_capacity       = 10
+  recurrence             = &amp;quot;0 9 * * *&amp;quot; # 이 값은 cron 양식을 따릅니다!
+  autoscaling_group_name = aws_autoscaling_group.example.name
+}
+
+resource &amp;quot;aws_autoscaling_schedule&amp;quot; &amp;quot;scale_in_at_night&amp;quot; {
+  count = var.enable_autoscaling ? 1 : 0
+
+  scheduled_action_name  = &amp;quot;${var.cluster_name}-scale-in-at-night&amp;quot;
+  min_size               = 2
+  max_size               = 10
+  desired_capacity       = 2
+  recurrence             = &amp;quot;0 17 * * *&amp;quot;
+  autoscaling_group_name = aws_autoscaling_group.example.name
+}&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;이러한 조건을 staging 서버에서는 &lt;code class=&quot;language-text&quot;&gt;false&lt;/code&gt;로, production 서버에서는 &lt;code class=&quot;language-text&quot;&gt;true&lt;/code&gt; 로 두기 위해선 아래와 같이 사용하면 됩니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;staging 서버의 &lt;code class=&quot;language-text&quot;&gt;main.tf&lt;/code&gt; 파일에서는?&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;terraform&quot;&gt;&lt;pre class=&quot;language-terraform&quot;&gt;&lt;code class=&quot;language-terraform&quot;&gt;module &amp;quot;webserver_cluster&amp;quot; {
+  source = &amp;quot;../../../../modules/services/webserver-cluster&amp;quot;
+
+  cluster_name           = &amp;quot;webservers-stage&amp;quot;
+  db_remote_state_bucket = &amp;quot;(YOUR_BUCKET_NAME)&amp;quot;
+  db_remote_state_key    = &amp;quot;stage/data-stores/mysql/terraform.tfstate&amp;quot;
+
+  instance_type        = &amp;quot;t2.micro&amp;quot;
+  min_size             = 2
+  max_size             = 2
+  # boolean 타입이므로, 해당 값을 지정해서, 설정이 구동되게 지정해줄 수 있습니다.
+  enable_autoscaling   = false
+}&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;ul&gt;
+&lt;li&gt;production 서버의 &lt;code class=&quot;language-text&quot;&gt;main.tf&lt;/code&gt; 파일에서는?&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;terraform&quot;&gt;&lt;pre class=&quot;language-terraform&quot;&gt;&lt;code class=&quot;language-terraform&quot;&gt;module &amp;quot;webserver_cluster&amp;quot; {
+  source = &amp;quot;../../../../modules/services/webserver-cluster&amp;quot;
+
+  cluster_name           = &amp;quot;webservers-prod&amp;quot;
+  db_remote_state_bucket = &amp;quot;(YOUR_BUCKET_NAME)&amp;quot;
+  db_remote_state_key    = &amp;quot;prod/data-stores/mysql/terraform.tfstate&amp;quot;
+
+  instance_type        = &amp;quot;m4.large&amp;quot;
+  min_size             = 2
+  max_size             = 10
+  # boolean 타입이므로, 해당 값을 지정해서, 설정이 구동되게 지정해줄 수 있습니다.
+  enable_autoscaling   = true
+
+  custom_tags = {
+    Owner     = &amp;quot;team-foo&amp;quot;
+    ManagedBy = &amp;quot;terraform&amp;quot;
+  }
+}&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h4 id=&quot;count-매개변수를-사용한-if-else-구문&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#count-%EB%A7%A4%EA%B0%9C%EB%B3%80%EC%88%98%EB%A5%BC-%EC%82%AC%EC%9A%A9%ED%95%9C-if-else-%EA%B5%AC%EB%AC%B8&quot; aria-label=&quot;count 매개변수를 사용한 if else 구문 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;&lt;code class=&quot;language-text&quot;&gt;count&lt;/code&gt; 매개변수를 사용한 &lt;code class=&quot;language-text&quot;&gt;if-else&lt;/code&gt; 구문&lt;/h4&gt;
+&lt;p&gt;특정 IAM 사용자에게 CloudWatch에 대한 액세스 권한을 부여하는 예시로 살펴보겠습니다. 이 파일은 별도의 정책관련 테라폼 파일로 만들면 되겠지요. (&lt;code class=&quot;language-text&quot;&gt;s3ich4n&lt;/code&gt;이란 유저에 대해 권한을 부여해보죠)&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;읽기 권한만 부여하기 위한 예시값 (&lt;code class=&quot;language-text&quot;&gt;iam_read_only.tf&lt;/code&gt;)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;terraform&quot;&gt;&lt;pre class=&quot;language-terraform&quot;&gt;&lt;code class=&quot;language-terraform&quot;&gt;resource &amp;quot;aws_iam_policy&amp;quot; &amp;quot;cloudwatch_read_only&amp;quot; {
+  name   = &amp;quot;cloudwatch-read-only&amp;quot;
+  policy = data.aws_iam_policy_document.cloudwatch_read_only.json
+}
+
+data &amp;quot;aws_iam_policy_document&amp;quot; &amp;quot;cloudwatch_read_only&amp;quot; {
+  statement {
+    effect    = &amp;quot;Allow&amp;quot;
+    # cloudwatch의 일부 기능들(read 파트)에 대해서만 권한을 허용하였습니다.
+    actions   = [
+      &amp;quot;cloudwatch:Describe*&amp;quot;,
+      &amp;quot;cloudwatch:Get*&amp;quot;,
+      &amp;quot;cloudwatch:List*&amp;quot;
+    ]
+    resources = [&amp;quot;*&amp;quot;]
+  }
+}&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;ul&gt;
+&lt;li&gt;읽기/쓰기 권한을 부여하기 위한 예시값(&lt;code class=&quot;language-text&quot;&gt;iam_rw.tf&lt;/code&gt;)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;terraform&quot;&gt;&lt;pre class=&quot;language-terraform&quot;&gt;&lt;code class=&quot;language-terraform&quot;&gt;resource &amp;quot;aws_iam_policy&amp;quot; &amp;quot;cloudwatch_full_access&amp;quot; {
+  name   = &amp;quot;cloudwatch-full-access&amp;quot;
+  policy = data.aws_iam_policy_document.cloudwatch_full_access.json
+}
+
+data &amp;quot;aws_iam_policy_document&amp;quot; &amp;quot;cloudwatch_full_access&amp;quot; {
+  statement {
+    effect    = &amp;quot;Allow&amp;quot;
+    # cloudwatch의 전체 기능에 대해 권한을 허용하였습니다.
+    actions   = [&amp;quot;cloudwatch:*&amp;quot;]
+    resources = [&amp;quot;*&amp;quot;]
+  }
+}&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;give_s3ich4n_cloudwatch_full_access&lt;/code&gt; 이라는 변수값에 기반하여, 리소스를 어떻게 적용할지 살펴봅시다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;terraform&quot;&gt;&lt;pre class=&quot;language-terraform&quot;&gt;&lt;code class=&quot;language-terraform&quot;&gt;variable &amp;quot;give_s3ich4n_cloudwatch_full_access&amp;quot; {
+  description = &amp;quot;If true, s3ich4n gets full access to CloudWatch&amp;quot;
+  type        = bool
+}&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;리소스 생성 시, 동작수행을 위해 &lt;code class=&quot;language-text&quot;&gt;count&lt;/code&gt; 매개변수와 조건 표현식을 모두 사용해봅시다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;terraform&quot;&gt;&lt;pre class=&quot;language-terraform&quot;&gt;&lt;code class=&quot;language-terraform&quot;&gt;resource &amp;quot;aws_iam_user_policy_attachment&amp;quot; &amp;quot;neo_cloudwatch_full_access&amp;quot; {
+  count = var.give_neo_cloudwatch_full_access ? 1 : 0
+
+  user       = aws_iam_user.example[0].name
+  policy_arn = aws_iam_policy.cloudwatch_full_access.arn
+}
+
+resource &amp;quot;aws_iam_user_policy_attachment&amp;quot; &amp;quot;neo_cloudwatch_read_only&amp;quot; {
+  count = var.give_neo_cloudwatch_full_access ? 0 : 1
+
+  user       = aws_iam_user.example[0].name
+  policy_arn = aws_iam_policy.cloudwatch_read_only.arn
+}&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;ul&gt;
+&lt;li&gt;위 코드에는 2개의 &lt;code class=&quot;language-text&quot;&gt;aws_iam_user_policy_attachment&lt;/code&gt; 리소스가 포함되어 있습니다.&lt;/li&gt;
+&lt;li&gt;윗 부분은 전체 액세스 권한을 첨부하는 if절 이고, 아래는 읽기 전용 권한을 첨부하는 else 절입니다.&lt;/li&gt;
+&lt;li&gt;위 접근 방식은 테라폼 코드가 if 나 else 절을 알필요가 없습니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;for_each-와-for-표현식&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#for_each-%EC%99%80-for-%ED%91%9C%ED%98%84%EC%8B%9D&quot; aria-label=&quot;for_each 와 for 표현식 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;&lt;code class=&quot;language-text&quot;&gt;for_each&lt;/code&gt; 와 &lt;code class=&quot;language-text&quot;&gt;for&lt;/code&gt; 표현식&lt;/h3&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;for_each&lt;/code&gt; 표현식을 빈 컬렉션으로 전달하면, 0개의 리소스 또는 0개의 인라인 블록을 생성합니다. 비어있지 않은 컬렉션을 전달하면 하나 이상의 리소스 또는 인라인 블록을 만듭니다.&lt;/p&gt;
+&lt;p&gt;이를 표현하기 위해서는 조건부로 어떻게 표현할까요? &lt;code class=&quot;language-text&quot;&gt;for_each&lt;/code&gt; 표현식과 &lt;code class=&quot;language-text&quot;&gt;for&lt;/code&gt; 표현식을 결합하여 사용할 수 있습니다. 예시값을 살펴보시지요.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;terraform&quot;&gt;&lt;pre class=&quot;language-terraform&quot;&gt;&lt;code class=&quot;language-terraform&quot;&gt;dynamic &amp;quot;tag&amp;quot; {
+    for_each = {
+    	for key, value in var.custom_tags:
+    	key =&amp;gt; upper(value)
+    	if key != &amp;quot;Name&amp;quot;
+    }
+
+    content {
+    	key                 = tag.key
+    	value               = tag.value
+    	propagate_at_launch = true
+    }
+}&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;ul&gt;
+&lt;li&gt;중첩된 &lt;code class=&quot;language-text&quot;&gt;for&lt;/code&gt; 표현식은 일관성을 위해 &lt;code class=&quot;language-text&quot;&gt;var.custom_tags&lt;/code&gt; 를 반복하며 각 값을 대문자로 변환하고 모듈이 이미 자체 &lt;code class=&quot;language-text&quot;&gt;Name&lt;/code&gt; 태그를 설정했으므로, &lt;code class=&quot;language-text&quot;&gt;for&lt;/code&gt; 표현식의 조건을 사용하여 &lt;code class=&quot;language-text&quot;&gt;key&lt;/code&gt; 집합을 &lt;code class=&quot;language-text&quot;&gt;Name&lt;/code&gt; 으로 필터링합니다.&lt;/li&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;for&lt;/code&gt; 표현식에서 값을 필터링하여 임의 조건부 논리를 구현할 수 있습니다.&lt;/li&gt;
+&lt;li&gt;리소스의 복사본을 여러 개 만들 때는 count 보다 for_each 를 사용하는 것이 더 낫지만,
+&lt;ul&gt;
+&lt;li&gt;조건 논리의 경우 비어 있지 않은 컬렉션에 for_each 를 설정하는 것보다 count 를 &lt;code class=&quot;language-text&quot;&gt;0&lt;/code&gt; 또는 &lt;code class=&quot;language-text&quot;&gt;1&lt;/code&gt;로 설정하는 것이 간단합니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;즉, &lt;strong&gt;리소스를 조건부로 생성&lt;/strong&gt;할 때는 &lt;strong&gt;count&lt;/strong&gt; 를 사용할 수 있지만, &lt;strong&gt;그 외 모든 유형의 반복문 또는 조건문&lt;/strong&gt;에는 &lt;strong&gt;for_each&lt;/strong&gt; 를 사용합니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;if-문자열-지시자&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#if-%EB%AC%B8%EC%9E%90%EC%97%B4-%EC%A7%80%EC%8B%9C%EC%9E%90&quot; aria-label=&quot;if 문자열 지시자 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;&lt;code class=&quot;language-text&quot;&gt;if&lt;/code&gt; 문자열 지시자&lt;/h3&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;if&lt;/code&gt; 문자열 지시자를 살펴봅시다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;terraform&quot;&gt;&lt;pre class=&quot;language-terraform&quot;&gt;&lt;code class=&quot;language-terraform&quot;&gt;# if 구문의 사용방법 입니다.
+%{if &amp;lt;CONDITION&amp;gt; }&amp;lt;TRUEVAL&amp;gt;%{endif}
+
+# if-else 구문의 사용방법입니다.
+%{ for &amp;lt;INDEX&amp;gt;, &amp;lt;ITEM&amp;gt; in &amp;lt;COLLECTION&amp;gt; }&amp;lt;BODY&amp;gt;%{if &amp;lt;EXPRESSION&amp;gt;}%{ else }&amp;lt;FALSEVAL&amp;gt;%{ endif }%{ endfor }&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;ul&gt;
+&lt;li&gt;COLLECTION: 반복할 리스트, 맵. 말 그대로 반복 가능한 컬렉션을 의미합니다.&lt;/li&gt;
+&lt;li&gt;INDEX: 이터레이션 시의 인덱스값을 표현합니다.&lt;/li&gt;
+&lt;li&gt;ITEM: 각 항목에 할당할 로컬 변수의 이름입니다.&lt;/li&gt;
+&lt;li&gt;BODY: ITEM을 참조할 수 있는 각각의 반복을 렌더링하는 대상입니다.&lt;/li&gt;
+&lt;li&gt;EXPRESSION: 참/거짓을 판별하는 조건입니다.&lt;/li&gt;
+&lt;li&gt;TRUEVAL: 참일 때 반복문을 통해 추가할 값입니다.&lt;/li&gt;
+&lt;li&gt;FALSEVAL: 거짓일 때 반복문을 통해 추가할 값입니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/brikis98/terraform-up-and-running-code/blob/master/code/terraform/05-tips-and-tricks/loops-and-if-statements/live/global/string-directives/main.tf&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;예시&lt;/a&gt;를 보면서 함께 살펴봅시다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;terraform&quot;&gt;&lt;pre class=&quot;language-terraform&quot;&gt;&lt;code class=&quot;language-terraform&quot;&gt;variable &amp;quot;names&amp;quot; {
+  description = &amp;quot;A list of names&amp;quot;
+  type        = list(string)
+  default     = [&amp;quot;alice&amp;quot;, &amp;quot;bob&amp;quot;, &amp;quot;charlie&amp;quot;]
+}
+
+# if 구문을 사용하는 방법입니다.
+output &amp;quot;for_directive_index_if&amp;quot; {
+  value = &amp;lt;&amp;lt;EOF
+%{ for i, name in var.names }
+  ${name}%{ if i &amp;lt; length(var.names) - 1 }, %{ endif }
+%{ endfor }
+EOF
+}
+
+# 마지막 `,` 문자에 대해 strip을 할 수도 있습니다.
+output &amp;quot;for_directive_index_if_strip&amp;quot; {
+  value = &amp;lt;&amp;lt;EOF
+%{~ for i, name in var.names ~}
+${name}%{ if i &amp;lt; length(var.names) - 1 }, %{ endif }
+%{~ endfor ~}
+EOF
+}
+
+# 마지막 `,` 문자에 대해 strip을 할 수도 있습니다.
+output &amp;quot;for_directive_index_if_else_strip&amp;quot; {
+  value = &amp;lt;&amp;lt;EOF
+%{~ for i, name in var.names ~}
+${name}%{ if i &amp;lt; length(var.names) - 1 }, %{ else }.%{ endif }
+%{~ endfor ~}
+EOF
+}&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;terraform init &amp;amp;&amp;amp; terraform apply&lt;/code&gt;를 수행하면 아래와 같은 결과값을 보실 수 있습니다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;bash&quot;&gt;&lt;pre class=&quot;language-bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;$ terraform init &lt;span class=&quot;token operator&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; terraform apply
+
+&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;생략&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+
+Apply complete&lt;span class=&quot;token operator&quot;&gt;!&lt;/span&gt; Resources: &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt; added, &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt; changed, &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt; destroyed.
+
+Outputs:
+
+for_directive_index_if &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;EOT
+
+  alice,
+
+  bob,
+
+  charlie
+
+
+EOT&lt;/span&gt;
+for_directive_index_if_else_strip &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;alice, bob, charlie.&quot;&lt;/span&gt;
+for_directive_index_if_strip &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;alice, bob, charlie&quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;h1 id=&quot;lessons-learned&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#lessons-learned&quot; aria-label=&quot;lessons learned permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Lessons Learned&lt;/h1&gt;
 &lt;p&gt;제 5장에서는 아래의 내용을 반드시 기억하셨으면 좋겠습니다.&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;
-&lt;p&gt;(중요!) Prerequisite에서, 테라폼의 타입과 값에 대한 내용은 이미 알고있어야 하는 주요한 내용이라고 봅니다.&lt;/p&gt;
+&lt;p&gt;(중요!) Prerequisite를 반드시 읽어주세요. 테라폼의 타입과 값에 대한 내용은 알고있어야 앞으로의 진행이 수월할 것입니다!&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;프로그래밍 언어처럼 다루려면, 어떤 타입과 값을 사용할 수 있는지는 기본적으로 알아야 하기 때문입니다.&lt;/li&gt;
 &lt;/ol&gt;
 &lt;/li&gt;
 &lt;li&gt;
-&lt;p&gt;반복문의 사용방법과 주의사항에 대해 배웠습니다.&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
 &lt;p&gt;조건문의 사용방법과 주의사항에 대해 배웠습니다.&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;이것으로 제 5장을 마칩니다. 긴 글 읽어주셔서 감사합니다.&lt;/p&gt;</content:encoded></item><item><title><![CDATA[[CloudNet@] 테라폼 스터디 5주차 - Terraform의 반복문과 조건문 (1) - 반복문]]></title><description><![CDATA[Terraform의 타입과 값이 어떻게 쓰이는지 알고있다는 가정 하에, 반복문과 조건문을 사용하여 로직을 표현하는 방법을 담았습니다. 그 중, 반복문을 먼저 살펴봅시다.]]></description><link>https://blog.s3ich4n.me/devlog/terraform/2022-11-19-cloudneta-terraform-101-pt05-1</link><guid isPermaLink="false">https://blog.s3ich4n.me/devlog/terraform/2022-11-19-cloudneta-terraform-101-pt05-1</guid><pubDate>Wed, 16 Nov 2022 03:37:57 GMT</pubDate><content:encoded>&lt;p&gt;이 내용은 CloudNet@ 에서 진행하는 테라폼 기초 입문 스터디에 대한 연재글입니다.&lt;/p&gt;
+&lt;p&gt;이것으로 제 5장, 조건문 설명을 마칩니다. 긴 글 읽어주셔서 감사합니다.&lt;/p&gt;</content:encoded></item><item><title><![CDATA[[CloudNet@] 테라폼 스터디 5주차 - Terraform의 반복문과 조건문 (1) - 반복문]]></title><description><![CDATA[Terraform의 타입과 값이 어떻게 쓰이는지 알고있다는 가정 하에, 반복문과 조건문을 사용하여 로직을 표현하는 방법을 담았습니다. 그 중, 반복문을 먼저 살펴봅시다.]]></description><link>https://blog.s3ich4n.me/devlog/terraform/2022-11-19-cloudneta-terraform-101-pt05-1</link><guid isPermaLink="false">https://blog.s3ich4n.me/devlog/terraform/2022-11-19-cloudneta-terraform-101-pt05-1</guid><pubDate>Wed, 16 Nov 2022 03:37:57 GMT</pubDate><content:encoded>&lt;p&gt;이 내용은 CloudNet@ 에서 진행하는 테라폼 기초 입문 스터디에 대한 연재글입니다.&lt;/p&gt;
 &lt;p&gt;스터디에서 사용하는 교재는 &lt;a href=&quot;http://www.yes24.com/Product/Goods/101511312&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;Terraform Up &amp;#x26; Running 2nd Edition&lt;/a&gt; 입니다.&lt;/p&gt;
 &lt;hr&gt;
 &lt;h1 id=&quot;prerequisites&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#prerequisites&quot; aria-label=&quot;prerequisites permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Prerequisites&lt;/h1&gt;
@@ -405,7 +649,7 @@ Changes to Outputs:
     &lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;/li&gt;
 &lt;li&gt;
-&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;count&lt;/code&gt; 사용 시 목록 중간 항목을 제거하면 테라폼은 해당 항목 뒤에 있는 &lt;strong&gt;모든 리소스를 삭제&lt;/strong&gt;한 다음 해당 리소스를 처음부터 다시 만듭니다…&lt;/p&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;count&lt;/code&gt; 사용 시 목록 중간 항목을 제거하면 테라폼은 해당 항목 뒤에 있는 &lt;strong&gt;모든 리소스를 삭제&lt;/strong&gt;한 다음 해당 리소스를 처음부터 다시 만듭니다… 😱😱&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
 &lt;h3 id=&quot;for_each-표현식&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#for_each-%ED%91%9C%ED%98%84%EC%8B%9D&quot; aria-label=&quot;for_each 표현식 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;&lt;code class=&quot;language-text&quot;&gt;for_each&lt;/code&gt; 표현식&lt;/h3&gt;
@@ -566,11 +810,11 @@ all_users &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span c
 &lt;p&gt;list 내의 모든 이름을 대문자로 변환하는 예제를 통해 알아봅시다. 사용은 아래와 같이 할 수 있습니다.&lt;/p&gt;
 &lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;terraform&quot;&gt;&lt;pre class=&quot;language-terraform&quot;&gt;&lt;code class=&quot;language-terraform&quot;&gt;# 결과를 list 형식으로 리턴합니다.
 [for &amp;lt;ITEM&amp;gt; in &amp;lt;LIST&amp;gt; : &amp;lt;OUTPUT&amp;gt;]
-[for &amp;lt;ITEM&amp;gt; in &amp;lt;LIST&amp;gt; : &amp;lt;OUTPUT&amp;gt; if &amp;lt;EXPRESSION&amp;gt;]
+[for &amp;lt;ITEM&amp;gt; in &amp;lt;LIST&amp;gt; : &amp;lt;OUTPUT&amp;gt; if &amp;lt;EXPRESSION&amp;gt;] # 조건문 절에서 다시 살펴봅시다!
 
 # 결과를 map 형식으로 리턴합니다.
 {for &amp;lt;ITEM&amp;gt; in &amp;lt;LIST&amp;gt; : &amp;lt;OUTPUT_KEY&amp;gt; =&amp;gt; &amp;lt;OUTPUT_VALUE&amp;gt;}
-{for &amp;lt;ITEM&amp;gt; in &amp;lt;LIST&amp;gt; : &amp;lt;OUTPUT_KEY&amp;gt; =&amp;gt; &amp;lt;OUTPUT_VALUE&amp;gt; if &amp;lt;EXPRESSION&amp;gt;}&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+{for &amp;lt;ITEM&amp;gt; in &amp;lt;LIST&amp;gt; : &amp;lt;OUTPUT_KEY&amp;gt; =&amp;gt; &amp;lt;OUTPUT_VALUE&amp;gt; if &amp;lt;EXPRESSION&amp;gt;} # 조건문 절에서 다시 살펴봅시다!&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;ul&gt;
 &lt;li&gt;LIST: 반복할 리스트&lt;/li&gt;
 &lt;li&gt;ITEM: LIST의 각 항목에 할당할 변수의 이름&lt;/li&gt;
@@ -619,10 +863,7 @@ output &amp;quot;upper_prize_status&amp;quot; {
 %{ for &amp;lt;ITEM&amp;gt; in &amp;lt;COLLECTION&amp;gt; }&amp;lt;BODY&amp;gt;%{ endfor }
 
 # 인덱스를 추가할 수도 있습니다.
-%{ for &amp;lt;INDEX&amp;gt;, &amp;lt;ITEM&amp;gt; in &amp;lt;COLLECTION&amp;gt; }&amp;lt;BODY&amp;gt;%{ endfor }
-
-# if, if-else 구문의 사용방법입니다.
-%{ for &amp;lt;INDEX&amp;gt;, &amp;lt;ITEM&amp;gt; in &amp;lt;COLLECTION&amp;gt; }&amp;lt;BODY&amp;gt;%{if &amp;lt;EXPRESSION&amp;gt;}%{ else }%{ endif }%{ endfor }&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+%{ for &amp;lt;INDEX&amp;gt;, &amp;lt;ITEM&amp;gt; in &amp;lt;COLLECTION&amp;gt; }&amp;lt;BODY&amp;gt;%{ endfor }&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;ul&gt;
 &lt;li&gt;COLLECTION: 반복할 리스트, 맵. 말 그대로 반복 가능한 컬렉션을 의미합니다.&lt;/li&gt;
 &lt;li&gt;ITEM: 각 항목에 할당할 로컬 변수의 이름입니다.&lt;/li&gt;
@@ -643,33 +884,6 @@ output &amp;quot;for_directive&amp;quot; {
 output &amp;quot;for_directive_index&amp;quot; {
   # 파이썬의 enumerate() 을 쓰듯 사용할 수도 있군요!
   value = &amp;quot;%{ for i, name in var.names }(${i}) ${name}, %{ endfor }&amp;quot;
-}
-
-# if 구문을 사용하는 방법입니다.
-output &amp;quot;for_directive_index_if&amp;quot; {
-  value = &amp;lt;&amp;lt;EOF
-%{ for i, name in var.names }
-  ${name}%{ if i &amp;lt; length(var.names) - 1 }, %{ endif }
-%{ endfor }
-EOF
-}
-
-# 마지막 `,` 문자에 대해 strip을 할 수도 있습니다.
-output &amp;quot;for_directive_index_if_strip&amp;quot; {
-  value = &amp;lt;&amp;lt;EOF
-%{~ for i, name in var.names ~}
-${name}%{ if i &amp;lt; length(var.names) - 1 }, %{ endif }
-%{~ endfor ~}
-EOF
-}
-
-# 마지막 `,` 문자에 대해 strip을 할 수도 있습니다.
-output &amp;quot;for_directive_index_if_else_strip&amp;quot; {
-  value = &amp;lt;&amp;lt;EOF
-%{~ for i, name in var.names ~}
-${name}%{ if i &amp;lt; length(var.names) - 1 }, %{ else }.%{ endif }
-%{~ endfor ~}
-EOF
 }&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;terraform init &amp;amp;&amp;amp; terraform apply&lt;/code&gt;를 수행하면 아래와 같은 결과값을 보실 수 있습니다.&lt;/p&gt;
 &lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;bash&quot;&gt;&lt;pre class=&quot;language-bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;$ terraform init &lt;span class=&quot;token operator&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; terraform apply
@@ -681,20 +895,7 @@ Apply complete&lt;span class=&quot;token operator&quot;&gt;!&lt;/span&gt; Resour
 Outputs:
 
 for_directive &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;alice, bob, charlie, &quot;&lt;/span&gt;
-for_directive_index &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;(0) alice, (1) bob, (2) charlie, &quot;&lt;/span&gt;
-for_directive_index_if &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;EOT
-
-  alice,
-
-  bob,
-
-  charlie
-
-
-EOT&lt;/span&gt;
-for_directive_index_if_else_strip &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;alice, bob, charlie.&quot;&lt;/span&gt;
-for_directive_index_if_strip &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;alice, bob, charlie&quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h2 id=&quot;조건문&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%A1%B0%EA%B1%B4%EB%AC%B8&quot; aria-label=&quot;조건문 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;조건문&lt;/h2&gt;
+for_directive_index &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;(0) alice, (1) bob, (2) charlie, &quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;h1 id=&quot;lessons-learned&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#lessons-learned&quot; aria-label=&quot;lessons learned permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Lessons Learned&lt;/h1&gt;
 &lt;p&gt;제 5장에서는 아래의 내용을 반드시 기억하셨으면 좋겠습니다.&lt;/p&gt;
 &lt;ol&gt;
@@ -711,7 +912,7 @@ for_directive_index_if_strip &lt;span class=&quot;token operator&quot;&gt;=&lt;/
 &lt;p&gt;조건문의 사용방법과 주의사항에 대해 배웠습니다.&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;이것으로 제 5장을 마칩니다. 긴 글 읽어주셔서 감사합니다.&lt;/p&gt;</content:encoded></item><item><title><![CDATA[[CloudNet@] 테라폼 스터디 4주차 - Terraform의 module에 대하여]]></title><description><![CDATA[Terraform의 module 에 대한 소개와, 어떻게 활용하는지, 그리고 주의사항과 모듈 버전관리에 대한 내용을 담았습니다.]]></description><link>https://blog.s3ich4n.me/devlog/terraform/2022-11-10-cloudneta-terraform-101-pt04</link><guid isPermaLink="false">https://blog.s3ich4n.me/devlog/terraform/2022-11-10-cloudneta-terraform-101-pt04</guid><pubDate>Thu, 10 Nov 2022 04:11:57 GMT</pubDate><content:encoded>&lt;p&gt;이 내용은 CloudNet@ 에서 진행하는 테라폼 기초 입문 스터디에 대한 연재글입니다.&lt;/p&gt;
+&lt;p&gt;이것으로 제 5장, 반복문 설명을 마칩니다. 긴 글 읽어주셔서 감사합니다.&lt;/p&gt;</content:encoded></item><item><title><![CDATA[[CloudNet@] 테라폼 스터디 4주차 - Terraform의 module에 대하여]]></title><description><![CDATA[Terraform의 module 에 대한 소개와, 어떻게 활용하는지, 그리고 주의사항과 모듈 버전관리에 대한 내용을 담았습니다.]]></description><link>https://blog.s3ich4n.me/devlog/terraform/2022-11-10-cloudneta-terraform-101-pt04</link><guid isPermaLink="false">https://blog.s3ich4n.me/devlog/terraform/2022-11-10-cloudneta-terraform-101-pt04</guid><pubDate>Thu, 10 Nov 2022 04:11:57 GMT</pubDate><content:encoded>&lt;p&gt;이 내용은 CloudNet@ 에서 진행하는 테라폼 기초 입문 스터디에 대한 연재글입니다.&lt;/p&gt;
 &lt;p&gt;스터디에서 사용하는 교재는 &lt;a href=&quot;http://www.yes24.com/Product/Goods/101511312&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;Terraform Up &amp;#x26; Running 2nd Edition&lt;/a&gt; 입니다.&lt;/p&gt;
 &lt;hr&gt;
 &lt;h1 id=&quot;prerequisites&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#prerequisites&quot; aria-label=&quot;prerequisites permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Prerequisites&lt;/h1&gt;

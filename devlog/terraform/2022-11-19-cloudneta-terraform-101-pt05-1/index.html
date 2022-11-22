@@ -446,7 +446,7 @@ Changes to Outputs:
     <span class="token punctuation">]</span></code></pre></div>
 </li>
 <li>
-<p><code class="language-text">count</code> 사용 시 목록 중간 항목을 제거하면 테라폼은 해당 항목 뒤에 있는 <strong>모든 리소스를 삭제</strong>한 다음 해당 리소스를 처음부터 다시 만듭니다…</p>
+<p><code class="language-text">count</code> 사용 시 목록 중간 항목을 제거하면 테라폼은 해당 항목 뒤에 있는 <strong>모든 리소스를 삭제</strong>한 다음 해당 리소스를 처음부터 다시 만듭니다… 😱😱</p>
 </li>
 </ol>
 <h3 id="for_each-표현식" style="position:relative;"><a href="#for_each-%ED%91%9C%ED%98%84%EC%8B%9D" aria-label="for_each 표현식 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code class="language-text">for_each</code> 표현식</h3>
@@ -607,11 +607,11 @@ all_users <span class="token operator">=</span> <span class="token punctuation">
 <p>list 내의 모든 이름을 대문자로 변환하는 예제를 통해 알아봅시다. 사용은 아래와 같이 할 수 있습니다.</p>
 <div class="gatsby-highlight" data-language="terraform"><pre class="language-terraform"><code class="language-terraform"># 결과를 list 형식으로 리턴합니다.
 [for &lt;ITEM&gt; in &lt;LIST&gt; : &lt;OUTPUT&gt;]
-[for &lt;ITEM&gt; in &lt;LIST&gt; : &lt;OUTPUT&gt; if &lt;EXPRESSION&gt;]
+[for &lt;ITEM&gt; in &lt;LIST&gt; : &lt;OUTPUT&gt; if &lt;EXPRESSION&gt;] # 조건문 절에서 다시 살펴봅시다!
 
 # 결과를 map 형식으로 리턴합니다.
 {for &lt;ITEM&gt; in &lt;LIST&gt; : &lt;OUTPUT_KEY&gt; =&gt; &lt;OUTPUT_VALUE&gt;}
-{for &lt;ITEM&gt; in &lt;LIST&gt; : &lt;OUTPUT_KEY&gt; =&gt; &lt;OUTPUT_VALUE&gt; if &lt;EXPRESSION&gt;}</code></pre></div>
+{for &lt;ITEM&gt; in &lt;LIST&gt; : &lt;OUTPUT_KEY&gt; =&gt; &lt;OUTPUT_VALUE&gt; if &lt;EXPRESSION&gt;} # 조건문 절에서 다시 살펴봅시다!</code></pre></div>
 <ul>
 <li>LIST: 반복할 리스트</li>
 <li>ITEM: LIST의 각 항목에 할당할 변수의 이름</li>
@@ -660,10 +660,7 @@ output &quot;upper_prize_status&quot; {
 %{ for &lt;ITEM&gt; in &lt;COLLECTION&gt; }&lt;BODY&gt;%{ endfor }
 
 # 인덱스를 추가할 수도 있습니다.
-%{ for &lt;INDEX&gt;, &lt;ITEM&gt; in &lt;COLLECTION&gt; }&lt;BODY&gt;%{ endfor }
-
-# if, if-else 구문의 사용방법입니다.
-%{ for &lt;INDEX&gt;, &lt;ITEM&gt; in &lt;COLLECTION&gt; }&lt;BODY&gt;%{if &lt;EXPRESSION&gt;}%{ else }%{ endif }%{ endfor }</code></pre></div>
+%{ for &lt;INDEX&gt;, &lt;ITEM&gt; in &lt;COLLECTION&gt; }&lt;BODY&gt;%{ endfor }</code></pre></div>
 <ul>
 <li>COLLECTION: 반복할 리스트, 맵. 말 그대로 반복 가능한 컬렉션을 의미합니다.</li>
 <li>ITEM: 각 항목에 할당할 로컬 변수의 이름입니다.</li>
@@ -684,33 +681,6 @@ output &quot;for_directive&quot; {
 output &quot;for_directive_index&quot; {
   # 파이썬의 enumerate() 을 쓰듯 사용할 수도 있군요!
   value = &quot;%{ for i, name in var.names }(${i}) ${name}, %{ endfor }&quot;
-}
-
-# if 구문을 사용하는 방법입니다.
-output &quot;for_directive_index_if&quot; {
-  value = &lt;&lt;EOF
-%{ for i, name in var.names }
-  ${name}%{ if i &lt; length(var.names) - 1 }, %{ endif }
-%{ endfor }
-EOF
-}
-
-# 마지막 `,` 문자에 대해 strip을 할 수도 있습니다.
-output &quot;for_directive_index_if_strip&quot; {
-  value = &lt;&lt;EOF
-%{~ for i, name in var.names ~}
-${name}%{ if i &lt; length(var.names) - 1 }, %{ endif }
-%{~ endfor ~}
-EOF
-}
-
-# 마지막 `,` 문자에 대해 strip을 할 수도 있습니다.
-output &quot;for_directive_index_if_else_strip&quot; {
-  value = &lt;&lt;EOF
-%{~ for i, name in var.names ~}
-${name}%{ if i &lt; length(var.names) - 1 }, %{ else }.%{ endif }
-%{~ endfor ~}
-EOF
 }</code></pre></div>
 <p><code class="language-text">terraform init &amp;&amp; terraform apply</code>를 수행하면 아래와 같은 결과값을 보실 수 있습니다.</p>
 <div class="gatsby-highlight" data-language="bash"><pre class="language-bash"><code class="language-bash">$ terraform init <span class="token operator">&amp;&amp;</span> terraform apply
@@ -722,20 +692,7 @@ Apply complete<span class="token operator">!</span> Resources: <span class="toke
 Outputs:
 
 for_directive <span class="token operator">=</span> <span class="token string">"alice, bob, charlie, "</span>
-for_directive_index <span class="token operator">=</span> <span class="token string">"(0) alice, (1) bob, (2) charlie, "</span>
-for_directive_index_if <span class="token operator">=</span> <span class="token operator">&lt;&lt;</span><span class="token string">EOT
-
-  alice,
-
-  bob,
-
-  charlie
-
-
-EOT</span>
-for_directive_index_if_else_strip <span class="token operator">=</span> <span class="token string">"alice, bob, charlie."</span>
-for_directive_index_if_strip <span class="token operator">=</span> <span class="token string">"alice, bob, charlie"</span></code></pre></div>
-<h2 id="조건문" style="position:relative;"><a href="#%EC%A1%B0%EA%B1%B4%EB%AC%B8" aria-label="조건문 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>조건문</h2>
+for_directive_index <span class="token operator">=</span> <span class="token string">"(0) alice, (1) bob, (2) charlie, "</span></code></pre></div>
 <h1 id="lessons-learned" style="position:relative;"><a href="#lessons-learned" aria-label="lessons learned permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Lessons Learned</h1>
 <p>제 5장에서는 아래의 내용을 반드시 기억하셨으면 좋겠습니다.</p>
 <ol>
@@ -752,4 +709,4 @@ for_directive_index_if_strip <span class="token operator">=</span> <span class="
 <p>조건문의 사용방법과 주의사항에 대해 배웠습니다.</p>
 </li>
 </ol>
-<p>이것으로 제 5장을 마칩니다. 긴 글 읽어주셔서 감사합니다.</p></div></div></div><div class="Post-module--footer--f8705"><div class="Meta-module--meta--dae0a"><p class="Meta-module--date--4d30d">Published<!-- --> <!-- -->Nov 16, 2022</p></div><div class="Tags-module--tags--18589"><ul class="Tags-module--list--82ae6"><li class="Tags-module--item--52015"><a class="Button-module--button--b1113" href="/tag/terraform/">terraform</a></li><li class="Tags-module--item--52015"><a class="Button-module--button--b1113" href="/tag/iac/">iac</a></li><li class="Tags-module--item--52015"><a class="Button-module--button--b1113" href="/tag/devops/">devops</a></li></ul></div><div class="Author-module--author--1c58d"><p class="Non scholæ sed vitæ discimus.">Non scholæ sed vitæ discimus.</p><p class="Author-module--bio--08950">his/him<a class="Author-module--twitter--90647" href="https://www.twitter.com/" rel="noopener noreferrer" target="_blank"><strong>s3ich4n</strong> on Twitter</a></p></div></div><div class="Post-module--comments--d3b99"></div></div></div></div><div id="gatsby-announcer" style="position:absolute;top:0;width:1px;height:1px;padding:0;overflow:hidden;clip:rect(0, 0, 0, 0);white-space:nowrap;border:0" aria-live="assertive" aria-atomic="true"></div></div><script id="gatsby-script-loader">/*<![CDATA[*/window.pagePath="/devlog/terraform/2022-11-19-cloudneta-terraform-101-pt05-1";window.___webpackCompilationHash="e9ba9828502e4a855388";/*]]>*/</script><script id="gatsby-chunk-mapping">/*<![CDATA[*/window.___chunkMapping={"polyfill":["/polyfill-d2180604bf06a006eef1.js"],"app":["/app-9ac132e7e136b6ecb0de.js"],"component---cache-caches-gatsby-plugin-offline-app-shell-js":["/component---cache-caches-gatsby-plugin-offline-app-shell-js-0c915c7b1bdb5eac4fdf.js"],"component---src-templates-categories-template-categories-template-tsx":["/component---src-templates-categories-template-categories-template-tsx-e2d2add397e32e3517ca.js"],"component---src-templates-category-template-category-template-tsx":["/component---src-templates-category-template-category-template-tsx-078f2adfba160a34229f.js"],"component---src-templates-index-template-index-template-tsx":["/component---src-templates-index-template-index-template-tsx-83380c7954c9f6621026.js"],"component---src-templates-not-found-template-not-found-template-tsx":["/component---src-templates-not-found-template-not-found-template-tsx-682a8d418e3a0285d34e.js"],"component---src-templates-page-template-page-template-tsx":["/component---src-templates-page-template-page-template-tsx-c6c21d7369a9356db3a1.js"],"component---src-templates-post-template-post-template-tsx":["/component---src-templates-post-template-post-template-tsx-b988b5e8e213fff61e5b.js"],"component---src-templates-tag-template-tag-template-tsx":["/component---src-templates-tag-template-tag-template-tsx-8d0b3090e775aa3c4584.js"],"component---src-templates-tags-template-tags-template-tsx":["/component---src-templates-tags-template-tags-template-tsx-30027e87af7d042f3afb.js"]};/*]]>*/</script><script src="/polyfill-d2180604bf06a006eef1.js" nomodule=""></script><script src="/app-9ac132e7e136b6ecb0de.js" async=""></script><script src="/framework-481a1b6416c14416b2fb.js" async=""></script><script src="/webpack-runtime-5cdc03a992cc3f365750.js" async=""></script></body></html>
+<p>이것으로 제 5장, 반복문 설명을 마칩니다. 긴 글 읽어주셔서 감사합니다.</p></div></div></div><div class="Post-module--footer--f8705"><div class="Meta-module--meta--dae0a"><p class="Meta-module--date--4d30d">Published<!-- --> <!-- -->Nov 16, 2022</p></div><div class="Tags-module--tags--18589"><ul class="Tags-module--list--82ae6"><li class="Tags-module--item--52015"><a class="Button-module--button--b1113" href="/tag/terraform/">terraform</a></li><li class="Tags-module--item--52015"><a class="Button-module--button--b1113" href="/tag/iac/">iac</a></li><li class="Tags-module--item--52015"><a class="Button-module--button--b1113" href="/tag/devops/">devops</a></li></ul></div><div class="Author-module--author--1c58d"><p class="Non scholæ sed vitæ discimus.">Non scholæ sed vitæ discimus.</p><p class="Author-module--bio--08950">his/him</p></div></div><div class="Post-module--comments--d3b99"><div></div></div></div></div></div><div id="gatsby-announcer" style="position:absolute;top:0;width:1px;height:1px;padding:0;overflow:hidden;clip:rect(0, 0, 0, 0);white-space:nowrap;border:0" aria-live="assertive" aria-atomic="true"></div></div><script id="gatsby-script-loader">/*<![CDATA[*/window.pagePath="/devlog/terraform/2022-11-19-cloudneta-terraform-101-pt05-1";window.___webpackCompilationHash="651d555894432e5eb01b";/*]]>*/</script><script id="gatsby-chunk-mapping">/*<![CDATA[*/window.___chunkMapping={"polyfill":["/polyfill-cd4956da42350a65f0a7.js"],"app":["/app-8ef61d08b23a2bb2e32b.js"],"component---cache-caches-gatsby-plugin-offline-app-shell-js":["/component---cache-caches-gatsby-plugin-offline-app-shell-js-0c915c7b1bdb5eac4fdf.js"],"component---src-templates-categories-template-categories-template-tsx":["/component---src-templates-categories-template-categories-template-tsx-e2d2add397e32e3517ca.js"],"component---src-templates-category-template-category-template-tsx":["/component---src-templates-category-template-category-template-tsx-078f2adfba160a34229f.js"],"component---src-templates-index-template-index-template-tsx":["/component---src-templates-index-template-index-template-tsx-83380c7954c9f6621026.js"],"component---src-templates-not-found-template-not-found-template-tsx":["/component---src-templates-not-found-template-not-found-template-tsx-682a8d418e3a0285d34e.js"],"component---src-templates-page-template-page-template-tsx":["/component---src-templates-page-template-page-template-tsx-c6c21d7369a9356db3a1.js"],"component---src-templates-post-template-post-template-tsx":["/component---src-templates-post-template-post-template-tsx-119cd0258cb38628d01f.js"],"component---src-templates-tag-template-tag-template-tsx":["/component---src-templates-tag-template-tag-template-tsx-8d0b3090e775aa3c4584.js"],"component---src-templates-tags-template-tags-template-tsx":["/component---src-templates-tags-template-tags-template-tsx-30027e87af7d042f3afb.js"]};/*]]>*/</script><script src="/polyfill-cd4956da42350a65f0a7.js" nomodule=""></script><script src="/app-8ef61d08b23a2bb2e32b.js" async=""></script><script src="/framework-481a1b6416c14416b2fb.js" async=""></script><script src="/webpack-runtime-58232133b30cc616d248.js" async=""></script></body></html>
