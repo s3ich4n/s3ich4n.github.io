@@ -10,7 +10,13 @@ const NotFoundTemplate: React.FC = () => (
   <Layout>
     <Sidebar />
     <Page title="NOT FOUND">
-      <p>You just hit a route that doesn't exist... the sadness.</p>
+      <p>
+        Looks you like to search page that doesn't exist... Please go to main
+        page.
+      </p>
+      <p>
+        <a href="https://blog.s3ich4n.me/">Back to home</a>
+      </p>
     </Page>
   </Layout>
 );
