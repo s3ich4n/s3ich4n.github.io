@@ -152,7 +152,8 @@ exports[`NotFoundTemplate renders correctly 1`] = `
       </h1>
       <div>
         <p>
-          You just hit a route that doesn't exist... the sadness.
+          Looks you like to search page that doesn't exist... Please go to main
+          page.
         </p>
       </div>
     </div>
