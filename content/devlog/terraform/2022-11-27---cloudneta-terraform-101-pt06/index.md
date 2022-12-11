@@ -9,7 +9,7 @@ tags:
   - "terraform"
   - "iac"
   - "devops"
-description: "Terraform의 등장배경과, 간략한 소개, 그리고 기초적인 예시를 통해 어떻게 사용하는지에 대한 내용을 담고 있습니다."
+description: "Terraform을 사용하며 인프라 프로비저닝 및 배포 시, 민감정보에 대해 관리하는 방안에 대해 작성하였습니다."
 socialImage: "./media/terraform06.jpg"
 ---
 

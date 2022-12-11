@@ -1,9 +1,9 @@
 ---
 title: "[CloudNet@] 테라폼 스터디 8주차 - 프로덕션 수준의 테라폼 코드"
-date: "2022-12-11T23:57:22.000Z"
+date: "2022-12-12T04:43:39.000Z"
 template: "post"
 draft: false
-slug: "/devlog/terraform/2022-12-11-cloudneta-terraform-101-pt08"
+slug: "/devlog/terraform/2022-12-12-cloudneta-terraform-101-pt08"
 category: "devlog"
 tags:
   - "terraform"
