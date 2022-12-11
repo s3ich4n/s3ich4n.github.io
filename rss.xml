@@ -1,4 +1,1495 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[팔공산 창고]]></title><description><![CDATA[팔공산 창고]]></description><link>http://github.com/dylang/node-rss</link><generator>GatsbyJS</generator><lastBuildDate>Tue, 22 Nov 2022 07:57:03 GMT</lastBuildDate><item><title><![CDATA[[CloudNet@] 테라폼 스터디 5주차 - Terraform의 반복문과 조건문 (2) - 조건문]]></title><description><![CDATA[Terraform의 타입과 값이 어떻게 쓰이는지 알고있다는 가정 하에, 반복문과 조건문을 사용하여 로직을 표현하는 방법을 담았습니다. 그 중, 조건문을 살펴봅시다.]]></description><link>https://blog.s3ich4n.me/devlog/terraform/2022-11-19-cloudneta-terraform-101-pt05-2</link><guid isPermaLink="false">https://blog.s3ich4n.me/devlog/terraform/2022-11-19-cloudneta-terraform-101-pt05-2</guid><pubDate>Sat, 19 Nov 2022 23:52:57 GMT</pubDate><content:encoded>&lt;p&gt;이 내용은 CloudNet@ 에서 진행하는 테라폼 기초 입문 스터디에 대한 연재글입니다.&lt;/p&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[팔공산 창고]]></title><description><![CDATA[팔공산 창고]]></description><link>http://github.com/dylang/node-rss</link><generator>GatsbyJS</generator><lastBuildDate>Sun, 11 Dec 2022 21:36:47 GMT</lastBuildDate><item><title><![CDATA[[CloudNet@] 테라폼 스터디 9주차 - Working with Multiple Providers]]></title><description><![CDATA[Terraform을 통해 다양한 프로바이더에 대한 배포, 멀티 계정 활용 등에 대한 기본을 학습해봅시다.]]></description><link>https://blog.s3ich4n.me/devlog/terraform/2022-12-13-cloudneta-terraform-101-pt09</link><guid isPermaLink="false">https://blog.s3ich4n.me/devlog/terraform/2022-12-13-cloudneta-terraform-101-pt09</guid><pubDate>Mon, 12 Dec 2022 05:50:00 GMT</pubDate><content:encoded>&lt;p&gt;이 내용은 CloudNet@ 에서 진행하는 테라폼 기초 입문 스터디에 대한 연재글입니다.&lt;/p&gt;
+&lt;p&gt;스터디에서 사용하는 교재는 &lt;a href=&quot;http://www.yes24.com/Product/Goods/101511312&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;Terraform Up &amp;#x26; Running 2nd Edition&lt;/a&gt; 입니다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;prerequisites&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#prerequisites&quot; aria-label=&quot;prerequisites permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Prerequisites&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;테라폼을 처음 배우면서 함께 살펴봐도 좋을 듯 합니다&lt;/li&gt;
+&lt;li&gt;하지만, 제 8장을 이해하고 오신다면 보다 더 낫겠습니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&quot;본문&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EB%B3%B8%EB%AC%B8&quot; aria-label=&quot;본문 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;본문&lt;/h1&gt;
+&lt;p&gt;현재까지의 테라폼 코드는 모두 이 코드가 들어가 있었습니다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;provider &quot;aws&quot; {
+  region = &quot;us-east-2&quot;
+}&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;그렇지만, 필요에 따라 MS Azure나 GCP를 사용한다면 어떻게 해야할까요? 다른 리전이나 여러 리전을 선택할 수는 있을까요? 혹은 계정별로 권한을 분리하여 작업하려면 어떻게 해야할까요? 프로바이더 블록에 대해 다시 한번 살펴봅시다.&lt;/p&gt;
+&lt;h2 id=&quot;provider-deep-dive&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#provider-deep-dive&quot; aria-label=&quot;provider deep dive permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Provider deep-dive&lt;/h2&gt;
+&lt;p&gt;프로바이더를 알기 전, 테라폼 코어와 프로바이더에 대해 간략히 살펴봅시다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;core&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;테라폼 바이너리입니다.&lt;/li&gt;
+&lt;li&gt;모든 플랫폼에서 사용되는 테라폼의 모든 기본 기능을 제공합니다.&lt;/li&gt;
+&lt;li&gt;명령줄 인터페이스(예: 계획, 적용 등), Terraform 코드(HCL)용 파서 및 해석기, 리소스 및 데이터 소스에서 종속성 그래프를 작성하는 기능, 상태 파일을 읽고 쓰는 논리 등입니다.&lt;/li&gt;
+&lt;li&gt;내부적인 코드는 Go로 작성되었으며 HashiCorp에서 관리하는 GitHub 저장소에 있습니다. (오픈소스입니다!)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;provider&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;테라폼 코어를 위한 플러그인입니다.&lt;/li&gt;
+&lt;li&gt;각 플러그인은 AWS, Azure, GCP 등 외부 플랫폼과 통신합니다. 초기에는 HashiCorp 측에서 프로바이더를 만들었지만, 지금은 메인 프로바이더의 경우 각 회사에서 직접 프로바이더를 관리합니다.&lt;/li&gt;
+&lt;li&gt;각 프로바이더는 특정 접두사를 할당하고, 해당 접두사를 포함하는 하나 이상의 리소스 및 데이터 소스를 표현합니다.
+&lt;ul&gt;
+&lt;li&gt;E.g., &lt;code class=&quot;language-text&quot;&gt;aws_&lt;/code&gt; prefix: &lt;code class=&quot;language-text&quot;&gt;aws_instance&lt;/code&gt;, &lt;code class=&quot;language-text&quot;&gt;aws_autoscaling_group&lt;/code&gt;, &lt;code class=&quot;language-text&quot;&gt;aws_ami&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;E.g., &lt;code class=&quot;language-text&quot;&gt;azurerm_&lt;/code&gt; prefix: &lt;code class=&quot;language-text&quot;&gt;azurerm_virtual_machine&lt;/code&gt;, &lt;code class=&quot;language-text&quot;&gt;azurerm_virtual_machine_scale_set&lt;/code&gt;, &lt;code class=&quot;language-text&quot;&gt;azurerm_image&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Terraform 코어는 RPC(원격 프로시저 호출)를 통해 플러그인과 통신하며 해당 플러그인은 차례로 아래 그림과 같이 네트워크를 통해(예: HTTP 호출을 통해) 해당 플랫폼과 통신합니다.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;span
+      class=&quot;gatsby-resp-image-wrapper&quot;
+      style=&quot;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 960px; &quot;
+    &gt;
+      &lt;a
+    class=&quot;gatsby-resp-image-link&quot;
+    href=&quot;/static/c561771300765fd3d3253fbb88a9f75e/9ecec/09_001.jpg&quot;
+    style=&quot;display: block&quot;
+    target=&quot;_blank&quot;
+    rel=&quot;noopener&quot;
+  &gt;
+    &lt;span
+    class=&quot;gatsby-resp-image-background-image&quot;
+    style=&quot;padding-bottom: 52.5%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/jpeg;base64,/9j/2wBDABALDA4MChAODQ4SERATGCgaGBYWGDEjJR0oOjM9PDkzODdASFxOQERXRTc4UG1RV19iZ2hnPk1xeXBkeFxlZ2P/2wBDARESEhgVGC8aGi9jQjhCY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2P/wgARCAALABQDASIAAhEBAxEB/8QAFwABAQEBAAAAAAAAAAAAAAAAAgAEBf/EABUBAQEAAAAAAAAAAAAAAAAAAAEA/9oADAMBAAIQAxAAAAHsHSAEqf/EABgQAQEBAQEAAAAAAAAAAAAAAAECEhEA/9oACAEBAAEFAtuSmpjvPIZiQn//xAAUEQEAAAAAAAAAAAAAAAAAAAAQ/9oACAEDAQE/AT//xAAVEQEBAAAAAAAAAAAAAAAAAAABEP/aAAgBAgEBPwFn/8QAGhAAAgIDAAAAAAAAAAAAAAAAAAEQERIhMv/aAAgBAQAGPwJvGh6OWoqP/8QAGhABAAMBAQEAAAAAAAAAAAAAAQARIUEQUf/aAAgBAQABPyFtjr9SOdlOCRrejr5aUyYAn//aAAwDAQACAAMAAAAQPw//xAAYEQACAwAAAAAAAAAAAAAAAAAAAREhMf/aAAgBAwEBPxC0S3p//8QAGBEBAQEBAQAAAAAAAAAAAAAAAREAIbH/2gAIAQIBAT8QAtnuADhN/8QAGxABAAMBAAMAAAAAAAAAAAAAAQARITFBUWH/2gAIAQEAAT8QtujZ0R24wvHnqMVu2Gr9iCIxXiHBSFiq23V2f//Z&apos;); background-size: cover; display: block;&quot;
+  &gt;&lt;/span&gt;
+  &lt;picture&gt;
+          &lt;source
+              srcset=&quot;/static/c561771300765fd3d3253fbb88a9f75e/8ac56/09_001.webp 240w,
+/static/c561771300765fd3d3253fbb88a9f75e/d3be9/09_001.webp 480w,
+/static/c561771300765fd3d3253fbb88a9f75e/e46b2/09_001.webp 960w,
+/static/c561771300765fd3d3253fbb88a9f75e/c139f/09_001.webp 1050w&quot;
+              sizes=&quot;(max-width: 960px) 100vw, 960px&quot;
+              type=&quot;image/webp&quot;
+            /&gt;
+          &lt;source
+            srcset=&quot;/static/c561771300765fd3d3253fbb88a9f75e/09b79/09_001.jpg 240w,
+/static/c561771300765fd3d3253fbb88a9f75e/7cc5e/09_001.jpg 480w,
+/static/c561771300765fd3d3253fbb88a9f75e/6a068/09_001.jpg 960w,
+/static/c561771300765fd3d3253fbb88a9f75e/9ecec/09_001.jpg 1050w&quot;
+            sizes=&quot;(max-width: 960px) 100vw, 960px&quot;
+            type=&quot;image/jpeg&quot;
+          /&gt;
+          &lt;img
+            class=&quot;gatsby-resp-image-image&quot;
+            src=&quot;/static/c561771300765fd3d3253fbb88a9f75e/6a068/09_001.jpg&quot;
+            alt=&quot;09_001&quot;
+            title=&quot;09_001&quot;
+            loading=&quot;lazy&quot;
+            decoding=&quot;async&quot;
+            style=&quot;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&quot;
+          /&gt;
+        &lt;/picture&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;&lt;/p&gt;
+&lt;h2 id=&quot;단독-프로바이더-사용방안&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EB%8B%A8%EB%8F%85-%ED%94%84%EB%A1%9C%EB%B0%94%EC%9D%B4%EB%8D%94-%EC%82%AC%EC%9A%A9%EB%B0%A9%EC%95%88&quot; aria-label=&quot;단독 프로바이더 사용방안 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;단독 프로바이더 사용방안&lt;/h2&gt;
+&lt;p&gt;단독 프로바이더를 통해 작업하는 방안에 대해 살펴보겠습니다. 기존까지 사용하던 프로바이더를 정확히 알아봅시다.&lt;/p&gt;
+&lt;p&gt;프로바이더를 선언하고 &lt;code class=&quot;language-text&quot;&gt;terraform init&lt;/code&gt; 을 하면, 프로바이더 코드를 자동으로 다운로드 받습니다.&lt;/p&gt;
+&lt;p&gt;이런 코드에 대해 만들고&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;terraform&quot;&gt;&lt;pre class=&quot;language-terraform&quot;&gt;&lt;code class=&quot;language-terraform&quot;&gt;provider &amp;quot;aws&amp;quot; {
+  region = &amp;quot;us-east-2&amp;quot;
+}&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;…이어서 &lt;code class=&quot;language-text&quot;&gt;terraform init&lt;/code&gt;을 하면, 이런 식이지요.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;bash&quot;&gt;&lt;pre class=&quot;language-bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;terraform init
+
+Initializing provider plugins&lt;span class=&quot;token punctuation&quot;&gt;..&lt;/span&gt;.
+- Finding hashicorp/aws versions matching &lt;span class=&quot;token string&quot;&gt;&quot;4.19.0&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;..&lt;/span&gt;.
+- Installing hashicorp/aws v4.19.0&lt;span class=&quot;token punctuation&quot;&gt;..&lt;/span&gt;.
+- Installed hashicorp/aws v4.19.0 &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;signed by HashiCorp&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;token punctuation&quot;&gt;..&lt;/span&gt;.&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;프로바이더를 보다 상세하게 설정하고싶다면 어떻게 해야할까요?&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;terraform&quot;&gt;&lt;pre class=&quot;language-terraform&quot;&gt;&lt;code class=&quot;language-terraform&quot;&gt;terraform {
+  required_providers {
+    &amp;lt;LOCAL_NAME&amp;gt; = {
+      source  = &amp;quot;&amp;lt;URL&amp;gt;&amp;quot;
+      version = &amp;quot;&amp;lt;VERSION&amp;gt;&amp;quot;
+    }
+  }
+}&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;지난 장에서 살펴보았던 &lt;code class=&quot;language-text&quot;&gt;require_providers&lt;/code&gt; 블록을 사용합니다. 보다 자세하게 살펴보죠.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;&amp;lt;LOCAL_NAME&gt;&lt;/code&gt; : provider 가 사용할 local name 이며, 각 provider 에서 유일한 이름이여야 합니다. 드문 경우 지만 만약 두 프로바이더가 http 경로를 중복 사용 시, 로컬 이름으로 구별 할 수 있습니다.&lt;/li&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;&amp;lt;URL&gt;&lt;/code&gt; : 해당 provider 다운로드 URL 이며, 형식은 &lt;code class=&quot;language-text&quot;&gt;[&amp;lt;HOSTNAME&gt;/]&amp;lt;NAMESPACE&gt;/&amp;lt;TYPE&gt;&lt;/code&gt; 입니다.
+&lt;ul&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;HOSTNAME&lt;/code&gt;: 프로바이더를 배포하는 테라폼 레지스트리의 호스트 이름입니다. 생략 시 테라폼 공개 레지스트리를 가리킵니다.&lt;/li&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;NAMESPACE&lt;/code&gt;: 조직 네임스페이스 입니다(일반적으로 회사 이름).&lt;/li&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;TYPE&lt;/code&gt;: 프로바이더가 관리하는 플랫폼의 이름입니다(일반적으로 TYPE는 기본 로컬 이름).
+&lt;ul&gt;
+&lt;li&gt;E.g.,
+&lt;ul&gt;
+&lt;li&gt;aws 프로바이더 전체 URL) &lt;strong&gt;registry.terraform.io/hashicorp/aws&lt;/strong&gt; → 생략 표현이 가능합니다! &lt;strong&gt;hashicorp/aws&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;&amp;lt;VERSION&gt;&lt;/code&gt;: 버전 조건입니다. 예를 들어 &lt;code class=&quot;language-text&quot;&gt;4.19.0&lt;/code&gt; 처럼 특정 버전을 지정하거나, &lt;code class=&quot;language-text&quot;&gt;&gt; 4.0 , &amp;lt; 4.3&lt;/code&gt; 처럼 버전 범위를 지정할 수 있습니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;아래 코드는 AWS 4.x 프로바이더 버전 설치를 지정하는 코드의 예시입니다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;terraform {
+  required_providers {
+    aws = {
+      source  = &quot;hashicorp/aws&quot;
+      version = &quot;~&gt; 4.0&quot;
+    }
+  }
+}&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;이제야 각종 오픈소스들에서 이렇게 쓰는 이유를 알겠군요. 프로바이더 블록만 단독으로 쓰기보다는, 이 편이 더 좋은 듯 합니다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;terraform&quot;&gt;&lt;pre class=&quot;language-terraform&quot;&gt;&lt;code class=&quot;language-terraform&quot;&gt;terraform {
+  required_providers {
+    aws = {
+      source  = &amp;quot;hashicorp/aws&amp;quot;
+      version = &amp;quot;~&amp;gt; 4.0&amp;quot;
+    }
+  }
+}&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2 id=&quot;동일-프로바이더에서-여러-복사본을-사용하는-방안&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EB%8F%99%EC%9D%BC-%ED%94%84%EB%A1%9C%EB%B0%94%EC%9D%B4%EB%8D%94%EC%97%90%EC%84%9C-%EC%97%AC%EB%9F%AC-%EB%B3%B5%EC%82%AC%EB%B3%B8%EC%9D%84-%EC%82%AC%EC%9A%A9%ED%95%98%EB%8A%94-%EB%B0%A9%EC%95%88&quot; aria-label=&quot;동일 프로바이더에서 여러 복사본을 사용하는 방안 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;동일 프로바이더에서 여러 복사본을 사용하는 방안&lt;/h2&gt;
+&lt;p&gt;동일 프로바이더에서 여러 리전을 작업하거나, 여러 계정을 통해 작업하는 방안에 대해 살펴봅시다.&lt;/p&gt;
+&lt;h3 id=&quot;여러-aws-리전에-대해-작업하는-방안&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%97%AC%EB%9F%AC-aws-%EB%A6%AC%EC%A0%84%EC%97%90-%EB%8C%80%ED%95%B4-%EC%9E%91%EC%97%85%ED%95%98%EB%8A%94-%EB%B0%A9%EC%95%88&quot; aria-label=&quot;여러 aws 리전에 대해 작업하는 방안 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;여러 AWS 리전에 대해 작업하는 방안&lt;/h3&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;chapter09/examples01&lt;/code&gt;의 파일들을 살펴보고, 각 세부문단 별로 명령을 내려 결과를 살펴봅시다.&lt;/p&gt;
+&lt;h4 id=&quot;멀티리전-배포-1-테스트&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EB%A9%80%ED%8B%B0%EB%A6%AC%EC%A0%84-%EB%B0%B0%ED%8F%AC-1-%ED%85%8C%EC%8A%A4%ED%8A%B8&quot; aria-label=&quot;멀티리전 배포 1 테스트 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;멀티리전 배포 (1), 테스트&lt;/h4&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;bash&quot;&gt;&lt;pre class=&quot;language-bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;&lt;span class=&quot;token builtin class-name&quot;&gt;cd&lt;/span&gt; chapter09/examples01/01_multi_region
+
+&lt;span class=&quot;token comment&quot;&gt;# init &amp;amp; plan &amp;amp; apply&lt;/span&gt;
+tfenv use &lt;span class=&quot;token number&quot;&gt;1.2&lt;/span&gt;.3
+terraform init
+terraform plan &lt;span class=&quot;token operator&quot;&gt;&amp;amp;&lt;/span&gt; terraform apply -auto-approve
+Outputs:
+region_1 &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;us-east-2&quot;&lt;/span&gt;
+region_2 &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;us-west-1&quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h4 id=&quot;멀티리전-배포-2-ec2-배포-관련&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EB%A9%80%ED%8B%B0%EB%A6%AC%EC%A0%84-%EB%B0%B0%ED%8F%AC-2-ec2-%EB%B0%B0%ED%8F%AC-%EA%B4%80%EB%A0%A8&quot; aria-label=&quot;멀티리전 배포 2 ec2 배포 관련 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;멀티리전 배포 (2), EC2 배포 관련&lt;/h4&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;bash&quot;&gt;&lt;pre class=&quot;language-bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;# [터미널1] us-east-2&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;token boolean&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;do&lt;/span&gt; aws ec2 describe-instances &lt;span class=&quot;token parameter variable&quot;&gt;--region&lt;/span&gt; us-east-2 &lt;span class=&quot;token parameter variable&quot;&gt;--query&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;Reservations[*].Instances[*].{PublicIPAdd:PublicIpAddress,InstanceName:Tags[?Key==&apos;Name&apos;]|[0].Value,Status:State.Name}&quot;&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;--filters&lt;/span&gt; &lt;span class=&quot;token assign-left variable&quot;&gt;Name&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;instance-state-name,Values&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;running &lt;span class=&quot;token parameter variable&quot;&gt;--output&lt;/span&gt; text &lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token builtin class-name&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;------------------------------&quot;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;sleep&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;done&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# [터미널2] us-west-1&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;token boolean&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;do&lt;/span&gt; aws ec2 describe-instances &lt;span class=&quot;token parameter variable&quot;&gt;--region&lt;/span&gt; us-west-1  &lt;span class=&quot;token parameter variable&quot;&gt;--query&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;Reservations[*].Instances[*].{PublicIPAdd:PublicIpAddress,InstanceName:Tags[?Key==&apos;Name&apos;]|[0].Value,Status:State.Name}&quot;&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;--filters&lt;/span&gt; &lt;span class=&quot;token assign-left variable&quot;&gt;Name&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;instance-state-name,Values&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;running &lt;span class=&quot;token parameter variable&quot;&gt;--output&lt;/span&gt; text &lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token builtin class-name&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;------------------------------&quot;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;sleep&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;done&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# 작업 경로로 이동&lt;/span&gt;
+&lt;span class=&quot;token builtin class-name&quot;&gt;cd&lt;/span&gt; chapter09/examples01/02_multi_region_ec2
+
+&lt;span class=&quot;token comment&quot;&gt;# init &amp;amp; plan &amp;amp; apply&lt;/span&gt;
+terraform init
+terraform plan &lt;span class=&quot;token operator&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; terraform apply -auto-approve
+Outputs:
+
+instance_region_1_az &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;us-east-2c&quot;&lt;/span&gt;
+instance_region_2_az &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;us-west-1c&quot;&lt;/span&gt;
+region_1 &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;us-east-2&quot;&lt;/span&gt;
+region_2 &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;us-west-1&quot;&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# 삭제 : 아래 RDS 배포 후 데이터 INSERT 등 실습 후 삭제해도 됨&lt;/span&gt;
+terraform destroy -auto-approve&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h4 id=&quot;멀티리전-배포-3-primary-rds의-replica-rds를-다른-리전에-배포-시&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EB%A9%80%ED%8B%B0%EB%A6%AC%EC%A0%84-%EB%B0%B0%ED%8F%AC-3-primary-rds%EC%9D%98-replica-rds%EB%A5%BC-%EB%8B%A4%EB%A5%B8-%EB%A6%AC%EC%A0%84%EC%97%90-%EB%B0%B0%ED%8F%AC-%EC%8B%9C&quot; aria-label=&quot;멀티리전 배포 3 primary rds의 replica rds를 다른 리전에 배포 시 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;멀티리전 배포 (3), Primary RDS의 Replica RDS를 다른 리전에 배포 시&lt;/h4&gt;
+&lt;p&gt;참고사항: Primary RDS 는 &lt;code class=&quot;language-text&quot;&gt;backup_retention_period&lt;/code&gt; 설정이 &lt;code class=&quot;language-text&quot;&gt;0&lt;/code&gt;보다 커야 되며, &lt;code class=&quot;language-text&quot;&gt;replicate_source_db&lt;/code&gt; ARN 설정 시 replica RDS 입니다. - &lt;a href=&quot;https://github.com/brikis98/terraform-up-and-running-code/blob/3rd-edition/code/terraform/07-working-with-multiple-providers/modules/data-stores/mysql/variables.tf&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;참고 링크&lt;/a&gt;&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;bash&quot;&gt;&lt;pre class=&quot;language-bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;# [터미널1] us-east-2&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;token boolean&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;do&lt;/span&gt; aws rds describe-db-instances &lt;span class=&quot;token parameter variable&quot;&gt;--region&lt;/span&gt; us-east-2 &lt;span class=&quot;token parameter variable&quot;&gt;--query&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;*[].[Endpoint.Address,Endpoint.Port,MasterUsername]&quot;&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;--output&lt;/span&gt; text  &lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token builtin class-name&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;------------------------------&quot;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;sleep&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;done&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# [터미널2] us-west-1&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;token boolean&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;do&lt;/span&gt; aws rds describe-db-instances &lt;span class=&quot;token parameter variable&quot;&gt;--region&lt;/span&gt; us-west-1 &lt;span class=&quot;token parameter variable&quot;&gt;--query&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;*[].[Endpoint.Address,Endpoint.Port,MasterUsername]&quot;&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;--output&lt;/span&gt; text  &lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token builtin class-name&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;------------------------------&quot;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;sleep&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;done&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# 환경변수에 지정&lt;/span&gt;
+&lt;span class=&quot;token builtin class-name&quot;&gt;export&lt;/span&gt; &lt;span class=&quot;token assign-left variable&quot;&gt;TF_VAR_db_username&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;cloudneta&apos;&lt;/span&gt;
+&lt;span class=&quot;token builtin class-name&quot;&gt;export&lt;/span&gt; &lt;span class=&quot;token assign-left variable&quot;&gt;TF_VAR_db_password&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;cloudnetaQ!&apos;&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# 이동&lt;/span&gt;
+&lt;span class=&quot;token builtin class-name&quot;&gt;cd&lt;/span&gt; chapter09/examples01/03_multi_region_rds_with_replica
+
+&lt;span class=&quot;token comment&quot;&gt;# main.tf 에 백엔드 부분 수정&lt;/span&gt;
+&lt;span class=&quot;token function&quot;&gt;vi&lt;/span&gt; main.tf
+  backend &lt;span class=&quot;token string&quot;&gt;&quot;s3&quot;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;token comment&quot;&gt;# This backend configuration is filled in automatically at test time by Terratest. If you wish to run this example&lt;/span&gt;
+    &lt;span class=&quot;token comment&quot;&gt;# manually, uncomment and fill in the config below.&lt;/span&gt;
+    bucket         &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;ex9-t101-tfstate&quot;&lt;/span&gt;
+    key            &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;prod/data-stores/mysql/terraform.tfstate&quot;&lt;/span&gt;
+    region         &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;us-east-2&quot;&lt;/span&gt;
+    dynamodb_table &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;ex9-t101-locks&quot;&lt;/span&gt;
+    &lt;span class=&quot;token comment&quot;&gt;# encrypt        = true&lt;/span&gt;
+  &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# 초기화 및 검증 : 환경변수 적용 확인&lt;/span&gt;
+terraform init
+terraform plan
+
+&lt;span class=&quot;token comment&quot;&gt;# 배포 : 총 25분 정도 소요 (8분 후 primary 완료, 이후 16분 후 replica 생성 및 동기화 완료)&lt;/span&gt;
+terraform apply -auto-approve
+terraform output
+aws s3 &lt;span class=&quot;token function&quot;&gt;ls&lt;/span&gt; s3://&lt;span class=&quot;token variable&quot;&gt;$TF_VAR_bucket_name&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;--recursive&lt;/span&gt; --human-readable &lt;span class=&quot;token parameter variable&quot;&gt;--summarize&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# (옵션) Primary RDS에 데이터 INSERT 후 Replica RDS에 복제되는지 확인 해볼것&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# 삭제 6분 정도 소요&lt;/span&gt;
+terraform destroy -auto-approve
+
+&lt;span class=&quot;token comment&quot;&gt;# S3/DynamoDB 삭제&lt;/span&gt;
+&lt;span class=&quot;token builtin class-name&quot;&gt;cd&lt;/span&gt; ~/terraform-up-and-running-code/code/terraform/03-terraform-state/file-layout-example/global/s3
+terraform destroy -auto-approve&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h4 id=&quot;주의사항&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%A3%BC%EC%9D%98%EC%82%AC%ED%95%AD&quot; aria-label=&quot;주의사항 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;주의사항&lt;/h4&gt;
+&lt;ol&gt;
+&lt;li&gt;Warning 1 : Multiregion is hard, 프로덕션 수준의 멀티 리전은 &lt;strong&gt;어렵습니다&lt;/strong&gt;!
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Active-Active&lt;/strong&gt; 멀티 리전 서비스를 위한 ‘&lt;strong&gt;지역간 지연 시간, 고유 ID, 최종 일관성&lt;/strong&gt;’ 등 여러가지 고려사항이 많아서 쉽지 않습니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Warning 2 : Use aliases sparingly, Alias 를 빈번하게 사용하지 맙시다!
+&lt;ul&gt;
+&lt;li&gt;별칭을 사용하여 두 리전에 배포하는 단일 테라폼 모듈은 한 리전이 다운 시, plan 과 apply 시도가 실패합니다.&lt;/li&gt;
+&lt;li&gt;프로덕션 환경은 멀티 리전의 별칭을 사용하는 것보다는, 3장에서 설명한 것 처럼 &lt;strong&gt;환경&lt;/strong&gt;을 완전히 &lt;strong&gt;격리&lt;/strong&gt;해야 합니다. 이를 통해 영향도를 최소화 할 수 있습니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&quot;여러-aws-계정에-대해-작업하는-방안&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%97%AC%EB%9F%AC-aws-%EA%B3%84%EC%A0%95%EC%97%90-%EB%8C%80%ED%95%B4-%EC%9E%91%EC%97%85%ED%95%98%EB%8A%94-%EB%B0%A9%EC%95%88&quot; aria-label=&quot;여러 aws 계정에 대해 작업하는 방안 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;여러 AWS 계정에 대해 작업하는 방안&lt;/h3&gt;
+&lt;p&gt;배우기에 앞서, 멀티 계정을 사용하는 이유에 대해 알아봅시다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Isolation (aka. compartmentalization)
+&lt;ul&gt;
+&lt;li&gt;Staging 과 Prod 간 다른 계정을 사용함으로써 각자에게 끼치는 영향을 최소화합니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Authentication and authorization
+&lt;ul&gt;
+&lt;li&gt;다중 계정에 따른 인증과 권한 분리로 각자에게 끼치는 영향을 최소화합니다(예를 들면 권한을 잘못 부여 시)&lt;/li&gt;
+&lt;li&gt;계정 별 세분화된 권한으로 접근통제가 가능합니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Auditing and reporting
+&lt;ul&gt;
+&lt;li&gt;모든 환경과 계정의 변경 사항 및 감사 추적이 가능합니다.&lt;/li&gt;
+&lt;li&gt;이를 통해 규정 준수와 이상 징후 감시를 할 수 있고 비용 추적등에 용이해집니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h4 id=&quot;사전작업&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%82%AC%EC%A0%84%EC%9E%91%EC%97%85&quot; aria-label=&quot;사전작업 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;사전작업&lt;/h4&gt;
+&lt;ol&gt;
+&lt;li&gt;AWS Organizaions 설정 및 계정 초대를 실시합니다.
+&lt;ol&gt;
+&lt;li&gt;이 때, 그룹 하의 계정을 2개 만듭시다.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;AWS IAM 정책과 산하에 속한 계정을 설정합니다.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h4 id=&quot;실습&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%8B%A4%EC%8A%B5&quot; aria-label=&quot;실습 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;실습&lt;/h4&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;chapter09/examples02&lt;/code&gt; 의 파일들을 살펴보고, 아래 명령으로 결과를 살펴봅시다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;bash&quot;&gt;&lt;pre class=&quot;language-bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;# 이동&lt;/span&gt;
+&lt;span class=&quot;token builtin class-name&quot;&gt;cd&lt;/span&gt; chapter09/examples02
+
+&lt;span class=&quot;token comment&quot;&gt;# IAM Role ARN 지정&lt;/span&gt;
+&lt;span class=&quot;token comment&quot;&gt;#export TF_VAR_child_iam_role_arn=&apos;arn:aws:iam::&amp;lt;자신의 두 번째 혹은 세 번째 계정 Account ID&gt;:role/&amp;lt;해당 계정의 IAM Role 이름&gt;&apos;&lt;/span&gt;
+&lt;span class=&quot;token builtin class-name&quot;&gt;export&lt;/span&gt; &lt;span class=&quot;token assign-left variable&quot;&gt;TF_VAR_child_iam_role_arn&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;arn:aws:iam::REDACTED_CHILD:role/role-name-unknown&apos;&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# 배포 확인&lt;/span&gt;
+terraform init
+terraform plan &lt;span class=&quot;token operator&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; terraform apply -auto-approve
+Outputs:
+child_account_id &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;REDACTED_CHILD&quot;&lt;/span&gt;
+parent_account_id &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;REDACTED_PARENTS&quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h4 id=&quot;주의-사항&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%A3%BC%EC%9D%98-%EC%82%AC%ED%95%AD&quot; aria-label=&quot;주의 사항 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;주의 사항&lt;/h4&gt;
+&lt;ol&gt;
+&lt;li&gt;Warning 1 : Cross-account IAM roles are double opt-in
+&lt;ul&gt;
+&lt;li&gt;교차 계정 역할 동작을 위해서 2개의 계정에서 모두 &lt;strong&gt;권한 등 설정&lt;/strong&gt;이 필요합니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Warning 2 : Use aliases sparingly Alias 를 빈번하게 사용하지 맙시다!
+&lt;ul&gt;
+&lt;li&gt;영향도 최소를 위해서 계정 간 분리를 하는 것을 권장합니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&quot;여러-프로바이더에서-작업하는-방안-추후-업로드&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%97%AC%EB%9F%AC-%ED%94%84%EB%A1%9C%EB%B0%94%EC%9D%B4%EB%8D%94%EC%97%90%EC%84%9C-%EC%9E%91%EC%97%85%ED%95%98%EB%8A%94-%EB%B0%A9%EC%95%88-%EC%B6%94%ED%9B%84-%EC%97%85%EB%A1%9C%EB%93%9C&quot; aria-label=&quot;여러 프로바이더에서 작업하는 방안 추후 업로드 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;여러 프로바이더에서 작업하는 방안 (추후 업로드!)&lt;/h2&gt;
+&lt;h1 id=&quot;lessons-learned&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#lessons-learned&quot; aria-label=&quot;lessons learned permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Lessons Learned&lt;/h1&gt;
+&lt;p&gt;제 9장에서는 아래의 내용을 반드시 기억하셨으면 좋겠습니다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;provider 블록에 대해 보다 더 깊게 살펴보았습니다.&lt;/li&gt;
+&lt;li&gt;계정별, 여러 프로바이더 별, 여러 리전 별 배포 또한 가능함을 살펴보았습니다.&lt;/li&gt;
+&lt;li&gt;도커와 쿠버네티스 실습환경에 대한 내용은 곧 업데이트 하겠습니다!&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;이것으로 제 9장을 마칩니다. 긴 글 읽어주셔서 감사합니다.&lt;/p&gt;</content:encoded></item><item><title><![CDATA[[CloudNet@] 테라폼 스터디 8주차 - 프로덕션 수준의 테라폼 코드]]></title><description><![CDATA[Terraform을 프로덕션 레벨 정도로 사용하려면 어느정도는 할 수 있어야하고, 어떤걸 살펴봐야 할까요? 이 포스팅에서는 그 부분을 공부해보았습니다.]]></description><link>https://blog.s3ich4n.me/devlog/terraform/2022-12-12-cloudneta-terraform-101-pt08</link><guid isPermaLink="false">https://blog.s3ich4n.me/devlog/terraform/2022-12-12-cloudneta-terraform-101-pt08</guid><pubDate>Mon, 12 Dec 2022 04:43:39 GMT</pubDate><content:encoded>&lt;p&gt;이 내용은 &lt;a href=&quot;https://www.notion.so/gasidaseo/CloudNet-Blog-c9dfa44a27ff431dafdd2edacc8a1863&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;CloudNet@&lt;/a&gt; 에서 진행하는 테라폼 기초 입문 스터디에 대한 연재글입니다.&lt;/p&gt;
+&lt;p&gt;스터디에서 사용하는 교재는 &lt;a href=&quot;http://www.yes24.com/Product/Goods/101511312&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;Terraform Up &amp;#x26; Running 2nd Edition&lt;/a&gt; 입니다.&lt;/p&gt;
+&lt;h1 id=&quot;prerequisites&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#prerequisites&quot; aria-label=&quot;prerequisites permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Prerequisites&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;아무래도 기존 내용을 모두 학습해야 하겠죠.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://www.yes24.com/Product/Goods/11681152&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;클린 코드&lt;/a&gt;를 읽고 오시면 더욱 좋습니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&quot;본문&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EB%B3%B8%EB%AC%B8&quot; aria-label=&quot;본문 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;본문&lt;/h1&gt;
+&lt;h2 id=&quot;프로덕션-레벨의-인프라-by-production-grade-infrastructure&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%ED%94%84%EB%A1%9C%EB%8D%95%EC%85%98-%EB%A0%88%EB%B2%A8%EC%9D%98-%EC%9D%B8%ED%94%84%EB%9D%BC-by-production-grade-infrastructure&quot; aria-label=&quot;프로덕션 레벨의 인프라 by production grade infrastructure permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;프로덕션 레벨의 인프라 (By production-grade Infrastructure)&lt;/h2&gt;
+&lt;p&gt;저자의 프로덕션 레벨의 인프라 정의는 아래 요소들이 모두 잘 갖추어져있고, 이중화/장애대응까지 완벽히 되어있음을 말합니다:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;서버&lt;/li&gt;
+&lt;li&gt;데이터 저장소&lt;/li&gt;
+&lt;li&gt;로드 밸런서&lt;/li&gt;
+&lt;li&gt;보안 기능&lt;/li&gt;
+&lt;li&gt;모니터링/경고 도구&lt;/li&gt;
+&lt;li&gt;파이프라인 구축&lt;/li&gt;
+&lt;li&gt;비즈니스 운영에 필요한 기타 모든 도구&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;아울러, 저자는 프로덕션 수준의 인프라를 만드는 프로젝트에 소요되는 대략적인 시간을 아래 정도가 걸린다고 산정하였습니다.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;인프라 유형&lt;/th&gt;
+&lt;th&gt;예&lt;/th&gt;
+&lt;th&gt;예상 소요 시간&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;관리형 서비스 Managed service&lt;/td&gt;
+&lt;td&gt;Amazon RDS&lt;/td&gt;
+&lt;td&gt;1~2주&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;스스로 관리하는 분산 시스템 (상태 비저장) Self-managed distributed system (stateless)&lt;/td&gt;
+&lt;td&gt;Node.js 앱이 실행되는 ASG 클러스터&lt;/td&gt;
+&lt;td&gt;2~4&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;스스로 관리하는 분산 시스템 (상태 저장) Self-managed distributed system (stateful)&lt;/td&gt;
+&lt;td&gt;Amazon Elasticsearch cluster&lt;/td&gt;
+&lt;td&gt;2~4개월&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;전체 아키텍처 Entire architecture&lt;/td&gt;
+&lt;td&gt;애플리케이션, 데이터 저장소, 로드 밸런서, 모니터링 등&lt;/td&gt;
+&lt;td&gt;6~36개월&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;저는 아직 프로덕션 경험이 없지만, 개인적으로 만들고싶은 서비스를 구축한다면 관리형 서비스 ~ self managed 분산 시스템(stateless) 까지는 헤메면서 2주는 쓸 것 같습니다. 전체 아키텍처를 모두 구성하는데 길면 3년이 걸린다고 하니, 역시나 쉬운길은 아니네요. 그런데, 왜 이렇게 오래 걸리는걸까요?&lt;/p&gt;
+&lt;h2 id=&quot;프로덕션-수준의-인프라-구축에-시간이-오래-걸리는-이유&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%ED%94%84%EB%A1%9C%EB%8D%95%EC%85%98-%EC%88%98%EC%A4%80%EC%9D%98-%EC%9D%B8%ED%94%84%EB%9D%BC-%EA%B5%AC%EC%B6%95%EC%97%90-%EC%8B%9C%EA%B0%84%EC%9D%B4-%EC%98%A4%EB%9E%98-%EA%B1%B8%EB%A6%AC%EB%8A%94-%EC%9D%B4%EC%9C%A0&quot; aria-label=&quot;프로덕션 수준의 인프라 구축에 시간이 오래 걸리는 이유 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;프로덕션 수준의 인프라 구축에 시간이 오래 걸리는 이유&lt;/h2&gt;
+&lt;p&gt;DevOps 프로젝트는 다른 유형의 소프트웨어 프로젝트보다 더 시간이 소요될 수 있습니다. 아래에서 이야기되는 사항들이 그 이유입니다.&lt;/p&gt;
+&lt;h3 id=&quot;호프스태터의-법칙hofstadters-law&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%ED%98%B8%ED%94%84%EC%8A%A4%ED%83%9C%ED%84%B0%EC%9D%98-%EB%B2%95%EC%B9%99hofstadters-law&quot; aria-label=&quot;호프스태터의 법칙hofstadters law permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;호프스태터의 법칙(Hofstadter’s Law)&lt;/h3&gt;
+&lt;p&gt;호프스태터의 법칙은 일을 마치는데 더 오랜 시간이 걸리는 현상을 의미합니다. 일정보다 늦어질 것을 미리 예상했다 하더라도 여전히 일정보다 늦어진다는 것이죠. 아래와 같은 말로 언급되는 경우가 많습니다.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;호프스태터의 법칙: 일은 항상 예상시간 보다 더 오래 걸린다. 호프스태터의 법칙을 고려했다고 하더라도…&lt;/p&gt;
+&lt;p&gt;Hofstadter’s Law: It always takes longer than you expect, even when you take into account Hofstadter’s Law.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;데브옵스-산업은-초창기&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EB%8D%B0%EB%B8%8C%EC%98%B5%EC%8A%A4-%EC%82%B0%EC%97%85%EC%9D%80-%EC%B4%88%EC%B0%BD%EA%B8%B0&quot; aria-label=&quot;데브옵스 산업은 초창기 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;데브옵스 산업은 초창기&lt;/h3&gt;
+&lt;p&gt;저자는 이를 “아직 석기시대에 있다”(…the industry is still in its infancy) 라고 표하였습니다. 클라우드 컴퓨팅, IaC, DevOps, 컨테이너 기술의 출현과 발전속도가 매우 빠르고 성숙하는 단계에 있다고 하였기 떄문입니다.&lt;/p&gt;
+&lt;h3 id=&quot;데브옵스는-야크-털깎기-현상에-취약&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EB%8D%B0%EB%B8%8C%EC%98%B5%EC%8A%A4%EB%8A%94-%EC%95%BC%ED%81%AC-%ED%84%B8%EA%B9%8E%EA%B8%B0-%ED%98%84%EC%83%81%EC%97%90-%EC%B7%A8%EC%95%BD&quot; aria-label=&quot;데브옵스는 야크 털깎기 현상에 취약 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;데브옵스는 “야크 털깎기” 현상에 취약&lt;/h3&gt;
+&lt;p&gt;야크 털깎기는 목적을 이루기 위해 본래 목적과 전혀 상관없어 보이는 일들을 계속 해오고, 종국에는 그것을 이루는 행동을 말합니다.&lt;/p&gt;
+&lt;p&gt;극단적인 예시를 하나 보시죠. &lt;a href=&quot;https://scholar.google.com/citations?user=t0yrrzQAAAAJ&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;도널드 커누스&lt;/a&gt;처럼 업계 부동의 원탑인 사람이라면, 책 쓰다가 디지털 조판 시스템이 답답해서 TeX를 &lt;em&gt;자신이 직접 만든&lt;/em&gt; 프로그래밍 언어로 완성함과 동시에 폰트도 만들고, 폰트의 그래픽스를 정의하기 위한 언어도 만들고, 장치종속을 풀기위해 포맷까지 만들었다고 하지요. (책을 쓰는데 10년이 걸렸다고 합니다. 그 책은 다름아닌 &lt;a href=&quot;https://www-cs-faculty.stanford.edu/~knuth/taocp.html&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;TAOCP&lt;/a&gt; 입니다.)&lt;/p&gt;
+&lt;p&gt;누구나 그럴 수는 없음을 압니다. 그리고 회사는 정해진 기한과 목표물이 있지요. 저는 이를 &lt;em&gt;삽질&lt;/em&gt; 이라고 배웠습니다. 독자 여러분들도 생각해보면 ‘이런 개념이 이렇게 불리는구나’ 하셨을 것이란 생각이 드네요.&lt;/p&gt;
+&lt;p&gt;앞서말했듯, 업계가 아직 태동기에 있으니 더더욱 그럴 수 밖에 없으리라는 것이 저자의 의견입니다.&lt;/p&gt;
+&lt;h3 id=&quot;수행해야하는-체크리스트가-매우-많음&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%88%98%ED%96%89%ED%95%B4%EC%95%BC%ED%95%98%EB%8A%94-%EC%B2%B4%ED%81%AC%EB%A6%AC%EC%8A%A4%ED%8A%B8%EA%B0%80-%EB%A7%A4%EC%9A%B0-%EB%A7%8E%EC%9D%8C&quot; aria-label=&quot;수행해야하는 체크리스트가 매우 많음 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;수행해야하는 체크리스트가 매우 많음&lt;/h3&gt;
+&lt;p&gt;대다수 개발자가 체크 리스트에 있는 대부분의 항목을 알지 못하기 때문에, 프로젝트를 평가할 때 중요하고 시간이 많이 걸리는 세부 사항을 잊어버립니다. 체크리스트는 아래와 같습니다:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;작업&lt;/th&gt;
+&lt;th&gt;설명&lt;/th&gt;
+&lt;th&gt;사용가능 도구&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;설치&lt;br /&gt;(Install)&lt;/td&gt;
+&lt;td&gt;소프트웨어 바이너리, 필요 종속성 설치&lt;/td&gt;
+&lt;td&gt;Bash, Chef, Ansible, Puppet&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;설정&lt;br /&gt;(Configure)&lt;/td&gt;
+&lt;td&gt;포트 설정, TLS 인증서, 서비스 디스커버리, 리더/팔로워 복제 등의 소프트웨어 설정&lt;/td&gt;
+&lt;td&gt;Bash, Chef, Ansible, Puppet&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;프로비전&lt;br /&gt;(Provision)&lt;/td&gt;
+&lt;td&gt;서버, 로드 밸런서, 네트워크, 방화벽, IAM 권한 설정 등의 인프라 제공&lt;/td&gt;
+&lt;td&gt;Terraform, CloudFormation&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;배포&lt;br /&gt;(Deploy)&lt;/td&gt;
+&lt;td&gt;인프라 상위의 서비스 배포&lt;br /&gt;중단시간 없이 업데이트 롤아웃&lt;br /&gt;블루-그린, 카나리 배포 등&lt;/td&gt;
+&lt;td&gt;Terraform, CloudFormation, k8s, ECS&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;고가용성&lt;br /&gt;(High Availability)&lt;/td&gt;
+&lt;td&gt;프로세스, 서버, 서비스, 데이터 센터, 리전 등의 장애에 대비&lt;/td&gt;
+&lt;td&gt;멀티 데이터센터, 멀티 리전, 복제, 오토스케일링, 로드밸런싱&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;확장성&lt;br /&gt;(Scailability)&lt;/td&gt;
+&lt;td&gt;요청량에 따른 스케일 업/아웃&lt;br /&gt;수평적 확장(더 많은 서버), 수직적 확장(더 큰 용량)&lt;/td&gt;
+&lt;td&gt;오토스케일링, 복제, 샤딩, 캐싱, 분할정복&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;성능&lt;br /&gt;(Performance)&lt;/td&gt;
+&lt;td&gt;CPU, 메모리, 디스크, 네트워크, GPU 용량 최적화&lt;br /&gt;쿼리 튜닝, 벤치마킹, 테스트, 프로파일링&lt;/td&gt;
+&lt;td&gt;Dynatrace, valgrind, VisualVM, ab, JMeter&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;네트워킹&lt;br /&gt;(Networking)&lt;/td&gt;
+&lt;td&gt;정적·동적 IP 설정, 포트, 서비스 디스커버리, 방화벽, DNS, SSH 접속, VPN 연결&lt;/td&gt;
+&lt;td&gt;VPC, 방화벽, 라우터, DNS Registers, OpenVPN&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;보안&lt;br /&gt;(Security)&lt;/td&gt;
+&lt;td&gt;TLS를 통한 통신 중 데이터 암호화, 디스크 암호화, 인증, 인가, 보안 관리, 서버 하드닝&lt;/td&gt;
+&lt;td&gt;ACM, Let’s Encrypt, KMS, Cognito, Vault, CIS&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;성능지표&lt;br /&gt;(Metrics)&lt;/td&gt;
+&lt;td&gt;가용성, 비즈니스, 애플리케이션, 서버, 이벤트, 추적, 알람에 대한 메트릭&lt;/td&gt;
+&lt;td&gt;CloudWatch, Datadog, New Relic, Honeycomb&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;로그&lt;br /&gt;(Logs)&lt;/td&gt;
+&lt;td&gt;로그 순환, 중앙으로 데이터 수집&lt;/td&gt;
+&lt;td&gt;CloudWatch Logs, ELK, Sumo Logic, Papertrail&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;백업 및 복구&lt;br /&gt;(Backup and Restore)&lt;/td&gt;
+&lt;td&gt;DB, 캐시, 기타 데이터를 일정에 따라 백업&lt;br /&gt;리전 별, 계정 별 복제&lt;/td&gt;
+&lt;td&gt;RDS, ElastiCache, 복제&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;비용 최적화&lt;br /&gt;(Cost Optimization)&lt;/td&gt;
+&lt;td&gt;적절한 인스턴스 유형 선택, 스팟 혹은 예약 인스턴스 사용, 오토스케일링, 사용하지 않는 리소스 정리&lt;/td&gt;
+&lt;td&gt;오토스케일링, 스팟 인스턴스, 예약 인스턴스&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;문서화&lt;br /&gt;(Documentation)&lt;/td&gt;
+&lt;td&gt;코드, 아키텍처, 모든 내용을 문서화&lt;br /&gt;장애 대응 내용 정리(Postmortem)&lt;/td&gt;
+&lt;td&gt;README, 각종 위키, Slack&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;테스트&lt;br /&gt;(Tests)&lt;/td&gt;
+&lt;td&gt;인프라 코드를 테스트 자동화&lt;br /&gt;항상 테스트 후 배포&lt;/td&gt;
+&lt;td&gt;Terratest, inspec, serverspec, kitchen-terraform&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;와 세상에 이렇게나 많습니다! 그런데…&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;서버나 로드밸런서가 다운된다면 어떻게 될까요? 데이터 센터에 문제가 생긴다면 어떻게 될까요?&lt;/li&gt;
+&lt;li&gt;VPC를 위시로 한 네트워킹 작업 또한 정말 어렵습니다. 그뿐일까요, VPN, Service Discovery, SSH Access 등 정말 많습니다!&lt;/li&gt;
+&lt;li&gt;그렇지만, 프로젝트 계획 및 시간 예측에서 배제되는 경우가 많습니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;즉, 이러한 연유로 인해 프로젝트 계획 및 시간 예측이 너무나 어렵습니다.&lt;/p&gt;
+&lt;h2 id=&quot;프로덕션-수준의-인프라-모듈&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%ED%94%84%EB%A1%9C%EB%8D%95%EC%85%98-%EC%88%98%EC%A4%80%EC%9D%98-%EC%9D%B8%ED%94%84%EB%9D%BC-%EB%AA%A8%EB%93%88&quot; aria-label=&quot;프로덕션 수준의 인프라 모듈 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;프로덕션 수준의 인프라 모듈&lt;/h2&gt;
+&lt;p&gt;그렇다면 프로덕션 레벨의 테라폼 코드는 어떤 것들이 필요한지 살펴보겠습니다. 테라폼 코드는 &lt;strong&gt;재사용 가능한 모듈&lt;/strong&gt; 단위로 작성하는 것이 좋습니다. 이에 대한 모범사례를 살펴봅시다. 다룰 주제는 아래와 같습니다.&lt;/p&gt;
+&lt;h3 id=&quot;소형-모듈을-써야하는-이유&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%86%8C%ED%98%95-%EB%AA%A8%EB%93%88%EC%9D%84-%EC%8D%A8%EC%95%BC%ED%95%98%EB%8A%94-%EC%9D%B4%EC%9C%A0&quot; aria-label=&quot;소형 모듈을 써야하는 이유 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;소형 모듈을 써야하는 이유&lt;/h3&gt;
+&lt;p&gt;3장에서 학습했던 상태 파일 격리에서 알아본 것과 같이, 모든 인프라 환경은 단일파일, 단일 모듈로 정의해서는 좋지 않은 수준이 아니라 &lt;strong&gt;유해&lt;/strong&gt; 한 것으로 간주합니다. 아래의 이유로 인해 그렇습니다.&lt;/p&gt;
+&lt;h4 id=&quot;대형모듈을-썼을-떄의-문제점&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EB%8C%80%ED%98%95%EB%AA%A8%EB%93%88%EC%9D%84-%EC%8D%BC%EC%9D%84-%EB%96%84%EC%9D%98-%EB%AC%B8%EC%A0%9C%EC%A0%90&quot; aria-label=&quot;대형모듈을 썼을 떄의 문제점 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;대형모듈을 썼을 떄의 문제점&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;속도가 느림(slow): 모든 인프라가 하나의 모듈에 정의되어 있으면 명령 실행 시 오래 걸립니다. &lt;code class=&quot;language-text&quot;&gt;terraform plan&lt;/code&gt; 구동 시 20분 걸리기도 합니다.&lt;/li&gt;
+&lt;li&gt;안전하지 않음(insecure): 모든 인프라가 하나의 모듈에 정의되어 있으면, 어떤 것을 변경 시 모든 액세스 권한을 사용하게 됩니다.
+&lt;ul&gt;
+&lt;li&gt;따라서 모든 사용자에게 관리자 권한을 부여하게 되지요.&lt;/li&gt;
+&lt;li&gt;이는 최소 권한 원칙(principle of least privilege) 에 위배됩니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;위험성이 높음(risky): 예를 들어 스테이징 환경에서 프런트엔드 앱을 변경 시 오타나 잘못된 명령으로 프로덕션 데이터베이스를 삭제하는 대참사가 발생할 수 있습니다…&lt;/li&gt;
+&lt;li&gt;이해하기 어려움(understand) : 한 곳에 코드가 많을수록 한 사람이 모든 것을 이해하기가 더 어려워집니다.&lt;/li&gt;
+&lt;li&gt;리뷰하기 어려움(review) : 수집 줄의 코드로 구성된 모듈을 리뷰하는 것은 쉽지만, 수천 줄의 코드로 구성된 모듈을 리뷰하는 것은 거의 불가능입니다.
+&lt;ul&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;terraform plan&lt;/code&gt; 실행 시 오래 거리고, plan 명령의 출력이 수천 줄이며 아무도 코드를 읽으려 하지 않을겁니다.&lt;/li&gt;
+&lt;li&gt;예를들어, 이 경우 데이터베이스가 삭제될 것임을 나타내는 빨간색 코드가 있더라도 누구 하나 발견하지 못할 수도 있습니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;테스트하기 어려움(test) : 인프라 코드 테스트하기 매우 힘들어집니다! 다음 장에서 살펴보도록 하겠습니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;따라서, 이런 이유로 인해 소형 모듈을 사용하는 편이 보다 좋은 코드가 되겠습니다.&lt;/p&gt;
+&lt;h4 id=&quot;소형-모듈을-사용하는-방안&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%86%8C%ED%98%95-%EB%AA%A8%EB%93%88%EC%9D%84-%EC%82%AC%EC%9A%A9%ED%95%98%EB%8A%94-%EB%B0%A9%EC%95%88&quot; aria-label=&quot;소형 모듈을 사용하는 방안 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;소형 모듈을 사용하는 방안&lt;/h4&gt;
+&lt;p&gt;소형 모듈로 내용을 줄여보기 전에 클린코드에 나오는 격언 중 하나를 소개하면 좋은 대목인 것 같군요.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;함수의 첫 번째 규칙은 작아야한다는 것.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;함수의 두 번째 규칙은, 그보다 더 작아야한다는 것.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;예시로 한번 살펴보겠습니다.&lt;/p&gt;
+&lt;p&gt;이런 아키텍처의 코드가 단 한줄뿐이라면… 그것은 코드 스멜입니다! 코드 스멜은 더 큰 문제를 일으키기 쉬운 코드지요. 저는 냄새나는 코드라고 부릅니다.&lt;/p&gt;
+&lt;p&gt;기존 예시라면, 지난 7장에서 살펴본 ASG, ALB, 헬로월드 앱을 각각의 소형 모듈로 나누어봅시다.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;./media/01_examples-of-complicated-aws-architecture.jpg&quot; alt=&quot;examples-of-complicated-aws-architecture&quot;&gt;&lt;/p&gt;
+&lt;h3 id=&quot;합성-가능한-모듈&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%ED%95%A9%EC%84%B1-%EA%B0%80%EB%8A%A5%ED%95%9C-%EB%AA%A8%EB%93%88&quot; aria-label=&quot;합성 가능한 모듈 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;합성 가능한 모듈&lt;/h3&gt;
+&lt;p&gt;여기서부턴 코드확인이 필요합니다. &lt;code class=&quot;language-text&quot;&gt;chapter08&lt;/code&gt; 디렉토리를 확인해주세요. 경로는 &lt;a href=&quot;https://github.com/s3ich4n/terraform-study-101/tree/main/chapter08&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;여기&lt;/a&gt; 입니다. 베이스코드는 7장에서 작성한 코드입니다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;재사용 가능하고 합성 가능한 모듈&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;외부에서 상태를 읽는 대신 입력 매개 변수를 통해 전달하고, 외부에 상태를 쓰는 대신 출력 매개 변수를 통해 계산 결과를 반환합니다.&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;모든 것을 입력 변수를 통해 전달하고 모든 것을 출력 변수를 통해 반환하며 간단한 모듈들을 결합해 더 복잡한 모듈을 만들수 있다.&lt;/li&gt;
+&lt;li&gt;실제 사용 시에는 더 나은 합성과 재사용을 위해 아래 실습 내용 보다 모듈을 더욱 세분화해야 할 수도 있습니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;그러면, 코드 리팩토링을 진행해볼까요.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;기존 &lt;code class=&quot;language-text&quot;&gt;webserver-cluster&lt;/code&gt;는 하드코딩 되어있었고, 이를 아래와 같이 재작성합니다.
+&lt;ol&gt;
+&lt;li&gt;variables 별도 분리를 통한 서브넷, 타겟 그룹명, 헬스체크 타입, &lt;code class=&quot;language-text&quot;&gt;user_data&lt;/code&gt; 변경 가능하도록 수정
+&lt;ol&gt;
+&lt;li&gt;유연한 변경이 가능하도록 작성&lt;/li&gt;
+&lt;li&gt;기본 서브넷이 아니라, 개별 VPC, 서브넷으로 사용가능&lt;/li&gt;
+&lt;li&gt;타겟 그룹명, 헬스체크 타입 변수로 ASG를 로드 밸런서와 통합&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;출력변수 추가
+&lt;ol&gt;
+&lt;li&gt;output 변수를 통해&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&quot;테스트-가능한-모듈&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%ED%85%8C%EC%8A%A4%ED%8A%B8-%EA%B0%80%EB%8A%A5%ED%95%9C-%EB%AA%A8%EB%93%88&quot; aria-label=&quot;테스트 가능한 모듈 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;테스트 가능한 모듈&lt;/h3&gt;
+&lt;p&gt;수정한 코드를 직접 구동해봅시다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;asg-rolling-deploy&lt;/code&gt; 모듈을 사용하여, 크기 1인 ASG를 배포하는 코드를 봅시다.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;terraform&quot;&gt;&lt;pre class=&quot;language-terraform&quot;&gt;&lt;code class=&quot;language-terraform&quot;&gt;terraform {
+  required_version = &amp;quot;&amp;gt;= 1.0.0, &amp;lt; 2.0.0&amp;quot;
+
+  required_providers {
+    aws = {
+      source  = &amp;quot;hashicorp/aws&amp;quot;
+      version = &amp;quot;~&amp;gt; 4.0&amp;quot;
+    }
+  }
+}
+
+provider &amp;quot;aws&amp;quot; {
+  region = &amp;quot;us-east-2&amp;quot;
+}
+
+# 모듈을 사용하여, 상기 리팩토링을 통해 수정한 내용을 쉽게 배포할 수 있게 되었습니다!
+#
+# 개인적으로는, 모듈 직전의 코드를 직접 쳐봐야 모듈화를 할 수 있는 통찰이 생기고,
+# 이를 통해 프로비저닝 및 배포를 테라폼으로 할 수 있다고 생각합니다.
+module &amp;quot;asg&amp;quot; {
+  source = &amp;quot;../../modules/cluster/asg-rolling-deploy&amp;quot;
+
+  cluster_name  = var.cluster_name
+
+  ami           = data.aws_ami.ubuntu.id
+  instance_type = &amp;quot;t2.micro&amp;quot;
+
+  min_size           = 1
+  max_size           = 1
+  enable_autoscaling = false
+
+  subnet_ids        = data.aws_subnets.default.ids
+}
+
+data &amp;quot;aws_vpc&amp;quot; &amp;quot;default&amp;quot; {
+  default = true
+}
+
+data &amp;quot;aws_subnets&amp;quot; &amp;quot;default&amp;quot; {
+  filter {
+    name   = &amp;quot;vpc-id&amp;quot;
+    values = [data.aws_vpc.default.id]
+  }
+}
+
+data &amp;quot;aws_ami&amp;quot; &amp;quot;ubuntu&amp;quot; {
+  most_recent = true
+  owners      = [&amp;quot;099720109477&amp;quot;] # Canonical
+
+  filter {
+    name   = &amp;quot;name&amp;quot;
+    values = [&amp;quot;ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*&amp;quot;]
+  }
+}&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;배포 및 확인은 아래 코드로 진행하면 됩니다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;bash&quot;&gt;&lt;pre class=&quot;language-bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;# [터미널1] RDS 생성 모니터링&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;token boolean&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;do&lt;/span&gt; aws rds describe-db-instances &lt;span class=&quot;token parameter variable&quot;&gt;--query&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;*[].[Endpoint.Address,Endpoint.Port,MasterUsername]&quot;&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;--output&lt;/span&gt; text  &lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token builtin class-name&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;------------------------------&quot;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;sleep&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;done&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# RDS 배포&lt;/span&gt;
+&lt;span class=&quot;token builtin class-name&quot;&gt;cd&lt;/span&gt; chapter08/examples01/small-modules/examples/mysql
+
+&lt;span class=&quot;token comment&quot;&gt;# 환경변수에 지정&lt;/span&gt;
+&lt;span class=&quot;token builtin class-name&quot;&gt;export&lt;/span&gt; &lt;span class=&quot;token assign-left variable&quot;&gt;TF_VAR_db_username&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;cloudneta&apos;&lt;/span&gt;
+&lt;span class=&quot;token builtin class-name&quot;&gt;export&lt;/span&gt; &lt;span class=&quot;token assign-left variable&quot;&gt;TF_VAR_db_password&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;cloudnetaQ!&apos;&lt;/span&gt;
+
+terraform init &lt;span class=&quot;token operator&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; terraform plan
+terraform apply -auto-approve
+
+&lt;span class=&quot;token comment&quot;&gt;# [터미널2]&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;token boolean&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;do&lt;/span&gt; aws ec2 describe-instances &lt;span class=&quot;token parameter variable&quot;&gt;--query&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;Reservations[*].Instances[*].{PublicIPAdd:PublicIpAddress,InstanceName:Tags[?Key==&apos;Name&apos;]|[0].Value,Status:State.Name}&quot;&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;--filters&lt;/span&gt; &lt;span class=&quot;token assign-left variable&quot;&gt;Name&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;instance-state-name,Values&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;running &lt;span class=&quot;token parameter variable&quot;&gt;--output&lt;/span&gt; text &lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token builtin class-name&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;------------------------------&quot;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;sleep&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;done&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# 배포&lt;/span&gt;
+&lt;span class=&quot;token builtin class-name&quot;&gt;cd&lt;/span&gt; chapter08/examples01/small-modules/examples/asg
+terraform init
+terraform plan
+terraform apply -auto-approve
+
+&lt;span class=&quot;token comment&quot;&gt;# ALB 배포&lt;/span&gt;
+&lt;span class=&quot;token builtin class-name&quot;&gt;cd&lt;/span&gt; chapter08/examples01/small-modules/examples/alb
+terraform init &lt;span class=&quot;token operator&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; terraform plan
+terraform apply -auto-approve
+
+&lt;span class=&quot;token comment&quot;&gt;# ALB DNS주소로 curl 접속 확인&lt;/span&gt;
+&lt;span class=&quot;token assign-left variable&quot;&gt;ALBDNS&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token variable&quot;&gt;&lt;span class=&quot;token variable&quot;&gt;$(&lt;/span&gt;terraform output &lt;span class=&quot;token parameter variable&quot;&gt;-raw&lt;/span&gt; alb_dns_name&lt;span class=&quot;token variable&quot;&gt;)&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;token boolean&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;curl&lt;/span&gt; --connect-timeout &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;  http://&lt;span class=&quot;token variable&quot;&gt;$ALBDNS&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token builtin class-name&quot;&gt;echo&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token builtin class-name&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;------------------------------&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;date&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;sleep&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;done&lt;/span&gt;
+&lt;span class=&quot;token function&quot;&gt;curl&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;-s&lt;/span&gt; http://&lt;span class=&quot;token variable&quot;&gt;$ALBDNS&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3 id=&quot;릴리즈-가능한-모듈버저닝&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EB%A6%B4%EB%A6%AC%EC%A6%88-%EA%B0%80%EB%8A%A5%ED%95%9C-%EB%AA%A8%EB%93%88%EB%B2%84%EC%A0%80%EB%8B%9D&quot; aria-label=&quot;릴리즈 가능한 모듈버저닝 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;릴리즈 가능한 모듈(버저닝)&lt;/h3&gt;
+&lt;h4 id=&quot;validations&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#validations&quot; aria-label=&quot;validations permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Validations&lt;/h4&gt;
+&lt;p&gt;테라폼 0.13부터 등장한 validation blocks 은 입력 변수를 체크할 수 있습니다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;terraform&quot;&gt;&lt;pre class=&quot;language-terraform&quot;&gt;&lt;code class=&quot;language-terraform&quot;&gt;variable &amp;quot;instance_type&amp;quot; {
+  description = &amp;quot;The type of EC2 Instances to run (e.g. t2.micro)&amp;quot;
+  type        = string
+
+  # t2.micro 혹은 t3.micro만 사용할 수 있도록 체크하는 로직입니다!
+  validation {
+    condition     = contains([&amp;quot;t2.micro&amp;quot;, &amp;quot;t3.micro&amp;quot;], var.instance_type)
+    error_message = &amp;quot;Only free tier is allowed: t2.micro | t3.micro.&amp;quot;
+  }
+}&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;만일 validation에 실패한다면, 아래와 같은 에러 메시지를 리턴하게 됩니다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;terraform&quot;&gt;&lt;pre class=&quot;language-terraform&quot;&gt;&lt;code class=&quot;language-terraform&quot;&gt;$ terraform apply -var instance_type=&amp;quot;m4.large&amp;quot;
+│ Error: Invalid value for variable
+│
+│   on main.tf line 17:
+│    1: variable &amp;quot;instance_type&amp;quot; {
+│     ├────────────────
+│     │ var.instance_type is &amp;quot;m4.large&amp;quot;
+│
+│ Only free tier is allowed: t2.micro | t3.micro.
+│
+│ This was checked by the validation rule at main.tf:21,3-13.&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h4 id=&quot;versioned-modules&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#versioned-modules&quot; aria-label=&quot;versioned modules permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Versioned Modules&lt;/h4&gt;
+&lt;p&gt;인프라 코드는 오늘 실행하든 3년후에 실행하든 동일한 결과를 얻을 수 있어야 합니다. 테라폼 코어, 프로바이더 및 버전을 명시하여 이를 가능하게 합니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;모듈 버저닝&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;테라폼 코어(&lt;code class=&quot;language-text&quot;&gt;core&lt;/code&gt;를 의미): 테라폼 실행파일 버전을 &lt;code class=&quot;language-text&quot;&gt;required_version&lt;/code&gt; 이란 값으로 명시합니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;terraform&quot;&gt;&lt;pre class=&quot;language-terraform&quot;&gt;&lt;code class=&quot;language-terraform&quot;&gt;terraform {
+  # Require any 1.x version of Terraform
+  required_version = &amp;quot;&amp;gt;= 1.0.0, &amp;lt; 2.0.0&amp;quot;
+}
+
+# 프로덕션은 완전히 구체적인 버전을 지칭하는 것이 좋습니다.
+terraform {
+  # Require any 1.x version of Terraform
+  required_version = &amp;quot;1.2.3&amp;quot;
+}&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;ul&gt;
+&lt;li&gt;프로바이더 버전: 프로바이더 버전 또한 &lt;code class=&quot;language-text&quot;&gt;require_providers&lt;/code&gt; 블록으로 명시합니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;terraform&quot;&gt;&lt;pre class=&quot;language-terraform&quot;&gt;&lt;code class=&quot;language-terraform&quot;&gt;terraform {
+  required_version = &amp;quot;&amp;gt;= 1.0.0, &amp;lt; 2.0.0&amp;quot;
+
+  required_providers {
+    aws = {
+      source  = &amp;quot;hashicorp/aws&amp;quot;
+      version = &amp;quot;~&amp;gt; 4.0&amp;quot;
+    }
+  }
+}&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;ul&gt;
+&lt;li&gt;모듈 버전: 모듈 자체의 버전 명시를 의미합니다. 이는 테라폼 코드일테니 Semantic version 관리 및 Git의 &lt;code class=&quot;language-text&quot;&gt;tag&lt;/code&gt;를 사용하는 방법이 있겠습니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;테라폼-모듈-그-외의-것들은-추가예정&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%ED%85%8C%EB%9D%BC%ED%8F%BC-%EB%AA%A8%EB%93%88-%EA%B7%B8-%EC%99%B8%EC%9D%98-%EA%B2%83%EB%93%A4%EC%9D%80-%EC%B6%94%EA%B0%80%EC%98%88%EC%A0%95&quot; aria-label=&quot;테라폼 모듈 그 외의 것들은 추가예정 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;테라폼 모듈 그 외의 것들은? (추가예정)&lt;/h3&gt;
+&lt;p&gt;아래 사항들이 있습니다:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Provisioners&lt;/li&gt;
+&lt;li&gt;Provisioners with null_resource&lt;/li&gt;
+&lt;li&gt;External data source&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&quot;lessons-learned&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#lessons-learned&quot; aria-label=&quot;lessons learned permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Lessons Learned&lt;/h1&gt;
+&lt;p&gt;제 8장에서는 아래의 내용을 반드시 기억하셨으면 좋겠습니다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;DevOps 파트 또한 깊고 어렵고, “삽질”이 많습니다. 쉽지 않은 파트이며 항상 감사히 생각해야겠습니다.&lt;/li&gt;
+&lt;li&gt;프로덕션 레벨에서 성공적으로 구동하기 까지는 정말 어렵고 힘든 길임을 이해했습니다.&lt;/li&gt;
+&lt;li&gt;테라폼 코드를 프로덕션 레벨에서 사용하는 예시를 통해 &lt;strong&gt;재사용 가능한 모듈&lt;/strong&gt; 단위의 사용을 학습했습니다.
+&lt;ol&gt;
+&lt;li&gt;작고, 테스트 가능하고 합성 가능한 모듈을 작성해야 합니다.&lt;/li&gt;
+&lt;li&gt;버전을 명시화하여 언제든 동일한 결과를 얻을 수 있어야 합니다.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;이것으로 제 8장을 마칩니다. 긴 글 읽어주셔서 감사합니다.&lt;/p&gt;</content:encoded></item><item><title><![CDATA[[CloudNet@] 테라폼 스터디 7주차 - 총복습]]></title><description><![CDATA[여태 스터디를 하며 배웠던 부분에 대한 one-point lesson을 해봅시다.]]></description><link>https://blog.s3ich4n.me/devlog/terraform/2022-12-10-cloudneta-terraform-101-pt07</link><guid isPermaLink="false">https://blog.s3ich4n.me/devlog/terraform/2022-12-10-cloudneta-terraform-101-pt07</guid><pubDate>Sat, 10 Dec 2022 19:34:00 GMT</pubDate><content:encoded>&lt;p&gt;이 내용은 &lt;a href=&quot;https://www.notion.so/gasidaseo/CloudNet-Blog-c9dfa44a27ff431dafdd2edacc8a1863&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;CloudNet@&lt;/a&gt; 에서 진행하는 테라폼 기초 입문 스터디에 대한 연재글입니다.&lt;/p&gt;
+&lt;p&gt;스터디에서 사용하는 교재는 &lt;a href=&quot;http://www.yes24.com/Product/Goods/101511312&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;Terraform Up &amp;#x26; Running 2nd Edition&lt;/a&gt; 입니다.&lt;/p&gt;
+&lt;h1 id=&quot;prerequisites&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#prerequisites&quot; aria-label=&quot;prerequisites permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Prerequisites&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;따로 없습니다. 어차피 처음부터 다시 밟아갈거에요.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&quot;본문&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EB%B3%B8%EB%AC%B8&quot; aria-label=&quot;본문 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;본문&lt;/h1&gt;
+&lt;p&gt;이번 장은, 1장부터 6장까지의 내용을 리와인드하는 장으로 하기로 하였습니다. 중간 스터디를 하면서도 복습했지만 스터디 모임이 한 주 쉬어가며 문서화를 하여 개념을 스스로 정리해야겠다 싶었습니다.&lt;/p&gt;
+&lt;h2 id=&quot;테라폼-복습&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%ED%85%8C%EB%9D%BC%ED%8F%BC-%EB%B3%B5%EC%8A%B5&quot; aria-label=&quot;테라폼 복습 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;테라폼 복습&lt;/h2&gt;
+&lt;h3 id=&quot;아키텍처&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98&quot; aria-label=&quot;아키텍처 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;아키텍처&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;전과 크게 다르지 않습니다!&lt;/li&gt;
+&lt;li&gt;ALB, ASG, EC2 구성대로 진행합니다.&lt;/li&gt;
+&lt;li&gt;staging, production 환경을 나눕니다.&lt;/li&gt;
+&lt;li&gt;모듈을 활용하여 무중단 업그레이드를 진행합니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;도구-안내&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EB%8F%84%EA%B5%AC-%EC%95%88%EB%82%B4&quot; aria-label=&quot;도구 안내 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;도구 안내&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;tfenv&lt;/code&gt; 를 통한 테라폼 버전관리를 수행해봅시다. 저는 리눅스 환경에서 실습을 진행하므로, 공식 repository에 작성된 Manual 설치대로 진행하겠습니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;bash&quot;&gt;&lt;pre class=&quot;language-bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;# ${HOME}/.tfenv에 관련 내용 설치&lt;/span&gt;
+&lt;span class=&quot;token function&quot;&gt;git&lt;/span&gt; clone &lt;span class=&quot;token parameter variable&quot;&gt;--depth&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt; https://github.com/tfutils/tfenv.git ~/.tfenv
+
+&lt;span class=&quot;token comment&quot;&gt;# 사용하고있는 쉘에 따라 ${PATH} 추가.&lt;/span&gt;
+&lt;span class=&quot;token comment&quot;&gt;# 저는 zsh을 사용하고 있습니다.&lt;/span&gt;
+&lt;span class=&quot;token comment&quot;&gt;# 해당명령 수행 후 쉘을 종료하고 다시 켜주세요.&lt;/span&gt;
+&lt;span class=&quot;token builtin class-name&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&apos;export PATH=$PATH:$HOME/.tfenv/bin&apos;&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;&gt;&gt;&lt;/span&gt; ~/.zshrc
+
+&lt;span class=&quot;token comment&quot;&gt;# 설치 가능 버전 확인&lt;/span&gt;
+tfenv list-remote &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;head&lt;/span&gt;
+&lt;span class=&quot;token number&quot;&gt;1.4&lt;/span&gt;.0-alpha20221109
+&lt;span class=&quot;token number&quot;&gt;1.3&lt;/span&gt;.6
+&lt;span class=&quot;token punctuation&quot;&gt;..&lt;/span&gt;.
+
+&lt;span class=&quot;token comment&quot;&gt;# 현재 설치된 버전 확인&lt;/span&gt;
+tfenv list
+No versions available. Please &lt;span class=&quot;token function&quot;&gt;install&lt;/span&gt; one with: tfenv &lt;span class=&quot;token function&quot;&gt;install&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# 특정 버전 설치&lt;/span&gt;
+&lt;span class=&quot;token comment&quot;&gt;#(옵션) export TFENV_ARCH=arm64  # mac Apple silicon M1/M2&lt;/span&gt;
+tfenv &lt;span class=&quot;token function&quot;&gt;install&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1.2&lt;/span&gt;.3
+tfenv list
+
+&lt;span class=&quot;token comment&quot;&gt;# 특정 버전 사용&lt;/span&gt;
+tfenv use &lt;span class=&quot;token number&quot;&gt;1.2&lt;/span&gt;.3
+Switching default version to v1.2.3
+Default version &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;when not overridden by .terraform-version or TFENV_TERRAFORM_VERSION&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; is now: &lt;span class=&quot;token number&quot;&gt;1.2&lt;/span&gt;.3
+
+&lt;span class=&quot;token comment&quot;&gt;# 테라폼 버전 확인&lt;/span&gt;
+terraform version
+on linux_amd64&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3 id=&quot;자격증명-리전-변경&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%9E%90%EA%B2%A9%EC%A6%9D%EB%AA%85-%EB%A6%AC%EC%A0%84-%EB%B3%80%EA%B2%BD&quot; aria-label=&quot;자격증명 리전 변경 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;자격증명 리전 변경&lt;/h3&gt;
+&lt;p&gt;오하이오 리전(&lt;code class=&quot;language-text&quot;&gt;us-east-2&lt;/code&gt;)으로 변경합시다.&lt;/p&gt;
+&lt;p&gt;저는 direnv를 사용하고 있으므로, 작업이 필요한 하부 워킹디렉토리에 &lt;code class=&quot;language-text&quot;&gt;.envrc&lt;/code&gt; 파일을 생성 후 &lt;code class=&quot;language-text&quot;&gt;AWS_DEFAULT_REGION&lt;/code&gt; 을 오하이오 리전으로 변경하여 사용하였습니다. 아래 커맨드로 바꾸고, 확인해봅시다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;bash&quot;&gt;&lt;pre class=&quot;language-bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;# AWS_DEFAULT_REGION 수정&lt;/span&gt;
+&lt;span class=&quot;token function&quot;&gt;vi&lt;/span&gt; .envrc
+
+&lt;span class=&quot;token comment&quot;&gt;# direnv 내의 추가/수정된 .envrc 파일을 사용합시다.&lt;/span&gt;
+direnv allow
+
+&lt;span class=&quot;token comment&quot;&gt;# 반영여부 확인&lt;/span&gt;
+aws configure list
+      Name                    Value             Type    Location
+      ----                    -----             ----    --------
+   profile                &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&lt;/span&gt;not set&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt;             None    None
+access_key     ************REDACTED              &lt;span class=&quot;token function&quot;&gt;env&lt;/span&gt;
+secret_key     ************REDACTED              &lt;span class=&quot;token function&quot;&gt;env&lt;/span&gt;
+    region                us-east-2              &lt;span class=&quot;token function&quot;&gt;env&lt;/span&gt;    &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;AWS_REGION&apos;&lt;/span&gt;, &lt;span class=&quot;token string&quot;&gt;&apos;AWS_DEFAULT_REGION&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2 id=&quot;코드-분석&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%BD%94%EB%93%9C-%EB%B6%84%EC%84%9D&quot; aria-label=&quot;코드 분석 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;코드 분석&lt;/h2&gt;
+&lt;p&gt;먼저, 영문 개정 3판의 코드를 클론합시다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;bash&quot;&gt;&lt;pre class=&quot;language-bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;&lt;span class=&quot;token function&quot;&gt;git&lt;/span&gt; clone https://github.com/brikis98/terraform-up-and-running-code.git
+&lt;span class=&quot;token builtin class-name&quot;&gt;cd&lt;/span&gt; terraform-up-and-running/code/terraform&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3 id=&quot;테라폼-문법-분석파트&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%ED%85%8C%EB%9D%BC%ED%8F%BC-%EB%AC%B8%EB%B2%95-%EB%B6%84%EC%84%9D%ED%8C%8C%ED%8A%B8&quot; aria-label=&quot;테라폼 문법 분석파트 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;테라폼 문법 분석파트&lt;/h3&gt;
+&lt;p&gt;테라폼 교재 예시의 가장 기본입니다. 위에서 설명드린 아키텍처에 작성된 내용을 코드로 배포하는 것이 주요 내용인지라, 해당 내용을 이해하고 넘어가야 다음 진도를 이해하며 넘어가실 수 있습니다!&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;(신규) 테라폼 구동 버전과 프로바이더의 버전을 기재하였습니다.
+&lt;ol&gt;
+&lt;li&gt;이 부분은 버전 명시 및 프로바이더에 대한 명확한 기재를 의미합니다.&lt;/li&gt;
+&lt;li&gt;향후 리팩토링을 수행하며, 관련 중요성에 대해 다시 말씀드리겠습니다.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;구동할 EC2 이미지를 찾고, 임의의 유저 데이터를 추가해두었습니다.&lt;/li&gt;
+&lt;li&gt;기본 VPC에 서브넷을 생성하고, 시큐리티 그룹을 설정하였습니다.&lt;/li&gt;
+&lt;li&gt;ALB 설정이 존재합니다&lt;/li&gt;
+&lt;li&gt;ASG 설정이 존재합니다&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;아래 명령으로 구동을 진행할 수 있습니다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;bash&quot;&gt;&lt;pre class=&quot;language-bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;# [터미널2]&lt;/span&gt;
+&lt;span class=&quot;token builtin class-name&quot;&gt;cd&lt;/span&gt; 02-intro-to-terraform-syntax/webserver-cluster
+&lt;span class=&quot;token function&quot;&gt;cat&lt;/span&gt; main.tf variables.tf
+
+&lt;span class=&quot;token comment&quot;&gt;# 배포&lt;/span&gt;
+terraform init
+terraform plan
+terraform apply -auto-approve
+
+&lt;span class=&quot;token comment&quot;&gt;# 배포 완료 후 ALB 접속 확인&lt;/span&gt;
+&lt;span class=&quot;token assign-left variable&quot;&gt;ALBDNS&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token variable&quot;&gt;&lt;span class=&quot;token variable&quot;&gt;$(&lt;/span&gt;terraform output &lt;span class=&quot;token parameter variable&quot;&gt;-raw&lt;/span&gt; alb_dns_name&lt;span class=&quot;token variable&quot;&gt;)&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;token boolean&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;curl&lt;/span&gt; --connect-timeout &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;  http://&lt;span class=&quot;token variable&quot;&gt;$ALBDNS&lt;/span&gt;/ &lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token builtin class-name&quot;&gt;echo&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token builtin class-name&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;------------------------------&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;date&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;sleep&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;done&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# 삭제&lt;/span&gt;
+terraform destroy -auto-approve
+&lt;span class=&quot;token builtin class-name&quot;&gt;cd&lt;/span&gt; ~/terraform-up-and-running-code/code/terraform&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3 id=&quot;테라폼-state-파트&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%ED%85%8C%EB%9D%BC%ED%8F%BC-state-%ED%8C%8C%ED%8A%B8&quot; aria-label=&quot;테라폼 state 파트 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;테라폼 state 파트&lt;/h3&gt;
+&lt;p&gt;이 장에서는, &lt;code class=&quot;language-text&quot;&gt;.tfstate&lt;/code&gt; 파일이나 폴더구조 관리에 대해 배웠습니다. 관리를 제대로 하지 않았을 때의 리스크는 &lt;a href=&quot;https://charity.wtf/2016/03/30/terraform-vpc-and-why-you-want-a-tfstate-file-per-env/&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;이 링크&lt;/a&gt;를 다시 봅시다…&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;S3, DynamoDB와 RDS(MySQL)을 통해, &lt;code class=&quot;language-text&quot;&gt;.tfstate&lt;/code&gt; 파일에 대한 관리를 진행합니다.
+&lt;ol&gt;
+&lt;li&gt;RDS에 .tfstate 내용을 백업하고, S3에 읽기 전용 파일로 다른 서비스들이 “읽을 수 있도록” 준비합니다.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;스테이징/프로덕션 파트의 RDS를 배포하여, 서비스가 구동됨을 확인합니다.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;아래 명령으로 구동을 진행할 수 있습니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;S3/DynamoDB 구동관련 설정&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;bash&quot;&gt;&lt;pre class=&quot;language-bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;# 환경변수에 지정&lt;/span&gt;
+&lt;span class=&quot;token builtin class-name&quot;&gt;export&lt;/span&gt; &lt;span class=&quot;token assign-left variable&quot;&gt;TF_VAR_bucket_name&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;ex07-tfstate
+&lt;span class=&quot;token builtin class-name&quot;&gt;export&lt;/span&gt; &lt;span class=&quot;token assign-left variable&quot;&gt;TF_VAR_table_name&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;ex07-t101-locks
+&lt;span class=&quot;token builtin class-name&quot;&gt;export&lt;/span&gt; &lt;span class=&quot;token assign-left variable&quot;&gt;TF_VAR_bucket_name&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;ex07-t101-tfstate
+&lt;span class=&quot;token builtin class-name&quot;&gt;export&lt;/span&gt; &lt;span class=&quot;token assign-left variable&quot;&gt;TF_VAR_table_name&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;ex07-t101-locks
+
+&lt;span class=&quot;token comment&quot;&gt;# 환경변수 확인&lt;/span&gt;
+&lt;span class=&quot;token builtin class-name&quot;&gt;export&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;grep&lt;/span&gt; TF_VAR_
+
+&lt;span class=&quot;token comment&quot;&gt;# (옵션) 환경변수 지정 삭제&lt;/span&gt;
+&lt;span class=&quot;token builtin class-name&quot;&gt;unset&lt;/span&gt; TF_VAR_bucket_name
+&lt;span class=&quot;token builtin class-name&quot;&gt;unset&lt;/span&gt; TF_VAR_table_name&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;ul&gt;
+&lt;li&gt;S3/DynamoDB 배포하기&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;bash&quot;&gt;&lt;pre class=&quot;language-bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;#&lt;/span&gt;
+&lt;span class=&quot;token builtin class-name&quot;&gt;cd&lt;/span&gt; 03-terraform-state/file-layout-example/global/s3
+&lt;span class=&quot;token function&quot;&gt;cat&lt;/span&gt; main.tf variables.tf
+
+&lt;span class=&quot;token comment&quot;&gt;# 초기화 및 검증 : 환경변수 적용 확인&lt;/span&gt;
+terraform init &lt;span class=&quot;token operator&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; terraform plan
+
+&lt;span class=&quot;token comment&quot;&gt;# 배포&lt;/span&gt;
+terraform apply -auto-approve
+
+&lt;span class=&quot;token comment&quot;&gt;# 확인&lt;/span&gt;
+aws s3 &lt;span class=&quot;token function&quot;&gt;ls&lt;/span&gt;
+aws dynamodb list-tables &lt;span class=&quot;token parameter variable&quot;&gt;--output&lt;/span&gt; text
+
+&lt;span class=&quot;token comment&quot;&gt;# 이동&lt;/span&gt;
+&lt;span class=&quot;token builtin class-name&quot;&gt;cd&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;..&lt;/span&gt;/&lt;span class=&quot;token punctuation&quot;&gt;..&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;ul&gt;
+&lt;li&gt;RDS 배포하기&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;bash&quot;&gt;&lt;pre class=&quot;language-bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;# [터미널1] RDS 생성 모니터링&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;token boolean&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;do&lt;/span&gt; aws rds describe-db-instances &lt;span class=&quot;token parameter variable&quot;&gt;--query&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;*[].[Endpoint.Address,Endpoint.Port,MasterUsername]&quot;&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;--output&lt;/span&gt; text  &lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token builtin class-name&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;------------------------------&quot;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;sleep&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;done&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# [터미널2]&lt;/span&gt;
+&lt;span class=&quot;token builtin class-name&quot;&gt;cd&lt;/span&gt; stage/data-stores/mysql
+&lt;span class=&quot;token function&quot;&gt;cat&lt;/span&gt; main.tf variables.tf
+
+&lt;span class=&quot;token comment&quot;&gt;# 환경변수에 지정&lt;/span&gt;
+&lt;span class=&quot;token builtin class-name&quot;&gt;export&lt;/span&gt; &lt;span class=&quot;token assign-left variable&quot;&gt;TF_VAR_db_username&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;cloudneta&apos;&lt;/span&gt;
+&lt;span class=&quot;token builtin class-name&quot;&gt;export&lt;/span&gt; &lt;span class=&quot;token assign-left variable&quot;&gt;TF_VAR_db_password&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;cloudnetaQ!&apos;&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# 환경변수 확인&lt;/span&gt;
+&lt;span class=&quot;token builtin class-name&quot;&gt;export&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;grep&lt;/span&gt; TF_VAR_
+
+&lt;span class=&quot;token comment&quot;&gt;# main.tf 에 백엔드 부분 수정&lt;/span&gt;
+&lt;span class=&quot;token function&quot;&gt;vi&lt;/span&gt; main.tf
+  backend &lt;span class=&quot;token string&quot;&gt;&quot;s3&quot;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;token comment&quot;&gt;# This backend configuration is filled in automatically at test time by Terratest. If you wish to run this example&lt;/span&gt;
+    &lt;span class=&quot;token comment&quot;&gt;# manually, uncomment and fill in the config below.&lt;/span&gt;
+    bucket         &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;ex07-tfstate&quot;&lt;/span&gt;
+    key            &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;stage/data-stores/mysql/terraform.tfstate&quot;&lt;/span&gt;
+    region         &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;us-east-2&quot;&lt;/span&gt;
+    dynamodb_table &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;ex07-t101-locks&quot;&lt;/span&gt;
+    &lt;span class=&quot;token comment&quot;&gt;# encrypt        = true&lt;/span&gt;
+  &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# 초기화 및 검증 : 환경변수 적용 확인&lt;/span&gt;
+terraform init &lt;span class=&quot;token operator&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; terraform plan
+
+&lt;span class=&quot;token comment&quot;&gt;# 배포 : RDS는 생성 시 6분 정도 시간 소요&lt;/span&gt;
+terraform apply -auto-approve
+terraform output
+aws s3 &lt;span class=&quot;token function&quot;&gt;ls&lt;/span&gt; s3://&lt;span class=&quot;token variable&quot;&gt;$TF_VAR_bucket_name&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;--recursive&lt;/span&gt; --human-readable &lt;span class=&quot;token parameter variable&quot;&gt;--summarize&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# 이동&lt;/span&gt;
+&lt;span class=&quot;token builtin class-name&quot;&gt;cd&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;..&lt;/span&gt;/&lt;span class=&quot;token punctuation&quot;&gt;..&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;ul&gt;
+&lt;li&gt;(상기 과정을 마쳐야 할 수 있습니다!) 웹서버 클러스터 배포하기&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;bash&quot;&gt;&lt;pre class=&quot;language-bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;#&lt;/span&gt;
+&lt;span class=&quot;token builtin class-name&quot;&gt;cd&lt;/span&gt; services/webserver-cluster
+&lt;span class=&quot;token function&quot;&gt;cat&lt;/span&gt; main.tf variables.tf
+
+&lt;span class=&quot;token comment&quot;&gt;# 환경변수에 지정&lt;/span&gt;
+&lt;span class=&quot;token builtin class-name&quot;&gt;export&lt;/span&gt; &lt;span class=&quot;token assign-left variable&quot;&gt;TF_VAR_db_remote_state_bucket&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token variable&quot;&gt;$TF_VAR_bucket_name&lt;/span&gt;                       &lt;span class=&quot;token comment&quot;&gt;# description = &quot;The name of the S3 bucket used for the database&apos;s remote state storage&quot;&lt;/span&gt;
+&lt;span class=&quot;token builtin class-name&quot;&gt;export&lt;/span&gt; &lt;span class=&quot;token assign-left variable&quot;&gt;TF_VAR_db_remote_state_key&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;stage/data-stores/mysql/terraform.tfstate&apos;&lt;/span&gt;  &lt;span class=&quot;token comment&quot;&gt;# description = &quot;The name of the key in the S3 bucket used for the database&apos;s remote state storage&quot;&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# 환경변수 확인&lt;/span&gt;
+&lt;span class=&quot;token builtin class-name&quot;&gt;export&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;grep&lt;/span&gt; TF_VAR_
+
+&lt;span class=&quot;token comment&quot;&gt;# 초기화 및 검증 : 환경변수 적용 확인&lt;/span&gt;
+terraform init &lt;span class=&quot;token operator&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; terraform plan
+
+&lt;span class=&quot;token comment&quot;&gt;# 배포&lt;/span&gt;
+terraform apply -auto-approve
+
+&lt;span class=&quot;token comment&quot;&gt;# ALB DNS주소로 curl 접속 확인&lt;/span&gt;
+&lt;span class=&quot;token assign-left variable&quot;&gt;ALBDNS&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token variable&quot;&gt;&lt;span class=&quot;token variable&quot;&gt;$(&lt;/span&gt;terraform output &lt;span class=&quot;token parameter variable&quot;&gt;-raw&lt;/span&gt; alb_dns_name&lt;span class=&quot;token variable&quot;&gt;)&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;token boolean&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;curl&lt;/span&gt; --connect-timeout &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;  http://&lt;span class=&quot;token variable&quot;&gt;$ALBDNS&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token builtin class-name&quot;&gt;echo&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token builtin class-name&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;------------------------------&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;date&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;sleep&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;done&lt;/span&gt;
+&lt;span class=&quot;token function&quot;&gt;curl&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;-s&lt;/span&gt; http://&lt;span class=&quot;token variable&quot;&gt;$ALBDNS&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# 삭제&lt;/span&gt;
+&lt;span class=&quot;token comment&quot;&gt;# 각 폴더에서 리소스 삭제&lt;/span&gt;
+stage/services/webserver-cluster$ terraform destroy -auto-approve
+stage/data-stores/mysql$ terraform destroy -auto-approve
+global/s3$ terraform destroy -auto-approve
+
+&lt;span class=&quot;token comment&quot;&gt;# 이동&lt;/span&gt;
+&lt;span class=&quot;token builtin class-name&quot;&gt;cd&lt;/span&gt; ~/terraform-up-and-running-code/code/terraform&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3 id=&quot;테라폼-모듈-파트&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%ED%85%8C%EB%9D%BC%ED%8F%BC-%EB%AA%A8%EB%93%88-%ED%8C%8C%ED%8A%B8&quot; aria-label=&quot;테라폼 모듈 파트 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;테라폼 모듈 파트&lt;/h3&gt;
+&lt;p&gt;테라폼 state 파트에서 작성해본 내용들을 모듈화하여, 보다 효율적인 테라폼 코드를 작성해봅시다. 코드 재사용, 여러 테라폼 리소스를 논리적 그룹으로 묶을 수 있습니다. 논리적으로 구상할 수 있다는 것은 우리의 사고대로 코드들을 재배합할 수 있다는 이야기지요.&lt;/p&gt;
+&lt;p&gt;여기서는 웹서버 내용에 대해서만 아직 모듈로 묶어두었고, 8장에서 ALB, ASG, EC2가 묶여있는 부분을 해제해봅시다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;상기 내용과 동일합니다!&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;S3/DynamoDB 구동관련 설정&lt;/li&gt;
+&lt;li&gt;S3/DynamoDB 배포하기&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Staging RDS 배포하기&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;bash&quot;&gt;&lt;pre class=&quot;language-bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;# [터미널1] RDS 생성 모니터링&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;token boolean&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;do&lt;/span&gt; aws rds describe-db-instances &lt;span class=&quot;token parameter variable&quot;&gt;--query&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;*[].[Endpoint.Address,Endpoint.Port,MasterUsername]&quot;&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;--output&lt;/span&gt; text  &lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token builtin class-name&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;------------------------------&quot;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;sleep&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;done&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# [터미널2]&lt;/span&gt;
+&lt;span class=&quot;token builtin class-name&quot;&gt;cd&lt;/span&gt; 04-terraform-module/module-example/stage/data-stores/mysql
+&lt;span class=&quot;token function&quot;&gt;cat&lt;/span&gt; main.tf variables.tf
+
+&lt;span class=&quot;token comment&quot;&gt;# 환경변수에 지정&lt;/span&gt;
+&lt;span class=&quot;token builtin class-name&quot;&gt;export&lt;/span&gt; &lt;span class=&quot;token assign-left variable&quot;&gt;TF_VAR_db_username&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;cloudneta&apos;&lt;/span&gt;
+&lt;span class=&quot;token builtin class-name&quot;&gt;export&lt;/span&gt; &lt;span class=&quot;token assign-left variable&quot;&gt;TF_VAR_db_password&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;cloudnetaQ!&apos;&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# 환경변수 확인&lt;/span&gt;
+&lt;span class=&quot;token builtin class-name&quot;&gt;export&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;grep&lt;/span&gt; TF_VAR_
+
+&lt;span class=&quot;token comment&quot;&gt;# main.tf 에 백엔드 부분 수정&lt;/span&gt;
+&lt;span class=&quot;token function&quot;&gt;vi&lt;/span&gt; main.tf
+  backend &lt;span class=&quot;token string&quot;&gt;&quot;s3&quot;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;token comment&quot;&gt;# This backend configuration is filled in automatically at test time by Terratest. If you wish to run this example&lt;/span&gt;
+    &lt;span class=&quot;token comment&quot;&gt;# manually, uncomment and fill in the config below.&lt;/span&gt;
+    bucket         &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;ex07-tfstate&quot;&lt;/span&gt;
+    key            &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;stage/data-stores/mysql/terraform.tfstate&quot;&lt;/span&gt;
+    region         &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;us-east-2&quot;&lt;/span&gt;
+    dynamodb_table &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;ex07-t101-locks&quot;&lt;/span&gt;
+    &lt;span class=&quot;token comment&quot;&gt;# encrypt        = true&lt;/span&gt;
+  &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# 초기화 및 검증 : 환경변수 적용 확인&lt;/span&gt;
+terraform init &lt;span class=&quot;token operator&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; terraform plan
+
+&lt;span class=&quot;token comment&quot;&gt;# 배포 : RDS는 생성 시 6분 정도 시간 소요&lt;/span&gt;
+terraform apply -auto-approve
+terraform output
+aws s3 &lt;span class=&quot;token function&quot;&gt;ls&lt;/span&gt; s3://&lt;span class=&quot;token variable&quot;&gt;$TF_VAR_bucket_name&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;--recursive&lt;/span&gt; --human-readable &lt;span class=&quot;token parameter variable&quot;&gt;--summarize&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# 이동&lt;/span&gt;
+&lt;span class=&quot;token builtin class-name&quot;&gt;cd&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;..&lt;/span&gt;/&lt;span class=&quot;token punctuation&quot;&gt;..&lt;/span&gt;/&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;ul&gt;
+&lt;li&gt;(상기 과정을 마쳐야 할 수 있습니다!) Staging 웹서버 클러스터 배포하기&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;bash&quot;&gt;&lt;pre class=&quot;language-bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;#&lt;/span&gt;
+&lt;span class=&quot;token builtin class-name&quot;&gt;cd&lt;/span&gt; services/webserver-cluster
+&lt;span class=&quot;token function&quot;&gt;cat&lt;/span&gt; main.tf variables.tf
+
+&lt;span class=&quot;token comment&quot;&gt;# 환경변수에 지정&lt;/span&gt;
+&lt;span class=&quot;token builtin class-name&quot;&gt;export&lt;/span&gt; &lt;span class=&quot;token assign-left variable&quot;&gt;TF_VAR_db_remote_state_bucket&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token variable&quot;&gt;$TF_VAR_bucket_name&lt;/span&gt;                       &lt;span class=&quot;token comment&quot;&gt;# description = &quot;The name of the S3 bucket used for the database&apos;s remote state storage&quot;&lt;/span&gt;
+&lt;span class=&quot;token builtin class-name&quot;&gt;export&lt;/span&gt; &lt;span class=&quot;token assign-left variable&quot;&gt;TF_VAR_db_remote_state_key&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;stage/data-stores/mysql/terraform.tfstate&apos;&lt;/span&gt;  &lt;span class=&quot;token comment&quot;&gt;# description = &quot;The name of the key in the S3 bucket used for the database&apos;s remote state storage&quot;&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# 환경변수 확인&lt;/span&gt;
+&lt;span class=&quot;token builtin class-name&quot;&gt;export&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;grep&lt;/span&gt; TF_VAR_
+
+&lt;span class=&quot;token comment&quot;&gt;# 초기화 및 검증 : 환경변수 적용 확인&lt;/span&gt;
+terraform init &lt;span class=&quot;token operator&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; terraform plan
+
+&lt;span class=&quot;token comment&quot;&gt;# 배포&lt;/span&gt;
+terraform apply -auto-approve
+
+&lt;span class=&quot;token comment&quot;&gt;# ALB DNS주소로 curl 접속 확인&lt;/span&gt;
+&lt;span class=&quot;token assign-left variable&quot;&gt;ALBDNS&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token variable&quot;&gt;&lt;span class=&quot;token variable&quot;&gt;$(&lt;/span&gt;terraform output &lt;span class=&quot;token parameter variable&quot;&gt;-raw&lt;/span&gt; alb_dns_name&lt;span class=&quot;token variable&quot;&gt;)&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;token boolean&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;curl&lt;/span&gt; --connect-timeout &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;  http://&lt;span class=&quot;token variable&quot;&gt;$ALBDNS&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token builtin class-name&quot;&gt;echo&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token builtin class-name&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;------------------------------&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;date&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;sleep&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;done&lt;/span&gt;
+&lt;span class=&quot;token function&quot;&gt;curl&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;-s&lt;/span&gt; http://&lt;span class=&quot;token variable&quot;&gt;$ALBDNS&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# 삭제&lt;/span&gt;
+&lt;span class=&quot;token comment&quot;&gt;# 각 폴더에서 리소스 삭제&lt;/span&gt;
+stage/services/webserver-cluster$ terraform destroy -auto-approve
+stage/data-stores/mysql$ terraform destroy -auto-approve
+03-terraform-state/file-layout-example/global/s3$ terraform destroy -auto-approve &lt;span class=&quot;token comment&quot;&gt;# 아래 Production 실습을 이어서 할 경우에는 실습 완료 후 삭제 할 것&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# 이동&lt;/span&gt;
+&lt;span class=&quot;token builtin class-name&quot;&gt;cd&lt;/span&gt; ~/terraform-up-and-running-code/code/terraform&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;cf. Production 배포는 &lt;code class=&quot;language-text&quot;&gt;04-terraform-module/module-example&lt;/code&gt; 의 prod 디렉토리의 RDS와 웹서버 클러스터를 배포하면 됩니다.&lt;/p&gt;
+&lt;h3 id=&quot;tips-and-tricks-무중단-배포-관련&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#tips-and-tricks-%EB%AC%B4%EC%A4%91%EB%8B%A8-%EB%B0%B0%ED%8F%AC-%EA%B4%80%EB%A0%A8&quot; aria-label=&quot;tips and tricks 무중단 배포 관련 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;tips and tricks: 무중단 배포 관련&lt;/h3&gt;
+&lt;p&gt;무중단 배포(zero-downtime deployment)의 경우, 수정된 테라폼 코드나 환경변수를 사용하여 &lt;code class=&quot;language-text&quot;&gt;terraform apply&lt;/code&gt; 를 하면 끝입니다. 배포과정은 상기 내용과 동일하지만, 모듈을 활용하여 배포하는 단계가 다릅니다. 여기서는 배포가 “어떻게” 되는지를 살펴보겠습니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;상기 내용과 동일합니다!
+&lt;ul&gt;
+&lt;li&gt;S3/DynamoDB 구동관련 설정&lt;/li&gt;
+&lt;li&gt;S3/DynamoDB 배포하기&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Staging RDS 배포하기&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;bash&quot;&gt;&lt;pre class=&quot;language-bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;# [터미널1] RDS 생성 모니터링&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;token boolean&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;do&lt;/span&gt; aws rds describe-db-instances &lt;span class=&quot;token parameter variable&quot;&gt;--query&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;*[].[Endpoint.Address,Endpoint.Port,MasterUsername]&quot;&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;--output&lt;/span&gt; text  &lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token builtin class-name&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;------------------------------&quot;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;sleep&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;done&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# [터미널2]&lt;/span&gt;
+&lt;span class=&quot;token builtin class-name&quot;&gt;cd&lt;/span&gt; 05-tips-and-tricks/module-example/stage/data-stores/mysql
+&lt;span class=&quot;token function&quot;&gt;cat&lt;/span&gt; main.tf variables.tf
+
+&lt;span class=&quot;token comment&quot;&gt;# 환경변수에 지정&lt;/span&gt;
+&lt;span class=&quot;token builtin class-name&quot;&gt;export&lt;/span&gt; &lt;span class=&quot;token assign-left variable&quot;&gt;TF_VAR_db_username&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;cloudneta&apos;&lt;/span&gt;
+&lt;span class=&quot;token builtin class-name&quot;&gt;export&lt;/span&gt; &lt;span class=&quot;token assign-left variable&quot;&gt;TF_VAR_db_password&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;cloudnetaQ!&apos;&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# 환경변수 확인&lt;/span&gt;
+&lt;span class=&quot;token builtin class-name&quot;&gt;export&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;grep&lt;/span&gt; TF_VAR_
+
+&lt;span class=&quot;token comment&quot;&gt;# main.tf 에 백엔드 부분 수정&lt;/span&gt;
+&lt;span class=&quot;token function&quot;&gt;vi&lt;/span&gt; main.tf
+  backend &lt;span class=&quot;token string&quot;&gt;&quot;s3&quot;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;token comment&quot;&gt;# This backend configuration is filled in automatically at test time by Terratest. If you wish to run this example&lt;/span&gt;
+    &lt;span class=&quot;token comment&quot;&gt;# manually, uncomment and fill in the config below.&lt;/span&gt;
+    bucket         &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;ex07-tfstate&quot;&lt;/span&gt;
+    key            &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;stage/data-stores/mysql/terraform.tfstate&quot;&lt;/span&gt;
+    region         &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;us-east-2&quot;&lt;/span&gt;
+    dynamodb_table &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;ex07-t101-locks&quot;&lt;/span&gt;
+    &lt;span class=&quot;token comment&quot;&gt;# encrypt        = true&lt;/span&gt;
+  &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# 초기화 및 검증 : 환경변수 적용 확인&lt;/span&gt;
+terraform init &lt;span class=&quot;token operator&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; terraform plan
+
+&lt;span class=&quot;token comment&quot;&gt;# 배포 : RDS는 생성 시 6분 정도 시간 소요&lt;/span&gt;
+terraform apply -auto-approve
+terraform output
+aws s3 &lt;span class=&quot;token function&quot;&gt;ls&lt;/span&gt; s3://&lt;span class=&quot;token variable&quot;&gt;$TF_VAR_bucket_name&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;--recursive&lt;/span&gt; --human-readable &lt;span class=&quot;token parameter variable&quot;&gt;--summarize&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# 이동&lt;/span&gt;
+&lt;span class=&quot;token builtin class-name&quot;&gt;cd&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;..&lt;/span&gt;/&lt;span class=&quot;token punctuation&quot;&gt;..&lt;/span&gt;/&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;ul&gt;
+&lt;li&gt;(상기 과정을 마쳐야 할 수 있습니다!) Staging 웹서버 배포 후 &lt;strong&gt;무중단 배포 진행&lt;/strong&gt;하기&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;bash&quot;&gt;&lt;pre class=&quot;language-bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;#&lt;/span&gt;
+&lt;span class=&quot;token builtin class-name&quot;&gt;cd&lt;/span&gt; services/webserver-cluster
+&lt;span class=&quot;token function&quot;&gt;cat&lt;/span&gt; main.tf variables.tf
+
+&lt;span class=&quot;token comment&quot;&gt;# 환경변수에 지정&lt;/span&gt;
+&lt;span class=&quot;token builtin class-name&quot;&gt;export&lt;/span&gt; &lt;span class=&quot;token assign-left variable&quot;&gt;TF_VAR_db_remote_state_bucket&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token variable&quot;&gt;$TF_VAR_bucket_name&lt;/span&gt;                       &lt;span class=&quot;token comment&quot;&gt;# description = &quot;The name of the S3 bucket used for the database&apos;s remote state storage&quot;&lt;/span&gt;
+&lt;span class=&quot;token builtin class-name&quot;&gt;export&lt;/span&gt; &lt;span class=&quot;token assign-left variable&quot;&gt;TF_VAR_db_remote_state_key&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;stage/data-stores/mysql/terraform.tfstate&apos;&lt;/span&gt;  &lt;span class=&quot;token comment&quot;&gt;# description = &quot;The name of the key in the S3 bucket used for the database&apos;s remote state storage&quot;&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# 환경변수 확인&lt;/span&gt;
+&lt;span class=&quot;token builtin class-name&quot;&gt;export&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;grep&lt;/span&gt; TF_VAR_
+
+&lt;span class=&quot;token comment&quot;&gt;# 초기화 및 검증 : 환경변수 적용 확인&lt;/span&gt;
+terraform init &lt;span class=&quot;token operator&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; terraform plan &lt;span class=&quot;token parameter variable&quot;&gt;-var&lt;/span&gt; &lt;span class=&quot;token assign-left variable&quot;&gt;server_text&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;Old server text&apos;&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# 배포&lt;/span&gt;
+terraform apply -auto-approve &lt;span class=&quot;token parameter variable&quot;&gt;-var&lt;/span&gt; &lt;span class=&quot;token assign-left variable&quot;&gt;server_text&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;Old server text&apos;&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# ALB DNS주소로 curl 접속 확인&lt;/span&gt;
+&lt;span class=&quot;token assign-left variable&quot;&gt;ALBDNS&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token variable&quot;&gt;&lt;span class=&quot;token variable&quot;&gt;$(&lt;/span&gt;terraform output &lt;span class=&quot;token parameter variable&quot;&gt;-raw&lt;/span&gt; alb_dns_name&lt;span class=&quot;token variable&quot;&gt;)&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;token boolean&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;curl&lt;/span&gt; --connect-timeout &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;  http://&lt;span class=&quot;token variable&quot;&gt;$ALBDNS&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token builtin class-name&quot;&gt;echo&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token builtin class-name&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;------------------------------&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;date&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;sleep&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;done&lt;/span&gt;
+&lt;span class=&quot;token function&quot;&gt;curl&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;-s&lt;/span&gt; http://&lt;span class=&quot;token variable&quot;&gt;$ALBDNS&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# [터미널1]&lt;/span&gt;
+&lt;span class=&quot;token assign-left variable&quot;&gt;ALBDNS&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&amp;lt;&lt;/span&gt;직접입력&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;token boolean&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;curl&lt;/span&gt; --connect-timeout &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;  http://&lt;span class=&quot;token variable&quot;&gt;$ALBDNS&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token builtin class-name&quot;&gt;echo&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token builtin class-name&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;------------------------------&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;date&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;sleep&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;done&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# [터미널2]&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;token boolean&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;do&lt;/span&gt; aws ec2 describe-instances &lt;span class=&quot;token parameter variable&quot;&gt;--query&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;Reservations[*].Instances[*].{PublicIPAdd:PublicIpAddress,InstanceName:Tags[?Key==&apos;Name&apos;]|[0].Value,Status:State.Name}&quot;&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;--filters&lt;/span&gt; &lt;span class=&quot;token assign-left variable&quot;&gt;Name&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;instance-state-name,Values&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;running &lt;span class=&quot;token parameter variable&quot;&gt;--output&lt;/span&gt; text &lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token builtin class-name&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;------------------------------&quot;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;sleep&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;done&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# 무중단 업그레이드 배포 : 환경변수 수정 적용 &gt;&gt; 오토스케일링그룹 2개중 기존 그룹은 5분 정도 후에 EC2가 삭제됨(오래 걸리니 맘 편히 기다리자)&lt;/span&gt;
+terraform plan &lt;span class=&quot;token parameter variable&quot;&gt;-var&lt;/span&gt; &lt;span class=&quot;token assign-left variable&quot;&gt;server_text&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;NEW server text&apos;&lt;/span&gt;
+terraform apply -auto-approve &lt;span class=&quot;token parameter variable&quot;&gt;-var&lt;/span&gt; &lt;span class=&quot;token assign-left variable&quot;&gt;server_text&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;NEW server text&apos;&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# 삭제&lt;/span&gt;
+&lt;span class=&quot;token comment&quot;&gt;# 각 폴더에서 리소스 삭제&lt;/span&gt;
+stage/services/webserver-cluster$ terraform destroy -auto-approve
+stage/data-stores/mysql$ terraform destroy -auto-approve
+03-terraform-state/file-layout-example/global/s3$ terraform destroy -auto-approve
+
+&lt;span class=&quot;token comment&quot;&gt;# 이동&lt;/span&gt;
+&lt;span class=&quot;token builtin class-name&quot;&gt;cd&lt;/span&gt; ~/terraform-up-and-running-code/code/terraform&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h1 id=&quot;lessons-learned&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#lessons-learned&quot; aria-label=&quot;lessons learned permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Lessons Learned&lt;/h1&gt;
+&lt;p&gt;제 7장에서는 아래의 내용을 반드시 기억하셨으면 좋겠습니다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;테라폼을 사용하였을 때의 확실한 이점을 이해했습니다.&lt;/li&gt;
+&lt;li&gt;예시의 내용이 &lt;em&gt;정확히&lt;/em&gt; 어떻게 되는지 이해할 수 있었습니다.&lt;/li&gt;
+&lt;li&gt;향후 자신의 프로젝트나, 회사의 인프라 관리 코드들을 보고 이해할 수 있게 되었습니다.&lt;/li&gt;
+&lt;li&gt;향후 나올 8장의 내용 이해 및 실제 프로덕션 레벨에서의 일부를 가정하여, 학습할 수 있게 되었습니다.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;이것으로 제 7장을 마칩니다. 긴 글 읽어주셔서 감사합니다.&lt;/p&gt;</content:encoded></item><item><title><![CDATA[[CloudNet@] 테라폼 스터디 6주차 - Managing Secrets with Terraform]]></title><description><![CDATA[Terraform을 사용하며 인프라 프로비저닝 및 배포 시, 민감정보에 대해 관리하는 방안에 대해 작성하였습니다.]]></description><link>https://blog.s3ich4n.me/devlog/terraform/2022-11-27-cloudneta-terraform-101-pt06</link><guid isPermaLink="false">https://blog.s3ich4n.me/devlog/terraform/2022-11-27-cloudneta-terraform-101-pt06</guid><pubDate>Sun, 27 Nov 2022 22:19:00 GMT</pubDate><content:encoded>&lt;p&gt;이 내용은 &lt;a href=&quot;https://www.notion.so/gasidaseo/CloudNet-Blog-c9dfa44a27ff431dafdd2edacc8a1863&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;CloudNet@&lt;/a&gt; 에서 진행하는 테라폼 기초 입문 스터디에 대한 연재글입니다.&lt;/p&gt;
+&lt;p&gt;스터디에서 사용하는 교재는 &lt;a href=&quot;http://www.yes24.com/Product/Goods/101511312&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;Terraform Up &amp;#x26; Running 2nd Edition&lt;/a&gt; 입니다.&lt;/p&gt;
+&lt;p&gt;특히 이 장은, &lt;a href=&quot;https://www.oreilly.com/library/view/terraform-up-and/9781098116736/&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;Terraform Up &amp;#x26; Running 3rd Edition&lt;/a&gt; 의 Managing Secrets with Terraform 장을 참고하여 학습하였습니다.&lt;/p&gt;
+&lt;h1 id=&quot;prerequisites&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#prerequisites&quot; aria-label=&quot;prerequisites permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Prerequisites&lt;/h1&gt;
+&lt;p&gt;따로 있지 않습니다!&lt;/p&gt;
+&lt;p&gt;아래에서 6주차 스터디 내용을 공유합니다.&lt;/p&gt;
+&lt;p&gt;Terraform Up &amp;#x26; Learning 3rd Edition 의 6장 내용을 다루고 있습니다.&lt;/p&gt;
+&lt;h1 id=&quot;본문&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EB%B3%B8%EB%AC%B8&quot; aria-label=&quot;본문 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;본문&lt;/h1&gt;
+&lt;p&gt;비밀번호를 누구든 알 수 없게 하면 안 된다는 것은 상식이지만, 방법을 모르면 사실상 비밀번호를 노출시키는 것과 다름 없기 때문에, 이를 관리하는 도구를 사용해야합니다. 이러한 이유로, 민감정보 값들은 프로비저닝 될 때 안전하게 관리 될 필요가 있습니다.&lt;/p&gt;
+&lt;p&gt;민감정보는 아래 값들을 의미합니다:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;DB 암호&lt;/li&gt;
+&lt;li&gt;API 키&lt;/li&gt;
+&lt;li&gt;TLS 인증서&lt;/li&gt;
+&lt;li&gt;SSH 키&lt;/li&gt;
+&lt;li&gt;GPG 키&lt;/li&gt;
+&lt;li&gt;등등..&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&quot;암호-관리에-대하여&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%95%94%ED%98%B8-%EA%B4%80%EB%A6%AC%EC%97%90-%EB%8C%80%ED%95%98%EC%97%AC&quot; aria-label=&quot;암호 관리에 대하여 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;암호 관리에 대하여&lt;/h2&gt;
+&lt;p&gt;프로비저닝을 할 때 민감정보에 대한 절대적 법칙이 있습니다.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ol&gt;
+&lt;li&gt;민감 정보를 &lt;strong&gt;절대 평문으로&lt;/strong&gt; 쓰지 맙시다.&lt;/li&gt;
+&lt;li&gt;1번을 명심하십시오.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;예를들어 이런 코드가 있다고 할까요?&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;terraform&quot;&gt;&lt;pre class=&quot;language-terraform&quot;&gt;&lt;code class=&quot;language-terraform&quot;&gt;resource &amp;quot;aws_db_instance&amp;quot; &amp;quot;example&amp;quot; {
+  identifier_prefix   = &amp;quot;terraform-up-and-running&amp;quot;
+  engine              = &amp;quot;mysql&amp;quot;
+  allocated_storage   = 10
+  instance_class      = &amp;quot;db.t2.micro&amp;quot;
+  skip_final_snapshot = true
+  db_name             = var.db_name
+
+  # 절대로!!! 이러면!!! 안됩니다!!!!!!!!!!!!!!
+  username = &amp;quot;admin&amp;quot;
+  password = &amp;quot;password&amp;quot;
+  # 절대로!!! 이러면!!! 안됩니다!!!!!!!!!!!!!! 진짜로!!!!
+}&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;VCS (E.g., Git)에 이런 코드가 있다면, &lt;strong&gt;누구든지&lt;/strong&gt;간에 AWS에 프로비저닝된 MySQL에 접근할 수 있습니다!&lt;/p&gt;
+&lt;p&gt;만일 이 코드를 누군가가 클론한다면, 다른 사람의 로컬에 ID/PW 정보가 저장될 수도 있겠죠. 그렇다면 ID/PW 에 대한 접근, 사용에 대한 통제 및 감사조차 할 수 없게 됩니다.&lt;/p&gt;
+&lt;p&gt;암호 관리 도구는 바로 이런 &lt;strong&gt;치명적인&lt;/strong&gt; 부분 때문에 필연적으로 사용해야 하는 것입니다.&lt;/p&gt;
+&lt;h2 id=&quot;암호-관리-도구에-대하여&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%95%94%ED%98%B8-%EA%B4%80%EB%A6%AC-%EB%8F%84%EA%B5%AC%EC%97%90-%EB%8C%80%ED%95%98%EC%97%AC&quot; aria-label=&quot;암호 관리 도구에 대하여 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;암호 관리 도구에 대하여&lt;/h2&gt;
+&lt;p&gt;그렇다면 암호 관리 도구에 대한 필요성을 이해했으니, 암호 관리 도구에 저장되는 값과 암호관리 도구의 저장방식 및 암호관리 도구에 대한 접근 방식에 대해 살펴봅시다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;The types of secrets you store&lt;/code&gt; : 3가지 유형에 따라 관리 방식의 차이가 있습니다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;Personal secrets&lt;/code&gt;: 개인 소유 암호 (내 웹사이트 접근 암호, SSH 키, 등…)
+&lt;ul&gt;
+&lt;li&gt;이런 암호들은 개별 서비스들을 잘 쓰거나 하는 편이 좋겠지요(예시는 후술합니다!)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;Customer secrets&lt;/code&gt;: 고객 소유 암호 (고객의 개인정보, 고객의 이름/암호 등…)
+&lt;ul&gt;
+&lt;li&gt;이런 암호들은 해싱 알고리즘을 사용해야겠지요.&lt;/li&gt;
+&lt;li&gt;Django 3.2 버전으로로 치자면, &lt;a href=&quot;https://docs.djangoproject.com/en/3.2/topics/auth/passwords/#how-django-stores-passwords&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;PBKDF2 SHA256으로 해시를 &lt;code class=&quot;language-text&quot;&gt;260,000&lt;/code&gt;번 취한 값을 암호로 쓰는 것&lt;/a&gt; 처럼요(&lt;a href=&quot;https://github.com/django/django/commit/f2187a227f7a3c80282658e699ae9b04023724e5&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;출처&lt;/a&gt;).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;Infrastructure secrets&lt;/code&gt;: 인프라 관련 암호 (DB 암호, API 키값, 등…)
+&lt;ol&gt;
+&lt;li&gt;이런 암호들은 암/복호화 알고리즘을 사용하는 편이 좋겠지요.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;The way you store secrets&lt;/code&gt; : 2가지 암호 저장 방식이 있습니다. 파일 기반 암호 저장이냐, 중앙 집중식 암호 저장이냐의 차이지요.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;File-based secret stores&lt;/code&gt; (파일기반의 암호 저장)
+&lt;ol&gt;
+&lt;li&gt;민감 정보를 암호화 후 저장하기 때문에 암호화 관련 키 관리가 중요합니다.&lt;/li&gt;
+&lt;li&gt;AWS KMS, GCP KMS 혹은 PGP Key를 이용하는 케이스가 있겠군요.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;Centralized secret stores&lt;/code&gt; (중앙화된 암호 저장)
+&lt;ol&gt;
+&lt;li&gt;일반적으로 데이터베이스(MySQL, Psql, DynamoDB 등)에 비밀번호를 암호화하여 저장합니다.&lt;/li&gt;
+&lt;li&gt;암호화 키는 서비스 자체 혹은 클라우드 KMS(Key Management Service)를 사용합니다.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;The Interface you use to access secrets&lt;/code&gt;: 암호관리 툴은 아래와 같이 사용할 수 있습니다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;API&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;CLI&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;UI&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;The Comparison of secret manegement tools&lt;/code&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;이러한 특성들을 가지고, 다양한 비밀번호 관리 도구를 살펴봅시다.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;Types of secrets&lt;/th&gt;
+&lt;th&gt;Secret Storage&lt;/th&gt;
+&lt;th&gt;Secret Interface&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;HashiCorp Vault&lt;/td&gt;
+&lt;td&gt;Infrastructure&lt;/td&gt;
+&lt;td&gt;Centralized service&lt;/td&gt;
+&lt;td&gt;UI, API, CLI&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;AWS Secrets Manager&lt;/td&gt;
+&lt;td&gt;Infrastructure&lt;/td&gt;
+&lt;td&gt;Centralized service&lt;/td&gt;
+&lt;td&gt;UI, API, CLI&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;GCP Secrets Manager&lt;/td&gt;
+&lt;td&gt;Infrastructure&lt;/td&gt;
+&lt;td&gt;Centralized service&lt;/td&gt;
+&lt;td&gt;UI, API, CLI&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Azure Key Vault&lt;/td&gt;
+&lt;td&gt;Infrastructure&lt;/td&gt;
+&lt;td&gt;Centralized service&lt;/td&gt;
+&lt;td&gt;UI, API, CLI&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Confidant&lt;/td&gt;
+&lt;td&gt;Infrastructure&lt;/td&gt;
+&lt;td&gt;Centralized service&lt;/td&gt;
+&lt;td&gt;UI, API, CLI&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Keywhiz&lt;/td&gt;
+&lt;td&gt;Infrastructure&lt;/td&gt;
+&lt;td&gt;Centralized service&lt;/td&gt;
+&lt;td&gt;API, CLI&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;sops&lt;/td&gt;
+&lt;td&gt;Infrastructure&lt;/td&gt;
+&lt;td&gt;Files&lt;/td&gt;
+&lt;td&gt;CLI&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;git-secret&lt;/td&gt;
+&lt;td&gt;Infrastructure&lt;/td&gt;
+&lt;td&gt;Files&lt;/td&gt;
+&lt;td&gt;CLI&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;1Password&lt;/td&gt;
+&lt;td&gt;Personal&lt;/td&gt;
+&lt;td&gt;Centralized service&lt;/td&gt;
+&lt;td&gt;UI, API, CLI&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;LastPass&lt;/td&gt;
+&lt;td&gt;Personal&lt;/td&gt;
+&lt;td&gt;Centralized service&lt;/td&gt;
+&lt;td&gt;UI, API, CLI&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Bitwarden&lt;/td&gt;
+&lt;td&gt;Personal&lt;/td&gt;
+&lt;td&gt;Centralized service&lt;/td&gt;
+&lt;td&gt;UI, API, CLI&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;KeePass&lt;/td&gt;
+&lt;td&gt;Personal&lt;/td&gt;
+&lt;td&gt;Files&lt;/td&gt;
+&lt;td&gt;UI, CLI&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Keychain (macOS)&lt;/td&gt;
+&lt;td&gt;Personal&lt;/td&gt;
+&lt;td&gt;Files&lt;/td&gt;
+&lt;td&gt;UI, CLI&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Credential Manager (Windows)&lt;/td&gt;
+&lt;td&gt;Personal&lt;/td&gt;
+&lt;td&gt;Files&lt;/td&gt;
+&lt;td&gt;UI, CLI&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;pass&lt;/td&gt;
+&lt;td&gt;Personal&lt;/td&gt;
+&lt;td&gt;Files&lt;/td&gt;
+&lt;td&gt;CLI&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Active Directory&lt;/td&gt;
+&lt;td&gt;Customer&lt;/td&gt;
+&lt;td&gt;Centralized service&lt;/td&gt;
+&lt;td&gt;UI, API, CLI&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Auth0&lt;/td&gt;
+&lt;td&gt;Customer&lt;/td&gt;
+&lt;td&gt;Centralized service&lt;/td&gt;
+&lt;td&gt;UI, API, CLI&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Okta&lt;/td&gt;
+&lt;td&gt;Customer&lt;/td&gt;
+&lt;td&gt;Centralized service&lt;/td&gt;
+&lt;td&gt;UI, API, CLI&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;OneLogin&lt;/td&gt;
+&lt;td&gt;Customer&lt;/td&gt;
+&lt;td&gt;Centralized service&lt;/td&gt;
+&lt;td&gt;UI, API, CLI&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Ping&lt;/td&gt;
+&lt;td&gt;Customer&lt;/td&gt;
+&lt;td&gt;Centralized service&lt;/td&gt;
+&lt;td&gt;UI, API, CLI&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;AWS Cognito&lt;/td&gt;
+&lt;td&gt;Customer&lt;/td&gt;
+&lt;td&gt;Centralized service&lt;/td&gt;
+&lt;td&gt;UI, API, CLI&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&quot;secret-management-tools-w-terraform&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#secret-management-tools-w-terraform&quot; aria-label=&quot;secret management tools w terraform permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Secret Management tools w/ Terraform&lt;/h2&gt;
+&lt;p&gt;테라폼에서는 어느 시점에서 인증정보들이 노출될 수 있을까요? 바로 아래와 같은 지점에서 암호값이 노출될 수 있습니다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Provider 기재 시 노출 (E.g., 프로바이더 인증 정보 등)&lt;/li&gt;
+&lt;li&gt;Resources and data sources 기재 시 노출(E.g., DB 암호 등)&lt;/li&gt;
+&lt;li&gt;State file and plan files (상태 파일, 플랜 파일 자체에 민감정보가 노출)&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;위의 리스트들에 대한 내용들을 아래에서 하나씩 살펴봅시다. 이 내용에 대한 에시코드는 &lt;code class=&quot;language-text&quot;&gt;chapter06/exercises/01_providers&lt;/code&gt; 에 있습니다. 링크는 &lt;a href=&quot;&quot;&gt;여기&lt;/a&gt;를 클릭해주세요.&lt;/p&gt;
+&lt;h3 id=&quot;provider-기재-시-암호값을-관리하는-방안&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#provider-%EA%B8%B0%EC%9E%AC-%EC%8B%9C-%EC%95%94%ED%98%B8%EA%B0%92%EC%9D%84-%EA%B4%80%EB%A6%AC%ED%95%98%EB%8A%94-%EB%B0%A9%EC%95%88&quot; aria-label=&quot;provider 기재 시 암호값을 관리하는 방안 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Provider 기재 시 암호값을 관리하는 방안&lt;/h3&gt;
+&lt;h4 id=&quot;프로바이더에서-노출&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%ED%94%84%EB%A1%9C%EB%B0%94%EC%9D%B4%EB%8D%94%EC%97%90%EC%84%9C-%EB%85%B8%EC%B6%9C&quot; aria-label=&quot;프로바이더에서 노출 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;프로바이더에서 노출&lt;/h4&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;provider&lt;/code&gt; 선언 시 IAM 자격증명 정보를 노출하면 절대 안됩니다! 당장 인식할 수 있는 단점은 두가지입니다:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;자격증명 정보가 바로 노출됩니다!&lt;/li&gt;
+&lt;li&gt;하나의 자격증명만 사용할 수 있습니다!&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h5 id=&quot;환경변수를-사용하면&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%ED%99%98%EA%B2%BD%EB%B3%80%EC%88%98%EB%A5%BC-%EC%82%AC%EC%9A%A9%ED%95%98%EB%A9%B4&quot; aria-label=&quot;환경변수를 사용하면 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;환경변수를 사용하면?&lt;/h5&gt;
+&lt;ul&gt;
+&lt;li&gt;장점
+&lt;ul&gt;
+&lt;li&gt;자격증명 정보를 노출하지는 않습니다&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;단점
+&lt;ul&gt;
+&lt;li&gt;여전히 PC에 평문으로 저장되어있습니다&lt;/li&gt;
+&lt;li&gt;단독 자격증명만 사용할 수 있습니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&quot;유저의-민감정보-유출-방지-방법&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%9C%A0%EC%A0%80%EC%9D%98-%EB%AF%BC%EA%B0%90%EC%A0%95%EB%B3%B4-%EC%9C%A0%EC%B6%9C-%EB%B0%A9%EC%A7%80-%EB%B0%A9%EB%B2%95&quot; aria-label=&quot;유저의 민감정보 유출 방지 방법 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;유저의 민감정보 유출 방지 방법&lt;/h5&gt;
+&lt;p&gt;여러 서비스들을 사용할 수 있습니다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;1Password/LastPass 등의 서비스 구매 후 사용&lt;/li&gt;
+&lt;li&gt;aws-vault 사용: &lt;a href=&quot;https://github.com/99designs/aws-vault&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;Github&lt;/a&gt; &lt;a href=&quot;https://www.44bits.io/ko/post/securing-aws-credentials-with-aws-vault&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;44bits 소개글&lt;/a&gt;을 참고바랍니다!&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;사용 예시&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;bash&quot;&gt;&lt;pre class=&quot;language-bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;# mac 설치&lt;/span&gt;
+brew &lt;span class=&quot;token function&quot;&gt;install&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;--cask&lt;/span&gt; aws-vault
+
+&lt;span class=&quot;token comment&quot;&gt;# 윈도우 설치&lt;/span&gt;
+choco &lt;span class=&quot;token function&quot;&gt;install&lt;/span&gt; aws-vault  &lt;span class=&quot;token comment&quot;&gt;# 윈도우 Chocolatey&lt;/span&gt;
+scoop &lt;span class=&quot;token function&quot;&gt;install&lt;/span&gt; aws-vault  &lt;span class=&quot;token comment&quot;&gt;# 윈도우 Scoop&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# 버전 확인&lt;/span&gt;
+aws-vault &lt;span class=&quot;token parameter variable&quot;&gt;--version&lt;/span&gt;
+v6.6.0
+
+&lt;span class=&quot;token comment&quot;&gt;# 설정&lt;/span&gt;
+&lt;span class=&quot;token comment&quot;&gt;#aws-vault add &amp;lt;PROFILE_NAME&gt;&lt;/span&gt;
+aws-vault &lt;span class=&quot;token function&quot;&gt;add&lt;/span&gt; t101
+Enter Access Key Id: &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;YOUR_ACCESS_KEY_ID&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+Enter Secret Key: &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;YOUR_SECRET_ACCESS_KEY&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# 확인&lt;/span&gt;
+aws-vault &lt;span class=&quot;token function&quot;&gt;ls&lt;/span&gt;
+Profile                  Credentials              Sessions
+&lt;span class=&quot;token operator&quot;&gt;==&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;==&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;==&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;                  &lt;span class=&quot;token operator&quot;&gt;==&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;==&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;==&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;==&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;==&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;              &lt;span class=&quot;token operator&quot;&gt;==&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;==&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;==&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;==&lt;/span&gt;
+default                  -                        -
+t101                     t101                     -
+
+&lt;span class=&quot;token comment&quot;&gt;# 사용&lt;/span&gt;
+&lt;span class=&quot;token comment&quot;&gt;#aws-vault exec &amp;lt;PROFILE&gt; -- &amp;lt;COMMAND&gt;&lt;/span&gt;
+aws-vault &lt;span class=&quot;token builtin class-name&quot;&gt;exec&lt;/span&gt; t101 -- aws s3 &lt;span class=&quot;token function&quot;&gt;ls&lt;/span&gt;
+aws-vault &lt;span class=&quot;token builtin class-name&quot;&gt;exec&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;--debug&lt;/span&gt; t101 -- aws s3 &lt;span class=&quot;token function&quot;&gt;ls&lt;/span&gt;
+
+aws-vault &lt;span class=&quot;token builtin class-name&quot;&gt;exec&lt;/span&gt; t101 -- terraform plan
+aws-vault &lt;span class=&quot;token builtin class-name&quot;&gt;exec&lt;/span&gt; t101 -- terraform apply&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;aws-vault&lt;/code&gt; 를 사용하신다면, &lt;code class=&quot;language-text&quot;&gt;~/.aws/credentials&lt;/code&gt; 파일은 지우는게 좋습니다.&lt;/p&gt;
+&lt;h5 id=&quot;기계의-민감정보-유출-방지-방법&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EA%B8%B0%EA%B3%84%EC%9D%98-%EB%AF%BC%EA%B0%90%EC%A0%95%EB%B3%B4-%EC%9C%A0%EC%B6%9C-%EB%B0%A9%EC%A7%80-%EB%B0%A9%EB%B2%95&quot; aria-label=&quot;기계의 민감정보 유출 방지 방법 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;기계의 민감정보 유출 방지 방법&lt;/h5&gt;
+&lt;p&gt;프로덕션 레벨에서의 CI/CD 워크플로우 내용은 9장에서 살펴봅니다. 현재는 간단히 어떻게 사용되는지 정도만을 소개합니다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;[Providers] CircleCI as a CI server, with stored secrets : CI/CD 플랫폼인 CircleCI 를 통해 테라폼 코드를 실행한다고 가정&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;영구자격증명은 IAM 룰과 다름에 주의합니다! 해당 단점을 없애기 위해 2번 예시를 살펴봅시다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;[Providers] EC2 Instance running Jenkins as a CI server, with IAM roles 실습 : EC2에 Jenkins 설치 후 CI서버로 테라폼 코드를 실행한다고 가정 시 IAM roles 활용 - &lt;a href=&quot;https://github.com/brikis98/terraform-up-and-running-code/tree/master/code/terraform/06-managing-secrets-with-terraform/ec2-iam-role&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;링크&lt;/a&gt; (&lt;code class=&quot;language-text&quot;&gt;chapter06/example01&lt;/code&gt; 디렉토리를 참고바랍니다)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;[Providers] GitHub Actions as a CI server, with OIDC : Github Actions 은 직접 자격 증명과 OIDC Open ID Connect 지원 (가장 발전되고 이해하면 훨씬 좋은 개념!)&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;OAuth 2.0를 기반으로 한 발전형 통신이 OIDC(OpenID Connect)입니다. 이걸 사용해서 인증을 수행하는 예시를 살펴봅시다. (cf. OAuth 2.0에 대해 모르신다면 생활코딩의 &lt;a href=&quot;https://www.youtube.com/playlist?list=PLuHgQVnccGMA4guyznDlykFJh28_R08Q-&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;OAuth 2.0 역할&lt;/a&gt; 플레이리스트를 통해 공부하시는 것을 추천드립니다)&lt;/p&gt;
+&lt;h3 id=&quot;resource-data-source-기재-시-암호값을-관리하는-방안&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#resource-data-source-%EA%B8%B0%EC%9E%AC-%EC%8B%9C-%EC%95%94%ED%98%B8%EA%B0%92%EC%9D%84-%EA%B4%80%EB%A6%AC%ED%95%98%EB%8A%94-%EB%B0%A9%EC%95%88&quot; aria-label=&quot;resource data source 기재 시 암호값을 관리하는 방안 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Resource, Data source 기재 시 암호값을 관리하는 방안&lt;/h3&gt;
+&lt;p&gt;마찬가지로, 리소스나 데이터소스 배포시에도 민감정보를 노출하면 절대 안됩니다! 이를 보완하기 위한 방법은 3가지가 있겠습니다.&lt;/p&gt;
+&lt;p&gt;이 내용에 대한 에시코드는 &lt;code class=&quot;language-text&quot;&gt;chapter06/exercises/02_resources_and_data_sources&lt;/code&gt; 에 있습니다. 링크는 &lt;a href=&quot;&quot;&gt;여기&lt;/a&gt;를 클릭해주세요.&lt;/p&gt;
+&lt;h5 id=&quot;환경변수를-통한-민감정보-유출-방지&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%ED%99%98%EA%B2%BD%EB%B3%80%EC%88%98%EB%A5%BC-%ED%86%B5%ED%95%9C-%EB%AF%BC%EA%B0%90%EC%A0%95%EB%B3%B4-%EC%9C%A0%EC%B6%9C-%EB%B0%A9%EC%A7%80&quot; aria-label=&quot;환경변수를 통한 민감정보 유출 방지 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;환경변수를 통한 민감정보 유출 방지&lt;/h5&gt;
+&lt;ul&gt;
+&lt;li&gt;장점
+&lt;ul&gt;
+&lt;li&gt;모든 언어에서 환경변수에 관련 값을 넣어 쓸 수 있습니다&lt;/li&gt;
+&lt;li&gt;비용이 들지 않습니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;단점
+&lt;ul&gt;
+&lt;li&gt;팀원 모두가 환경변수를 수동으로 공유해야 합니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&quot;암호화된-파일을-통한-민감정보-유출-방지&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%95%94%ED%98%B8%ED%99%94%EB%90%9C-%ED%8C%8C%EC%9D%BC%EC%9D%84-%ED%86%B5%ED%95%9C-%EB%AF%BC%EA%B0%90%EC%A0%95%EB%B3%B4-%EC%9C%A0%EC%B6%9C-%EB%B0%A9%EC%A7%80&quot; aria-label=&quot;암호화된 파일을 통한 민감정보 유출 방지 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;암호화된 파일을 통한 민감정보 유출 방지&lt;/h5&gt;
+&lt;p&gt;암호를 파일에 저장 후 버전 관리 → &lt;strong&gt;암호화 키&lt;/strong&gt;를 클라우드 공급자 KMS를 통해 안전하게 저장 혹은 PGP 키 사용&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;AWS KMS란?&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;암호화는 키를 사용해 평문을 암호문으로 변환하는 프로세스다&lt;/li&gt;
+&lt;li&gt;동일한 키를 사용해 암호문을 평문으로 변환할 수 있는데, 이를 복호화라고 한다&lt;/li&gt;
+&lt;li&gt;AWS 키 관리 서비스 &lt;strong&gt;KMS&lt;/strong&gt;는 공유 하드웨어 보안 모듈HSM 을 사용하면서 &lt;strong&gt;암호화키&lt;/strong&gt;를 &lt;strong&gt;생성&lt;/strong&gt;하고 &lt;strong&gt;관리&lt;/strong&gt;할 수 있게 도와준다&lt;/li&gt;
+&lt;li&gt;CloudHSM은 AWS 내에서 암호화키를 관리할 수 있지만 보안 강화를 위해 전용 HSM을 사용할 수 있는 서비스다&lt;/li&gt;
+&lt;li&gt;용어 변경 참고 : 기존 Customer Master Key (&lt;strong&gt;CMK&lt;/strong&gt;) → AWS &lt;strong&gt;KMS key&lt;/strong&gt; 혹은 &lt;strong&gt;KMS key&lt;/strong&gt; 로 변경 - &lt;a href=&quot;https://docs.aws.amazon.com/kms/latest/developerguide/dochistory.html&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;링크&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;bash&quot;&gt;&lt;pre class=&quot;language-bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;&lt;span class=&quot;token builtin class-name&quot;&gt;export&lt;/span&gt; &lt;span class=&quot;token assign-left variable&quot;&gt;ALIAS_SUFFIX&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;s3ich4n
+aws kms create-alias --alias-name alias/&lt;span class=&quot;token variable&quot;&gt;$ALIAS_SUFFIX&lt;/span&gt; --target-key-id &lt;span class=&quot;token variable&quot;&gt;$KEY_ID&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# KMS(구 CMK)로 평문을 암호화해보기&lt;/span&gt;
+&lt;span class=&quot;token builtin class-name&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;Hello 123123&quot;&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; secret.txt
+aws kms encrypt --key-id alias/&lt;span class=&quot;token variable&quot;&gt;$ALIAS_SUFFIX&lt;/span&gt; --cli-binary-format raw-in-base64-out &lt;span class=&quot;token parameter variable&quot;&gt;--plaintext&lt;/span&gt; file://secret.txt &lt;span class=&quot;token parameter variable&quot;&gt;--output&lt;/span&gt; text &lt;span class=&quot;token parameter variable&quot;&gt;--query&lt;/span&gt; CiphertextBlob &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt; base64 &lt;span class=&quot;token parameter variable&quot;&gt;--decode&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; secret.txt.encrypted
+
+
+aws kms decrypt --ciphertext-blob fileb://secret.txt.encrypted &lt;span class=&quot;token parameter variable&quot;&gt;--output&lt;/span&gt; text &lt;span class=&quot;token parameter variable&quot;&gt;--query&lt;/span&gt; Plaintext &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt; base64 &lt;span class=&quot;token parameter variable&quot;&gt;--decode&lt;/span&gt;
+Hello &lt;span class=&quot;token number&quot;&gt;123123&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h5 id=&quot;중앙-집중식-비밀-저장소-서비스-사용을-통한-민감정보-유출-방지&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%A4%91%EC%95%99-%EC%A7%91%EC%A4%91%EC%8B%9D-%EB%B9%84%EB%B0%80-%EC%A0%80%EC%9E%A5%EC%86%8C-%EC%84%9C%EB%B9%84%EC%8A%A4-%EC%82%AC%EC%9A%A9%EC%9D%84-%ED%86%B5%ED%95%9C-%EB%AF%BC%EA%B0%90%EC%A0%95%EB%B3%B4-%EC%9C%A0%EC%B6%9C-%EB%B0%A9%EC%A7%80&quot; aria-label=&quot;중앙 집중식 비밀 저장소 서비스 사용을 통한 민감정보 유출 방지 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;중앙 집중식 비밀 저장소 서비스 사용을 통한 민감정보 유출 방지&lt;/h5&gt;
+&lt;p&gt;중앙 집중식 비밀 저장소 서비스 사용 - AWS Secrets Manager, Google Secret Manager 등이 있지요.&lt;/p&gt;
+&lt;h3 id=&quot;state-file-plan-file-을-관리하는-방안&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#state-file-plan-file-%EC%9D%84-%EA%B4%80%EB%A6%AC%ED%95%98%EB%8A%94-%EB%B0%A9%EC%95%88&quot; aria-label=&quot;state file plan file 을 관리하는 방안 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;State file, Plan file 을 관리하는 방안&lt;/h3&gt;
+&lt;p&gt;plan 파일안에는 모든 정보가 평문으로 저장되어있습니다. 따라서 두가지 방안을 반드시 사용할 것을 권장합니다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;백엔드 저장소에 저장하는 시점에 암호화&lt;/li&gt;
+&lt;li&gt;백엔드 액세스에 대한 접근 통제&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h1 id=&quot;lessons-learned&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#lessons-learned&quot; aria-label=&quot;lessons learned permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Lessons Learned&lt;/h1&gt;
+&lt;p&gt;제 6장에서는 아래의 내용을 반드시 기억하셨으면 좋겠습니다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;암호 관리의 중요성은 더 이상 말할 필요가 없겠습니다.&lt;/li&gt;
+&lt;li&gt;암호 관리 도구들은 어떤 목적을 가지고 있으며, 어떤 내용들이 있는지 살펴보았습니다.&lt;/li&gt;
+&lt;li&gt;암호관리는 목적에 맞게 처리하는 것이 중요합니다.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;이것으로 제 6장을 마칩니다. 긴 글 읽어주셔서 감사합니다.&lt;/p&gt;</content:encoded></item><item><title><![CDATA[[CloudNet@] 테라폼 스터디 5주차 - Terraform의 반복문과 조건문 (2) - 조건문]]></title><description><![CDATA[Terraform의 타입과 값이 어떻게 쓰이는지 알고있다는 가정 하에, 반복문과 조건문을 사용하여 로직을 표현하는 방법을 담았습니다. 그 중, 조건문을 살펴봅시다.]]></description><link>https://blog.s3ich4n.me/devlog/terraform/2022-11-19-cloudneta-terraform-101-pt05-2</link><guid isPermaLink="false">https://blog.s3ich4n.me/devlog/terraform/2022-11-19-cloudneta-terraform-101-pt05-2</guid><pubDate>Sat, 19 Nov 2022 23:52:57 GMT</pubDate><content:encoded>&lt;p&gt;이 내용은 CloudNet@ 에서 진행하는 테라폼 기초 입문 스터디에 대한 연재글입니다.&lt;/p&gt;
 &lt;p&gt;스터디에서 사용하는 교재는 &lt;a href=&quot;http://www.yes24.com/Product/Goods/101511312&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;Terraform Up &amp;#x26; Running 2nd Edition&lt;/a&gt; 입니다.&lt;/p&gt;
 &lt;hr&gt;
 &lt;h1 id=&quot;prerequisites&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#prerequisites&quot; aria-label=&quot;prerequisites permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Prerequisites&lt;/h1&gt;

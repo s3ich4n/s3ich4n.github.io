@@ -1,0 +1,485 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="ie=edge"/><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/><meta name="generator" content="Gatsby 4.24.8"/><meta name="description" content="여태 스터디를 하며 배웠던 부분에 대한 one-point lesson을 해봅시다." data-gatsby-head="true"/><meta name="twitter:card" content="summary_large_image" data-gatsby-head="true"/><meta name="twitter:title" content="[CloudNet@] 테라폼 스터디 7주차 - 총복습 - 팔공산 창고" data-gatsby-head="true"/><meta name="twitter:description" content="여태 스터디를 하며 배웠던 부분에 대한 one-point lesson을 해봅시다." data-gatsby-head="true"/><meta name="og:title" content="[CloudNet@] 테라폼 스터디 7주차 - 총복습 - 팔공산 창고" data-gatsby-head="true"/><meta name="og:type" content="website" data-gatsby-head="true"/><meta name="og:description" content="여태 스터디를 하며 배웠던 부분에 대한 one-point lesson을 해봅시다." data-gatsby-head="true"/><meta name="image" content="https://blog.s3ich4n.me/static/d22fecedcdae6e3b11af342e075eefde/terraform07.jpg" data-gatsby-head="true"/><meta name="og:image" content="https://blog.s3ich4n.me/static/d22fecedcdae6e3b11af342e075eefde/terraform07.jpg" data-gatsby-head="true"/><meta name="twitter:image" content="https://blog.s3ich4n.me/static/d22fecedcdae6e3b11af342e075eefde/terraform07.jpg" data-gatsby-head="true"/><meta name="theme-color" content="hsl(31, 92%, 62%)"/><style data-href="/styles.3b47e1408077d170b933.css" data-identity="gatsby-global-css">:after,:before,:root{--color-white:#fff;--color-primary:#5c92ff;--color-secondary:#f7a145;--color-prism-background:#eaeaeb;--color-typographic-base-font:#242933;--color-typographic-link-p-font:#5c92ff;--color-typographic-link-s-font:#f7a145;--color-page-border:#eaeaeb;--color-page-background:#fff;--color-sidebar-border:#eaeaeb;--color-sidebar-border-fade:#fff;--color-contacts-border:#eaeaeb;--color-button-border:#eaeaeb;--color-button-color:#242933;--color-theme-switcher:#3f485a;--color-theme-switcher-hover:#5c92ff}.dark :after,.dark :before,:root.dark{--color-white:#fff;--color-primary:#5c92ff;--color-secondary:#f7a145;--color-prism-background:#191d24;--color-typographic-base-font:#fff;--color-typographic-link-p-font:#5c92ff;--color-typographic-link-s-font:#f7a145;--color-page-border:#3f485a;--color-page-background:#242933;--color-sidebar-border:#3f485a;--color-sidebar-border-fade:#242933;--color-contacts-border:#3f485a;--color-button-border:#3f485a;--color-button-color:#fff;--color-theme-switcher:#eaeaeb;--color-theme-switcher-hover:#5c92ff}html{font-size:100}body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;background:var(--color-page-background);color:var(--color-typographic-base-font);font-size:16px;line-height:1.625;margin:0 0 0 calc(100vw - 100%);text-rendering:optimizelegibility}body,h1,h2,h3,h4,h5,h6{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif}h1,h2,h3,h4,h5,h6{font-weight:600}h1{font-size:40px;line-height:52px;margin-bottom:26px;margin-top:104px}h2{font-size:27px;line-height:39px}h2,h3{margin-bottom:13px;margin-top:52px}h3{font-size:22px;line-height:26px}h4{font-size:19.2px;margin-top:39px}h4,h5{line-height:26px;margin-bottom:13px}h5,h6{font-size:16px;margin-top:65px}h6{line-height:26px;margin-bottom:13px}img{max-width:100%}hr,img{border:0;display:block}hr{background-image:linear-gradient(180deg,transparent 1px,transparent 11px,#242933 0,#242933 15px,transparent 0,transparent 26px);background-size:100% 26px;color:var(--color-typographic-base-font);height:26px;margin:52px auto;width:100px}a{color:var(--color-typographic-link-p-font);text-decoration:none}a:active,a:focus,a:hover{color:var(--color-typographic-link-s-font)}b,strong{font-weight:600}ul{list-style:square;margin-bottom:26px}ul li{margin-bottom:10px;padding:0 5px}p{line-height:26px;margin-bottom:26px}blockquote{font-style:italic;padding:0;text-align:center}figure{display:block;height:auto;width:100%}figcaption{color:var(--color-typographic-base-font);font-size:14px;font-style:italic;line-height:19.5px;margin-bottom:0;margin-top:6.5px;text-align:center}@media screen and (min-width:685px){figure.float-left,figure.float-right{max-width:310px;padding:0 26px}.float-right{float:right}.float-left{float:left}}code[class*=language-],pre[class*=language-]{word-wrap:normal;color:#657b83;font-family:Consolas,Monaco,Andale Mono,Ubuntu Mono,monospace;font-size:1em;-webkit-hyphens:none;hyphens:none;line-height:1.5;-o-tab-size:4;tab-size:4;text-align:left;white-space:pre;word-break:normal;word-spacing:normal}pre[class*=language-]{border-radius:.3em;margin:.5em 0;overflow:auto;padding:1em}:not(pre)>code[class*=language-],pre[class*=language-]{background-color:var(--color-prism-background)}:not(pre)>code[class*=language-]{border-radius:.3em;padding:.1em}code[class*=language-] ::selection,code[class*=language-]::selection,pre[class*=language-] ::selection,pre[class*=language-]::selection{background:#073642}.token.cdata,.token.comment,.token.doctype,.token.prolog{color:#93a1a1}.token.punctuation{color:#586e75}.namespace{opacity:.7}.token.boolean,.token.constant,.token.deleted,.token.number,.token.property,.token.symbol,.token.tag{color:#268bd2}.token.attr-name,.token.builtin,.token.char,.token.inserted,.token.selector,.token.string,.token.url{color:#2aa198}.token.entity{background:#eee8d5;color:#657b83;cursor:help}.token.atrule,.token.attr-value,.token.keyword{color:#859900}.token.class-name,.token.function{color:#b58900}.token.important,.token.regex,.token.variable{color:#cb4b16}.token.bold,.token.important{font-weight:700}.token.italic{font-style:italic}.Feed-module--feed--a6204 .Feed-module--item--c7a63{margin-bottom:32.5px}.Feed-module--feed--a6204 .Feed-module--item--c7a63:last-child{margin-bottom:13px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f{font-size:27px;line-height:39px;margin-bottom:13px;margin-top:0}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f .Feed-module--link--6123b{color:var(--color-typographic-base-font)}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f .Feed-module--link--6123b:focus,.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f .Feed-module--link--6123b:hover{border-bottom:1px solid #242933;color:var(--color-typographic-base-font)}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--description--57348{font-size:16px;line-height:26px;margin-bottom:19.5px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--time--72864{color:var(--color-typographic-base-font);font-size:14px;font-weight:600;text-transform:uppercase}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--divider--81a18{margin:0 13px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--category--59f58 .Feed-module--link--6123b{color:var(--color-secondary);font-size:14px;font-weight:600;text-transform:uppercase}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--category--59f58 .Feed-module--link--6123b:focus,.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--category--59f58 .Feed-module--link--6123b:hover{color:#5c92ff}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--more--51a4e{color:var(--color-primary);font-size:16px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--more--51a4e:focus,.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--more--51a4e:hover{border-bottom:1px solid #5c92ff;color:var(--color-primary)}.Layout-module--layout--2c933{margin-left:auto;margin-right:auto;max-width:1070px}.Layout-module--layout--2c933:before{content:"";display:table}.Layout-module--layout--2c933:after{clear:both;content:"";display:table}.Page-module--page--24e03{margin-bottom:52px}.Page-module--page--24e03 .Page-module--inner--4b31d{padding:26px 19.5px 0}.Page-module--page--24e03 .Page-module--title--90338{font-size:40px;font-weight:600;line-height:52px;margin-bottom:37.7px;margin-top:0}.Page-module--page--24e03 .Page-module--body--561c4{font-size:16px;line-height:26px;margin:0 0 26px}@media screen and (min-width:685px){.Page-module--page--24e03{width:calc(58.275% - 12.5px)}.Page-module--page--24e03:nth-child(1n){clear:none;float:left;margin-right:30px}.Page-module--page--24e03:last-child{margin-right:0}.Page-module--page--24e03:nth-child(12n){float:right;margin-right:0}.Page-module--page--24e03:nth-child(12n+1){clear:both}.Page-module--page--24e03 .Page-module--inner--4b31d{padding:32.5px 19.5px 0}}@media screen and (min-width:960px){.Page-module--page--24e03{width:calc(66.6% - 10px)}.Page-module--page--24e03:nth-child(1n){clear:none;float:left;margin-right:30px}.Page-module--page--24e03:last-child{margin-right:0}.Page-module--page--24e03:nth-child(3n){float:right;margin-right:0}.Page-module--page--24e03:nth-child(3n+1){clear:both}.Page-module--page--24e03 .Page-module--inner--4b31d{padding:39px 26px 0}}.Pagination-module--pagination--d61cb{display:flex;margin-top:52px}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b{text-align:left;width:50%}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d{color:var(--color-secondary);font-size:26px;font-weight:700}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d:focus,.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d:hover{color:var(--color-primary)}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d.Pagination-module--disable--7e105{color:#3f485a;pointer-events:none}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8{text-align:right;width:50%}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff{color:var(--color-secondary);font-size:26px;font-weight:700}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff:focus,.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff:hover{color:var(--color-primary)}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff.Pagination-module--disable--7e105{color:#3f485a;pointer-events:none}.Button-module--button--b1113{border:1px solid var(--color-button-border);border-radius:20px;color:var(--color-button-color);display:inline-block;font-size:16px;font-weight:400;height:40px;line-height:40px;margin-left:auto;margin-right:auto;padding:0 26px;text-align:center;text-decoration:none}.Button-module--button--b1113:focus,.Button-module--button--b1113:hover{color:#5c92ff}.ThemeSwitcher-module--themeSwitcher--8a77f{--color:var(--color-theme-switcher)}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--button--7cb7b{align-items:center;background:transparent;border:0;cursor:pointer;display:flex;justify-content:center;outline:0}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--button--7cb7b svg{stroke:var(--color);pointer-events:none;transition:stroke .4s}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--button--7cb7b:hover{--color:var(--color-theme-switcher-hover)}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--moon--10537{stroke-dasharray:0 1px;opacity:0;transition:stroke-dasharray .2s ease-in,opacity .4s ease-in}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--sun--2163a{stroke-dasharray:1px 1px;opacity:1;transition:stroke-dasharray .2s ease-in,opacity .4s ease-in}.ThemeSwitcher-module--themeSwitcher--8a77f.ThemeSwitcher-module--dark--6db0c .ThemeSwitcher-module--moon--10537{stroke-dasharray:1px 1px;opacity:1}.ThemeSwitcher-module--themeSwitcher--8a77f.ThemeSwitcher-module--dark--6db0c .ThemeSwitcher-module--sun--2163a{stroke-dasharray:0 1px;opacity:0}.Author-module--author--cbd31 .Author-module--photo--9787b{background-clip:padding-box;border-radius:50%;display:inline-block;height:75px;margin-bottom:0;width:75px}.Author-module--author--cbd31 .Author-module--photo--9787b img{border-radius:50%}.Author-module--author--cbd31 .Author-module--title--cf7e5{font-size:18px;font-weight:600;line-height:29.25px;margin:0}.Author-module--author--cbd31 .Author-module--title--cf7e5 .Author-module--link--09c17,.Author-module--author--cbd31 .Author-module--title--cf7e5 .Author-module--link--09c17:focus,.Author-module--author--cbd31 .Author-module--title--cf7e5 .Author-module--link--09c17:hover{color:var(--color-typographic-base-font)}.Author-module--author--cbd31 .Author-module--bio--8168d,.Author-module--author--cbd31 .Author-module--subtitle--86ec5{color:#7f8ba4;line-height:26px;margin-bottom:26px}.Author-module--author--cbd31 .Author-module--titleContainer--4f576{align-items:center;display:flex;justify-content:space-between;margin:13px 0}.Categories-module--categories--f3389{color:#7f8ba4;font-size:14px}.Icon-module--icon--1d7da{fill:currentcolor;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;speak:none;stroke:currentcolor;stroke-width:0;display:inline-block;font-style:normal;font-variant:normal;font-weight:400;height:1em;line-height:1em;text-align:center;text-transform:none;width:1em}.Contacts-module--contacts--09178{margin-bottom:26px}.Contacts-module--contacts--09178 .Contacts-module--list--9670b{display:flex;flex-flow:row wrap;flex-grow:0;flex-shrink:0;list-style:none;margin:13px 0;max-width:165px;padding:0}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0{align-content:center;align-items:center;border:1px solid var(--color-contacts-border);border-radius:50%;display:flex;height:40px;justify-content:center;line-height:40px;margin:6.5px;padding:0;text-align:center;width:40px}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0:nth-child(3n+1){margin-left:0}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0 .Contacts-module--link--de1e0{border:0;color:var(--color-typographic-base-font);display:flex}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0 .Contacts-module--link--de1e0:focus,.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0 .Contacts-module--link--de1e0:hover{color:var(--color-typographic-link-p-font)}.Copyright-module--copyright--2c602{color:#7f8ba4;font-size:14px}.Menu-module--menu--113a9{margin-bottom:26px}.Menu-module--menu--113a9 .Menu-module--list--e1ae3{list-style:none;margin:0;padding:0}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679{margin:13px 0;padding:0}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02{border:0;color:var(--color-typographic-base-font);font-size:16px;font-weight:400}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02:focus,.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02:hover{border-bottom:1px solid #5c92ff;color:#5c92ff}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02.Menu-module--active--6cb74{border-bottom:1px solid var(--color-typographic-base-font);color:var(--color-typographic-base-font)}.Tags-module--tags--28a57{color:#7f8ba4;font-size:14px}.Sidebar-module--sidebar--1bfa1{width:100%}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0{padding:26px 19.5px 0;position:relative}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0:after{background:var(--color-sidebar-border);background:linear-gradient(to bottom,var(--color-sidebar-border) 0,var(--color-sidebar-border) 48%,var(--color-sidebar-border-fade) 100%)}@media screen and (min-width:685px){.Sidebar-module--sidebar--1bfa1{width:calc(41.625% - 17.5px)}.Sidebar-module--sidebar--1bfa1:nth-child(1n){clear:none;float:left;margin-right:30px}.Sidebar-module--sidebar--1bfa1:last-child{margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(12n){float:right;margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(12n+1){clear:both}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0{padding:32.5px 19.5px 0}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0:after{bottom:0;content:"";height:540px;position:absolute;right:-10px;top:30px;width:1px}}@media screen and (min-width:960px){.Sidebar-module--sidebar--1bfa1{width:calc(33.3% - 20px)}.Sidebar-module--sidebar--1bfa1:nth-child(1n){clear:none;float:left;margin-right:30px}.Sidebar-module--sidebar--1bfa1:last-child{margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(3n){float:right;margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(3n+1){clear:both}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0{padding:39px}}.Author-module--author--1c58d{border-top:1px solid var(--color-page-border);line-height:26px;margin-bottom:52px;margin-top:26px;max-width:640px;padding-top:26px}.Author-module--author--1c58d .Author-module--bio--08950 .Author-module--twitter--90647{display:block;text-decoration:underline}.Author-module--author--1c58d .Author-module--bio--08950 .Author-module--twitter--90647:focus,.Author-module--author--1c58d .Author-module--bio--08950 .Author-module--twitter--90647:hover{color:var(--color-typographic-link-s-font)}@media screen and (min-width:685px){.Author-module--author--1c58d{margin-left:auto;margin-right:auto}}.Content-module--content--80d58{margin:0 auto;max-width:945px;padding:0 13px}.Content-module--content--80d58 .Content-module--title--09504{font-size:32px;font-weight:600;line-height:42.9px;margin:26px auto 0;max-width:640px;text-align:center}.Content-module--content--80d58 .Content-module--body--726c2 figure{margin-bottom:26px}.Content-module--content--80d58 .Content-module--body--726c2 figure blockquote{font-style:italic;margin-top:0;padding:26px 0;text-align:center}.Content-module--content--80d58 .Content-module--body--726c2 figure blockquote p{font-size:26.9072px;line-height:39px;margin-bottom:26px;margin-top:0;max-width:640px}.Content-module--content--80d58 .Content-module--body--726c2 a{text-decoration:underline}.Content-module--content--80d58 .Content-module--body--726c2 *{margin-left:auto;margin-right:auto;max-width:640px}.Content-module--content--80d58 .Content-module--body--726c2 h2>a{visibility:hidden}.Content-module--content--80d58 .Content-module--body--726c2 h2>a>svg{fill:var(--color-typographic-base-font)}.Content-module--content--80d58 .Content-module--body--726c2 img{max-width:100%}@media screen and (min-width:960px){.Content-module--content--80d58{padding:0}.Content-module--content--80d58 .Content-module--title--09504{font-size:48px;line-height:58.5px;margin-bottom:39px;margin-top:58.5px}.Content-module--content--80d58 .Content-module--body--726c2,.Content-module--content--80d58 .Content-module--body--726c2 p{font-size:18px;line-height:29.25px;margin-bottom:29.25px}.Content-module--content--80d58 .Content-module--body--726c2 h2>a{padding-right:13px;visibility:unset}}.Meta-module--meta--dae0a .Meta-module--date--4d30d{font-style:italic}.Tags-module--tags--18589{margin-bottom:13px}.Tags-module--tags--18589 .Tags-module--list--82ae6{list-style:none;padding:0}.Tags-module--tags--18589 .Tags-module--list--82ae6 .Tags-module--item--52015{display:inline-block;margin:6.5px 0}@media screen and (min-width:685px){.Tags-module--tags--18589 .Tags-module--list--82ae6 .Tags-module--item--52015:first-child{margin-left:0;padding-left:0}}.Post-module--post--3a994 .Post-module--content--3c6e5{margin:0 auto}.Post-module--post--3a994 .Post-module--comments--d3b99,.Post-module--post--3a994 .Post-module--footer--f8705{margin:0 auto;max-width:640px;padding:0 13px}.Post-module--post--3a994 .Post-module--buttons--2972d{align-items:center;display:flex;justify-content:center;margin:26px 0 0;text-align:center}.Post-module--post--3a994 .Post-module--buttons--2972d .Post-module--buttonArticles--d793a{margin:0 13px 0 0}@media screen and (min-width:960px){.Post-module--post--3a994 .Post-module--comments--d3b99,.Post-module--post--3a994 .Post-module--footer--f8705{padding:0}.Post-module--post--3a994 .Post-module--buttons--2972d{left:30px;margin:0 13px 0 0;max-width:none;position:fixed;top:30px}}</style><title data-gatsby-head="true">[CloudNet@] 테라폼 스터디 7주차 - 총복습 - 팔공산 창고</title><link rel="alternate" type="application/rss+xml" title="팔공산 창고" href="/rss.xml"/><style type="text/css">
+    .anchor.before {
+      position: absolute;
+      top: 0;
+      left: 0;
+      transform: translateX(-100%);
+      padding-right: 4px;
+    }
+    .anchor.after {
+      display: inline-block;
+      padding-left: 4px;
+    }
+    h1 .anchor svg,
+    h2 .anchor svg,
+    h3 .anchor svg,
+    h4 .anchor svg,
+    h5 .anchor svg,
+    h6 .anchor svg {
+      visibility: hidden;
+    }
+    h1:hover .anchor svg,
+    h2:hover .anchor svg,
+    h3:hover .anchor svg,
+    h4:hover .anchor svg,
+    h5:hover .anchor svg,
+    h6:hover .anchor svg,
+    h1 .anchor:focus svg,
+    h2 .anchor:focus svg,
+    h3 .anchor:focus svg,
+    h4 .anchor:focus svg,
+    h5 .anchor:focus svg,
+    h6 .anchor:focus svg {
+      visibility: visible;
+    }
+  </style><script>
+    document.addEventListener("DOMContentLoaded", function(event) {
+      var hash = window.decodeURI(location.hash.replace('#', ''))
+      if (hash !== '') {
+        var element = document.getElementById(hash)
+        if (element) {
+          var scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+          var clientTop = document.documentElement.clientTop || document.body.clientTop || 0
+          var offset = element.getBoundingClientRect().top + scrollTop - clientTop
+          // Wait for the browser to finish rendering before scrolling.
+          setTimeout((function() {
+            window.scrollTo(0, offset - 0)
+          }), 0)
+        }
+      }
+    })
+  </script><link rel="preconnect" href="https://www.googletagmanager.com"/><link rel="dns-prefetch" href="https://www.googletagmanager.com"/><script async="" src="https://www.googletagmanager.com/gtag/js?id="></script><script>
+      
+      
+      if(true) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){window.dataLayer && window.dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', '', {"send_page_view":false});
+      }
+      </script><link rel="sitemap" type="application/xml" href="/sitemap/sitemap-index.xml"/><link rel="icon" href="/favicon-32x32.png?v=4c2c993a06ee0fd0ee953020b09128a9" type="image/png"/><link rel="manifest" href="/manifest.webmanifest" crossorigin="anonymous"/><link rel="apple-touch-icon" sizes="48x48" href="/icons/icon-48x48.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="72x72" href="/icons/icon-72x72.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="96x96" href="/icons/icon-96x96.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="144x144" href="/icons/icon-144x144.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192x192.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="256x256" href="/icons/icon-256x256.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="384x384" href="/icons/icon-384x384.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="512x512" href="/icons/icon-512x512.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><style>.gatsby-image-wrapper{position:relative;overflow:hidden}.gatsby-image-wrapper picture.object-fit-polyfill{position:static!important}.gatsby-image-wrapper img{bottom:0;height:100%;left:0;margin:0;max-width:none;padding:0;position:absolute;right:0;top:0;width:100%;object-fit:cover}.gatsby-image-wrapper [data-main-image]{opacity:0;transform:translateZ(0);transition:opacity .25s linear;will-change:opacity}.gatsby-image-wrapper-constrained{display:inline-block;vertical-align:top}</style><noscript><style>.gatsby-image-wrapper noscript [data-main-image]{opacity:1!important}.gatsby-image-wrapper [data-placeholder-image]{opacity:0!important}</style></noscript><script type="module">const e="undefined"!=typeof HTMLImageElement&&"loading"in HTMLImageElement.prototype;e&&document.body.addEventListener("load",(function(e){const t=e.target;if(void 0===t.dataset.mainImage)return;if(void 0===t.dataset.gatsbyImageSsr)return;let a=null,n=t;for(;null===a&&n;)void 0!==n.parentNode.dataset.gatsbyImageWrapper&&(a=n.parentNode),n=n.parentNode;const o=a.querySelector("[data-placeholder-image]"),r=new Image;r.src=t.currentSrc,r.decode().catch((()=>{})).then((()=>{t.style.opacity=1,o&&(o.style.opacity=0,o.style.transition="opacity 500ms linear")}))}),!0);</script></head><body><script>
+          void function() {
+            var cachedMode;
+
+            try {
+              var preferredTheme = JSON.parse(localStorage.getItem('diesel:theme-atom'));
+
+              if (preferredTheme && preferredTheme.mode) {
+                cachedMode = preferredTheme.mode;
+              }
+            } catch (err) { }
+
+            function setTheme(newTheme) {
+              document.documentElement.className = newTheme;
+            }
+
+            var darkQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+            setTheme(cachedMode || (darkQuery.matches ? 'dark' : 'light'));
+          }()
+        </script><div id="___gatsby"><div style="outline:none" tabindex="-1" id="gatsby-focus-wrapper"><div class="Layout-module--layout--2c933"><div class="Post-module--post--3a994"><div class="Post-module--buttons--2972d"><a class="Button-module--button--b1113 Post-module--buttonArticles--d793a" href="/">All Articles</a></div><div class="Post-module--content--3c6e5"><div class="Content-module--content--80d58"><h1 class="Content-module--title--09504">[CloudNet@] 테라폼 스터디 7주차 - 총복습</h1><div class="Content-module--body--726c2"><p>이 내용은 <a href="https://www.notion.so/gasidaseo/CloudNet-Blog-c9dfa44a27ff431dafdd2edacc8a1863" target="_blank" rel="nofollow noopener noreferrer">CloudNet@</a> 에서 진행하는 테라폼 기초 입문 스터디에 대한 연재글입니다.</p>
+<p>스터디에서 사용하는 교재는 <a href="http://www.yes24.com/Product/Goods/101511312" target="_blank" rel="nofollow noopener noreferrer">Terraform Up &#x26; Running 2nd Edition</a> 입니다.</p>
+<h1 id="prerequisites" style="position:relative;"><a href="#prerequisites" aria-label="prerequisites permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Prerequisites</h1>
+<ul>
+<li>따로 없습니다. 어차피 처음부터 다시 밟아갈거에요.</li>
+</ul>
+<h1 id="본문" style="position:relative;"><a href="#%EB%B3%B8%EB%AC%B8" aria-label="본문 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>본문</h1>
+<p>이번 장은, 1장부터 6장까지의 내용을 리와인드하는 장으로 하기로 하였습니다. 중간 스터디를 하면서도 복습했지만 스터디 모임이 한 주 쉬어가며 문서화를 하여 개념을 스스로 정리해야겠다 싶었습니다.</p>
+<h2 id="테라폼-복습" style="position:relative;"><a href="#%ED%85%8C%EB%9D%BC%ED%8F%BC-%EB%B3%B5%EC%8A%B5" aria-label="테라폼 복습 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>테라폼 복습</h2>
+<h3 id="아키텍처" style="position:relative;"><a href="#%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98" aria-label="아키텍처 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>아키텍처</h3>
+<ul>
+<li>전과 크게 다르지 않습니다!</li>
+<li>ALB, ASG, EC2 구성대로 진행합니다.</li>
+<li>staging, production 환경을 나눕니다.</li>
+<li>모듈을 활용하여 무중단 업그레이드를 진행합니다.</li>
+</ul>
+<h3 id="도구-안내" style="position:relative;"><a href="#%EB%8F%84%EA%B5%AC-%EC%95%88%EB%82%B4" aria-label="도구 안내 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>도구 안내</h3>
+<ul>
+<li><code class="language-text">tfenv</code> 를 통한 테라폼 버전관리를 수행해봅시다. 저는 리눅스 환경에서 실습을 진행하므로, 공식 repository에 작성된 Manual 설치대로 진행하겠습니다.</li>
+</ul>
+<div class="gatsby-highlight" data-language="bash"><pre class="language-bash"><code class="language-bash"><span class="token comment"># ${HOME}/.tfenv에 관련 내용 설치</span>
+<span class="token function">git</span> clone <span class="token parameter variable">--depth</span><span class="token operator">=</span><span class="token number">1</span> https://github.com/tfutils/tfenv.git ~/.tfenv
+
+<span class="token comment"># 사용하고있는 쉘에 따라 ${PATH} 추가.</span>
+<span class="token comment"># 저는 zsh을 사용하고 있습니다.</span>
+<span class="token comment"># 해당명령 수행 후 쉘을 종료하고 다시 켜주세요.</span>
+<span class="token builtin class-name">echo</span> <span class="token string">'export PATH=$PATH:$HOME/.tfenv/bin'</span> <span class="token operator">>></span> ~/.zshrc
+
+<span class="token comment"># 설치 가능 버전 확인</span>
+tfenv list-remote <span class="token operator">|</span> <span class="token function">head</span>
+<span class="token number">1.4</span>.0-alpha20221109
+<span class="token number">1.3</span>.6
+<span class="token punctuation">..</span>.
+
+<span class="token comment"># 현재 설치된 버전 확인</span>
+tfenv list
+No versions available. Please <span class="token function">install</span> one with: tfenv <span class="token function">install</span>
+
+<span class="token comment"># 특정 버전 설치</span>
+<span class="token comment">#(옵션) export TFENV_ARCH=arm64  # mac Apple silicon M1/M2</span>
+tfenv <span class="token function">install</span> <span class="token number">1.2</span>.3
+tfenv list
+
+<span class="token comment"># 특정 버전 사용</span>
+tfenv use <span class="token number">1.2</span>.3
+Switching default version to v1.2.3
+Default version <span class="token punctuation">(</span>when not overridden by .terraform-version or TFENV_TERRAFORM_VERSION<span class="token punctuation">)</span> is now: <span class="token number">1.2</span>.3
+
+<span class="token comment"># 테라폼 버전 확인</span>
+terraform version
+on linux_amd64</code></pre></div>
+<h3 id="자격증명-리전-변경" style="position:relative;"><a href="#%EC%9E%90%EA%B2%A9%EC%A6%9D%EB%AA%85-%EB%A6%AC%EC%A0%84-%EB%B3%80%EA%B2%BD" aria-label="자격증명 리전 변경 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>자격증명 리전 변경</h3>
+<p>오하이오 리전(<code class="language-text">us-east-2</code>)으로 변경합시다.</p>
+<p>저는 direnv를 사용하고 있으므로, 작업이 필요한 하부 워킹디렉토리에 <code class="language-text">.envrc</code> 파일을 생성 후 <code class="language-text">AWS_DEFAULT_REGION</code> 을 오하이오 리전으로 변경하여 사용하였습니다. 아래 커맨드로 바꾸고, 확인해봅시다.</p>
+<div class="gatsby-highlight" data-language="bash"><pre class="language-bash"><code class="language-bash"><span class="token comment"># AWS_DEFAULT_REGION 수정</span>
+<span class="token function">vi</span> .envrc
+
+<span class="token comment"># direnv 내의 추가/수정된 .envrc 파일을 사용합시다.</span>
+direnv allow
+
+<span class="token comment"># 반영여부 확인</span>
+aws configure list
+      Name                    Value             Type    Location
+      ----                    -----             ----    --------
+   profile                <span class="token operator">&lt;</span>not set<span class="token operator">></span>             None    None
+access_key     ************REDACTED              <span class="token function">env</span>
+secret_key     ************REDACTED              <span class="token function">env</span>
+    region                us-east-2              <span class="token function">env</span>    <span class="token punctuation">[</span><span class="token string">'AWS_REGION'</span>, <span class="token string">'AWS_DEFAULT_REGION'</span><span class="token punctuation">]</span></code></pre></div>
+<h2 id="코드-분석" style="position:relative;"><a href="#%EC%BD%94%EB%93%9C-%EB%B6%84%EC%84%9D" aria-label="코드 분석 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>코드 분석</h2>
+<p>먼저, 영문 개정 3판의 코드를 클론합시다.</p>
+<div class="gatsby-highlight" data-language="bash"><pre class="language-bash"><code class="language-bash"><span class="token function">git</span> clone https://github.com/brikis98/terraform-up-and-running-code.git
+<span class="token builtin class-name">cd</span> terraform-up-and-running/code/terraform</code></pre></div>
+<h3 id="테라폼-문법-분석파트" style="position:relative;"><a href="#%ED%85%8C%EB%9D%BC%ED%8F%BC-%EB%AC%B8%EB%B2%95-%EB%B6%84%EC%84%9D%ED%8C%8C%ED%8A%B8" aria-label="테라폼 문법 분석파트 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>테라폼 문법 분석파트</h3>
+<p>테라폼 교재 예시의 가장 기본입니다. 위에서 설명드린 아키텍처에 작성된 내용을 코드로 배포하는 것이 주요 내용인지라, 해당 내용을 이해하고 넘어가야 다음 진도를 이해하며 넘어가실 수 있습니다!</p>
+<ol>
+<li>(신규) 테라폼 구동 버전과 프로바이더의 버전을 기재하였습니다.
+<ol>
+<li>이 부분은 버전 명시 및 프로바이더에 대한 명확한 기재를 의미합니다.</li>
+<li>향후 리팩토링을 수행하며, 관련 중요성에 대해 다시 말씀드리겠습니다.</li>
+</ol>
+</li>
+<li>구동할 EC2 이미지를 찾고, 임의의 유저 데이터를 추가해두었습니다.</li>
+<li>기본 VPC에 서브넷을 생성하고, 시큐리티 그룹을 설정하였습니다.</li>
+<li>ALB 설정이 존재합니다</li>
+<li>ASG 설정이 존재합니다</li>
+</ol>
+<p>아래 명령으로 구동을 진행할 수 있습니다.</p>
+<div class="gatsby-highlight" data-language="bash"><pre class="language-bash"><code class="language-bash"><span class="token comment"># [터미널2]</span>
+<span class="token builtin class-name">cd</span> 02-intro-to-terraform-syntax/webserver-cluster
+<span class="token function">cat</span> main.tf variables.tf
+
+<span class="token comment"># 배포</span>
+terraform init
+terraform plan
+terraform apply -auto-approve
+
+<span class="token comment"># 배포 완료 후 ALB 접속 확인</span>
+<span class="token assign-left variable">ALBDNS</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span>terraform output <span class="token parameter variable">-raw</span> alb_dns_name<span class="token variable">)</span></span>
+<span class="token keyword">while</span> <span class="token boolean">true</span><span class="token punctuation">;</span> <span class="token keyword">do</span> <span class="token function">curl</span> --connect-timeout <span class="token number">1</span>  http://<span class="token variable">$ALBDNS</span>/ <span class="token punctuation">;</span> <span class="token builtin class-name">echo</span><span class="token punctuation">;</span> <span class="token builtin class-name">echo</span> <span class="token string">"------------------------------"</span><span class="token punctuation">;</span> <span class="token function">date</span><span class="token punctuation">;</span> <span class="token function">sleep</span> <span class="token number">1</span><span class="token punctuation">;</span> <span class="token keyword">done</span>
+
+<span class="token comment"># 삭제</span>
+terraform destroy -auto-approve
+<span class="token builtin class-name">cd</span> ~/terraform-up-and-running-code/code/terraform</code></pre></div>
+<h3 id="테라폼-state-파트" style="position:relative;"><a href="#%ED%85%8C%EB%9D%BC%ED%8F%BC-state-%ED%8C%8C%ED%8A%B8" aria-label="테라폼 state 파트 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>테라폼 state 파트</h3>
+<p>이 장에서는, <code class="language-text">.tfstate</code> 파일이나 폴더구조 관리에 대해 배웠습니다. 관리를 제대로 하지 않았을 때의 리스크는 <a href="https://charity.wtf/2016/03/30/terraform-vpc-and-why-you-want-a-tfstate-file-per-env/" target="_blank" rel="nofollow noopener noreferrer">이 링크</a>를 다시 봅시다…</p>
+<ol>
+<li>S3, DynamoDB와 RDS(MySQL)을 통해, <code class="language-text">.tfstate</code> 파일에 대한 관리를 진행합니다.
+<ol>
+<li>RDS에 .tfstate 내용을 백업하고, S3에 읽기 전용 파일로 다른 서비스들이 “읽을 수 있도록” 준비합니다.</li>
+</ol>
+</li>
+<li>스테이징/프로덕션 파트의 RDS를 배포하여, 서비스가 구동됨을 확인합니다.</li>
+</ol>
+<p>아래 명령으로 구동을 진행할 수 있습니다.</p>
+<ul>
+<li>S3/DynamoDB 구동관련 설정</li>
+</ul>
+<div class="gatsby-highlight" data-language="bash"><pre class="language-bash"><code class="language-bash"><span class="token comment"># 환경변수에 지정</span>
+<span class="token builtin class-name">export</span> <span class="token assign-left variable">TF_VAR_bucket_name</span><span class="token operator">=</span>ex07-tfstate
+<span class="token builtin class-name">export</span> <span class="token assign-left variable">TF_VAR_table_name</span><span class="token operator">=</span>ex07-t101-locks
+<span class="token builtin class-name">export</span> <span class="token assign-left variable">TF_VAR_bucket_name</span><span class="token operator">=</span>ex07-t101-tfstate
+<span class="token builtin class-name">export</span> <span class="token assign-left variable">TF_VAR_table_name</span><span class="token operator">=</span>ex07-t101-locks
+
+<span class="token comment"># 환경변수 확인</span>
+<span class="token builtin class-name">export</span> <span class="token operator">|</span> <span class="token function">grep</span> TF_VAR_
+
+<span class="token comment"># (옵션) 환경변수 지정 삭제</span>
+<span class="token builtin class-name">unset</span> TF_VAR_bucket_name
+<span class="token builtin class-name">unset</span> TF_VAR_table_name</code></pre></div>
+<ul>
+<li>S3/DynamoDB 배포하기</li>
+</ul>
+<div class="gatsby-highlight" data-language="bash"><pre class="language-bash"><code class="language-bash"><span class="token comment">#</span>
+<span class="token builtin class-name">cd</span> 03-terraform-state/file-layout-example/global/s3
+<span class="token function">cat</span> main.tf variables.tf
+
+<span class="token comment"># 초기화 및 검증 : 환경변수 적용 확인</span>
+terraform init <span class="token operator">&amp;&amp;</span> terraform plan
+
+<span class="token comment"># 배포</span>
+terraform apply -auto-approve
+
+<span class="token comment"># 확인</span>
+aws s3 <span class="token function">ls</span>
+aws dynamodb list-tables <span class="token parameter variable">--output</span> text
+
+<span class="token comment"># 이동</span>
+<span class="token builtin class-name">cd</span> <span class="token punctuation">..</span>/<span class="token punctuation">..</span></code></pre></div>
+<ul>
+<li>RDS 배포하기</li>
+</ul>
+<div class="gatsby-highlight" data-language="bash"><pre class="language-bash"><code class="language-bash"><span class="token comment"># [터미널1] RDS 생성 모니터링</span>
+<span class="token keyword">while</span> <span class="token boolean">true</span><span class="token punctuation">;</span> <span class="token keyword">do</span> aws rds describe-db-instances <span class="token parameter variable">--query</span> <span class="token string">"*[].[Endpoint.Address,Endpoint.Port,MasterUsername]"</span> <span class="token parameter variable">--output</span> text  <span class="token punctuation">;</span> <span class="token builtin class-name">echo</span> <span class="token string">"------------------------------"</span> <span class="token punctuation">;</span> <span class="token function">sleep</span> <span class="token number">1</span><span class="token punctuation">;</span> <span class="token keyword">done</span>
+
+<span class="token comment"># [터미널2]</span>
+<span class="token builtin class-name">cd</span> stage/data-stores/mysql
+<span class="token function">cat</span> main.tf variables.tf
+
+<span class="token comment"># 환경변수에 지정</span>
+<span class="token builtin class-name">export</span> <span class="token assign-left variable">TF_VAR_db_username</span><span class="token operator">=</span><span class="token string">'cloudneta'</span>
+<span class="token builtin class-name">export</span> <span class="token assign-left variable">TF_VAR_db_password</span><span class="token operator">=</span><span class="token string">'cloudnetaQ!'</span>
+
+<span class="token comment"># 환경변수 확인</span>
+<span class="token builtin class-name">export</span> <span class="token operator">|</span> <span class="token function">grep</span> TF_VAR_
+
+<span class="token comment"># main.tf 에 백엔드 부분 수정</span>
+<span class="token function">vi</span> main.tf
+  backend <span class="token string">"s3"</span> <span class="token punctuation">{</span>
+    <span class="token comment"># This backend configuration is filled in automatically at test time by Terratest. If you wish to run this example</span>
+    <span class="token comment"># manually, uncomment and fill in the config below.</span>
+    bucket         <span class="token operator">=</span> <span class="token string">"ex07-tfstate"</span>
+    key            <span class="token operator">=</span> <span class="token string">"stage/data-stores/mysql/terraform.tfstate"</span>
+    region         <span class="token operator">=</span> <span class="token string">"us-east-2"</span>
+    dynamodb_table <span class="token operator">=</span> <span class="token string">"ex07-t101-locks"</span>
+    <span class="token comment"># encrypt        = true</span>
+  <span class="token punctuation">}</span>
+
+<span class="token comment"># 초기화 및 검증 : 환경변수 적용 확인</span>
+terraform init <span class="token operator">&amp;&amp;</span> terraform plan
+
+<span class="token comment"># 배포 : RDS는 생성 시 6분 정도 시간 소요</span>
+terraform apply -auto-approve
+terraform output
+aws s3 <span class="token function">ls</span> s3://<span class="token variable">$TF_VAR_bucket_name</span> <span class="token parameter variable">--recursive</span> --human-readable <span class="token parameter variable">--summarize</span>
+
+<span class="token comment"># 이동</span>
+<span class="token builtin class-name">cd</span> <span class="token punctuation">..</span>/<span class="token punctuation">..</span></code></pre></div>
+<ul>
+<li>(상기 과정을 마쳐야 할 수 있습니다!) 웹서버 클러스터 배포하기</li>
+</ul>
+<div class="gatsby-highlight" data-language="bash"><pre class="language-bash"><code class="language-bash"><span class="token comment">#</span>
+<span class="token builtin class-name">cd</span> services/webserver-cluster
+<span class="token function">cat</span> main.tf variables.tf
+
+<span class="token comment"># 환경변수에 지정</span>
+<span class="token builtin class-name">export</span> <span class="token assign-left variable">TF_VAR_db_remote_state_bucket</span><span class="token operator">=</span><span class="token variable">$TF_VAR_bucket_name</span>                       <span class="token comment"># description = "The name of the S3 bucket used for the database's remote state storage"</span>
+<span class="token builtin class-name">export</span> <span class="token assign-left variable">TF_VAR_db_remote_state_key</span><span class="token operator">=</span><span class="token string">'stage/data-stores/mysql/terraform.tfstate'</span>  <span class="token comment"># description = "The name of the key in the S3 bucket used for the database's remote state storage"</span>
+
+<span class="token comment"># 환경변수 확인</span>
+<span class="token builtin class-name">export</span> <span class="token operator">|</span> <span class="token function">grep</span> TF_VAR_
+
+<span class="token comment"># 초기화 및 검증 : 환경변수 적용 확인</span>
+terraform init <span class="token operator">&amp;&amp;</span> terraform plan
+
+<span class="token comment"># 배포</span>
+terraform apply -auto-approve
+
+<span class="token comment"># ALB DNS주소로 curl 접속 확인</span>
+<span class="token assign-left variable">ALBDNS</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span>terraform output <span class="token parameter variable">-raw</span> alb_dns_name<span class="token variable">)</span></span>
+<span class="token keyword">while</span> <span class="token boolean">true</span><span class="token punctuation">;</span> <span class="token keyword">do</span> <span class="token function">curl</span> --connect-timeout <span class="token number">1</span>  http://<span class="token variable">$ALBDNS</span> <span class="token punctuation">;</span> <span class="token builtin class-name">echo</span><span class="token punctuation">;</span> <span class="token builtin class-name">echo</span> <span class="token string">"------------------------------"</span><span class="token punctuation">;</span> <span class="token function">date</span><span class="token punctuation">;</span> <span class="token function">sleep</span> <span class="token number">1</span><span class="token punctuation">;</span> <span class="token keyword">done</span>
+<span class="token function">curl</span> <span class="token parameter variable">-s</span> http://<span class="token variable">$ALBDNS</span>
+
+<span class="token comment"># 삭제</span>
+<span class="token comment"># 각 폴더에서 리소스 삭제</span>
+stage/services/webserver-cluster$ terraform destroy -auto-approve
+stage/data-stores/mysql$ terraform destroy -auto-approve
+global/s3$ terraform destroy -auto-approve
+
+<span class="token comment"># 이동</span>
+<span class="token builtin class-name">cd</span> ~/terraform-up-and-running-code/code/terraform</code></pre></div>
+<h3 id="테라폼-모듈-파트" style="position:relative;"><a href="#%ED%85%8C%EB%9D%BC%ED%8F%BC-%EB%AA%A8%EB%93%88-%ED%8C%8C%ED%8A%B8" aria-label="테라폼 모듈 파트 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>테라폼 모듈 파트</h3>
+<p>테라폼 state 파트에서 작성해본 내용들을 모듈화하여, 보다 효율적인 테라폼 코드를 작성해봅시다. 코드 재사용, 여러 테라폼 리소스를 논리적 그룹으로 묶을 수 있습니다. 논리적으로 구상할 수 있다는 것은 우리의 사고대로 코드들을 재배합할 수 있다는 이야기지요.</p>
+<p>여기서는 웹서버 내용에 대해서만 아직 모듈로 묶어두었고, 8장에서 ALB, ASG, EC2가 묶여있는 부분을 해제해봅시다.</p>
+<ul>
+<li>
+<p>상기 내용과 동일합니다!</p>
+<ul>
+<li>S3/DynamoDB 구동관련 설정</li>
+<li>S3/DynamoDB 배포하기</li>
+</ul>
+</li>
+<li>
+<p>Staging RDS 배포하기</p>
+</li>
+</ul>
+<div class="gatsby-highlight" data-language="bash"><pre class="language-bash"><code class="language-bash"><span class="token comment"># [터미널1] RDS 생성 모니터링</span>
+<span class="token keyword">while</span> <span class="token boolean">true</span><span class="token punctuation">;</span> <span class="token keyword">do</span> aws rds describe-db-instances <span class="token parameter variable">--query</span> <span class="token string">"*[].[Endpoint.Address,Endpoint.Port,MasterUsername]"</span> <span class="token parameter variable">--output</span> text  <span class="token punctuation">;</span> <span class="token builtin class-name">echo</span> <span class="token string">"------------------------------"</span> <span class="token punctuation">;</span> <span class="token function">sleep</span> <span class="token number">1</span><span class="token punctuation">;</span> <span class="token keyword">done</span>
+
+<span class="token comment"># [터미널2]</span>
+<span class="token builtin class-name">cd</span> 04-terraform-module/module-example/stage/data-stores/mysql
+<span class="token function">cat</span> main.tf variables.tf
+
+<span class="token comment"># 환경변수에 지정</span>
+<span class="token builtin class-name">export</span> <span class="token assign-left variable">TF_VAR_db_username</span><span class="token operator">=</span><span class="token string">'cloudneta'</span>
+<span class="token builtin class-name">export</span> <span class="token assign-left variable">TF_VAR_db_password</span><span class="token operator">=</span><span class="token string">'cloudnetaQ!'</span>
+
+<span class="token comment"># 환경변수 확인</span>
+<span class="token builtin class-name">export</span> <span class="token operator">|</span> <span class="token function">grep</span> TF_VAR_
+
+<span class="token comment"># main.tf 에 백엔드 부분 수정</span>
+<span class="token function">vi</span> main.tf
+  backend <span class="token string">"s3"</span> <span class="token punctuation">{</span>
+    <span class="token comment"># This backend configuration is filled in automatically at test time by Terratest. If you wish to run this example</span>
+    <span class="token comment"># manually, uncomment and fill in the config below.</span>
+    bucket         <span class="token operator">=</span> <span class="token string">"ex07-tfstate"</span>
+    key            <span class="token operator">=</span> <span class="token string">"stage/data-stores/mysql/terraform.tfstate"</span>
+    region         <span class="token operator">=</span> <span class="token string">"us-east-2"</span>
+    dynamodb_table <span class="token operator">=</span> <span class="token string">"ex07-t101-locks"</span>
+    <span class="token comment"># encrypt        = true</span>
+  <span class="token punctuation">}</span>
+
+<span class="token comment"># 초기화 및 검증 : 환경변수 적용 확인</span>
+terraform init <span class="token operator">&amp;&amp;</span> terraform plan
+
+<span class="token comment"># 배포 : RDS는 생성 시 6분 정도 시간 소요</span>
+terraform apply -auto-approve
+terraform output
+aws s3 <span class="token function">ls</span> s3://<span class="token variable">$TF_VAR_bucket_name</span> <span class="token parameter variable">--recursive</span> --human-readable <span class="token parameter variable">--summarize</span>
+
+<span class="token comment"># 이동</span>
+<span class="token builtin class-name">cd</span> <span class="token punctuation">..</span>/<span class="token punctuation">..</span>/</code></pre></div>
+<ul>
+<li>(상기 과정을 마쳐야 할 수 있습니다!) Staging 웹서버 클러스터 배포하기</li>
+</ul>
+<div class="gatsby-highlight" data-language="bash"><pre class="language-bash"><code class="language-bash"><span class="token comment">#</span>
+<span class="token builtin class-name">cd</span> services/webserver-cluster
+<span class="token function">cat</span> main.tf variables.tf
+
+<span class="token comment"># 환경변수에 지정</span>
+<span class="token builtin class-name">export</span> <span class="token assign-left variable">TF_VAR_db_remote_state_bucket</span><span class="token operator">=</span><span class="token variable">$TF_VAR_bucket_name</span>                       <span class="token comment"># description = "The name of the S3 bucket used for the database's remote state storage"</span>
+<span class="token builtin class-name">export</span> <span class="token assign-left variable">TF_VAR_db_remote_state_key</span><span class="token operator">=</span><span class="token string">'stage/data-stores/mysql/terraform.tfstate'</span>  <span class="token comment"># description = "The name of the key in the S3 bucket used for the database's remote state storage"</span>
+
+<span class="token comment"># 환경변수 확인</span>
+<span class="token builtin class-name">export</span> <span class="token operator">|</span> <span class="token function">grep</span> TF_VAR_
+
+<span class="token comment"># 초기화 및 검증 : 환경변수 적용 확인</span>
+terraform init <span class="token operator">&amp;&amp;</span> terraform plan
+
+<span class="token comment"># 배포</span>
+terraform apply -auto-approve
+
+<span class="token comment"># ALB DNS주소로 curl 접속 확인</span>
+<span class="token assign-left variable">ALBDNS</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span>terraform output <span class="token parameter variable">-raw</span> alb_dns_name<span class="token variable">)</span></span>
+<span class="token keyword">while</span> <span class="token boolean">true</span><span class="token punctuation">;</span> <span class="token keyword">do</span> <span class="token function">curl</span> --connect-timeout <span class="token number">1</span>  http://<span class="token variable">$ALBDNS</span> <span class="token punctuation">;</span> <span class="token builtin class-name">echo</span><span class="token punctuation">;</span> <span class="token builtin class-name">echo</span> <span class="token string">"------------------------------"</span><span class="token punctuation">;</span> <span class="token function">date</span><span class="token punctuation">;</span> <span class="token function">sleep</span> <span class="token number">1</span><span class="token punctuation">;</span> <span class="token keyword">done</span>
+<span class="token function">curl</span> <span class="token parameter variable">-s</span> http://<span class="token variable">$ALBDNS</span>
+
+<span class="token comment"># 삭제</span>
+<span class="token comment"># 각 폴더에서 리소스 삭제</span>
+stage/services/webserver-cluster$ terraform destroy -auto-approve
+stage/data-stores/mysql$ terraform destroy -auto-approve
+03-terraform-state/file-layout-example/global/s3$ terraform destroy -auto-approve <span class="token comment"># 아래 Production 실습을 이어서 할 경우에는 실습 완료 후 삭제 할 것</span>
+
+<span class="token comment"># 이동</span>
+<span class="token builtin class-name">cd</span> ~/terraform-up-and-running-code/code/terraform</code></pre></div>
+<p>cf. Production 배포는 <code class="language-text">04-terraform-module/module-example</code> 의 prod 디렉토리의 RDS와 웹서버 클러스터를 배포하면 됩니다.</p>
+<h3 id="tips-and-tricks-무중단-배포-관련" style="position:relative;"><a href="#tips-and-tricks-%EB%AC%B4%EC%A4%91%EB%8B%A8-%EB%B0%B0%ED%8F%AC-%EA%B4%80%EB%A0%A8" aria-label="tips and tricks 무중단 배포 관련 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>tips and tricks: 무중단 배포 관련</h3>
+<p>무중단 배포(zero-downtime deployment)의 경우, 수정된 테라폼 코드나 환경변수를 사용하여 <code class="language-text">terraform apply</code> 를 하면 끝입니다. 배포과정은 상기 내용과 동일하지만, 모듈을 활용하여 배포하는 단계가 다릅니다. 여기서는 배포가 “어떻게” 되는지를 살펴보겠습니다.</p>
+<ul>
+<li>상기 내용과 동일합니다!
+<ul>
+<li>S3/DynamoDB 구동관련 설정</li>
+<li>S3/DynamoDB 배포하기</li>
+</ul>
+</li>
+<li>Staging RDS 배포하기</li>
+</ul>
+<div class="gatsby-highlight" data-language="bash"><pre class="language-bash"><code class="language-bash"><span class="token comment"># [터미널1] RDS 생성 모니터링</span>
+<span class="token keyword">while</span> <span class="token boolean">true</span><span class="token punctuation">;</span> <span class="token keyword">do</span> aws rds describe-db-instances <span class="token parameter variable">--query</span> <span class="token string">"*[].[Endpoint.Address,Endpoint.Port,MasterUsername]"</span> <span class="token parameter variable">--output</span> text  <span class="token punctuation">;</span> <span class="token builtin class-name">echo</span> <span class="token string">"------------------------------"</span> <span class="token punctuation">;</span> <span class="token function">sleep</span> <span class="token number">1</span><span class="token punctuation">;</span> <span class="token keyword">done</span>
+
+<span class="token comment"># [터미널2]</span>
+<span class="token builtin class-name">cd</span> 05-tips-and-tricks/module-example/stage/data-stores/mysql
+<span class="token function">cat</span> main.tf variables.tf
+
+<span class="token comment"># 환경변수에 지정</span>
+<span class="token builtin class-name">export</span> <span class="token assign-left variable">TF_VAR_db_username</span><span class="token operator">=</span><span class="token string">'cloudneta'</span>
+<span class="token builtin class-name">export</span> <span class="token assign-left variable">TF_VAR_db_password</span><span class="token operator">=</span><span class="token string">'cloudnetaQ!'</span>
+
+<span class="token comment"># 환경변수 확인</span>
+<span class="token builtin class-name">export</span> <span class="token operator">|</span> <span class="token function">grep</span> TF_VAR_
+
+<span class="token comment"># main.tf 에 백엔드 부분 수정</span>
+<span class="token function">vi</span> main.tf
+  backend <span class="token string">"s3"</span> <span class="token punctuation">{</span>
+    <span class="token comment"># This backend configuration is filled in automatically at test time by Terratest. If you wish to run this example</span>
+    <span class="token comment"># manually, uncomment and fill in the config below.</span>
+    bucket         <span class="token operator">=</span> <span class="token string">"ex07-tfstate"</span>
+    key            <span class="token operator">=</span> <span class="token string">"stage/data-stores/mysql/terraform.tfstate"</span>
+    region         <span class="token operator">=</span> <span class="token string">"us-east-2"</span>
+    dynamodb_table <span class="token operator">=</span> <span class="token string">"ex07-t101-locks"</span>
+    <span class="token comment"># encrypt        = true</span>
+  <span class="token punctuation">}</span>
+
+<span class="token comment"># 초기화 및 검증 : 환경변수 적용 확인</span>
+terraform init <span class="token operator">&amp;&amp;</span> terraform plan
+
+<span class="token comment"># 배포 : RDS는 생성 시 6분 정도 시간 소요</span>
+terraform apply -auto-approve
+terraform output
+aws s3 <span class="token function">ls</span> s3://<span class="token variable">$TF_VAR_bucket_name</span> <span class="token parameter variable">--recursive</span> --human-readable <span class="token parameter variable">--summarize</span>
+
+<span class="token comment"># 이동</span>
+<span class="token builtin class-name">cd</span> <span class="token punctuation">..</span>/<span class="token punctuation">..</span>/</code></pre></div>
+<ul>
+<li>(상기 과정을 마쳐야 할 수 있습니다!) Staging 웹서버 배포 후 <strong>무중단 배포 진행</strong>하기</li>
+</ul>
+<div class="gatsby-highlight" data-language="bash"><pre class="language-bash"><code class="language-bash"><span class="token comment">#</span>
+<span class="token builtin class-name">cd</span> services/webserver-cluster
+<span class="token function">cat</span> main.tf variables.tf
+
+<span class="token comment"># 환경변수에 지정</span>
+<span class="token builtin class-name">export</span> <span class="token assign-left variable">TF_VAR_db_remote_state_bucket</span><span class="token operator">=</span><span class="token variable">$TF_VAR_bucket_name</span>                       <span class="token comment"># description = "The name of the S3 bucket used for the database's remote state storage"</span>
+<span class="token builtin class-name">export</span> <span class="token assign-left variable">TF_VAR_db_remote_state_key</span><span class="token operator">=</span><span class="token string">'stage/data-stores/mysql/terraform.tfstate'</span>  <span class="token comment"># description = "The name of the key in the S3 bucket used for the database's remote state storage"</span>
+
+<span class="token comment"># 환경변수 확인</span>
+<span class="token builtin class-name">export</span> <span class="token operator">|</span> <span class="token function">grep</span> TF_VAR_
+
+<span class="token comment"># 초기화 및 검증 : 환경변수 적용 확인</span>
+terraform init <span class="token operator">&amp;&amp;</span> terraform plan <span class="token parameter variable">-var</span> <span class="token assign-left variable">server_text</span><span class="token operator">=</span><span class="token string">'Old server text'</span>
+
+<span class="token comment"># 배포</span>
+terraform apply -auto-approve <span class="token parameter variable">-var</span> <span class="token assign-left variable">server_text</span><span class="token operator">=</span><span class="token string">'Old server text'</span>
+
+<span class="token comment"># ALB DNS주소로 curl 접속 확인</span>
+<span class="token assign-left variable">ALBDNS</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span>terraform output <span class="token parameter variable">-raw</span> alb_dns_name<span class="token variable">)</span></span>
+<span class="token keyword">while</span> <span class="token boolean">true</span><span class="token punctuation">;</span> <span class="token keyword">do</span> <span class="token function">curl</span> --connect-timeout <span class="token number">1</span>  http://<span class="token variable">$ALBDNS</span> <span class="token punctuation">;</span> <span class="token builtin class-name">echo</span><span class="token punctuation">;</span> <span class="token builtin class-name">echo</span> <span class="token string">"------------------------------"</span><span class="token punctuation">;</span> <span class="token function">date</span><span class="token punctuation">;</span> <span class="token function">sleep</span> <span class="token number">1</span><span class="token punctuation">;</span> <span class="token keyword">done</span>
+<span class="token function">curl</span> <span class="token parameter variable">-s</span> http://<span class="token variable">$ALBDNS</span>
+
+<span class="token comment"># [터미널1]</span>
+<span class="token assign-left variable">ALBDNS</span><span class="token operator">=</span><span class="token operator">&lt;</span>직접입력<span class="token operator">></span>
+<span class="token keyword">while</span> <span class="token boolean">true</span><span class="token punctuation">;</span> <span class="token keyword">do</span> <span class="token function">curl</span> --connect-timeout <span class="token number">1</span>  http://<span class="token variable">$ALBDNS</span> <span class="token punctuation">;</span> <span class="token builtin class-name">echo</span><span class="token punctuation">;</span> <span class="token builtin class-name">echo</span> <span class="token string">"------------------------------"</span><span class="token punctuation">;</span> <span class="token function">date</span><span class="token punctuation">;</span> <span class="token function">sleep</span> <span class="token number">1</span><span class="token punctuation">;</span> <span class="token keyword">done</span>
+
+<span class="token comment"># [터미널2]</span>
+<span class="token keyword">while</span> <span class="token boolean">true</span><span class="token punctuation">;</span> <span class="token keyword">do</span> aws ec2 describe-instances <span class="token parameter variable">--query</span> <span class="token string">"Reservations[*].Instances[*].{PublicIPAdd:PublicIpAddress,InstanceName:Tags[?Key=='Name']|[0].Value,Status:State.Name}"</span> <span class="token parameter variable">--filters</span> <span class="token assign-left variable">Name</span><span class="token operator">=</span>instance-state-name,Values<span class="token operator">=</span>running <span class="token parameter variable">--output</span> text <span class="token punctuation">;</span> <span class="token builtin class-name">echo</span> <span class="token string">"------------------------------"</span> <span class="token punctuation">;</span> <span class="token function">sleep</span> <span class="token number">1</span><span class="token punctuation">;</span> <span class="token keyword">done</span>
+
+<span class="token comment"># 무중단 업그레이드 배포 : 환경변수 수정 적용 >> 오토스케일링그룹 2개중 기존 그룹은 5분 정도 후에 EC2가 삭제됨(오래 걸리니 맘 편히 기다리자)</span>
+terraform plan <span class="token parameter variable">-var</span> <span class="token assign-left variable">server_text</span><span class="token operator">=</span><span class="token string">'NEW server text'</span>
+terraform apply -auto-approve <span class="token parameter variable">-var</span> <span class="token assign-left variable">server_text</span><span class="token operator">=</span><span class="token string">'NEW server text'</span>
+
+<span class="token comment"># 삭제</span>
+<span class="token comment"># 각 폴더에서 리소스 삭제</span>
+stage/services/webserver-cluster$ terraform destroy -auto-approve
+stage/data-stores/mysql$ terraform destroy -auto-approve
+03-terraform-state/file-layout-example/global/s3$ terraform destroy -auto-approve
+
+<span class="token comment"># 이동</span>
+<span class="token builtin class-name">cd</span> ~/terraform-up-and-running-code/code/terraform</code></pre></div>
+<h1 id="lessons-learned" style="position:relative;"><a href="#lessons-learned" aria-label="lessons learned permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Lessons Learned</h1>
+<p>제 7장에서는 아래의 내용을 반드시 기억하셨으면 좋겠습니다.</p>
+<ol>
+<li>테라폼을 사용하였을 때의 확실한 이점을 이해했습니다.</li>
+<li>예시의 내용이 <em>정확히</em> 어떻게 되는지 이해할 수 있었습니다.</li>
+<li>향후 자신의 프로젝트나, 회사의 인프라 관리 코드들을 보고 이해할 수 있게 되었습니다.</li>
+<li>향후 나올 8장의 내용 이해 및 실제 프로덕션 레벨에서의 일부를 가정하여, 학습할 수 있게 되었습니다.</li>
+</ol>
+<p>이것으로 제 7장을 마칩니다. 긴 글 읽어주셔서 감사합니다.</p></div></div></div><div class="Post-module--footer--f8705"><div class="Meta-module--meta--dae0a"><p class="Meta-module--date--4d30d">Published<!-- --> <!-- -->Dec 10, 2022</p></div><div class="Tags-module--tags--18589"><ul class="Tags-module--list--82ae6"><li class="Tags-module--item--52015"><a class="Button-module--button--b1113" href="/tag/terraform/">terraform</a></li><li class="Tags-module--item--52015"><a class="Button-module--button--b1113" href="/tag/iac/">iac</a></li><li class="Tags-module--item--52015"><a class="Button-module--button--b1113" href="/tag/devops/">devops</a></li></ul></div><div class="Author-module--author--1c58d"><p class="Non scholæ sed vitæ discimus.">Non scholæ sed vitæ discimus.</p><p class="Author-module--bio--08950">his/him</p></div></div><div class="Post-module--comments--d3b99"><div></div></div></div></div></div><div id="gatsby-announcer" style="position:absolute;top:0;width:1px;height:1px;padding:0;overflow:hidden;clip:rect(0, 0, 0, 0);white-space:nowrap;border:0" aria-live="assertive" aria-atomic="true"></div></div><script id="gatsby-script-loader">/*<![CDATA[*/window.pagePath="/devlog/terraform/2022-12-10-cloudneta-terraform-101-pt07";window.___webpackCompilationHash="761df58d981e63b90a04";/*]]>*/</script><script id="gatsby-chunk-mapping">/*<![CDATA[*/window.___chunkMapping={"polyfill":["/polyfill-9c96d4b38e022a460e71.js"],"app":["/app-f3f7537d74aae70e60a8.js"],"component---cache-caches-gatsby-plugin-offline-app-shell-js":["/component---cache-caches-gatsby-plugin-offline-app-shell-js-0c915c7b1bdb5eac4fdf.js"],"component---src-templates-categories-template-categories-template-tsx":["/component---src-templates-categories-template-categories-template-tsx-e2d2add397e32e3517ca.js"],"component---src-templates-category-template-category-template-tsx":["/component---src-templates-category-template-category-template-tsx-078f2adfba160a34229f.js"],"component---src-templates-index-template-index-template-tsx":["/component---src-templates-index-template-index-template-tsx-83380c7954c9f6621026.js"],"component---src-templates-not-found-template-not-found-template-tsx":["/component---src-templates-not-found-template-not-found-template-tsx-56fe4d3b015459d56c99.js"],"component---src-templates-page-template-page-template-tsx":["/component---src-templates-page-template-page-template-tsx-c6c21d7369a9356db3a1.js"],"component---src-templates-post-template-post-template-tsx":["/component---src-templates-post-template-post-template-tsx-119cd0258cb38628d01f.js"],"component---src-templates-tag-template-tag-template-tsx":["/component---src-templates-tag-template-tag-template-tsx-8d0b3090e775aa3c4584.js"],"component---src-templates-tags-template-tags-template-tsx":["/component---src-templates-tags-template-tags-template-tsx-30027e87af7d042f3afb.js"]};/*]]>*/</script><script src="/polyfill-9c96d4b38e022a460e71.js" nomodule=""></script><script src="/app-f3f7537d74aae70e60a8.js" async=""></script><script src="/framework-481a1b6416c14416b2fb.js" async=""></script><script src="/webpack-runtime-772fb610478cdd1a8d75.js" async=""></script></body></html>

@@ -1,0 +1,481 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="ie=edge"/><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/><meta name="generator" content="Gatsby 4.24.8"/><meta name="description" content="Terraform을 프로덕션 레벨 정도로 사용하려면 어느정도는 할 수 있어야하고, 어떤걸 살펴봐야 할까요? 이 포스팅에서는 그 부분을 공부해보았습니다." data-gatsby-head="true"/><meta name="twitter:card" content="summary_large_image" data-gatsby-head="true"/><meta name="twitter:title" content="[CloudNet@] 테라폼 스터디 8주차 - 프로덕션 수준의 테라폼 코드 - 팔공산 창고" data-gatsby-head="true"/><meta name="twitter:description" content="Terraform을 프로덕션 레벨 정도로 사용하려면 어느정도는 할 수 있어야하고, 어떤걸 살펴봐야 할까요? 이 포스팅에서는 그 부분을 공부해보았습니다." data-gatsby-head="true"/><meta name="og:title" content="[CloudNet@] 테라폼 스터디 8주차 - 프로덕션 수준의 테라폼 코드 - 팔공산 창고" data-gatsby-head="true"/><meta name="og:type" content="website" data-gatsby-head="true"/><meta name="og:description" content="Terraform을 프로덕션 레벨 정도로 사용하려면 어느정도는 할 수 있어야하고, 어떤걸 살펴봐야 할까요? 이 포스팅에서는 그 부분을 공부해보았습니다." data-gatsby-head="true"/><meta name="image" content="https://blog.s3ich4n.me/static/87dffd59448a30f82a571f9cd59a7a82/terraform08.jpg" data-gatsby-head="true"/><meta name="og:image" content="https://blog.s3ich4n.me/static/87dffd59448a30f82a571f9cd59a7a82/terraform08.jpg" data-gatsby-head="true"/><meta name="twitter:image" content="https://blog.s3ich4n.me/static/87dffd59448a30f82a571f9cd59a7a82/terraform08.jpg" data-gatsby-head="true"/><meta name="theme-color" content="hsl(31, 92%, 62%)"/><style data-href="/styles.3b47e1408077d170b933.css" data-identity="gatsby-global-css">:after,:before,:root{--color-white:#fff;--color-primary:#5c92ff;--color-secondary:#f7a145;--color-prism-background:#eaeaeb;--color-typographic-base-font:#242933;--color-typographic-link-p-font:#5c92ff;--color-typographic-link-s-font:#f7a145;--color-page-border:#eaeaeb;--color-page-background:#fff;--color-sidebar-border:#eaeaeb;--color-sidebar-border-fade:#fff;--color-contacts-border:#eaeaeb;--color-button-border:#eaeaeb;--color-button-color:#242933;--color-theme-switcher:#3f485a;--color-theme-switcher-hover:#5c92ff}.dark :after,.dark :before,:root.dark{--color-white:#fff;--color-primary:#5c92ff;--color-secondary:#f7a145;--color-prism-background:#191d24;--color-typographic-base-font:#fff;--color-typographic-link-p-font:#5c92ff;--color-typographic-link-s-font:#f7a145;--color-page-border:#3f485a;--color-page-background:#242933;--color-sidebar-border:#3f485a;--color-sidebar-border-fade:#242933;--color-contacts-border:#3f485a;--color-button-border:#3f485a;--color-button-color:#fff;--color-theme-switcher:#eaeaeb;--color-theme-switcher-hover:#5c92ff}html{font-size:100}body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;background:var(--color-page-background);color:var(--color-typographic-base-font);font-size:16px;line-height:1.625;margin:0 0 0 calc(100vw - 100%);text-rendering:optimizelegibility}body,h1,h2,h3,h4,h5,h6{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif}h1,h2,h3,h4,h5,h6{font-weight:600}h1{font-size:40px;line-height:52px;margin-bottom:26px;margin-top:104px}h2{font-size:27px;line-height:39px}h2,h3{margin-bottom:13px;margin-top:52px}h3{font-size:22px;line-height:26px}h4{font-size:19.2px;margin-top:39px}h4,h5{line-height:26px;margin-bottom:13px}h5,h6{font-size:16px;margin-top:65px}h6{line-height:26px;margin-bottom:13px}img{max-width:100%}hr,img{border:0;display:block}hr{background-image:linear-gradient(180deg,transparent 1px,transparent 11px,#242933 0,#242933 15px,transparent 0,transparent 26px);background-size:100% 26px;color:var(--color-typographic-base-font);height:26px;margin:52px auto;width:100px}a{color:var(--color-typographic-link-p-font);text-decoration:none}a:active,a:focus,a:hover{color:var(--color-typographic-link-s-font)}b,strong{font-weight:600}ul{list-style:square;margin-bottom:26px}ul li{margin-bottom:10px;padding:0 5px}p{line-height:26px;margin-bottom:26px}blockquote{font-style:italic;padding:0;text-align:center}figure{display:block;height:auto;width:100%}figcaption{color:var(--color-typographic-base-font);font-size:14px;font-style:italic;line-height:19.5px;margin-bottom:0;margin-top:6.5px;text-align:center}@media screen and (min-width:685px){figure.float-left,figure.float-right{max-width:310px;padding:0 26px}.float-right{float:right}.float-left{float:left}}code[class*=language-],pre[class*=language-]{word-wrap:normal;color:#657b83;font-family:Consolas,Monaco,Andale Mono,Ubuntu Mono,monospace;font-size:1em;-webkit-hyphens:none;hyphens:none;line-height:1.5;-o-tab-size:4;tab-size:4;text-align:left;white-space:pre;word-break:normal;word-spacing:normal}pre[class*=language-]{border-radius:.3em;margin:.5em 0;overflow:auto;padding:1em}:not(pre)>code[class*=language-],pre[class*=language-]{background-color:var(--color-prism-background)}:not(pre)>code[class*=language-]{border-radius:.3em;padding:.1em}code[class*=language-] ::selection,code[class*=language-]::selection,pre[class*=language-] ::selection,pre[class*=language-]::selection{background:#073642}.token.cdata,.token.comment,.token.doctype,.token.prolog{color:#93a1a1}.token.punctuation{color:#586e75}.namespace{opacity:.7}.token.boolean,.token.constant,.token.deleted,.token.number,.token.property,.token.symbol,.token.tag{color:#268bd2}.token.attr-name,.token.builtin,.token.char,.token.inserted,.token.selector,.token.string,.token.url{color:#2aa198}.token.entity{background:#eee8d5;color:#657b83;cursor:help}.token.atrule,.token.attr-value,.token.keyword{color:#859900}.token.class-name,.token.function{color:#b58900}.token.important,.token.regex,.token.variable{color:#cb4b16}.token.bold,.token.important{font-weight:700}.token.italic{font-style:italic}.Feed-module--feed--a6204 .Feed-module--item--c7a63{margin-bottom:32.5px}.Feed-module--feed--a6204 .Feed-module--item--c7a63:last-child{margin-bottom:13px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f{font-size:27px;line-height:39px;margin-bottom:13px;margin-top:0}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f .Feed-module--link--6123b{color:var(--color-typographic-base-font)}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f .Feed-module--link--6123b:focus,.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f .Feed-module--link--6123b:hover{border-bottom:1px solid #242933;color:var(--color-typographic-base-font)}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--description--57348{font-size:16px;line-height:26px;margin-bottom:19.5px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--time--72864{color:var(--color-typographic-base-font);font-size:14px;font-weight:600;text-transform:uppercase}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--divider--81a18{margin:0 13px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--category--59f58 .Feed-module--link--6123b{color:var(--color-secondary);font-size:14px;font-weight:600;text-transform:uppercase}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--category--59f58 .Feed-module--link--6123b:focus,.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--category--59f58 .Feed-module--link--6123b:hover{color:#5c92ff}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--more--51a4e{color:var(--color-primary);font-size:16px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--more--51a4e:focus,.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--more--51a4e:hover{border-bottom:1px solid #5c92ff;color:var(--color-primary)}.Layout-module--layout--2c933{margin-left:auto;margin-right:auto;max-width:1070px}.Layout-module--layout--2c933:before{content:"";display:table}.Layout-module--layout--2c933:after{clear:both;content:"";display:table}.Page-module--page--24e03{margin-bottom:52px}.Page-module--page--24e03 .Page-module--inner--4b31d{padding:26px 19.5px 0}.Page-module--page--24e03 .Page-module--title--90338{font-size:40px;font-weight:600;line-height:52px;margin-bottom:37.7px;margin-top:0}.Page-module--page--24e03 .Page-module--body--561c4{font-size:16px;line-height:26px;margin:0 0 26px}@media screen and (min-width:685px){.Page-module--page--24e03{width:calc(58.275% - 12.5px)}.Page-module--page--24e03:nth-child(1n){clear:none;float:left;margin-right:30px}.Page-module--page--24e03:last-child{margin-right:0}.Page-module--page--24e03:nth-child(12n){float:right;margin-right:0}.Page-module--page--24e03:nth-child(12n+1){clear:both}.Page-module--page--24e03 .Page-module--inner--4b31d{padding:32.5px 19.5px 0}}@media screen and (min-width:960px){.Page-module--page--24e03{width:calc(66.6% - 10px)}.Page-module--page--24e03:nth-child(1n){clear:none;float:left;margin-right:30px}.Page-module--page--24e03:last-child{margin-right:0}.Page-module--page--24e03:nth-child(3n){float:right;margin-right:0}.Page-module--page--24e03:nth-child(3n+1){clear:both}.Page-module--page--24e03 .Page-module--inner--4b31d{padding:39px 26px 0}}.Pagination-module--pagination--d61cb{display:flex;margin-top:52px}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b{text-align:left;width:50%}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d{color:var(--color-secondary);font-size:26px;font-weight:700}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d:focus,.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d:hover{color:var(--color-primary)}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d.Pagination-module--disable--7e105{color:#3f485a;pointer-events:none}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8{text-align:right;width:50%}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff{color:var(--color-secondary);font-size:26px;font-weight:700}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff:focus,.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff:hover{color:var(--color-primary)}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff.Pagination-module--disable--7e105{color:#3f485a;pointer-events:none}.Button-module--button--b1113{border:1px solid var(--color-button-border);border-radius:20px;color:var(--color-button-color);display:inline-block;font-size:16px;font-weight:400;height:40px;line-height:40px;margin-left:auto;margin-right:auto;padding:0 26px;text-align:center;text-decoration:none}.Button-module--button--b1113:focus,.Button-module--button--b1113:hover{color:#5c92ff}.ThemeSwitcher-module--themeSwitcher--8a77f{--color:var(--color-theme-switcher)}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--button--7cb7b{align-items:center;background:transparent;border:0;cursor:pointer;display:flex;justify-content:center;outline:0}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--button--7cb7b svg{stroke:var(--color);pointer-events:none;transition:stroke .4s}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--button--7cb7b:hover{--color:var(--color-theme-switcher-hover)}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--moon--10537{stroke-dasharray:0 1px;opacity:0;transition:stroke-dasharray .2s ease-in,opacity .4s ease-in}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--sun--2163a{stroke-dasharray:1px 1px;opacity:1;transition:stroke-dasharray .2s ease-in,opacity .4s ease-in}.ThemeSwitcher-module--themeSwitcher--8a77f.ThemeSwitcher-module--dark--6db0c .ThemeSwitcher-module--moon--10537{stroke-dasharray:1px 1px;opacity:1}.ThemeSwitcher-module--themeSwitcher--8a77f.ThemeSwitcher-module--dark--6db0c .ThemeSwitcher-module--sun--2163a{stroke-dasharray:0 1px;opacity:0}.Author-module--author--cbd31 .Author-module--photo--9787b{background-clip:padding-box;border-radius:50%;display:inline-block;height:75px;margin-bottom:0;width:75px}.Author-module--author--cbd31 .Author-module--photo--9787b img{border-radius:50%}.Author-module--author--cbd31 .Author-module--title--cf7e5{font-size:18px;font-weight:600;line-height:29.25px;margin:0}.Author-module--author--cbd31 .Author-module--title--cf7e5 .Author-module--link--09c17,.Author-module--author--cbd31 .Author-module--title--cf7e5 .Author-module--link--09c17:focus,.Author-module--author--cbd31 .Author-module--title--cf7e5 .Author-module--link--09c17:hover{color:var(--color-typographic-base-font)}.Author-module--author--cbd31 .Author-module--bio--8168d,.Author-module--author--cbd31 .Author-module--subtitle--86ec5{color:#7f8ba4;line-height:26px;margin-bottom:26px}.Author-module--author--cbd31 .Author-module--titleContainer--4f576{align-items:center;display:flex;justify-content:space-between;margin:13px 0}.Categories-module--categories--f3389{color:#7f8ba4;font-size:14px}.Icon-module--icon--1d7da{fill:currentcolor;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;speak:none;stroke:currentcolor;stroke-width:0;display:inline-block;font-style:normal;font-variant:normal;font-weight:400;height:1em;line-height:1em;text-align:center;text-transform:none;width:1em}.Contacts-module--contacts--09178{margin-bottom:26px}.Contacts-module--contacts--09178 .Contacts-module--list--9670b{display:flex;flex-flow:row wrap;flex-grow:0;flex-shrink:0;list-style:none;margin:13px 0;max-width:165px;padding:0}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0{align-content:center;align-items:center;border:1px solid var(--color-contacts-border);border-radius:50%;display:flex;height:40px;justify-content:center;line-height:40px;margin:6.5px;padding:0;text-align:center;width:40px}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0:nth-child(3n+1){margin-left:0}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0 .Contacts-module--link--de1e0{border:0;color:var(--color-typographic-base-font);display:flex}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0 .Contacts-module--link--de1e0:focus,.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0 .Contacts-module--link--de1e0:hover{color:var(--color-typographic-link-p-font)}.Copyright-module--copyright--2c602{color:#7f8ba4;font-size:14px}.Menu-module--menu--113a9{margin-bottom:26px}.Menu-module--menu--113a9 .Menu-module--list--e1ae3{list-style:none;margin:0;padding:0}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679{margin:13px 0;padding:0}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02{border:0;color:var(--color-typographic-base-font);font-size:16px;font-weight:400}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02:focus,.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02:hover{border-bottom:1px solid #5c92ff;color:#5c92ff}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02.Menu-module--active--6cb74{border-bottom:1px solid var(--color-typographic-base-font);color:var(--color-typographic-base-font)}.Tags-module--tags--28a57{color:#7f8ba4;font-size:14px}.Sidebar-module--sidebar--1bfa1{width:100%}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0{padding:26px 19.5px 0;position:relative}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0:after{background:var(--color-sidebar-border);background:linear-gradient(to bottom,var(--color-sidebar-border) 0,var(--color-sidebar-border) 48%,var(--color-sidebar-border-fade) 100%)}@media screen and (min-width:685px){.Sidebar-module--sidebar--1bfa1{width:calc(41.625% - 17.5px)}.Sidebar-module--sidebar--1bfa1:nth-child(1n){clear:none;float:left;margin-right:30px}.Sidebar-module--sidebar--1bfa1:last-child{margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(12n){float:right;margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(12n+1){clear:both}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0{padding:32.5px 19.5px 0}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0:after{bottom:0;content:"";height:540px;position:absolute;right:-10px;top:30px;width:1px}}@media screen and (min-width:960px){.Sidebar-module--sidebar--1bfa1{width:calc(33.3% - 20px)}.Sidebar-module--sidebar--1bfa1:nth-child(1n){clear:none;float:left;margin-right:30px}.Sidebar-module--sidebar--1bfa1:last-child{margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(3n){float:right;margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(3n+1){clear:both}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0{padding:39px}}.Author-module--author--1c58d{border-top:1px solid var(--color-page-border);line-height:26px;margin-bottom:52px;margin-top:26px;max-width:640px;padding-top:26px}.Author-module--author--1c58d .Author-module--bio--08950 .Author-module--twitter--90647{display:block;text-decoration:underline}.Author-module--author--1c58d .Author-module--bio--08950 .Author-module--twitter--90647:focus,.Author-module--author--1c58d .Author-module--bio--08950 .Author-module--twitter--90647:hover{color:var(--color-typographic-link-s-font)}@media screen and (min-width:685px){.Author-module--author--1c58d{margin-left:auto;margin-right:auto}}.Content-module--content--80d58{margin:0 auto;max-width:945px;padding:0 13px}.Content-module--content--80d58 .Content-module--title--09504{font-size:32px;font-weight:600;line-height:42.9px;margin:26px auto 0;max-width:640px;text-align:center}.Content-module--content--80d58 .Content-module--body--726c2 figure{margin-bottom:26px}.Content-module--content--80d58 .Content-module--body--726c2 figure blockquote{font-style:italic;margin-top:0;padding:26px 0;text-align:center}.Content-module--content--80d58 .Content-module--body--726c2 figure blockquote p{font-size:26.9072px;line-height:39px;margin-bottom:26px;margin-top:0;max-width:640px}.Content-module--content--80d58 .Content-module--body--726c2 a{text-decoration:underline}.Content-module--content--80d58 .Content-module--body--726c2 *{margin-left:auto;margin-right:auto;max-width:640px}.Content-module--content--80d58 .Content-module--body--726c2 h2>a{visibility:hidden}.Content-module--content--80d58 .Content-module--body--726c2 h2>a>svg{fill:var(--color-typographic-base-font)}.Content-module--content--80d58 .Content-module--body--726c2 img{max-width:100%}@media screen and (min-width:960px){.Content-module--content--80d58{padding:0}.Content-module--content--80d58 .Content-module--title--09504{font-size:48px;line-height:58.5px;margin-bottom:39px;margin-top:58.5px}.Content-module--content--80d58 .Content-module--body--726c2,.Content-module--content--80d58 .Content-module--body--726c2 p{font-size:18px;line-height:29.25px;margin-bottom:29.25px}.Content-module--content--80d58 .Content-module--body--726c2 h2>a{padding-right:13px;visibility:unset}}.Meta-module--meta--dae0a .Meta-module--date--4d30d{font-style:italic}.Tags-module--tags--18589{margin-bottom:13px}.Tags-module--tags--18589 .Tags-module--list--82ae6{list-style:none;padding:0}.Tags-module--tags--18589 .Tags-module--list--82ae6 .Tags-module--item--52015{display:inline-block;margin:6.5px 0}@media screen and (min-width:685px){.Tags-module--tags--18589 .Tags-module--list--82ae6 .Tags-module--item--52015:first-child{margin-left:0;padding-left:0}}.Post-module--post--3a994 .Post-module--content--3c6e5{margin:0 auto}.Post-module--post--3a994 .Post-module--comments--d3b99,.Post-module--post--3a994 .Post-module--footer--f8705{margin:0 auto;max-width:640px;padding:0 13px}.Post-module--post--3a994 .Post-module--buttons--2972d{align-items:center;display:flex;justify-content:center;margin:26px 0 0;text-align:center}.Post-module--post--3a994 .Post-module--buttons--2972d .Post-module--buttonArticles--d793a{margin:0 13px 0 0}@media screen and (min-width:960px){.Post-module--post--3a994 .Post-module--comments--d3b99,.Post-module--post--3a994 .Post-module--footer--f8705{padding:0}.Post-module--post--3a994 .Post-module--buttons--2972d{left:30px;margin:0 13px 0 0;max-width:none;position:fixed;top:30px}}</style><title data-gatsby-head="true">[CloudNet@] 테라폼 스터디 8주차 - 프로덕션 수준의 테라폼 코드 - 팔공산 창고</title><link rel="alternate" type="application/rss+xml" title="팔공산 창고" href="/rss.xml"/><style type="text/css">
+    .anchor.before {
+      position: absolute;
+      top: 0;
+      left: 0;
+      transform: translateX(-100%);
+      padding-right: 4px;
+    }
+    .anchor.after {
+      display: inline-block;
+      padding-left: 4px;
+    }
+    h1 .anchor svg,
+    h2 .anchor svg,
+    h3 .anchor svg,
+    h4 .anchor svg,
+    h5 .anchor svg,
+    h6 .anchor svg {
+      visibility: hidden;
+    }
+    h1:hover .anchor svg,
+    h2:hover .anchor svg,
+    h3:hover .anchor svg,
+    h4:hover .anchor svg,
+    h5:hover .anchor svg,
+    h6:hover .anchor svg,
+    h1 .anchor:focus svg,
+    h2 .anchor:focus svg,
+    h3 .anchor:focus svg,
+    h4 .anchor:focus svg,
+    h5 .anchor:focus svg,
+    h6 .anchor:focus svg {
+      visibility: visible;
+    }
+  </style><script>
+    document.addEventListener("DOMContentLoaded", function(event) {
+      var hash = window.decodeURI(location.hash.replace('#', ''))
+      if (hash !== '') {
+        var element = document.getElementById(hash)
+        if (element) {
+          var scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+          var clientTop = document.documentElement.clientTop || document.body.clientTop || 0
+          var offset = element.getBoundingClientRect().top + scrollTop - clientTop
+          // Wait for the browser to finish rendering before scrolling.
+          setTimeout((function() {
+            window.scrollTo(0, offset - 0)
+          }), 0)
+        }
+      }
+    })
+  </script><link rel="preconnect" href="https://www.googletagmanager.com"/><link rel="dns-prefetch" href="https://www.googletagmanager.com"/><script async="" src="https://www.googletagmanager.com/gtag/js?id="></script><script>
+      
+      
+      if(true) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){window.dataLayer && window.dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', '', {"send_page_view":false});
+      }
+      </script><link rel="sitemap" type="application/xml" href="/sitemap/sitemap-index.xml"/><link rel="icon" href="/favicon-32x32.png?v=4c2c993a06ee0fd0ee953020b09128a9" type="image/png"/><link rel="manifest" href="/manifest.webmanifest" crossorigin="anonymous"/><link rel="apple-touch-icon" sizes="48x48" href="/icons/icon-48x48.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="72x72" href="/icons/icon-72x72.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="96x96" href="/icons/icon-96x96.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="144x144" href="/icons/icon-144x144.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192x192.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="256x256" href="/icons/icon-256x256.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="384x384" href="/icons/icon-384x384.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="512x512" href="/icons/icon-512x512.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><style>.gatsby-image-wrapper{position:relative;overflow:hidden}.gatsby-image-wrapper picture.object-fit-polyfill{position:static!important}.gatsby-image-wrapper img{bottom:0;height:100%;left:0;margin:0;max-width:none;padding:0;position:absolute;right:0;top:0;width:100%;object-fit:cover}.gatsby-image-wrapper [data-main-image]{opacity:0;transform:translateZ(0);transition:opacity .25s linear;will-change:opacity}.gatsby-image-wrapper-constrained{display:inline-block;vertical-align:top}</style><noscript><style>.gatsby-image-wrapper noscript [data-main-image]{opacity:1!important}.gatsby-image-wrapper [data-placeholder-image]{opacity:0!important}</style></noscript><script type="module">const e="undefined"!=typeof HTMLImageElement&&"loading"in HTMLImageElement.prototype;e&&document.body.addEventListener("load",(function(e){const t=e.target;if(void 0===t.dataset.mainImage)return;if(void 0===t.dataset.gatsbyImageSsr)return;let a=null,n=t;for(;null===a&&n;)void 0!==n.parentNode.dataset.gatsbyImageWrapper&&(a=n.parentNode),n=n.parentNode;const o=a.querySelector("[data-placeholder-image]"),r=new Image;r.src=t.currentSrc,r.decode().catch((()=>{})).then((()=>{t.style.opacity=1,o&&(o.style.opacity=0,o.style.transition="opacity 500ms linear")}))}),!0);</script></head><body><script>
+          void function() {
+            var cachedMode;
+
+            try {
+              var preferredTheme = JSON.parse(localStorage.getItem('diesel:theme-atom'));
+
+              if (preferredTheme && preferredTheme.mode) {
+                cachedMode = preferredTheme.mode;
+              }
+            } catch (err) { }
+
+            function setTheme(newTheme) {
+              document.documentElement.className = newTheme;
+            }
+
+            var darkQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+            setTheme(cachedMode || (darkQuery.matches ? 'dark' : 'light'));
+          }()
+        </script><div id="___gatsby"><div style="outline:none" tabindex="-1" id="gatsby-focus-wrapper"><div class="Layout-module--layout--2c933"><div class="Post-module--post--3a994"><div class="Post-module--buttons--2972d"><a class="Button-module--button--b1113 Post-module--buttonArticles--d793a" href="/">All Articles</a></div><div class="Post-module--content--3c6e5"><div class="Content-module--content--80d58"><h1 class="Content-module--title--09504">[CloudNet@] 테라폼 스터디 8주차 - 프로덕션 수준의 테라폼 코드</h1><div class="Content-module--body--726c2"><p>이 내용은 <a href="https://www.notion.so/gasidaseo/CloudNet-Blog-c9dfa44a27ff431dafdd2edacc8a1863" target="_blank" rel="nofollow noopener noreferrer">CloudNet@</a> 에서 진행하는 테라폼 기초 입문 스터디에 대한 연재글입니다.</p>
+<p>스터디에서 사용하는 교재는 <a href="http://www.yes24.com/Product/Goods/101511312" target="_blank" rel="nofollow noopener noreferrer">Terraform Up &#x26; Running 2nd Edition</a> 입니다.</p>
+<h1 id="prerequisites" style="position:relative;"><a href="#prerequisites" aria-label="prerequisites permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Prerequisites</h1>
+<ul>
+<li>아무래도 기존 내용을 모두 학습해야 하겠죠.</li>
+<li><a href="http://www.yes24.com/Product/Goods/11681152" target="_blank" rel="nofollow noopener noreferrer">클린 코드</a>를 읽고 오시면 더욱 좋습니다.</li>
+</ul>
+<h1 id="본문" style="position:relative;"><a href="#%EB%B3%B8%EB%AC%B8" aria-label="본문 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>본문</h1>
+<h2 id="프로덕션-레벨의-인프라-by-production-grade-infrastructure" style="position:relative;"><a href="#%ED%94%84%EB%A1%9C%EB%8D%95%EC%85%98-%EB%A0%88%EB%B2%A8%EC%9D%98-%EC%9D%B8%ED%94%84%EB%9D%BC-by-production-grade-infrastructure" aria-label="프로덕션 레벨의 인프라 by production grade infrastructure permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>프로덕션 레벨의 인프라 (By production-grade Infrastructure)</h2>
+<p>저자의 프로덕션 레벨의 인프라 정의는 아래 요소들이 모두 잘 갖추어져있고, 이중화/장애대응까지 완벽히 되어있음을 말합니다:</p>
+<ul>
+<li>서버</li>
+<li>데이터 저장소</li>
+<li>로드 밸런서</li>
+<li>보안 기능</li>
+<li>모니터링/경고 도구</li>
+<li>파이프라인 구축</li>
+<li>비즈니스 운영에 필요한 기타 모든 도구</li>
+</ul>
+<p>아울러, 저자는 프로덕션 수준의 인프라를 만드는 프로젝트에 소요되는 대략적인 시간을 아래 정도가 걸린다고 산정하였습니다.</p>
+<table>
+<thead>
+<tr>
+<th>인프라 유형</th>
+<th>예</th>
+<th>예상 소요 시간</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>관리형 서비스 Managed service</td>
+<td>Amazon RDS</td>
+<td>1~2주</td>
+</tr>
+<tr>
+<td>스스로 관리하는 분산 시스템 (상태 비저장) Self-managed distributed system (stateless)</td>
+<td>Node.js 앱이 실행되는 ASG 클러스터</td>
+<td>2~4</td>
+</tr>
+<tr>
+<td>스스로 관리하는 분산 시스템 (상태 저장) Self-managed distributed system (stateful)</td>
+<td>Amazon Elasticsearch cluster</td>
+<td>2~4개월</td>
+</tr>
+<tr>
+<td>전체 아키텍처 Entire architecture</td>
+<td>애플리케이션, 데이터 저장소, 로드 밸런서, 모니터링 등</td>
+<td>6~36개월</td>
+</tr>
+</tbody>
+</table>
+<p>저는 아직 프로덕션 경험이 없지만, 개인적으로 만들고싶은 서비스를 구축한다면 관리형 서비스 ~ self managed 분산 시스템(stateless) 까지는 헤메면서 2주는 쓸 것 같습니다. 전체 아키텍처를 모두 구성하는데 길면 3년이 걸린다고 하니, 역시나 쉬운길은 아니네요. 그런데, 왜 이렇게 오래 걸리는걸까요?</p>
+<h2 id="프로덕션-수준의-인프라-구축에-시간이-오래-걸리는-이유" style="position:relative;"><a href="#%ED%94%84%EB%A1%9C%EB%8D%95%EC%85%98-%EC%88%98%EC%A4%80%EC%9D%98-%EC%9D%B8%ED%94%84%EB%9D%BC-%EA%B5%AC%EC%B6%95%EC%97%90-%EC%8B%9C%EA%B0%84%EC%9D%B4-%EC%98%A4%EB%9E%98-%EA%B1%B8%EB%A6%AC%EB%8A%94-%EC%9D%B4%EC%9C%A0" aria-label="프로덕션 수준의 인프라 구축에 시간이 오래 걸리는 이유 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>프로덕션 수준의 인프라 구축에 시간이 오래 걸리는 이유</h2>
+<p>DevOps 프로젝트는 다른 유형의 소프트웨어 프로젝트보다 더 시간이 소요될 수 있습니다. 아래에서 이야기되는 사항들이 그 이유입니다.</p>
+<h3 id="호프스태터의-법칙hofstadters-law" style="position:relative;"><a href="#%ED%98%B8%ED%94%84%EC%8A%A4%ED%83%9C%ED%84%B0%EC%9D%98-%EB%B2%95%EC%B9%99hofstadters-law" aria-label="호프스태터의 법칙hofstadters law permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>호프스태터의 법칙(Hofstadter’s Law)</h3>
+<p>호프스태터의 법칙은 일을 마치는데 더 오랜 시간이 걸리는 현상을 의미합니다. 일정보다 늦어질 것을 미리 예상했다 하더라도 여전히 일정보다 늦어진다는 것이죠. 아래와 같은 말로 언급되는 경우가 많습니다.</p>
+<blockquote>
+<p>호프스태터의 법칙: 일은 항상 예상시간 보다 더 오래 걸린다. 호프스태터의 법칙을 고려했다고 하더라도…</p>
+<p>Hofstadter’s Law: It always takes longer than you expect, even when you take into account Hofstadter’s Law.</p>
+</blockquote>
+<h3 id="데브옵스-산업은-초창기" style="position:relative;"><a href="#%EB%8D%B0%EB%B8%8C%EC%98%B5%EC%8A%A4-%EC%82%B0%EC%97%85%EC%9D%80-%EC%B4%88%EC%B0%BD%EA%B8%B0" aria-label="데브옵스 산업은 초창기 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>데브옵스 산업은 초창기</h3>
+<p>저자는 이를 “아직 석기시대에 있다”(…the industry is still in its infancy) 라고 표하였습니다. 클라우드 컴퓨팅, IaC, DevOps, 컨테이너 기술의 출현과 발전속도가 매우 빠르고 성숙하는 단계에 있다고 하였기 떄문입니다.</p>
+<h3 id="데브옵스는-야크-털깎기-현상에-취약" style="position:relative;"><a href="#%EB%8D%B0%EB%B8%8C%EC%98%B5%EC%8A%A4%EB%8A%94-%EC%95%BC%ED%81%AC-%ED%84%B8%EA%B9%8E%EA%B8%B0-%ED%98%84%EC%83%81%EC%97%90-%EC%B7%A8%EC%95%BD" aria-label="데브옵스는 야크 털깎기 현상에 취약 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>데브옵스는 “야크 털깎기” 현상에 취약</h3>
+<p>야크 털깎기는 목적을 이루기 위해 본래 목적과 전혀 상관없어 보이는 일들을 계속 해오고, 종국에는 그것을 이루는 행동을 말합니다.</p>
+<p>극단적인 예시를 하나 보시죠. <a href="https://scholar.google.com/citations?user=t0yrrzQAAAAJ" target="_blank" rel="nofollow noopener noreferrer">도널드 커누스</a>처럼 업계 부동의 원탑인 사람이라면, 책 쓰다가 디지털 조판 시스템이 답답해서 TeX를 <em>자신이 직접 만든</em> 프로그래밍 언어로 완성함과 동시에 폰트도 만들고, 폰트의 그래픽스를 정의하기 위한 언어도 만들고, 장치종속을 풀기위해 포맷까지 만들었다고 하지요. (책을 쓰는데 10년이 걸렸다고 합니다. 그 책은 다름아닌 <a href="https://www-cs-faculty.stanford.edu/~knuth/taocp.html" target="_blank" rel="nofollow noopener noreferrer">TAOCP</a> 입니다.)</p>
+<p>누구나 그럴 수는 없음을 압니다. 그리고 회사는 정해진 기한과 목표물이 있지요. 저는 이를 <em>삽질</em> 이라고 배웠습니다. 독자 여러분들도 생각해보면 ‘이런 개념이 이렇게 불리는구나’ 하셨을 것이란 생각이 드네요.</p>
+<p>앞서말했듯, 업계가 아직 태동기에 있으니 더더욱 그럴 수 밖에 없으리라는 것이 저자의 의견입니다.</p>
+<h3 id="수행해야하는-체크리스트가-매우-많음" style="position:relative;"><a href="#%EC%88%98%ED%96%89%ED%95%B4%EC%95%BC%ED%95%98%EB%8A%94-%EC%B2%B4%ED%81%AC%EB%A6%AC%EC%8A%A4%ED%8A%B8%EA%B0%80-%EB%A7%A4%EC%9A%B0-%EB%A7%8E%EC%9D%8C" aria-label="수행해야하는 체크리스트가 매우 많음 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>수행해야하는 체크리스트가 매우 많음</h3>
+<p>대다수 개발자가 체크 리스트에 있는 대부분의 항목을 알지 못하기 때문에, 프로젝트를 평가할 때 중요하고 시간이 많이 걸리는 세부 사항을 잊어버립니다. 체크리스트는 아래와 같습니다:</p>
+<table>
+<thead>
+<tr>
+<th>작업</th>
+<th>설명</th>
+<th>사용가능 도구</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>설치<br />(Install)</td>
+<td>소프트웨어 바이너리, 필요 종속성 설치</td>
+<td>Bash, Chef, Ansible, Puppet</td>
+</tr>
+<tr>
+<td>설정<br />(Configure)</td>
+<td>포트 설정, TLS 인증서, 서비스 디스커버리, 리더/팔로워 복제 등의 소프트웨어 설정</td>
+<td>Bash, Chef, Ansible, Puppet</td>
+</tr>
+<tr>
+<td>프로비전<br />(Provision)</td>
+<td>서버, 로드 밸런서, 네트워크, 방화벽, IAM 권한 설정 등의 인프라 제공</td>
+<td>Terraform, CloudFormation</td>
+</tr>
+<tr>
+<td>배포<br />(Deploy)</td>
+<td>인프라 상위의 서비스 배포<br />중단시간 없이 업데이트 롤아웃<br />블루-그린, 카나리 배포 등</td>
+<td>Terraform, CloudFormation, k8s, ECS</td>
+</tr>
+<tr>
+<td>고가용성<br />(High Availability)</td>
+<td>프로세스, 서버, 서비스, 데이터 센터, 리전 등의 장애에 대비</td>
+<td>멀티 데이터센터, 멀티 리전, 복제, 오토스케일링, 로드밸런싱</td>
+</tr>
+<tr>
+<td>확장성<br />(Scailability)</td>
+<td>요청량에 따른 스케일 업/아웃<br />수평적 확장(더 많은 서버), 수직적 확장(더 큰 용량)</td>
+<td>오토스케일링, 복제, 샤딩, 캐싱, 분할정복</td>
+</tr>
+<tr>
+<td>성능<br />(Performance)</td>
+<td>CPU, 메모리, 디스크, 네트워크, GPU 용량 최적화<br />쿼리 튜닝, 벤치마킹, 테스트, 프로파일링</td>
+<td>Dynatrace, valgrind, VisualVM, ab, JMeter</td>
+</tr>
+<tr>
+<td>네트워킹<br />(Networking)</td>
+<td>정적·동적 IP 설정, 포트, 서비스 디스커버리, 방화벽, DNS, SSH 접속, VPN 연결</td>
+<td>VPC, 방화벽, 라우터, DNS Registers, OpenVPN</td>
+</tr>
+<tr>
+<td>보안<br />(Security)</td>
+<td>TLS를 통한 통신 중 데이터 암호화, 디스크 암호화, 인증, 인가, 보안 관리, 서버 하드닝</td>
+<td>ACM, Let’s Encrypt, KMS, Cognito, Vault, CIS</td>
+</tr>
+<tr>
+<td>성능지표<br />(Metrics)</td>
+<td>가용성, 비즈니스, 애플리케이션, 서버, 이벤트, 추적, 알람에 대한 메트릭</td>
+<td>CloudWatch, Datadog, New Relic, Honeycomb</td>
+</tr>
+<tr>
+<td>로그<br />(Logs)</td>
+<td>로그 순환, 중앙으로 데이터 수집</td>
+<td>CloudWatch Logs, ELK, Sumo Logic, Papertrail</td>
+</tr>
+<tr>
+<td>백업 및 복구<br />(Backup and Restore)</td>
+<td>DB, 캐시, 기타 데이터를 일정에 따라 백업<br />리전 별, 계정 별 복제</td>
+<td>RDS, ElastiCache, 복제</td>
+</tr>
+<tr>
+<td>비용 최적화<br />(Cost Optimization)</td>
+<td>적절한 인스턴스 유형 선택, 스팟 혹은 예약 인스턴스 사용, 오토스케일링, 사용하지 않는 리소스 정리</td>
+<td>오토스케일링, 스팟 인스턴스, 예약 인스턴스</td>
+</tr>
+<tr>
+<td>문서화<br />(Documentation)</td>
+<td>코드, 아키텍처, 모든 내용을 문서화<br />장애 대응 내용 정리(Postmortem)</td>
+<td>README, 각종 위키, Slack</td>
+</tr>
+<tr>
+<td>테스트<br />(Tests)</td>
+<td>인프라 코드를 테스트 자동화<br />항상 테스트 후 배포</td>
+<td>Terratest, inspec, serverspec, kitchen-terraform</td>
+</tr>
+</tbody>
+</table>
+<p>와 세상에 이렇게나 많습니다! 그런데…</p>
+<ul>
+<li>서버나 로드밸런서가 다운된다면 어떻게 될까요? 데이터 센터에 문제가 생긴다면 어떻게 될까요?</li>
+<li>VPC를 위시로 한 네트워킹 작업 또한 정말 어렵습니다. 그뿐일까요, VPN, Service Discovery, SSH Access 등 정말 많습니다!</li>
+<li>그렇지만, 프로젝트 계획 및 시간 예측에서 배제되는 경우가 많습니다.</li>
+</ul>
+<p>즉, 이러한 연유로 인해 프로젝트 계획 및 시간 예측이 너무나 어렵습니다.</p>
+<h2 id="프로덕션-수준의-인프라-모듈" style="position:relative;"><a href="#%ED%94%84%EB%A1%9C%EB%8D%95%EC%85%98-%EC%88%98%EC%A4%80%EC%9D%98-%EC%9D%B8%ED%94%84%EB%9D%BC-%EB%AA%A8%EB%93%88" aria-label="프로덕션 수준의 인프라 모듈 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>프로덕션 수준의 인프라 모듈</h2>
+<p>그렇다면 프로덕션 레벨의 테라폼 코드는 어떤 것들이 필요한지 살펴보겠습니다. 테라폼 코드는 <strong>재사용 가능한 모듈</strong> 단위로 작성하는 것이 좋습니다. 이에 대한 모범사례를 살펴봅시다. 다룰 주제는 아래와 같습니다.</p>
+<h3 id="소형-모듈을-써야하는-이유" style="position:relative;"><a href="#%EC%86%8C%ED%98%95-%EB%AA%A8%EB%93%88%EC%9D%84-%EC%8D%A8%EC%95%BC%ED%95%98%EB%8A%94-%EC%9D%B4%EC%9C%A0" aria-label="소형 모듈을 써야하는 이유 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>소형 모듈을 써야하는 이유</h3>
+<p>3장에서 학습했던 상태 파일 격리에서 알아본 것과 같이, 모든 인프라 환경은 단일파일, 단일 모듈로 정의해서는 좋지 않은 수준이 아니라 <strong>유해</strong> 한 것으로 간주합니다. 아래의 이유로 인해 그렇습니다.</p>
+<h4 id="대형모듈을-썼을-떄의-문제점" style="position:relative;"><a href="#%EB%8C%80%ED%98%95%EB%AA%A8%EB%93%88%EC%9D%84-%EC%8D%BC%EC%9D%84-%EB%96%84%EC%9D%98-%EB%AC%B8%EC%A0%9C%EC%A0%90" aria-label="대형모듈을 썼을 떄의 문제점 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>대형모듈을 썼을 떄의 문제점</h4>
+<ul>
+<li>속도가 느림(slow): 모든 인프라가 하나의 모듈에 정의되어 있으면 명령 실행 시 오래 걸립니다. <code class="language-text">terraform plan</code> 구동 시 20분 걸리기도 합니다.</li>
+<li>안전하지 않음(insecure): 모든 인프라가 하나의 모듈에 정의되어 있으면, 어떤 것을 변경 시 모든 액세스 권한을 사용하게 됩니다.
+<ul>
+<li>따라서 모든 사용자에게 관리자 권한을 부여하게 되지요.</li>
+<li>이는 최소 권한 원칙(principle of least privilege) 에 위배됩니다.</li>
+</ul>
+</li>
+<li>위험성이 높음(risky): 예를 들어 스테이징 환경에서 프런트엔드 앱을 변경 시 오타나 잘못된 명령으로 프로덕션 데이터베이스를 삭제하는 대참사가 발생할 수 있습니다…</li>
+<li>이해하기 어려움(understand) : 한 곳에 코드가 많을수록 한 사람이 모든 것을 이해하기가 더 어려워집니다.</li>
+<li>리뷰하기 어려움(review) : 수집 줄의 코드로 구성된 모듈을 리뷰하는 것은 쉽지만, 수천 줄의 코드로 구성된 모듈을 리뷰하는 것은 거의 불가능입니다.
+<ul>
+<li><code class="language-text">terraform plan</code> 실행 시 오래 거리고, plan 명령의 출력이 수천 줄이며 아무도 코드를 읽으려 하지 않을겁니다.</li>
+<li>예를들어, 이 경우 데이터베이스가 삭제될 것임을 나타내는 빨간색 코드가 있더라도 누구 하나 발견하지 못할 수도 있습니다.</li>
+</ul>
+</li>
+<li>테스트하기 어려움(test) : 인프라 코드 테스트하기 매우 힘들어집니다! 다음 장에서 살펴보도록 하겠습니다.</li>
+</ul>
+<p>따라서, 이런 이유로 인해 소형 모듈을 사용하는 편이 보다 좋은 코드가 되겠습니다.</p>
+<h4 id="소형-모듈을-사용하는-방안" style="position:relative;"><a href="#%EC%86%8C%ED%98%95-%EB%AA%A8%EB%93%88%EC%9D%84-%EC%82%AC%EC%9A%A9%ED%95%98%EB%8A%94-%EB%B0%A9%EC%95%88" aria-label="소형 모듈을 사용하는 방안 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>소형 모듈을 사용하는 방안</h4>
+<p>소형 모듈로 내용을 줄여보기 전에 클린코드에 나오는 격언 중 하나를 소개하면 좋은 대목인 것 같군요.</p>
+<blockquote>
+<ol>
+<li>
+<p>함수의 첫 번째 규칙은 작아야한다는 것.</p>
+</li>
+<li>
+<p>함수의 두 번째 규칙은, 그보다 더 작아야한다는 것.</p>
+</li>
+</ol>
+</blockquote>
+<p>예시로 한번 살펴보겠습니다.</p>
+<p>이런 아키텍처의 코드가 단 한줄뿐이라면… 그것은 코드 스멜입니다! 코드 스멜은 더 큰 문제를 일으키기 쉬운 코드지요. 저는 냄새나는 코드라고 부릅니다.</p>
+<p>기존 예시라면, 지난 7장에서 살펴본 ASG, ALB, 헬로월드 앱을 각각의 소형 모듈로 나누어봅시다.</p>
+<p><img src="./media/01_examples-of-complicated-aws-architecture.jpg" alt="examples-of-complicated-aws-architecture"></p>
+<h3 id="합성-가능한-모듈" style="position:relative;"><a href="#%ED%95%A9%EC%84%B1-%EA%B0%80%EB%8A%A5%ED%95%9C-%EB%AA%A8%EB%93%88" aria-label="합성 가능한 모듈 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>합성 가능한 모듈</h3>
+<p>여기서부턴 코드확인이 필요합니다. <code class="language-text">chapter08</code> 디렉토리를 확인해주세요. 경로는 <a href="https://github.com/s3ich4n/terraform-study-101/tree/main/chapter08" target="_blank" rel="nofollow noopener noreferrer">여기</a> 입니다. 베이스코드는 7장에서 작성한 코드입니다.</p>
+<p><strong>재사용 가능하고 합성 가능한 모듈</strong></p>
+<ul>
+<li><strong>외부에서 상태를 읽는 대신 입력 매개 변수를 통해 전달하고, 외부에 상태를 쓰는 대신 출력 매개 변수를 통해 계산 결과를 반환합니다.</strong></li>
+<li>모든 것을 입력 변수를 통해 전달하고 모든 것을 출력 변수를 통해 반환하며 간단한 모듈들을 결합해 더 복잡한 모듈을 만들수 있다.</li>
+<li>실제 사용 시에는 더 나은 합성과 재사용을 위해 아래 실습 내용 보다 모듈을 더욱 세분화해야 할 수도 있습니다.</li>
+</ul>
+<p>그러면, 코드 리팩토링을 진행해볼까요.</p>
+<ol>
+<li>기존 <code class="language-text">webserver-cluster</code>는 하드코딩 되어있었고, 이를 아래와 같이 재작성합니다.
+<ol>
+<li>variables 별도 분리를 통한 서브넷, 타겟 그룹명, 헬스체크 타입, <code class="language-text">user_data</code> 변경 가능하도록 수정
+<ol>
+<li>유연한 변경이 가능하도록 작성</li>
+<li>기본 서브넷이 아니라, 개별 VPC, 서브넷으로 사용가능</li>
+<li>타겟 그룹명, 헬스체크 타입 변수로 ASG를 로드 밸런서와 통합</li>
+</ol>
+</li>
+<li>출력변수 추가
+<ol>
+<li>output 변수를 통해</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+<h3 id="테스트-가능한-모듈" style="position:relative;"><a href="#%ED%85%8C%EC%8A%A4%ED%8A%B8-%EA%B0%80%EB%8A%A5%ED%95%9C-%EB%AA%A8%EB%93%88" aria-label="테스트 가능한 모듈 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>테스트 가능한 모듈</h3>
+<p>수정한 코드를 직접 구동해봅시다.</p>
+<ol>
+<li><code class="language-text">asg-rolling-deploy</code> 모듈을 사용하여, 크기 1인 ASG를 배포하는 코드를 봅시다.</li>
+</ol>
+<div class="gatsby-highlight" data-language="terraform"><pre class="language-terraform"><code class="language-terraform">terraform {
+  required_version = &quot;&gt;= 1.0.0, &lt; 2.0.0&quot;
+
+  required_providers {
+    aws = {
+      source  = &quot;hashicorp/aws&quot;
+      version = &quot;~&gt; 4.0&quot;
+    }
+  }
+}
+
+provider &quot;aws&quot; {
+  region = &quot;us-east-2&quot;
+}
+
+# 모듈을 사용하여, 상기 리팩토링을 통해 수정한 내용을 쉽게 배포할 수 있게 되었습니다!
+#
+# 개인적으로는, 모듈 직전의 코드를 직접 쳐봐야 모듈화를 할 수 있는 통찰이 생기고,
+# 이를 통해 프로비저닝 및 배포를 테라폼으로 할 수 있다고 생각합니다.
+module &quot;asg&quot; {
+  source = &quot;../../modules/cluster/asg-rolling-deploy&quot;
+
+  cluster_name  = var.cluster_name
+
+  ami           = data.aws_ami.ubuntu.id
+  instance_type = &quot;t2.micro&quot;
+
+  min_size           = 1
+  max_size           = 1
+  enable_autoscaling = false
+
+  subnet_ids        = data.aws_subnets.default.ids
+}
+
+data &quot;aws_vpc&quot; &quot;default&quot; {
+  default = true
+}
+
+data &quot;aws_subnets&quot; &quot;default&quot; {
+  filter {
+    name   = &quot;vpc-id&quot;
+    values = [data.aws_vpc.default.id]
+  }
+}
+
+data &quot;aws_ami&quot; &quot;ubuntu&quot; {
+  most_recent = true
+  owners      = [&quot;099720109477&quot;] # Canonical
+
+  filter {
+    name   = &quot;name&quot;
+    values = [&quot;ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*&quot;]
+  }
+}</code></pre></div>
+<p>배포 및 확인은 아래 코드로 진행하면 됩니다.</p>
+<div class="gatsby-highlight" data-language="bash"><pre class="language-bash"><code class="language-bash"><span class="token comment"># [터미널1] RDS 생성 모니터링</span>
+<span class="token keyword">while</span> <span class="token boolean">true</span><span class="token punctuation">;</span> <span class="token keyword">do</span> aws rds describe-db-instances <span class="token parameter variable">--query</span> <span class="token string">"*[].[Endpoint.Address,Endpoint.Port,MasterUsername]"</span> <span class="token parameter variable">--output</span> text  <span class="token punctuation">;</span> <span class="token builtin class-name">echo</span> <span class="token string">"------------------------------"</span> <span class="token punctuation">;</span> <span class="token function">sleep</span> <span class="token number">1</span><span class="token punctuation">;</span> <span class="token keyword">done</span>
+
+<span class="token comment"># RDS 배포</span>
+<span class="token builtin class-name">cd</span> chapter08/examples01/small-modules/examples/mysql
+
+<span class="token comment"># 환경변수에 지정</span>
+<span class="token builtin class-name">export</span> <span class="token assign-left variable">TF_VAR_db_username</span><span class="token operator">=</span><span class="token string">'cloudneta'</span>
+<span class="token builtin class-name">export</span> <span class="token assign-left variable">TF_VAR_db_password</span><span class="token operator">=</span><span class="token string">'cloudnetaQ!'</span>
+
+terraform init <span class="token operator">&amp;&amp;</span> terraform plan
+terraform apply -auto-approve
+
+<span class="token comment"># [터미널2]</span>
+<span class="token keyword">while</span> <span class="token boolean">true</span><span class="token punctuation">;</span> <span class="token keyword">do</span> aws ec2 describe-instances <span class="token parameter variable">--query</span> <span class="token string">"Reservations[*].Instances[*].{PublicIPAdd:PublicIpAddress,InstanceName:Tags[?Key=='Name']|[0].Value,Status:State.Name}"</span> <span class="token parameter variable">--filters</span> <span class="token assign-left variable">Name</span><span class="token operator">=</span>instance-state-name,Values<span class="token operator">=</span>running <span class="token parameter variable">--output</span> text <span class="token punctuation">;</span> <span class="token builtin class-name">echo</span> <span class="token string">"------------------------------"</span> <span class="token punctuation">;</span> <span class="token function">sleep</span> <span class="token number">1</span><span class="token punctuation">;</span> <span class="token keyword">done</span>
+
+<span class="token comment"># 배포</span>
+<span class="token builtin class-name">cd</span> chapter08/examples01/small-modules/examples/asg
+terraform init
+terraform plan
+terraform apply -auto-approve
+
+<span class="token comment"># ALB 배포</span>
+<span class="token builtin class-name">cd</span> chapter08/examples01/small-modules/examples/alb
+terraform init <span class="token operator">&amp;&amp;</span> terraform plan
+terraform apply -auto-approve
+
+<span class="token comment"># ALB DNS주소로 curl 접속 확인</span>
+<span class="token assign-left variable">ALBDNS</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span>terraform output <span class="token parameter variable">-raw</span> alb_dns_name<span class="token variable">)</span></span>
+<span class="token keyword">while</span> <span class="token boolean">true</span><span class="token punctuation">;</span> <span class="token keyword">do</span> <span class="token function">curl</span> --connect-timeout <span class="token number">1</span>  http://<span class="token variable">$ALBDNS</span> <span class="token punctuation">;</span> <span class="token builtin class-name">echo</span><span class="token punctuation">;</span> <span class="token builtin class-name">echo</span> <span class="token string">"------------------------------"</span><span class="token punctuation">;</span> <span class="token function">date</span><span class="token punctuation">;</span> <span class="token function">sleep</span> <span class="token number">1</span><span class="token punctuation">;</span> <span class="token keyword">done</span>
+<span class="token function">curl</span> <span class="token parameter variable">-s</span> http://<span class="token variable">$ALBDNS</span></code></pre></div>
+<h3 id="릴리즈-가능한-모듈버저닝" style="position:relative;"><a href="#%EB%A6%B4%EB%A6%AC%EC%A6%88-%EA%B0%80%EB%8A%A5%ED%95%9C-%EB%AA%A8%EB%93%88%EB%B2%84%EC%A0%80%EB%8B%9D" aria-label="릴리즈 가능한 모듈버저닝 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>릴리즈 가능한 모듈(버저닝)</h3>
+<h4 id="validations" style="position:relative;"><a href="#validations" aria-label="validations permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Validations</h4>
+<p>테라폼 0.13부터 등장한 validation blocks 은 입력 변수를 체크할 수 있습니다.</p>
+<div class="gatsby-highlight" data-language="terraform"><pre class="language-terraform"><code class="language-terraform">variable &quot;instance_type&quot; {
+  description = &quot;The type of EC2 Instances to run (e.g. t2.micro)&quot;
+  type        = string
+
+  # t2.micro 혹은 t3.micro만 사용할 수 있도록 체크하는 로직입니다!
+  validation {
+    condition     = contains([&quot;t2.micro&quot;, &quot;t3.micro&quot;], var.instance_type)
+    error_message = &quot;Only free tier is allowed: t2.micro | t3.micro.&quot;
+  }
+}</code></pre></div>
+<p>만일 validation에 실패한다면, 아래와 같은 에러 메시지를 리턴하게 됩니다.</p>
+<div class="gatsby-highlight" data-language="terraform"><pre class="language-terraform"><code class="language-terraform">$ terraform apply -var instance_type=&quot;m4.large&quot;
+│ Error: Invalid value for variable
+│
+│   on main.tf line 17:
+│    1: variable &quot;instance_type&quot; {
+│     ├────────────────
+│     │ var.instance_type is &quot;m4.large&quot;
+│
+│ Only free tier is allowed: t2.micro | t3.micro.
+│
+│ This was checked by the validation rule at main.tf:21,3-13.</code></pre></div>
+<h4 id="versioned-modules" style="position:relative;"><a href="#versioned-modules" aria-label="versioned modules permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Versioned Modules</h4>
+<p>인프라 코드는 오늘 실행하든 3년후에 실행하든 동일한 결과를 얻을 수 있어야 합니다. 테라폼 코어, 프로바이더 및 버전을 명시하여 이를 가능하게 합니다.</p>
+<ul>
+<li>
+<p>모듈 버저닝</p>
+<ul>
+<li>테라폼 코어(<code class="language-text">core</code>를 의미): 테라폼 실행파일 버전을 <code class="language-text">required_version</code> 이란 값으로 명시합니다.</li>
+</ul>
+<div class="gatsby-highlight" data-language="terraform"><pre class="language-terraform"><code class="language-terraform">terraform {
+  # Require any 1.x version of Terraform
+  required_version = &quot;&gt;= 1.0.0, &lt; 2.0.0&quot;
+}
+
+# 프로덕션은 완전히 구체적인 버전을 지칭하는 것이 좋습니다.
+terraform {
+  # Require any 1.x version of Terraform
+  required_version = &quot;1.2.3&quot;
+}</code></pre></div>
+<ul>
+<li>프로바이더 버전: 프로바이더 버전 또한 <code class="language-text">require_providers</code> 블록으로 명시합니다.</li>
+</ul>
+<div class="gatsby-highlight" data-language="terraform"><pre class="language-terraform"><code class="language-terraform">terraform {
+  required_version = &quot;&gt;= 1.0.0, &lt; 2.0.0&quot;
+
+  required_providers {
+    aws = {
+      source  = &quot;hashicorp/aws&quot;
+      version = &quot;~&gt; 4.0&quot;
+    }
+  }
+}</code></pre></div>
+<ul>
+<li>모듈 버전: 모듈 자체의 버전 명시를 의미합니다. 이는 테라폼 코드일테니 Semantic version 관리 및 Git의 <code class="language-text">tag</code>를 사용하는 방법이 있겠습니다.</li>
+</ul>
+</li>
+</ul>
+<h3 id="테라폼-모듈-그-외의-것들은-추가예정" style="position:relative;"><a href="#%ED%85%8C%EB%9D%BC%ED%8F%BC-%EB%AA%A8%EB%93%88-%EA%B7%B8-%EC%99%B8%EC%9D%98-%EA%B2%83%EB%93%A4%EC%9D%80-%EC%B6%94%EA%B0%80%EC%98%88%EC%A0%95" aria-label="테라폼 모듈 그 외의 것들은 추가예정 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>테라폼 모듈 그 외의 것들은? (추가예정)</h3>
+<p>아래 사항들이 있습니다:</p>
+<ul>
+<li>Provisioners</li>
+<li>Provisioners with null_resource</li>
+<li>External data source</li>
+</ul>
+<h1 id="lessons-learned" style="position:relative;"><a href="#lessons-learned" aria-label="lessons learned permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Lessons Learned</h1>
+<p>제 8장에서는 아래의 내용을 반드시 기억하셨으면 좋겠습니다.</p>
+<ol>
+<li>DevOps 파트 또한 깊고 어렵고, “삽질”이 많습니다. 쉽지 않은 파트이며 항상 감사히 생각해야겠습니다.</li>
+<li>프로덕션 레벨에서 성공적으로 구동하기 까지는 정말 어렵고 힘든 길임을 이해했습니다.</li>
+<li>테라폼 코드를 프로덕션 레벨에서 사용하는 예시를 통해 <strong>재사용 가능한 모듈</strong> 단위의 사용을 학습했습니다.
+<ol>
+<li>작고, 테스트 가능하고 합성 가능한 모듈을 작성해야 합니다.</li>
+<li>버전을 명시화하여 언제든 동일한 결과를 얻을 수 있어야 합니다.</li>
+</ol>
+</li>
+</ol>
+<p>이것으로 제 8장을 마칩니다. 긴 글 읽어주셔서 감사합니다.</p></div></div></div><div class="Post-module--footer--f8705"><div class="Meta-module--meta--dae0a"><p class="Meta-module--date--4d30d">Published<!-- --> <!-- -->Dec 12, 2022</p></div><div class="Tags-module--tags--18589"><ul class="Tags-module--list--82ae6"><li class="Tags-module--item--52015"><a class="Button-module--button--b1113" href="/tag/terraform/">terraform</a></li><li class="Tags-module--item--52015"><a class="Button-module--button--b1113" href="/tag/iac/">iac</a></li><li class="Tags-module--item--52015"><a class="Button-module--button--b1113" href="/tag/devops/">devops</a></li></ul></div><div class="Author-module--author--1c58d"><p class="Non scholæ sed vitæ discimus.">Non scholæ sed vitæ discimus.</p><p class="Author-module--bio--08950">his/him</p></div></div><div class="Post-module--comments--d3b99"><div></div></div></div></div></div><div id="gatsby-announcer" style="position:absolute;top:0;width:1px;height:1px;padding:0;overflow:hidden;clip:rect(0, 0, 0, 0);white-space:nowrap;border:0" aria-live="assertive" aria-atomic="true"></div></div><script id="gatsby-script-loader">/*<![CDATA[*/window.pagePath="/devlog/terraform/2022-12-12-cloudneta-terraform-101-pt08";window.___webpackCompilationHash="761df58d981e63b90a04";/*]]>*/</script><script id="gatsby-chunk-mapping">/*<![CDATA[*/window.___chunkMapping={"polyfill":["/polyfill-9c96d4b38e022a460e71.js"],"app":["/app-f3f7537d74aae70e60a8.js"],"component---cache-caches-gatsby-plugin-offline-app-shell-js":["/component---cache-caches-gatsby-plugin-offline-app-shell-js-0c915c7b1bdb5eac4fdf.js"],"component---src-templates-categories-template-categories-template-tsx":["/component---src-templates-categories-template-categories-template-tsx-e2d2add397e32e3517ca.js"],"component---src-templates-category-template-category-template-tsx":["/component---src-templates-category-template-category-template-tsx-078f2adfba160a34229f.js"],"component---src-templates-index-template-index-template-tsx":["/component---src-templates-index-template-index-template-tsx-83380c7954c9f6621026.js"],"component---src-templates-not-found-template-not-found-template-tsx":["/component---src-templates-not-found-template-not-found-template-tsx-56fe4d3b015459d56c99.js"],"component---src-templates-page-template-page-template-tsx":["/component---src-templates-page-template-page-template-tsx-c6c21d7369a9356db3a1.js"],"component---src-templates-post-template-post-template-tsx":["/component---src-templates-post-template-post-template-tsx-119cd0258cb38628d01f.js"],"component---src-templates-tag-template-tag-template-tsx":["/component---src-templates-tag-template-tag-template-tsx-8d0b3090e775aa3c4584.js"],"component---src-templates-tags-template-tags-template-tsx":["/component---src-templates-tags-template-tags-template-tsx-30027e87af7d042f3afb.js"]};/*]]>*/</script><script src="/polyfill-9c96d4b38e022a460e71.js" nomodule=""></script><script src="/app-f3f7537d74aae70e60a8.js" async=""></script><script src="/framework-481a1b6416c14416b2fb.js" async=""></script><script src="/webpack-runtime-772fb610478cdd1a8d75.js" async=""></script></body></html>

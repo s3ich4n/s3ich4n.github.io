@@ -1,0 +1,390 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="ie=edge"/><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/><meta name="generator" content="Gatsby 4.24.8"/><meta name="description" content="Terraform을 통해 다양한 프로바이더에 대한 배포, 멀티 계정 활용 등에 대한 기본을 학습해봅시다." data-gatsby-head="true"/><meta name="twitter:card" content="summary_large_image" data-gatsby-head="true"/><meta name="twitter:title" content="[CloudNet@] 테라폼 스터디 9주차 - Working with Multiple Providers - 팔공산 창고" data-gatsby-head="true"/><meta name="twitter:description" content="Terraform을 통해 다양한 프로바이더에 대한 배포, 멀티 계정 활용 등에 대한 기본을 학습해봅시다." data-gatsby-head="true"/><meta name="og:title" content="[CloudNet@] 테라폼 스터디 9주차 - Working with Multiple Providers - 팔공산 창고" data-gatsby-head="true"/><meta name="og:type" content="website" data-gatsby-head="true"/><meta name="og:description" content="Terraform을 통해 다양한 프로바이더에 대한 배포, 멀티 계정 활용 등에 대한 기본을 학습해봅시다." data-gatsby-head="true"/><meta name="image" content="https://blog.s3ich4n.me/static/409d9dd739ee39e19c7e69854258b811/terraform09.jpg" data-gatsby-head="true"/><meta name="og:image" content="https://blog.s3ich4n.me/static/409d9dd739ee39e19c7e69854258b811/terraform09.jpg" data-gatsby-head="true"/><meta name="twitter:image" content="https://blog.s3ich4n.me/static/409d9dd739ee39e19c7e69854258b811/terraform09.jpg" data-gatsby-head="true"/><meta name="theme-color" content="hsl(31, 92%, 62%)"/><style data-href="/styles.3b47e1408077d170b933.css" data-identity="gatsby-global-css">:after,:before,:root{--color-white:#fff;--color-primary:#5c92ff;--color-secondary:#f7a145;--color-prism-background:#eaeaeb;--color-typographic-base-font:#242933;--color-typographic-link-p-font:#5c92ff;--color-typographic-link-s-font:#f7a145;--color-page-border:#eaeaeb;--color-page-background:#fff;--color-sidebar-border:#eaeaeb;--color-sidebar-border-fade:#fff;--color-contacts-border:#eaeaeb;--color-button-border:#eaeaeb;--color-button-color:#242933;--color-theme-switcher:#3f485a;--color-theme-switcher-hover:#5c92ff}.dark :after,.dark :before,:root.dark{--color-white:#fff;--color-primary:#5c92ff;--color-secondary:#f7a145;--color-prism-background:#191d24;--color-typographic-base-font:#fff;--color-typographic-link-p-font:#5c92ff;--color-typographic-link-s-font:#f7a145;--color-page-border:#3f485a;--color-page-background:#242933;--color-sidebar-border:#3f485a;--color-sidebar-border-fade:#242933;--color-contacts-border:#3f485a;--color-button-border:#3f485a;--color-button-color:#fff;--color-theme-switcher:#eaeaeb;--color-theme-switcher-hover:#5c92ff}html{font-size:100}body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;background:var(--color-page-background);color:var(--color-typographic-base-font);font-size:16px;line-height:1.625;margin:0 0 0 calc(100vw - 100%);text-rendering:optimizelegibility}body,h1,h2,h3,h4,h5,h6{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif}h1,h2,h3,h4,h5,h6{font-weight:600}h1{font-size:40px;line-height:52px;margin-bottom:26px;margin-top:104px}h2{font-size:27px;line-height:39px}h2,h3{margin-bottom:13px;margin-top:52px}h3{font-size:22px;line-height:26px}h4{font-size:19.2px;margin-top:39px}h4,h5{line-height:26px;margin-bottom:13px}h5,h6{font-size:16px;margin-top:65px}h6{line-height:26px;margin-bottom:13px}img{max-width:100%}hr,img{border:0;display:block}hr{background-image:linear-gradient(180deg,transparent 1px,transparent 11px,#242933 0,#242933 15px,transparent 0,transparent 26px);background-size:100% 26px;color:var(--color-typographic-base-font);height:26px;margin:52px auto;width:100px}a{color:var(--color-typographic-link-p-font);text-decoration:none}a:active,a:focus,a:hover{color:var(--color-typographic-link-s-font)}b,strong{font-weight:600}ul{list-style:square;margin-bottom:26px}ul li{margin-bottom:10px;padding:0 5px}p{line-height:26px;margin-bottom:26px}blockquote{font-style:italic;padding:0;text-align:center}figure{display:block;height:auto;width:100%}figcaption{color:var(--color-typographic-base-font);font-size:14px;font-style:italic;line-height:19.5px;margin-bottom:0;margin-top:6.5px;text-align:center}@media screen and (min-width:685px){figure.float-left,figure.float-right{max-width:310px;padding:0 26px}.float-right{float:right}.float-left{float:left}}code[class*=language-],pre[class*=language-]{word-wrap:normal;color:#657b83;font-family:Consolas,Monaco,Andale Mono,Ubuntu Mono,monospace;font-size:1em;-webkit-hyphens:none;hyphens:none;line-height:1.5;-o-tab-size:4;tab-size:4;text-align:left;white-space:pre;word-break:normal;word-spacing:normal}pre[class*=language-]{border-radius:.3em;margin:.5em 0;overflow:auto;padding:1em}:not(pre)>code[class*=language-],pre[class*=language-]{background-color:var(--color-prism-background)}:not(pre)>code[class*=language-]{border-radius:.3em;padding:.1em}code[class*=language-] ::selection,code[class*=language-]::selection,pre[class*=language-] ::selection,pre[class*=language-]::selection{background:#073642}.token.cdata,.token.comment,.token.doctype,.token.prolog{color:#93a1a1}.token.punctuation{color:#586e75}.namespace{opacity:.7}.token.boolean,.token.constant,.token.deleted,.token.number,.token.property,.token.symbol,.token.tag{color:#268bd2}.token.attr-name,.token.builtin,.token.char,.token.inserted,.token.selector,.token.string,.token.url{color:#2aa198}.token.entity{background:#eee8d5;color:#657b83;cursor:help}.token.atrule,.token.attr-value,.token.keyword{color:#859900}.token.class-name,.token.function{color:#b58900}.token.important,.token.regex,.token.variable{color:#cb4b16}.token.bold,.token.important{font-weight:700}.token.italic{font-style:italic}.Feed-module--feed--a6204 .Feed-module--item--c7a63{margin-bottom:32.5px}.Feed-module--feed--a6204 .Feed-module--item--c7a63:last-child{margin-bottom:13px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f{font-size:27px;line-height:39px;margin-bottom:13px;margin-top:0}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f .Feed-module--link--6123b{color:var(--color-typographic-base-font)}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f .Feed-module--link--6123b:focus,.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f .Feed-module--link--6123b:hover{border-bottom:1px solid #242933;color:var(--color-typographic-base-font)}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--description--57348{font-size:16px;line-height:26px;margin-bottom:19.5px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--time--72864{color:var(--color-typographic-base-font);font-size:14px;font-weight:600;text-transform:uppercase}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--divider--81a18{margin:0 13px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--category--59f58 .Feed-module--link--6123b{color:var(--color-secondary);font-size:14px;font-weight:600;text-transform:uppercase}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--category--59f58 .Feed-module--link--6123b:focus,.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--category--59f58 .Feed-module--link--6123b:hover{color:#5c92ff}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--more--51a4e{color:var(--color-primary);font-size:16px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--more--51a4e:focus,.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--more--51a4e:hover{border-bottom:1px solid #5c92ff;color:var(--color-primary)}.Layout-module--layout--2c933{margin-left:auto;margin-right:auto;max-width:1070px}.Layout-module--layout--2c933:before{content:"";display:table}.Layout-module--layout--2c933:after{clear:both;content:"";display:table}.Page-module--page--24e03{margin-bottom:52px}.Page-module--page--24e03 .Page-module--inner--4b31d{padding:26px 19.5px 0}.Page-module--page--24e03 .Page-module--title--90338{font-size:40px;font-weight:600;line-height:52px;margin-bottom:37.7px;margin-top:0}.Page-module--page--24e03 .Page-module--body--561c4{font-size:16px;line-height:26px;margin:0 0 26px}@media screen and (min-width:685px){.Page-module--page--24e03{width:calc(58.275% - 12.5px)}.Page-module--page--24e03:nth-child(1n){clear:none;float:left;margin-right:30px}.Page-module--page--24e03:last-child{margin-right:0}.Page-module--page--24e03:nth-child(12n){float:right;margin-right:0}.Page-module--page--24e03:nth-child(12n+1){clear:both}.Page-module--page--24e03 .Page-module--inner--4b31d{padding:32.5px 19.5px 0}}@media screen and (min-width:960px){.Page-module--page--24e03{width:calc(66.6% - 10px)}.Page-module--page--24e03:nth-child(1n){clear:none;float:left;margin-right:30px}.Page-module--page--24e03:last-child{margin-right:0}.Page-module--page--24e03:nth-child(3n){float:right;margin-right:0}.Page-module--page--24e03:nth-child(3n+1){clear:both}.Page-module--page--24e03 .Page-module--inner--4b31d{padding:39px 26px 0}}.Pagination-module--pagination--d61cb{display:flex;margin-top:52px}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b{text-align:left;width:50%}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d{color:var(--color-secondary);font-size:26px;font-weight:700}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d:focus,.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d:hover{color:var(--color-primary)}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d.Pagination-module--disable--7e105{color:#3f485a;pointer-events:none}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8{text-align:right;width:50%}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff{color:var(--color-secondary);font-size:26px;font-weight:700}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff:focus,.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff:hover{color:var(--color-primary)}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff.Pagination-module--disable--7e105{color:#3f485a;pointer-events:none}.Button-module--button--b1113{border:1px solid var(--color-button-border);border-radius:20px;color:var(--color-button-color);display:inline-block;font-size:16px;font-weight:400;height:40px;line-height:40px;margin-left:auto;margin-right:auto;padding:0 26px;text-align:center;text-decoration:none}.Button-module--button--b1113:focus,.Button-module--button--b1113:hover{color:#5c92ff}.ThemeSwitcher-module--themeSwitcher--8a77f{--color:var(--color-theme-switcher)}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--button--7cb7b{align-items:center;background:transparent;border:0;cursor:pointer;display:flex;justify-content:center;outline:0}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--button--7cb7b svg{stroke:var(--color);pointer-events:none;transition:stroke .4s}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--button--7cb7b:hover{--color:var(--color-theme-switcher-hover)}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--moon--10537{stroke-dasharray:0 1px;opacity:0;transition:stroke-dasharray .2s ease-in,opacity .4s ease-in}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--sun--2163a{stroke-dasharray:1px 1px;opacity:1;transition:stroke-dasharray .2s ease-in,opacity .4s ease-in}.ThemeSwitcher-module--themeSwitcher--8a77f.ThemeSwitcher-module--dark--6db0c .ThemeSwitcher-module--moon--10537{stroke-dasharray:1px 1px;opacity:1}.ThemeSwitcher-module--themeSwitcher--8a77f.ThemeSwitcher-module--dark--6db0c .ThemeSwitcher-module--sun--2163a{stroke-dasharray:0 1px;opacity:0}.Author-module--author--cbd31 .Author-module--photo--9787b{background-clip:padding-box;border-radius:50%;display:inline-block;height:75px;margin-bottom:0;width:75px}.Author-module--author--cbd31 .Author-module--photo--9787b img{border-radius:50%}.Author-module--author--cbd31 .Author-module--title--cf7e5{font-size:18px;font-weight:600;line-height:29.25px;margin:0}.Author-module--author--cbd31 .Author-module--title--cf7e5 .Author-module--link--09c17,.Author-module--author--cbd31 .Author-module--title--cf7e5 .Author-module--link--09c17:focus,.Author-module--author--cbd31 .Author-module--title--cf7e5 .Author-module--link--09c17:hover{color:var(--color-typographic-base-font)}.Author-module--author--cbd31 .Author-module--bio--8168d,.Author-module--author--cbd31 .Author-module--subtitle--86ec5{color:#7f8ba4;line-height:26px;margin-bottom:26px}.Author-module--author--cbd31 .Author-module--titleContainer--4f576{align-items:center;display:flex;justify-content:space-between;margin:13px 0}.Categories-module--categories--f3389{color:#7f8ba4;font-size:14px}.Icon-module--icon--1d7da{fill:currentcolor;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;speak:none;stroke:currentcolor;stroke-width:0;display:inline-block;font-style:normal;font-variant:normal;font-weight:400;height:1em;line-height:1em;text-align:center;text-transform:none;width:1em}.Contacts-module--contacts--09178{margin-bottom:26px}.Contacts-module--contacts--09178 .Contacts-module--list--9670b{display:flex;flex-flow:row wrap;flex-grow:0;flex-shrink:0;list-style:none;margin:13px 0;max-width:165px;padding:0}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0{align-content:center;align-items:center;border:1px solid var(--color-contacts-border);border-radius:50%;display:flex;height:40px;justify-content:center;line-height:40px;margin:6.5px;padding:0;text-align:center;width:40px}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0:nth-child(3n+1){margin-left:0}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0 .Contacts-module--link--de1e0{border:0;color:var(--color-typographic-base-font);display:flex}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0 .Contacts-module--link--de1e0:focus,.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0 .Contacts-module--link--de1e0:hover{color:var(--color-typographic-link-p-font)}.Copyright-module--copyright--2c602{color:#7f8ba4;font-size:14px}.Menu-module--menu--113a9{margin-bottom:26px}.Menu-module--menu--113a9 .Menu-module--list--e1ae3{list-style:none;margin:0;padding:0}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679{margin:13px 0;padding:0}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02{border:0;color:var(--color-typographic-base-font);font-size:16px;font-weight:400}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02:focus,.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02:hover{border-bottom:1px solid #5c92ff;color:#5c92ff}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02.Menu-module--active--6cb74{border-bottom:1px solid var(--color-typographic-base-font);color:var(--color-typographic-base-font)}.Tags-module--tags--28a57{color:#7f8ba4;font-size:14px}.Sidebar-module--sidebar--1bfa1{width:100%}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0{padding:26px 19.5px 0;position:relative}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0:after{background:var(--color-sidebar-border);background:linear-gradient(to bottom,var(--color-sidebar-border) 0,var(--color-sidebar-border) 48%,var(--color-sidebar-border-fade) 100%)}@media screen and (min-width:685px){.Sidebar-module--sidebar--1bfa1{width:calc(41.625% - 17.5px)}.Sidebar-module--sidebar--1bfa1:nth-child(1n){clear:none;float:left;margin-right:30px}.Sidebar-module--sidebar--1bfa1:last-child{margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(12n){float:right;margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(12n+1){clear:both}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0{padding:32.5px 19.5px 0}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0:after{bottom:0;content:"";height:540px;position:absolute;right:-10px;top:30px;width:1px}}@media screen and (min-width:960px){.Sidebar-module--sidebar--1bfa1{width:calc(33.3% - 20px)}.Sidebar-module--sidebar--1bfa1:nth-child(1n){clear:none;float:left;margin-right:30px}.Sidebar-module--sidebar--1bfa1:last-child{margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(3n){float:right;margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(3n+1){clear:both}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0{padding:39px}}.Author-module--author--1c58d{border-top:1px solid var(--color-page-border);line-height:26px;margin-bottom:52px;margin-top:26px;max-width:640px;padding-top:26px}.Author-module--author--1c58d .Author-module--bio--08950 .Author-module--twitter--90647{display:block;text-decoration:underline}.Author-module--author--1c58d .Author-module--bio--08950 .Author-module--twitter--90647:focus,.Author-module--author--1c58d .Author-module--bio--08950 .Author-module--twitter--90647:hover{color:var(--color-typographic-link-s-font)}@media screen and (min-width:685px){.Author-module--author--1c58d{margin-left:auto;margin-right:auto}}.Content-module--content--80d58{margin:0 auto;max-width:945px;padding:0 13px}.Content-module--content--80d58 .Content-module--title--09504{font-size:32px;font-weight:600;line-height:42.9px;margin:26px auto 0;max-width:640px;text-align:center}.Content-module--content--80d58 .Content-module--body--726c2 figure{margin-bottom:26px}.Content-module--content--80d58 .Content-module--body--726c2 figure blockquote{font-style:italic;margin-top:0;padding:26px 0;text-align:center}.Content-module--content--80d58 .Content-module--body--726c2 figure blockquote p{font-size:26.9072px;line-height:39px;margin-bottom:26px;margin-top:0;max-width:640px}.Content-module--content--80d58 .Content-module--body--726c2 a{text-decoration:underline}.Content-module--content--80d58 .Content-module--body--726c2 *{margin-left:auto;margin-right:auto;max-width:640px}.Content-module--content--80d58 .Content-module--body--726c2 h2>a{visibility:hidden}.Content-module--content--80d58 .Content-module--body--726c2 h2>a>svg{fill:var(--color-typographic-base-font)}.Content-module--content--80d58 .Content-module--body--726c2 img{max-width:100%}@media screen and (min-width:960px){.Content-module--content--80d58{padding:0}.Content-module--content--80d58 .Content-module--title--09504{font-size:48px;line-height:58.5px;margin-bottom:39px;margin-top:58.5px}.Content-module--content--80d58 .Content-module--body--726c2,.Content-module--content--80d58 .Content-module--body--726c2 p{font-size:18px;line-height:29.25px;margin-bottom:29.25px}.Content-module--content--80d58 .Content-module--body--726c2 h2>a{padding-right:13px;visibility:unset}}.Meta-module--meta--dae0a .Meta-module--date--4d30d{font-style:italic}.Tags-module--tags--18589{margin-bottom:13px}.Tags-module--tags--18589 .Tags-module--list--82ae6{list-style:none;padding:0}.Tags-module--tags--18589 .Tags-module--list--82ae6 .Tags-module--item--52015{display:inline-block;margin:6.5px 0}@media screen and (min-width:685px){.Tags-module--tags--18589 .Tags-module--list--82ae6 .Tags-module--item--52015:first-child{margin-left:0;padding-left:0}}.Post-module--post--3a994 .Post-module--content--3c6e5{margin:0 auto}.Post-module--post--3a994 .Post-module--comments--d3b99,.Post-module--post--3a994 .Post-module--footer--f8705{margin:0 auto;max-width:640px;padding:0 13px}.Post-module--post--3a994 .Post-module--buttons--2972d{align-items:center;display:flex;justify-content:center;margin:26px 0 0;text-align:center}.Post-module--post--3a994 .Post-module--buttons--2972d .Post-module--buttonArticles--d793a{margin:0 13px 0 0}@media screen and (min-width:960px){.Post-module--post--3a994 .Post-module--comments--d3b99,.Post-module--post--3a994 .Post-module--footer--f8705{padding:0}.Post-module--post--3a994 .Post-module--buttons--2972d{left:30px;margin:0 13px 0 0;max-width:none;position:fixed;top:30px}}</style><title data-gatsby-head="true">[CloudNet@] 테라폼 스터디 9주차 - Working with Multiple Providers - 팔공산 창고</title><link rel="alternate" type="application/rss+xml" title="팔공산 창고" href="/rss.xml"/><style type="text/css">
+    .anchor.before {
+      position: absolute;
+      top: 0;
+      left: 0;
+      transform: translateX(-100%);
+      padding-right: 4px;
+    }
+    .anchor.after {
+      display: inline-block;
+      padding-left: 4px;
+    }
+    h1 .anchor svg,
+    h2 .anchor svg,
+    h3 .anchor svg,
+    h4 .anchor svg,
+    h5 .anchor svg,
+    h6 .anchor svg {
+      visibility: hidden;
+    }
+    h1:hover .anchor svg,
+    h2:hover .anchor svg,
+    h3:hover .anchor svg,
+    h4:hover .anchor svg,
+    h5:hover .anchor svg,
+    h6:hover .anchor svg,
+    h1 .anchor:focus svg,
+    h2 .anchor:focus svg,
+    h3 .anchor:focus svg,
+    h4 .anchor:focus svg,
+    h5 .anchor:focus svg,
+    h6 .anchor:focus svg {
+      visibility: visible;
+    }
+  </style><script>
+    document.addEventListener("DOMContentLoaded", function(event) {
+      var hash = window.decodeURI(location.hash.replace('#', ''))
+      if (hash !== '') {
+        var element = document.getElementById(hash)
+        if (element) {
+          var scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+          var clientTop = document.documentElement.clientTop || document.body.clientTop || 0
+          var offset = element.getBoundingClientRect().top + scrollTop - clientTop
+          // Wait for the browser to finish rendering before scrolling.
+          setTimeout((function() {
+            window.scrollTo(0, offset - 0)
+          }), 0)
+        }
+      }
+    })
+  </script><link rel="preconnect" href="https://www.googletagmanager.com"/><link rel="dns-prefetch" href="https://www.googletagmanager.com"/><script async="" src="https://www.googletagmanager.com/gtag/js?id="></script><script>
+      
+      
+      if(true) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){window.dataLayer && window.dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', '', {"send_page_view":false});
+      }
+      </script><link rel="sitemap" type="application/xml" href="/sitemap/sitemap-index.xml"/><link rel="icon" href="/favicon-32x32.png?v=4c2c993a06ee0fd0ee953020b09128a9" type="image/png"/><link rel="manifest" href="/manifest.webmanifest" crossorigin="anonymous"/><link rel="apple-touch-icon" sizes="48x48" href="/icons/icon-48x48.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="72x72" href="/icons/icon-72x72.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="96x96" href="/icons/icon-96x96.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="144x144" href="/icons/icon-144x144.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192x192.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="256x256" href="/icons/icon-256x256.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="384x384" href="/icons/icon-384x384.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="512x512" href="/icons/icon-512x512.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><style>.gatsby-image-wrapper{position:relative;overflow:hidden}.gatsby-image-wrapper picture.object-fit-polyfill{position:static!important}.gatsby-image-wrapper img{bottom:0;height:100%;left:0;margin:0;max-width:none;padding:0;position:absolute;right:0;top:0;width:100%;object-fit:cover}.gatsby-image-wrapper [data-main-image]{opacity:0;transform:translateZ(0);transition:opacity .25s linear;will-change:opacity}.gatsby-image-wrapper-constrained{display:inline-block;vertical-align:top}</style><noscript><style>.gatsby-image-wrapper noscript [data-main-image]{opacity:1!important}.gatsby-image-wrapper [data-placeholder-image]{opacity:0!important}</style></noscript><script type="module">const e="undefined"!=typeof HTMLImageElement&&"loading"in HTMLImageElement.prototype;e&&document.body.addEventListener("load",(function(e){const t=e.target;if(void 0===t.dataset.mainImage)return;if(void 0===t.dataset.gatsbyImageSsr)return;let a=null,n=t;for(;null===a&&n;)void 0!==n.parentNode.dataset.gatsbyImageWrapper&&(a=n.parentNode),n=n.parentNode;const o=a.querySelector("[data-placeholder-image]"),r=new Image;r.src=t.currentSrc,r.decode().catch((()=>{})).then((()=>{t.style.opacity=1,o&&(o.style.opacity=0,o.style.transition="opacity 500ms linear")}))}),!0);</script></head><body><script>
+          void function() {
+            var cachedMode;
+
+            try {
+              var preferredTheme = JSON.parse(localStorage.getItem('diesel:theme-atom'));
+
+              if (preferredTheme && preferredTheme.mode) {
+                cachedMode = preferredTheme.mode;
+              }
+            } catch (err) { }
+
+            function setTheme(newTheme) {
+              document.documentElement.className = newTheme;
+            }
+
+            var darkQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+            setTheme(cachedMode || (darkQuery.matches ? 'dark' : 'light'));
+          }()
+        </script><div id="___gatsby"><div style="outline:none" tabindex="-1" id="gatsby-focus-wrapper"><div class="Layout-module--layout--2c933"><div class="Post-module--post--3a994"><div class="Post-module--buttons--2972d"><a class="Button-module--button--b1113 Post-module--buttonArticles--d793a" href="/">All Articles</a></div><div class="Post-module--content--3c6e5"><div class="Content-module--content--80d58"><h1 class="Content-module--title--09504">[CloudNet@] 테라폼 스터디 9주차 - Working with Multiple Providers</h1><div class="Content-module--body--726c2"><p>이 내용은 CloudNet@ 에서 진행하는 테라폼 기초 입문 스터디에 대한 연재글입니다.</p>
+<p>스터디에서 사용하는 교재는 <a href="http://www.yes24.com/Product/Goods/101511312" target="_blank" rel="nofollow noopener noreferrer">Terraform Up &#x26; Running 2nd Edition</a> 입니다.</p>
+<hr>
+<h1 id="prerequisites" style="position:relative;"><a href="#prerequisites" aria-label="prerequisites permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Prerequisites</h1>
+<ul>
+<li>테라폼을 처음 배우면서 함께 살펴봐도 좋을 듯 합니다</li>
+<li>하지만, 제 8장을 이해하고 오신다면 보다 더 낫겠습니다.</li>
+</ul>
+<h1 id="본문" style="position:relative;"><a href="#%EB%B3%B8%EB%AC%B8" aria-label="본문 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>본문</h1>
+<p>현재까지의 테라폼 코드는 모두 이 코드가 들어가 있었습니다.</p>
+<div class="gatsby-highlight" data-language="text"><pre class="language-text"><code class="language-text">provider "aws" {
+  region = "us-east-2"
+}</code></pre></div>
+<p>그렇지만, 필요에 따라 MS Azure나 GCP를 사용한다면 어떻게 해야할까요? 다른 리전이나 여러 리전을 선택할 수는 있을까요? 혹은 계정별로 권한을 분리하여 작업하려면 어떻게 해야할까요? 프로바이더 블록에 대해 다시 한번 살펴봅시다.</p>
+<h2 id="provider-deep-dive" style="position:relative;"><a href="#provider-deep-dive" aria-label="provider deep dive permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Provider deep-dive</h2>
+<p>프로바이더를 알기 전, 테라폼 코어와 프로바이더에 대해 간략히 살펴봅시다.</p>
+<ul>
+<li>
+<p>core</p>
+<ul>
+<li>테라폼 바이너리입니다.</li>
+<li>모든 플랫폼에서 사용되는 테라폼의 모든 기본 기능을 제공합니다.</li>
+<li>명령줄 인터페이스(예: 계획, 적용 등), Terraform 코드(HCL)용 파서 및 해석기, 리소스 및 데이터 소스에서 종속성 그래프를 작성하는 기능, 상태 파일을 읽고 쓰는 논리 등입니다.</li>
+<li>내부적인 코드는 Go로 작성되었으며 HashiCorp에서 관리하는 GitHub 저장소에 있습니다. (오픈소스입니다!)</li>
+</ul>
+</li>
+<li>
+<p>provider</p>
+<ul>
+<li>테라폼 코어를 위한 플러그인입니다.</li>
+<li>각 플러그인은 AWS, Azure, GCP 등 외부 플랫폼과 통신합니다. 초기에는 HashiCorp 측에서 프로바이더를 만들었지만, 지금은 메인 프로바이더의 경우 각 회사에서 직접 프로바이더를 관리합니다.</li>
+<li>각 프로바이더는 특정 접두사를 할당하고, 해당 접두사를 포함하는 하나 이상의 리소스 및 데이터 소스를 표현합니다.
+<ul>
+<li>E.g., <code class="language-text">aws_</code> prefix: <code class="language-text">aws_instance</code>, <code class="language-text">aws_autoscaling_group</code>, <code class="language-text">aws_ami</code></li>
+<li>E.g., <code class="language-text">azurerm_</code> prefix: <code class="language-text">azurerm_virtual_machine</code>, <code class="language-text">azurerm_virtual_machine_scale_set</code>, <code class="language-text">azurerm_image</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>Terraform 코어는 RPC(원격 프로시저 호출)를 통해 플러그인과 통신하며 해당 플러그인은 차례로 아래 그림과 같이 네트워크를 통해(예: HTTP 호출을 통해) 해당 플랫폼과 통신합니다.</p>
+</li>
+</ul>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 960px; "
+    >
+      <a
+    class="gatsby-resp-image-link"
+    href="/static/c561771300765fd3d3253fbb88a9f75e/9ecec/09_001.jpg"
+    style="display: block"
+    target="_blank"
+    rel="noopener"
+  >
+    <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 52.5%; position: relative; bottom: 0; left: 0; background-image: url('data:image/jpeg;base64,/9j/2wBDABALDA4MChAODQ4SERATGCgaGBYWGDEjJR0oOjM9PDkzODdASFxOQERXRTc4UG1RV19iZ2hnPk1xeXBkeFxlZ2P/2wBDARESEhgVGC8aGi9jQjhCY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2P/wgARCAALABQDASIAAhEBAxEB/8QAFwABAQEBAAAAAAAAAAAAAAAAAgAEBf/EABUBAQEAAAAAAAAAAAAAAAAAAAEA/9oADAMBAAIQAxAAAAHsHSAEqf/EABgQAQEBAQEAAAAAAAAAAAAAAAECEhEA/9oACAEBAAEFAtuSmpjvPIZiQn//xAAUEQEAAAAAAAAAAAAAAAAAAAAQ/9oACAEDAQE/AT//xAAVEQEBAAAAAAAAAAAAAAAAAAABEP/aAAgBAgEBPwFn/8QAGhAAAgIDAAAAAAAAAAAAAAAAAAEQERIhMv/aAAgBAQAGPwJvGh6OWoqP/8QAGhABAAMBAQEAAAAAAAAAAAAAAQARIUEQUf/aAAgBAQABPyFtjr9SOdlOCRrejr5aUyYAn//aAAwDAQACAAMAAAAQPw//xAAYEQACAwAAAAAAAAAAAAAAAAAAAREhMf/aAAgBAwEBPxC0S3p//8QAGBEBAQEBAQAAAAAAAAAAAAAAAREAIbH/2gAIAQIBAT8QAtnuADhN/8QAGxABAAMBAAMAAAAAAAAAAAAAAQARITFBUWH/2gAIAQEAAT8QtujZ0R24wvHnqMVu2Gr9iCIxXiHBSFiq23V2f//Z'); background-size: cover; display: block;"
+  ></span>
+  <picture>
+          <source
+              srcset="/static/c561771300765fd3d3253fbb88a9f75e/8ac56/09_001.webp 240w,
+/static/c561771300765fd3d3253fbb88a9f75e/d3be9/09_001.webp 480w,
+/static/c561771300765fd3d3253fbb88a9f75e/e46b2/09_001.webp 960w,
+/static/c561771300765fd3d3253fbb88a9f75e/c139f/09_001.webp 1050w"
+              sizes="(max-width: 960px) 100vw, 960px"
+              type="image/webp"
+            />
+          <source
+            srcset="/static/c561771300765fd3d3253fbb88a9f75e/09b79/09_001.jpg 240w,
+/static/c561771300765fd3d3253fbb88a9f75e/7cc5e/09_001.jpg 480w,
+/static/c561771300765fd3d3253fbb88a9f75e/6a068/09_001.jpg 960w,
+/static/c561771300765fd3d3253fbb88a9f75e/9ecec/09_001.jpg 1050w"
+            sizes="(max-width: 960px) 100vw, 960px"
+            type="image/jpeg"
+          />
+          <img
+            class="gatsby-resp-image-image"
+            src="/static/c561771300765fd3d3253fbb88a9f75e/6a068/09_001.jpg"
+            alt="09_001"
+            title="09_001"
+            loading="lazy"
+            decoding="async"
+            style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+          />
+        </picture>
+  </a>
+    </span></p>
+<h2 id="단독-프로바이더-사용방안" style="position:relative;"><a href="#%EB%8B%A8%EB%8F%85-%ED%94%84%EB%A1%9C%EB%B0%94%EC%9D%B4%EB%8D%94-%EC%82%AC%EC%9A%A9%EB%B0%A9%EC%95%88" aria-label="단독 프로바이더 사용방안 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>단독 프로바이더 사용방안</h2>
+<p>단독 프로바이더를 통해 작업하는 방안에 대해 살펴보겠습니다. 기존까지 사용하던 프로바이더를 정확히 알아봅시다.</p>
+<p>프로바이더를 선언하고 <code class="language-text">terraform init</code> 을 하면, 프로바이더 코드를 자동으로 다운로드 받습니다.</p>
+<p>이런 코드에 대해 만들고</p>
+<div class="gatsby-highlight" data-language="terraform"><pre class="language-terraform"><code class="language-terraform">provider &quot;aws&quot; {
+  region = &quot;us-east-2&quot;
+}</code></pre></div>
+<p>…이어서 <code class="language-text">terraform init</code>을 하면, 이런 식이지요.</p>
+<div class="gatsby-highlight" data-language="bash"><pre class="language-bash"><code class="language-bash">terraform init
+
+Initializing provider plugins<span class="token punctuation">..</span>.
+- Finding hashicorp/aws versions matching <span class="token string">"4.19.0"</span><span class="token punctuation">..</span>.
+- Installing hashicorp/aws v4.19.0<span class="token punctuation">..</span>.
+- Installed hashicorp/aws v4.19.0 <span class="token punctuation">(</span>signed by HashiCorp<span class="token punctuation">)</span>
+<span class="token punctuation">..</span>.</code></pre></div>
+<p>프로바이더를 보다 상세하게 설정하고싶다면 어떻게 해야할까요?</p>
+<div class="gatsby-highlight" data-language="terraform"><pre class="language-terraform"><code class="language-terraform">terraform {
+  required_providers {
+    &lt;LOCAL_NAME&gt; = {
+      source  = &quot;&lt;URL&gt;&quot;
+      version = &quot;&lt;VERSION&gt;&quot;
+    }
+  }
+}</code></pre></div>
+<p>지난 장에서 살펴보았던 <code class="language-text">require_providers</code> 블록을 사용합니다. 보다 자세하게 살펴보죠.</p>
+<ul>
+<li><code class="language-text">&lt;LOCAL_NAME></code> : provider 가 사용할 local name 이며, 각 provider 에서 유일한 이름이여야 합니다. 드문 경우 지만 만약 두 프로바이더가 http 경로를 중복 사용 시, 로컬 이름으로 구별 할 수 있습니다.</li>
+<li><code class="language-text">&lt;URL></code> : 해당 provider 다운로드 URL 이며, 형식은 <code class="language-text">[&lt;HOSTNAME>/]&lt;NAMESPACE>/&lt;TYPE></code> 입니다.
+<ul>
+<li><code class="language-text">HOSTNAME</code>: 프로바이더를 배포하는 테라폼 레지스트리의 호스트 이름입니다. 생략 시 테라폼 공개 레지스트리를 가리킵니다.</li>
+<li><code class="language-text">NAMESPACE</code>: 조직 네임스페이스 입니다(일반적으로 회사 이름).</li>
+<li><code class="language-text">TYPE</code>: 프로바이더가 관리하는 플랫폼의 이름입니다(일반적으로 TYPE는 기본 로컬 이름).
+<ul>
+<li>E.g.,
+<ul>
+<li>aws 프로바이더 전체 URL) <strong>registry.terraform.io/hashicorp/aws</strong> → 생략 표현이 가능합니다! <strong>hashicorp/aws</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><code class="language-text">&lt;VERSION></code>: 버전 조건입니다. 예를 들어 <code class="language-text">4.19.0</code> 처럼 특정 버전을 지정하거나, <code class="language-text">> 4.0 , &lt; 4.3</code> 처럼 버전 범위를 지정할 수 있습니다.</li>
+</ul>
+<p>아래 코드는 AWS 4.x 프로바이더 버전 설치를 지정하는 코드의 예시입니다.</p>
+<div class="gatsby-highlight" data-language="text"><pre class="language-text"><code class="language-text">terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 4.0"
+    }
+  }
+}</code></pre></div>
+<p>이제야 각종 오픈소스들에서 이렇게 쓰는 이유를 알겠군요. 프로바이더 블록만 단독으로 쓰기보다는, 이 편이 더 좋은 듯 합니다.</p>
+<div class="gatsby-highlight" data-language="terraform"><pre class="language-terraform"><code class="language-terraform">terraform {
+  required_providers {
+    aws = {
+      source  = &quot;hashicorp/aws&quot;
+      version = &quot;~&gt; 4.0&quot;
+    }
+  }
+}</code></pre></div>
+<h2 id="동일-프로바이더에서-여러-복사본을-사용하는-방안" style="position:relative;"><a href="#%EB%8F%99%EC%9D%BC-%ED%94%84%EB%A1%9C%EB%B0%94%EC%9D%B4%EB%8D%94%EC%97%90%EC%84%9C-%EC%97%AC%EB%9F%AC-%EB%B3%B5%EC%82%AC%EB%B3%B8%EC%9D%84-%EC%82%AC%EC%9A%A9%ED%95%98%EB%8A%94-%EB%B0%A9%EC%95%88" aria-label="동일 프로바이더에서 여러 복사본을 사용하는 방안 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>동일 프로바이더에서 여러 복사본을 사용하는 방안</h2>
+<p>동일 프로바이더에서 여러 리전을 작업하거나, 여러 계정을 통해 작업하는 방안에 대해 살펴봅시다.</p>
+<h3 id="여러-aws-리전에-대해-작업하는-방안" style="position:relative;"><a href="#%EC%97%AC%EB%9F%AC-aws-%EB%A6%AC%EC%A0%84%EC%97%90-%EB%8C%80%ED%95%B4-%EC%9E%91%EC%97%85%ED%95%98%EB%8A%94-%EB%B0%A9%EC%95%88" aria-label="여러 aws 리전에 대해 작업하는 방안 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>여러 AWS 리전에 대해 작업하는 방안</h3>
+<p><code class="language-text">chapter09/examples01</code>의 파일들을 살펴보고, 각 세부문단 별로 명령을 내려 결과를 살펴봅시다.</p>
+<h4 id="멀티리전-배포-1-테스트" style="position:relative;"><a href="#%EB%A9%80%ED%8B%B0%EB%A6%AC%EC%A0%84-%EB%B0%B0%ED%8F%AC-1-%ED%85%8C%EC%8A%A4%ED%8A%B8" aria-label="멀티리전 배포 1 테스트 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>멀티리전 배포 (1), 테스트</h4>
+<div class="gatsby-highlight" data-language="bash"><pre class="language-bash"><code class="language-bash"><span class="token builtin class-name">cd</span> chapter09/examples01/01_multi_region
+
+<span class="token comment"># init &amp; plan &amp; apply</span>
+tfenv use <span class="token number">1.2</span>.3
+terraform init
+terraform plan <span class="token operator">&amp;</span> terraform apply -auto-approve
+Outputs:
+region_1 <span class="token operator">=</span> <span class="token string">"us-east-2"</span>
+region_2 <span class="token operator">=</span> <span class="token string">"us-west-1"</span></code></pre></div>
+<h4 id="멀티리전-배포-2-ec2-배포-관련" style="position:relative;"><a href="#%EB%A9%80%ED%8B%B0%EB%A6%AC%EC%A0%84-%EB%B0%B0%ED%8F%AC-2-ec2-%EB%B0%B0%ED%8F%AC-%EA%B4%80%EB%A0%A8" aria-label="멀티리전 배포 2 ec2 배포 관련 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>멀티리전 배포 (2), EC2 배포 관련</h4>
+<div class="gatsby-highlight" data-language="bash"><pre class="language-bash"><code class="language-bash"><span class="token comment"># [터미널1] us-east-2</span>
+<span class="token keyword">while</span> <span class="token boolean">true</span><span class="token punctuation">;</span> <span class="token keyword">do</span> aws ec2 describe-instances <span class="token parameter variable">--region</span> us-east-2 <span class="token parameter variable">--query</span> <span class="token string">"Reservations[*].Instances[*].{PublicIPAdd:PublicIpAddress,InstanceName:Tags[?Key=='Name']|[0].Value,Status:State.Name}"</span> <span class="token parameter variable">--filters</span> <span class="token assign-left variable">Name</span><span class="token operator">=</span>instance-state-name,Values<span class="token operator">=</span>running <span class="token parameter variable">--output</span> text <span class="token punctuation">;</span> <span class="token builtin class-name">echo</span> <span class="token string">"------------------------------"</span> <span class="token punctuation">;</span> <span class="token function">sleep</span> <span class="token number">1</span><span class="token punctuation">;</span> <span class="token keyword">done</span>
+
+<span class="token comment"># [터미널2] us-west-1</span>
+<span class="token keyword">while</span> <span class="token boolean">true</span><span class="token punctuation">;</span> <span class="token keyword">do</span> aws ec2 describe-instances <span class="token parameter variable">--region</span> us-west-1  <span class="token parameter variable">--query</span> <span class="token string">"Reservations[*].Instances[*].{PublicIPAdd:PublicIpAddress,InstanceName:Tags[?Key=='Name']|[0].Value,Status:State.Name}"</span> <span class="token parameter variable">--filters</span> <span class="token assign-left variable">Name</span><span class="token operator">=</span>instance-state-name,Values<span class="token operator">=</span>running <span class="token parameter variable">--output</span> text <span class="token punctuation">;</span> <span class="token builtin class-name">echo</span> <span class="token string">"------------------------------"</span> <span class="token punctuation">;</span> <span class="token function">sleep</span> <span class="token number">1</span><span class="token punctuation">;</span> <span class="token keyword">done</span>
+
+<span class="token comment"># 작업 경로로 이동</span>
+<span class="token builtin class-name">cd</span> chapter09/examples01/02_multi_region_ec2
+
+<span class="token comment"># init &amp; plan &amp; apply</span>
+terraform init
+terraform plan <span class="token operator">&amp;&amp;</span> terraform apply -auto-approve
+Outputs:
+
+instance_region_1_az <span class="token operator">=</span> <span class="token string">"us-east-2c"</span>
+instance_region_2_az <span class="token operator">=</span> <span class="token string">"us-west-1c"</span>
+region_1 <span class="token operator">=</span> <span class="token string">"us-east-2"</span>
+region_2 <span class="token operator">=</span> <span class="token string">"us-west-1"</span>
+
+<span class="token comment"># 삭제 : 아래 RDS 배포 후 데이터 INSERT 등 실습 후 삭제해도 됨</span>
+terraform destroy -auto-approve</code></pre></div>
+<h4 id="멀티리전-배포-3-primary-rds의-replica-rds를-다른-리전에-배포-시" style="position:relative;"><a href="#%EB%A9%80%ED%8B%B0%EB%A6%AC%EC%A0%84-%EB%B0%B0%ED%8F%AC-3-primary-rds%EC%9D%98-replica-rds%EB%A5%BC-%EB%8B%A4%EB%A5%B8-%EB%A6%AC%EC%A0%84%EC%97%90-%EB%B0%B0%ED%8F%AC-%EC%8B%9C" aria-label="멀티리전 배포 3 primary rds의 replica rds를 다른 리전에 배포 시 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>멀티리전 배포 (3), Primary RDS의 Replica RDS를 다른 리전에 배포 시</h4>
+<p>참고사항: Primary RDS 는 <code class="language-text">backup_retention_period</code> 설정이 <code class="language-text">0</code>보다 커야 되며, <code class="language-text">replicate_source_db</code> ARN 설정 시 replica RDS 입니다. - <a href="https://github.com/brikis98/terraform-up-and-running-code/blob/3rd-edition/code/terraform/07-working-with-multiple-providers/modules/data-stores/mysql/variables.tf" target="_blank" rel="nofollow noopener noreferrer">참고 링크</a></p>
+<div class="gatsby-highlight" data-language="bash"><pre class="language-bash"><code class="language-bash"><span class="token comment"># [터미널1] us-east-2</span>
+<span class="token keyword">while</span> <span class="token boolean">true</span><span class="token punctuation">;</span> <span class="token keyword">do</span> aws rds describe-db-instances <span class="token parameter variable">--region</span> us-east-2 <span class="token parameter variable">--query</span> <span class="token string">"*[].[Endpoint.Address,Endpoint.Port,MasterUsername]"</span> <span class="token parameter variable">--output</span> text  <span class="token punctuation">;</span> <span class="token builtin class-name">echo</span> <span class="token string">"------------------------------"</span> <span class="token punctuation">;</span> <span class="token function">sleep</span> <span class="token number">1</span><span class="token punctuation">;</span> <span class="token keyword">done</span>
+
+<span class="token comment"># [터미널2] us-west-1</span>
+<span class="token keyword">while</span> <span class="token boolean">true</span><span class="token punctuation">;</span> <span class="token keyword">do</span> aws rds describe-db-instances <span class="token parameter variable">--region</span> us-west-1 <span class="token parameter variable">--query</span> <span class="token string">"*[].[Endpoint.Address,Endpoint.Port,MasterUsername]"</span> <span class="token parameter variable">--output</span> text  <span class="token punctuation">;</span> <span class="token builtin class-name">echo</span> <span class="token string">"------------------------------"</span> <span class="token punctuation">;</span> <span class="token function">sleep</span> <span class="token number">1</span><span class="token punctuation">;</span> <span class="token keyword">done</span>
+
+<span class="token comment"># 환경변수에 지정</span>
+<span class="token builtin class-name">export</span> <span class="token assign-left variable">TF_VAR_db_username</span><span class="token operator">=</span><span class="token string">'cloudneta'</span>
+<span class="token builtin class-name">export</span> <span class="token assign-left variable">TF_VAR_db_password</span><span class="token operator">=</span><span class="token string">'cloudnetaQ!'</span>
+
+<span class="token comment"># 이동</span>
+<span class="token builtin class-name">cd</span> chapter09/examples01/03_multi_region_rds_with_replica
+
+<span class="token comment"># main.tf 에 백엔드 부분 수정</span>
+<span class="token function">vi</span> main.tf
+  backend <span class="token string">"s3"</span> <span class="token punctuation">{</span>
+    <span class="token comment"># This backend configuration is filled in automatically at test time by Terratest. If you wish to run this example</span>
+    <span class="token comment"># manually, uncomment and fill in the config below.</span>
+    bucket         <span class="token operator">=</span> <span class="token string">"ex9-t101-tfstate"</span>
+    key            <span class="token operator">=</span> <span class="token string">"prod/data-stores/mysql/terraform.tfstate"</span>
+    region         <span class="token operator">=</span> <span class="token string">"us-east-2"</span>
+    dynamodb_table <span class="token operator">=</span> <span class="token string">"ex9-t101-locks"</span>
+    <span class="token comment"># encrypt        = true</span>
+  <span class="token punctuation">}</span>
+
+<span class="token comment"># 초기화 및 검증 : 환경변수 적용 확인</span>
+terraform init
+terraform plan
+
+<span class="token comment"># 배포 : 총 25분 정도 소요 (8분 후 primary 완료, 이후 16분 후 replica 생성 및 동기화 완료)</span>
+terraform apply -auto-approve
+terraform output
+aws s3 <span class="token function">ls</span> s3://<span class="token variable">$TF_VAR_bucket_name</span> <span class="token parameter variable">--recursive</span> --human-readable <span class="token parameter variable">--summarize</span>
+
+<span class="token comment"># (옵션) Primary RDS에 데이터 INSERT 후 Replica RDS에 복제되는지 확인 해볼것</span>
+
+<span class="token comment"># 삭제 6분 정도 소요</span>
+terraform destroy -auto-approve
+
+<span class="token comment"># S3/DynamoDB 삭제</span>
+<span class="token builtin class-name">cd</span> ~/terraform-up-and-running-code/code/terraform/03-terraform-state/file-layout-example/global/s3
+terraform destroy -auto-approve</code></pre></div>
+<h4 id="주의사항" style="position:relative;"><a href="#%EC%A3%BC%EC%9D%98%EC%82%AC%ED%95%AD" aria-label="주의사항 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>주의사항</h4>
+<ol>
+<li>Warning 1 : Multiregion is hard, 프로덕션 수준의 멀티 리전은 <strong>어렵습니다</strong>!
+<ul>
+<li><strong>Active-Active</strong> 멀티 리전 서비스를 위한 ‘<strong>지역간 지연 시간, 고유 ID, 최종 일관성</strong>’ 등 여러가지 고려사항이 많아서 쉽지 않습니다.</li>
+</ul>
+</li>
+<li>Warning 2 : Use aliases sparingly, Alias 를 빈번하게 사용하지 맙시다!
+<ul>
+<li>별칭을 사용하여 두 리전에 배포하는 단일 테라폼 모듈은 한 리전이 다운 시, plan 과 apply 시도가 실패합니다.</li>
+<li>프로덕션 환경은 멀티 리전의 별칭을 사용하는 것보다는, 3장에서 설명한 것 처럼 <strong>환경</strong>을 완전히 <strong>격리</strong>해야 합니다. 이를 통해 영향도를 최소화 할 수 있습니다.</li>
+</ul>
+</li>
+</ol>
+<h3 id="여러-aws-계정에-대해-작업하는-방안" style="position:relative;"><a href="#%EC%97%AC%EB%9F%AC-aws-%EA%B3%84%EC%A0%95%EC%97%90-%EB%8C%80%ED%95%B4-%EC%9E%91%EC%97%85%ED%95%98%EB%8A%94-%EB%B0%A9%EC%95%88" aria-label="여러 aws 계정에 대해 작업하는 방안 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>여러 AWS 계정에 대해 작업하는 방안</h3>
+<p>배우기에 앞서, 멀티 계정을 사용하는 이유에 대해 알아봅시다.</p>
+<ol>
+<li>Isolation (aka. compartmentalization)
+<ul>
+<li>Staging 과 Prod 간 다른 계정을 사용함으로써 각자에게 끼치는 영향을 최소화합니다.</li>
+</ul>
+</li>
+<li>Authentication and authorization
+<ul>
+<li>다중 계정에 따른 인증과 권한 분리로 각자에게 끼치는 영향을 최소화합니다(예를 들면 권한을 잘못 부여 시)</li>
+<li>계정 별 세분화된 권한으로 접근통제가 가능합니다.</li>
+</ul>
+</li>
+<li>Auditing and reporting
+<ul>
+<li>모든 환경과 계정의 변경 사항 및 감사 추적이 가능합니다.</li>
+<li>이를 통해 규정 준수와 이상 징후 감시를 할 수 있고 비용 추적등에 용이해집니다.</li>
+</ul>
+</li>
+</ol>
+<h4 id="사전작업" style="position:relative;"><a href="#%EC%82%AC%EC%A0%84%EC%9E%91%EC%97%85" aria-label="사전작업 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>사전작업</h4>
+<ol>
+<li>AWS Organizaions 설정 및 계정 초대를 실시합니다.
+<ol>
+<li>이 때, 그룹 하의 계정을 2개 만듭시다.</li>
+</ol>
+</li>
+<li>AWS IAM 정책과 산하에 속한 계정을 설정합니다.</li>
+</ol>
+<h4 id="실습" style="position:relative;"><a href="#%EC%8B%A4%EC%8A%B5" aria-label="실습 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>실습</h4>
+<p><code class="language-text">chapter09/examples02</code> 의 파일들을 살펴보고, 아래 명령으로 결과를 살펴봅시다.</p>
+<div class="gatsby-highlight" data-language="bash"><pre class="language-bash"><code class="language-bash"><span class="token comment"># 이동</span>
+<span class="token builtin class-name">cd</span> chapter09/examples02
+
+<span class="token comment"># IAM Role ARN 지정</span>
+<span class="token comment">#export TF_VAR_child_iam_role_arn='arn:aws:iam::&lt;자신의 두 번째 혹은 세 번째 계정 Account ID>:role/&lt;해당 계정의 IAM Role 이름>'</span>
+<span class="token builtin class-name">export</span> <span class="token assign-left variable">TF_VAR_child_iam_role_arn</span><span class="token operator">=</span><span class="token string">'arn:aws:iam::REDACTED_CHILD:role/role-name-unknown'</span>
+
+<span class="token comment"># 배포 확인</span>
+terraform init
+terraform plan <span class="token operator">&amp;&amp;</span> terraform apply -auto-approve
+Outputs:
+child_account_id <span class="token operator">=</span> <span class="token string">"REDACTED_CHILD"</span>
+parent_account_id <span class="token operator">=</span> <span class="token string">"REDACTED_PARENTS"</span></code></pre></div>
+<h4 id="주의-사항" style="position:relative;"><a href="#%EC%A3%BC%EC%9D%98-%EC%82%AC%ED%95%AD" aria-label="주의 사항 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>주의 사항</h4>
+<ol>
+<li>Warning 1 : Cross-account IAM roles are double opt-in
+<ul>
+<li>교차 계정 역할 동작을 위해서 2개의 계정에서 모두 <strong>권한 등 설정</strong>이 필요합니다.</li>
+</ul>
+</li>
+<li>Warning 2 : Use aliases sparingly Alias 를 빈번하게 사용하지 맙시다!
+<ul>
+<li>영향도 최소를 위해서 계정 간 분리를 하는 것을 권장합니다.</li>
+</ul>
+</li>
+</ol>
+<h2 id="여러-프로바이더에서-작업하는-방안-추후-업로드" style="position:relative;"><a href="#%EC%97%AC%EB%9F%AC-%ED%94%84%EB%A1%9C%EB%B0%94%EC%9D%B4%EB%8D%94%EC%97%90%EC%84%9C-%EC%9E%91%EC%97%85%ED%95%98%EB%8A%94-%EB%B0%A9%EC%95%88-%EC%B6%94%ED%9B%84-%EC%97%85%EB%A1%9C%EB%93%9C" aria-label="여러 프로바이더에서 작업하는 방안 추후 업로드 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>여러 프로바이더에서 작업하는 방안 (추후 업로드!)</h2>
+<h1 id="lessons-learned" style="position:relative;"><a href="#lessons-learned" aria-label="lessons learned permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Lessons Learned</h1>
+<p>제 9장에서는 아래의 내용을 반드시 기억하셨으면 좋겠습니다.</p>
+<ol>
+<li>provider 블록에 대해 보다 더 깊게 살펴보았습니다.</li>
+<li>계정별, 여러 프로바이더 별, 여러 리전 별 배포 또한 가능함을 살펴보았습니다.</li>
+<li>도커와 쿠버네티스 실습환경에 대한 내용은 곧 업데이트 하겠습니다!</li>
+</ol>
+<p>이것으로 제 9장을 마칩니다. 긴 글 읽어주셔서 감사합니다.</p></div></div></div><div class="Post-module--footer--f8705"><div class="Meta-module--meta--dae0a"><p class="Meta-module--date--4d30d">Published<!-- --> <!-- -->Dec 12, 2022</p></div><div class="Tags-module--tags--18589"><ul class="Tags-module--list--82ae6"><li class="Tags-module--item--52015"><a class="Button-module--button--b1113" href="/tag/terraform/">terraform</a></li><li class="Tags-module--item--52015"><a class="Button-module--button--b1113" href="/tag/iac/">iac</a></li><li class="Tags-module--item--52015"><a class="Button-module--button--b1113" href="/tag/devops/">devops</a></li></ul></div><div class="Author-module--author--1c58d"><p class="Non scholæ sed vitæ discimus.">Non scholæ sed vitæ discimus.</p><p class="Author-module--bio--08950">his/him</p></div></div><div class="Post-module--comments--d3b99"><div></div></div></div></div></div><div id="gatsby-announcer" style="position:absolute;top:0;width:1px;height:1px;padding:0;overflow:hidden;clip:rect(0, 0, 0, 0);white-space:nowrap;border:0" aria-live="assertive" aria-atomic="true"></div></div><script id="gatsby-script-loader">/*<![CDATA[*/window.pagePath="/devlog/terraform/2022-12-13-cloudneta-terraform-101-pt09";window.___webpackCompilationHash="761df58d981e63b90a04";/*]]>*/</script><script id="gatsby-chunk-mapping">/*<![CDATA[*/window.___chunkMapping={"polyfill":["/polyfill-9c96d4b38e022a460e71.js"],"app":["/app-f3f7537d74aae70e60a8.js"],"component---cache-caches-gatsby-plugin-offline-app-shell-js":["/component---cache-caches-gatsby-plugin-offline-app-shell-js-0c915c7b1bdb5eac4fdf.js"],"component---src-templates-categories-template-categories-template-tsx":["/component---src-templates-categories-template-categories-template-tsx-e2d2add397e32e3517ca.js"],"component---src-templates-category-template-category-template-tsx":["/component---src-templates-category-template-category-template-tsx-078f2adfba160a34229f.js"],"component---src-templates-index-template-index-template-tsx":["/component---src-templates-index-template-index-template-tsx-83380c7954c9f6621026.js"],"component---src-templates-not-found-template-not-found-template-tsx":["/component---src-templates-not-found-template-not-found-template-tsx-56fe4d3b015459d56c99.js"],"component---src-templates-page-template-page-template-tsx":["/component---src-templates-page-template-page-template-tsx-c6c21d7369a9356db3a1.js"],"component---src-templates-post-template-post-template-tsx":["/component---src-templates-post-template-post-template-tsx-119cd0258cb38628d01f.js"],"component---src-templates-tag-template-tag-template-tsx":["/component---src-templates-tag-template-tag-template-tsx-8d0b3090e775aa3c4584.js"],"component---src-templates-tags-template-tags-template-tsx":["/component---src-templates-tags-template-tags-template-tsx-30027e87af7d042f3afb.js"]};/*]]>*/</script><script src="/polyfill-9c96d4b38e022a460e71.js" nomodule=""></script><script src="/app-f3f7537d74aae70e60a8.js" async=""></script><script src="/framework-481a1b6416c14416b2fb.js" async=""></script><script src="/webpack-runtime-772fb610478cdd1a8d75.js" async=""></script></body></html>
