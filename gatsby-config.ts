@@ -102,6 +102,8 @@ export default {
             options: {
               maxWidth: 960,
               withWebp: true,
+              showCaptions: true,
+              markdownCaptions: true,
             },
           },
           {
