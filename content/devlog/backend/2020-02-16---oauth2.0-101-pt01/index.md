@@ -8,7 +8,7 @@ category: "devlog"
 tags:
   - "backend"
 description: ""
-socialImage: "./media/.jpg"
+socialImage: "./media/pomeranian.jpg"
 ---
 
 # OAuth 2.0이란?

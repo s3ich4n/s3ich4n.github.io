@@ -8,7 +8,7 @@ category: "tips"
 tags:
   - "jekyll"
 description: "Python 코드를 Jekyll에 작성 시, Liquid syntax error가 뜬다면?"
-socialImage: "./sangdo-dong.jpg"
+socialImage: "./media/sangdo-dong.jpg"
 ---
 
 Django 코드를 Jekyll에 작성할 때 아래 에러메시지가 떴었다.
