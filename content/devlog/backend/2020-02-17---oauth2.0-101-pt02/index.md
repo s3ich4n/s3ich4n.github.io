@@ -8,7 +8,7 @@ category: "devlog"
 tags:
   - "backend"
 description: ""
-socialImage: "./media/pomeranian.jpg"
+socialImage: { "publicURL":  "./media/pomeranian.jpg" }
 ---
 
 # OAuth 2.0 provider 학습과정

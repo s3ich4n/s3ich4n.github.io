@@ -8,7 +8,7 @@ category: "tips"
 tags:
   - "ofm"
 description: "OFM의 터줏대감 중 하나인 토탈 커맨더 입문기입니다. 기본적인 사용법에 대해 알아봅시다."
-socialImage: "./media/sarang-bang.jpg"
+socialImage: { "publicURL": "./media/sarang-bang.jpg" }
 ---
 
 # 토탈 커맨더 써보기

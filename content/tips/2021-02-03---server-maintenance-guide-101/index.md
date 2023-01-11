@@ -8,7 +8,7 @@ category: "tips"
 tags:
   - "maintenance"
 description: "서버 점검과 관련하여"
-socialImage: "./media/aa.jpg"
+socialImage: { "publicURL": "./media/aa.jpg" }
 ---
 
 서버 점검과 관련하여 좋은글들을 추합한 내용을 공유합니다.

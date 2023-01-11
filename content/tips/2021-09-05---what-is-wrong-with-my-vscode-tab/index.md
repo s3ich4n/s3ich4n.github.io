@@ -8,7 +8,7 @@ category: "tips"
 tags:
   - "vscode"
 description: "우분투 환경에서 VSCode를 사용하던 시절에 뜬금없이 탭이 사라지는 일이 있었습니다. 해결책이 쉽습니다! 여러분들께서는 부디 헤메는 일이 없길 바랍니다..."
-socialImage: "./media/fromis9_et'kyung.jpg"
+socialImage: { "publicURL": "./media/fromis9_et'kyung.jpg" }
 ---
 
 평소처럼 출근한 어느 날이었습니다. 작업을 하다가 키보드 내 먼지를 훅훅 불고 닦다가보니 갑자기 VSCode의 탭이 없어진 것이었습니다.

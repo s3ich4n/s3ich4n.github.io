@@ -9,7 +9,7 @@ tags:
   - "git"
   - "cowork"
 description: "EOL을 왜 입력해야 하는지 알아보며, 개행문자에 대해 발생한 문제가 함께 떠올라 적절한 해결책을 알아보고자 조사하게 되었습니다."
-socialImage: "./media/sarang-bang.jpg"
+socialImage: { "publicURL": "./media/sarang-bang.jpg" }
 ---
 
 ![으아ㅏㅏ 개행](./media/01_no_newline.png)

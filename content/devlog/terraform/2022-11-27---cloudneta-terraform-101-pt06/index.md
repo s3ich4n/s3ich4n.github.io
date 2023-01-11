@@ -10,7 +10,7 @@ tags:
   - "iac"
   - "devops"
 description: "Terraform을 사용하며 인프라 프로비저닝 및 배포 시, 민감정보에 대해 관리하는 방안에 대해 작성하였습니다."
-socialImage: "./media/terraform06.jpg"
+socialImage: { "publicURL": "./media/terraform06.jpg" }
 ---
 
 이 내용은 [CloudNet@](https://www.notion.so/gasidaseo/CloudNet-Blog-c9dfa44a27ff431dafdd2edacc8a1863) 에서 진행하는 테라폼 기초 입문 스터디에 대한 연재글입니다.

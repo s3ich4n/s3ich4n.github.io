@@ -9,7 +9,7 @@ tags:
   - "linux"
   - "shell"
 description: "Bash 스크립트를 작성하며 -z 라는 키워드에 대해 알게되었습니다. 더 나아가 쉘 스크립트에선 문자열을 어떻게 다루는지 살펴봅시다."
-socialImage: "./media/snow.jpg"
+socialImage: { "publicURL": "./media/snow.jpg" }
 ---
 
 # 문자열 비교

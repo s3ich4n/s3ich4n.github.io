@@ -10,7 +10,7 @@ tags:
   - "iac"
   - "devops"
 description: "Terraform의 등장배경과, 간략한 소개, 그리고 기초적인 예시를 통해 어떻게 사용하는지에 대한 내용을 담고 있습니다."
-socialImage: "./media/terraform01.jpg"
+socialImage: { "publicURL": "./media/terraform01.jpg" }
 ---
 
 이 내용은 [CloudNet@](https://www.notion.so/gasidaseo/CloudNet-Blog-c9dfa44a27ff431dafdd2edacc8a1863) 에서 진행하는 테라폼 기초 입문 스터디에 대한 연재글입니다.

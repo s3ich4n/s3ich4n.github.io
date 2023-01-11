@@ -1,6 +1,6 @@
 ---
 title: "HTTP의 인증에 대해 (1) 인증의 발전사"
-date: "2020-05-05T22:51:00.000Z"
+date: "2022-10-05T22:51:00.000Z"
 template: "post"
 draft: false
 slug: "/devlog/backend/2022-10-05-considering-http-authn-pt01"
@@ -9,7 +9,7 @@ tags:
   - "web"
   - "backend"
 description: "HTTP 기본 스펙을 이용한 기초적 인증부터 쿠키와 세션을, 그리고 갑자기 들불처럼 등장한 JWT이 뭔지까지만 살펴봅니다."
-socialImage: "./media/domado.jpg"
+socialImage: { "publicURL": "./media/domado.jpg" }
 ---
 
 이 시리즈에서는 HTTP의 인증(Authentication)에 대해 다룹니다.
@@ -19,7 +19,7 @@ socialImage: "./media/domado.jpg"
 # 목차
 
 - HTTP의 인증에 대해 (1)
-- [HTTP의 인증에 대해 (2)](https://blog.s3ich4n.me/devlog/backend/2022-10-05-considering-http-authn-pt02)
+- [HTTP의 인증에 대해 (2)](/devlog/backend/2022-10-05-considering-http-authn-pt02)
 
 # 인증(Authentication)과 인가(Authorization)?
 
@@ -227,4 +227,3 @@ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dnZWRJbkFzIjoiYWRtaW4iLCJpYXQiOjE0MjI
 
 - References
   - [1] [해당 링크](https://www.w3.org/Protocols/HTTP/1.0/spec.html#BasicAA)를 참고해주세요.
-  - [2]

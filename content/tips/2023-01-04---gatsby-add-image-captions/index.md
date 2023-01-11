@@ -8,7 +8,7 @@ category: "tips"
 tags:
   - "gatsby"
 description: "Gatsby 블로그 이미지에 캡션을 추가하는 방법에 대해 빠르게 설명드립니다."
-socialImage: "./media/sarang-bang.jpg"
+socialImage: { "publicURL": "./media/sarang-bang.jpg" }
 ---
 
 이 글은 `gatsby-remark-images` 를 사용하시는 분들 중, 그림에 캡션을 달고싶은 분들을 위한 글입니다.

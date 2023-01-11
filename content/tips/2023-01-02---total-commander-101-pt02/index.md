@@ -8,7 +8,7 @@ category: "tips"
 tags:
   - "ofm"
 description: "OFM의 터줏대감 중 하나인 토탈 커맨더 입문기입니다. 반디집을 통해 압축하기/압축풀기를 하는 방법에 대해 살펴봅시다."
-socialImage: "./media/sarang-bang.jpg"
+socialImage: { "publicURL": "./media/sarang-bang.jpg" }
 ---
 
 # 토탈 커맨더에서 반디집 사용하기
