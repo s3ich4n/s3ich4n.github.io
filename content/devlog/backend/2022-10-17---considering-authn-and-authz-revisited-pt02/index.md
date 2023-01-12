@@ -1,19 +1,19 @@
 ---
 title: "OAuth 2.0 (2) OAuth 2.0 Provider와 OIDC, 그리고 OAuth 2.0 사용 앱에 대해"
-date: "2020-02-17T21:50:00.000Z"
+date: "2022-10-17T21:50:00.000Z"
 template: "post"
 draft: false
-slug: "/devlog/backend/2020-02-17-oauth2.0-101-pt02"
+slug: "/devlog/backend/2022-10-17-considering-authn-and-authz-revisited-pt02"
 category: "devlog"
 tags:
   - "backend"
 description: ""
-socialImage: { "publicURL":  "./media/pomeranian.jpg" }
+socialImage: { "publicURL": "./media/pomeranian.jpg" }
 ---
 
 # OAuth 2.0 provider 학습과정
 
-## Django에는 어떤게 있을까?
+## Django에는 어떤 구현체가 있을까?
 
 1. Django의 [Django OAuth Toolkit](https://django-oauth-toolkit.readthedocs.io/en/latest/) 을 사용하여 개발했다.
 2. Django REST Framework(이하 DRE)에 맞게 구현하고 Django의 유저 ID/PW를 기반으로 Authn을 하고, 토큰으로 Authz를 수행하기위해 구상했다.
@@ -31,7 +31,7 @@ socialImage: { "publicURL":  "./media/pomeranian.jpg" }
 ## 다른 부분에 대해 조사한 내용
 
 1. [Authlib](https://github.com/lepture/authlib) 을 가지고 처음부터 구현하는 것은 바퀴를 재발명하는 것 만큼 힘든 짓이다.
-2. [Django OIDC Provider](https://github.com/juanifioren/django-oidc-provider) 는 방치되어있어서 아예 Fork하고 새로 구현해야했다.
+2. ~~[Django OIDC Provider](https://github.com/juanifioren/django-oidc-provider) 는 방치되어있어서 아예 Fork하고 새로 구현해야했다.~~ OIDC는 [이쪽](https://github.com/jazzband/django-oauth-toolkit)에서 개발이 이어지고 있습니다.
 3. [AWS KMS](https://aws.amazon.com/ko/kms/)가 아닌 [AWS Secrets Master](https://aws.amazon.com/ko/secrets-manager/)를 사용하는 이유는 다음과 같다.
 
 - AWS Secrets Master로 `JWT_SECRET_KEY`나 django의 `SECRET_KEY` 등을 보관할 수 있다.
@@ -80,12 +80,11 @@ socialImage: { "publicURL":  "./media/pomeranian.jpg" }
 - 인증요청시, client_id, client_secret에 대해 3-legged로 사용할 필요가 있다.
   - https://docs.microsoft.com/en-us/linkedin/shared/authentication/authorization-code-flow
 
-
 # 마무리
 
 이번 글을 통해, 아래 내용들을 살펴볼 수 있었습니다:
 
-1. 
+1.
 
 읽어주셔서 감사합니다.
 

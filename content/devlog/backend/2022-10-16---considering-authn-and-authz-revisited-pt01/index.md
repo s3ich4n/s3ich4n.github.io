@@ -1,15 +1,19 @@
 ---
-title: "OAuth 2.0 (1) 개요와 프로토콜 소개"
-date: "2020-02-16T21:50:00.000Z"
+title: "인증과 인가를 다시 살펴보다 (1) OAuth 2.0 개요와 프로토콜 소개"
+date: "2022-10-16T21:50:00.000Z"
 template: "post"
 draft: false
-slug: "/devlog/backend/2020-02-16-oauth2.0-101-pt01"
+slug: "/devlog/backend/2022-10-16-considering-authn-and-authz-revisited-pt01"
 category: "devlog"
 tags:
   - "backend"
 description: ""
-socialImage: { "publicURL":  "./media/pomeranian.jpg" }
+socialImage: { "publicURL": "./media/pomeranian.jpg" }
 ---
+
+# 들어가며
+
+필요한 API 서비스를 나누고 서비스의 규모가 커지면, 인증과 인가에 대해 구조적으로 돌아보게 됩니다. 그러면서 자연스럽게 SSO나 IdF 같은 개념을 돌아보게 되고, 어떻게 이를 위임하거나 전파할지를 구상하게 됩니다.
 
 # OAuth 2.0이란?
 
@@ -109,7 +113,7 @@ OAuth 2.0의 전체 프로토콜의 가장 기본적인 Flow는 다음과 같습
   - 자원 소유자가 유저가 아니고 클라이언트면 사용하는 방식.
   - client가 관리하는 리소스에 접근하는 경우로 권한이 한정되어있을 때 씁니다. 클라이언트 각각이 resource owner가 될 수 있습니다.
   - 해당 프로토콜의 다이어그램은 다음과 같습니다:
-    ![client-credentials](./media/03-oauth-client-creds.png)
+    ![Client Credentials의 도식](./media/03-oauth-client-creds.png)
 
 (C): 권한부여를 받은 클라이언트는 access token을 authorization server 에 요청합니다.
 (D): authorization server는 권한부여가 올바른지 유효성을 검증하고, 유효하다면 access token을 발급한 후 클라이언트에 결과를 보냅니다.
@@ -120,7 +124,7 @@ OAuth 2.0의 전체 프로토콜의 가장 기본적인 Flow는 다음과 같습
 
 이번 글을 통해, 아래 내용들을 살펴볼 수 있었습니다:
 
-1. 
+1. OAuth 2.0의 기본 원리와 도식을 살펴보았습니다.
 
 읽어주셔서 감사합니다.
 
