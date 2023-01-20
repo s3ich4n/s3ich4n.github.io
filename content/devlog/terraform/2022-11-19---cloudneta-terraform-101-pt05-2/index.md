@@ -57,7 +57,7 @@ socialImage: { "publicURL": "./media/terraform05.jpg" }
 
 이를 위해서는 Boolean 입력 변수를 변수값으로 추가해주고, 아래와같은 조건 표현식(conditional expression)을 추가합니다.
 
-> ```terraform
+> ```hcl
 > variable "enable_autoscaling" {
 >   description = "If set to true, enable auto scaling"
 >   type        = bool
@@ -72,7 +72,7 @@ socialImage: { "publicURL": "./media/terraform05.jpg" }
 
 상기 조건을 조합하면 아래값처럼 `webserver-cluster` 모듈을 업데이트 할 수 있지요.
 
-```terraform
+```hcl
 resource "aws_autoscaling_schedule" "scale_out_during_business_hours" {
   # enable_autoscaling 값이 참/거짓일 때에 따라 auto scaling을 허용/불허할 수 있습니다.
   count = var.enable_autoscaling ? 1 : 0
@@ -101,7 +101,7 @@ resource "aws_autoscaling_schedule" "scale_in_at_night" {
 
 - staging 서버의 `main.tf` 파일에서는?
 
-```terraform
+```hcl
 module "webserver_cluster" {
   source = "../../../../modules/services/webserver-cluster"
 
@@ -119,7 +119,7 @@ module "webserver_cluster" {
 
 - production 서버의 `main.tf` 파일에서는?
 
-```terraform
+```hcl
 module "webserver_cluster" {
   source = "../../../../modules/services/webserver-cluster"
 
@@ -146,7 +146,7 @@ module "webserver_cluster" {
 
 - 읽기 권한만 부여하기 위한 예시값 (`iam_read_only.tf`)
 
-```terraform
+```hcl
 resource "aws_iam_policy" "cloudwatch_read_only" {
   name   = "cloudwatch-read-only"
   policy = data.aws_iam_policy_document.cloudwatch_read_only.json
@@ -168,7 +168,7 @@ data "aws_iam_policy_document" "cloudwatch_read_only" {
 
 - 읽기/쓰기 권한을 부여하기 위한 예시값(`iam_rw.tf`)
 
-```terraform
+```hcl
 resource "aws_iam_policy" "cloudwatch_full_access" {
   name   = "cloudwatch-full-access"
   policy = data.aws_iam_policy_document.cloudwatch_full_access.json
@@ -186,7 +186,7 @@ data "aws_iam_policy_document" "cloudwatch_full_access" {
 
 `give_s3ich4n_cloudwatch_full_access` 이라는 변수값에 기반하여, 리소스를 어떻게 적용할지 살펴봅시다.
 
-```terraform
+```hcl
 variable "give_s3ich4n_cloudwatch_full_access" {
   description = "If true, s3ich4n gets full access to CloudWatch"
   type        = bool
@@ -195,7 +195,7 @@ variable "give_s3ich4n_cloudwatch_full_access" {
 
 리소스 생성 시, 동작수행을 위해 `count` 매개변수와 조건 표현식을 모두 사용해봅시다.
 
-```terraform
+```hcl
 resource "aws_iam_user_policy_attachment" "neo_cloudwatch_full_access" {
   count = var.give_neo_cloudwatch_full_access ? 1 : 0
 
@@ -221,7 +221,7 @@ resource "aws_iam_user_policy_attachment" "neo_cloudwatch_read_only" {
 
 이를 표현하기 위해서는 조건부로 어떻게 표현할까요? `for_each` 표현식과 `for` 표현식을 결합하여 사용할 수 있습니다. 예시값을 살펴보시지요.
 
-```terraform
+```hcl
 dynamic "tag" {
     for_each = {
     	for key, value in var.custom_tags:
@@ -247,7 +247,7 @@ dynamic "tag" {
 
 `if` 문자열 지시자를 살펴봅시다.
 
-```terraform
+```hcl
 # if 구문의 사용방법 입니다.
 %{if <CONDITION> }<TRUEVAL>%{endif}
 
@@ -265,7 +265,7 @@ dynamic "tag" {
 
 [예시](https://github.com/brikis98/terraform-up-and-running-code/blob/master/code/terraform/05-tips-and-tricks/loops-and-if-statements/live/global/string-directives/main.tf)를 보면서 함께 살펴봅시다.
 
-```terraform
+```hcl
 variable "names" {
   description = "A list of names"
   type        = list(string)

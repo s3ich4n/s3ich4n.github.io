@@ -66,7 +66,7 @@ socialImage: { "publicURL": "./media/terraform04.jpg" }
 
 모듈을 사용하기 위한 구문은 아래와 같습니다:
 
-```terraform
+```hcl
 module "<NAME>" {
   source = "<SOURCE>"
 

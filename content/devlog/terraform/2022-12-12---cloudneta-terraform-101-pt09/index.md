@@ -67,7 +67,7 @@ provider "aws" {
 
 이런 코드에 대해 만들고
 
-```terraform
+```hcl
 provider "aws" {
   region = "us-east-2"
 }
@@ -87,7 +87,7 @@ Initializing provider plugins...
 
 프로바이더를 보다 상세하게 설정하고싶다면 어떻게 해야할까요?
 
-```terraform
+```hcl
 terraform {
   required_providers {
     <LOCAL_NAME> = {
@@ -124,7 +124,7 @@ terraform {
 
 이제야 각종 오픈소스들에서 이렇게 쓰는 이유를 알겠군요. 프로바이더 블록만 단독으로 쓰기보다는, 이 편이 더 좋은 듯 합니다.
 
-```terraform
+```hcl
 terraform {
   required_providers {
     aws = {

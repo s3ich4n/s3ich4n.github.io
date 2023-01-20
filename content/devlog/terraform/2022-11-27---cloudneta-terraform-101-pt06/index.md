@@ -49,7 +49,7 @@ Terraform Up & Learning 3rd Edition 의 6장 내용을 다루고 있습니다.
 
 예를들어 이런 코드가 있다고 할까요?
 
-```Terraform
+```hcl
 resource "aws_db_instance" "example" {
   identifier_prefix   = "terraform-up-and-running"
   engine              = "mysql"

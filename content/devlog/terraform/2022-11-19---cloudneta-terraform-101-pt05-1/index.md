@@ -59,7 +59,7 @@ IAM 사용자를 3명 생성하는 예시로 살펴보겠습니다. 리소스는
 
 - `iam.tf` 파일 전체
 
-```terraform
+```hcl
 provider "aws" {
   region = "ap-northeast-2"
 }
@@ -188,7 +188,7 @@ Destroy complete! Resources: 3 destroyed.
 
 - `variables.tf` 파일
 
-```terraform
+```hcl
 variable "user_names" {
   description = "Create IAM users with these names"
   # 문자열을 담는 "리스트" 타입입니다.
@@ -199,7 +199,7 @@ variable "user_names" {
 
 - `iam.tf` 파일
 
-```terraform
+```hcl
 provider "aws" {
   region = "ap-northeast-2"
 }
@@ -213,7 +213,7 @@ resource "aws_iam_user" "ch05-ex01-count" {
 
 - `outputs.tf` 파일
 
-```terraform
+```hcl
 output "first_arn" {
   # 첫번째 값을 가져옵니다.
   value       = aws_iam_user.ch05-ex01-count[0].arn
@@ -292,7 +292,7 @@ first_arn = "arn:aws:iam::240962124292:user/alice"
 
 1. 전체 리소스를 반복할 수는 있지만 리소스 내에서 인라인 블록을 반복할 수는 없습니다. 아래 예시로 살펴봅시다.
 
-   ```terraform
+   ```hcl
    resource "aws_autoscaling_group" "example" {
      launch_configuration = aws_launch_configuration.example.name
      vpc_zone_identifier  = data.aws_subnets.default.ids
@@ -317,7 +317,7 @@ first_arn = "arn:aws:iam::240962124292:user/alice"
 
    - `variables.tf`
 
-```terraform
+```hcl
 variable "user_names" {
   description = "Create IAM users with these names"
   type        = list(string)
@@ -410,7 +410,7 @@ variable "user_names" {
 
 - `list`, `set`, `map`을 사용하여 전체 리소스의 복사본, 리소스 내 인라인 블록의 복사본, 모듈의 복사본을 만들 수 있습니다. 문법은 아래와 같습니다:
 
-  ```terraform
+  ```hcl
   resource "<PROVIDER>_<TYPE>" "<NAME>" {
     for_each = <COLLECTION>
 
@@ -428,7 +428,7 @@ variable "user_names" {
 
 - `iam.tf`
 
-  ```terraform
+  ```hcl
   provider "aws" {
     region = "ap-northeast-2"
   }
@@ -441,7 +441,7 @@ variable "user_names" {
 
 - `variables.tf`
 
-  ```terraform
+  ```hcl
   variable "user_names" {
     description = "Create IAM users with these names"
     type        = list(string)
@@ -451,7 +451,7 @@ variable "user_names" {
 
 - `outputs.tf`
 
-  ```terraform
+  ```hcl
   output "all_users" {
     value = aws_iam_user.ch05-foreach
   }
@@ -570,7 +570,7 @@ all_users = {
 
 list 내의 모든 이름을 대문자로 변환하는 예제를 통해 알아봅시다. 사용은 아래와 같이 할 수 있습니다.
 
-```terraform
+```hcl
 # 결과를 list 형식으로 리턴합니다.
 [for <ITEM> in <LIST> : <OUTPUT>]
 [for <ITEM> in <LIST> : <OUTPUT> if <EXPRESSION>] # 조건문 절에서 다시 살펴봅시다!
@@ -585,7 +585,7 @@ list 내의 모든 이름을 대문자로 변환하는 예제를 통해 알아�
 - OUTPUT: ITEM을 변환한 표현식
 - `if` 구문(optional): 조건(`<EXPRESSION>`)에 맞으면 값을 추가
 
-```terraform
+```hcl
 variable "names" {
   description = "A list of names"
   type        = list(string)
@@ -629,7 +629,7 @@ output "upper_prize_status" {
 
 문자열 지시자를 사용하면, 문자열 보간처럼 `for` 반복문, `if` 제어문에서도 사용할 수 있습니다. 어떻게 사용하는지 살펴봅시다.
 
-```terraform
+```hcl
 # 반복문의 기본입니다.
 %{ for <ITEM> in <COLLECTION> }<BODY>%{ endfor }
 
@@ -643,7 +643,7 @@ output "upper_prize_status" {
 
 [예시](https://github.com/brikis98/terraform-up-and-running-code/blob/master/code/terraform/05-tips-and-tricks/loops-and-if-statements/live/global/string-directives/main.tf)를 보면서 함께 살펴봅시다.
 
-```terraform
+```hcl
 variable "names" {
   description = "A list of names"
   type        = list(string)

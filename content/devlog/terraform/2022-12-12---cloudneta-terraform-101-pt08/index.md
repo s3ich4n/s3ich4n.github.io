@@ -168,7 +168,7 @@ DevOps 프로젝트는 다른 유형의 소프트웨어 프로젝트보다 더 �
 
 1. `asg-rolling-deploy` 모듈을 사용하여, 크기 1인 ASG를 배포하는 코드를 봅시다.
 
-```terraform
+```hcl
 terraform {
   required_version = ">= 1.0.0, < 2.0.0"
 
@@ -267,7 +267,7 @@ curl -s http://$ALBDNS
 
 테라폼 0.13부터 등장한 validation blocks 은 입력 변수를 체크할 수 있습니다.
 
-```terraform
+```hcl
 variable "instance_type" {
   description = "The type of EC2 Instances to run (e.g. t2.micro)"
   type        = string
@@ -282,7 +282,7 @@ variable "instance_type" {
 
 만일 validation에 실패한다면, 아래와 같은 에러 메시지를 리턴하게 됩니다.
 
-```terraform
+```hcl
 $ terraform apply -var instance_type="m4.large"
 │ Error: Invalid value for variable
 │
@@ -304,7 +304,7 @@ $ terraform apply -var instance_type="m4.large"
 
   - 테라폼 코어(`core`를 의미): 테라폼 실행파일 버전을 `required_version` 이란 값으로 명시합니다.
 
-  ```terraform
+  ```hcl
   terraform {
     # Require any 1.x version of Terraform
     required_version = ">= 1.0.0, < 2.0.0"
@@ -319,7 +319,7 @@ $ terraform apply -var instance_type="m4.large"
 
   - 프로바이더 버전: 프로바이더 버전 또한 `require_providers` 블록으로 명시합니다.
 
-  ```terraform
+  ```hcl
   terraform {
     required_version = ">= 1.0.0, < 2.0.0"
 
