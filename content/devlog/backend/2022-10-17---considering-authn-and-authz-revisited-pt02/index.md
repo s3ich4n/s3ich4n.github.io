@@ -217,7 +217,12 @@ OIDC의 OP는 일반적으로 유저의 세션쿠키를 생성합니다. 따라�
 - Front channel, Back channel 을 구별하여 구현하기를 권장합니다.
 - `HttpOnly` 세션 쿠키를 유저에게 전달하기를 권장합니다.
 - Authorization code가 탈취당하는 케이스를 방지하기 위해, [PKCE](https://www.rfc-editor.org/rfc/rfc7636)를 도입하여 추가 챌린지를 수행할 것을 권장합니다. [참고링크 또한 읽어보세요](https://oauth.net/2/pkce/).
-  - 참고) OAuth 2.1 드래프트에는 Authorization code grant 사용 시, "반드시" 사용하도록 되어있다고 합니다.
+- SPA 및 기본 애플리케이션은 리버스 엔지니어링에 취약합니다. SPA의 경우 애플리케이션의 소스 코드를 브라우저에서 사용할 수 있습니다.
+  - 네이티브 앱은 디컴파일할 수 있습니다.
+  - 이러한 이유로 SPA 및 기본 애플리케이션은 클라이언트 자격 증명(특히 클라이언트 암호)을 안전하게 저장할 수 없습니다.
+  - 이러한 이유로 퍼블릭 클라이언트로 간주됩니다.
+- 참고) OAuth 2.1 드래프트에는 Authorization code grant 사용 시, "반드시" 사용하도록 되어있다고 합니다.
+- 참고2) PKCE 또한 **인증** 을 대체하는 로직이 아님에 유의하십시오!
 
 ### Implicit grant
 
