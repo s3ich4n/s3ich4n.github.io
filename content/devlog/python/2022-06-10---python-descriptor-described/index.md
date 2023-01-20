@@ -8,7 +8,7 @@ category: "devlog"
 tags:
   - "python"
 description: "Python의 디스크립터에 대하여 공부한 내용을 정리하고자 글을 작성하였습니다. 2부에서는 실제 오픈소스들의 코드를 보고 해설할 예정입니다."
-socialImage: "./media/sangdo-dong.jpg"
+socialImage: { "publicURL": "./media/sangdo-dong.jpg" }
 ---
 
 이 문서는 [여기](https://realpython.com/python-descriptors/)와 이펙티브 파이썬 2nd edition의 내용을 발췌하여 요약한 내용이다.

@@ -10,7 +10,7 @@ tags:
   - "iac"
   - "devops"
 description: "Terraform 의 상태값에 대한 격리 방안에 대한 내용을 담고있습니다. 아울러 속성값 참고와 내장 함수에 대한 설명을 함께 추가하였습니다."
-socialImage: "./media/terraform03.jpg"
+socialImage: { "publicURL": "./media/terraform03.jpg" }
 ---
 
 이 내용은 CloudNet@ 에서 진행하는 테라폼 기초 입문 스터디에 대한 연재글입니다.

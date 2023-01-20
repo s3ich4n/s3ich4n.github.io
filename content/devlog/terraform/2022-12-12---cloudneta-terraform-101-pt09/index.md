@@ -10,7 +10,7 @@ tags:
   - "iac"
   - "devops"
 description: "Terraform을 통해 다양한 프로바이더에 대한 배포, 멀티 계정 활용 등에 대한 기본을 학습해봅시다."
-socialImage: "./media/terraform09.jpg"
+socialImage: { "publicURL": "./media/terraform09.jpg" }
 ---
 
 이 내용은 CloudNet@ 에서 진행하는 테라폼 기초 입문 스터디에 대한 연재글입니다.

@@ -10,7 +10,7 @@ tags:
   - "iac"
   - "devops"
 description: "Terraform의 module 에 대한 소개와, 어떻게 활용하는지, 그리고 주의사항과 모듈 버전관리에 대한 내용을 담았습니다."
-socialImage: "./media/terraform04.jpg"
+socialImage: { "publicURL": "./media/terraform04.jpg" }
 ---
 
 이 내용은 CloudNet@ 에서 진행하는 테라폼 기초 입문 스터디에 대한 연재글입니다.

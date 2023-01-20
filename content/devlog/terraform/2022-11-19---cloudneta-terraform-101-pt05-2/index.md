@@ -10,7 +10,7 @@ tags:
   - "iac"
   - "devops"
 description: "Terraform의 타입과 값이 어떻게 쓰이는지 알고있다는 가정 하에, 반복문과 조건문을 사용하여 로직을 표현하는 방법을 담았습니다. 그 중, 조건문을 살펴봅시다."
-socialImage: "./media/terraform05.jpg"
+socialImage: { "publicURL": "./media/terraform05.jpg" }
 ---
 
 이 내용은 CloudNet@ 에서 진행하는 테라폼 기초 입문 스터디에 대한 연재글입니다.

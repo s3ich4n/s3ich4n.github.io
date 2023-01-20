@@ -9,7 +9,7 @@ tags:
   - "life"
   - "devlog"
 description: "2019년 입사부터 약 1년간 어떻게 살아왔는지에 대한 이야기입니다. (노잼)"
-socialImage: "./gwangheungchang.jpg"
+socialImage: { "publicURL": "./media/gwangheungchang.jpg" }
 ---
 
 # 1년을 돌아보며

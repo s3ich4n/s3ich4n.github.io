@@ -9,7 +9,7 @@ tags:
   - "docker"
   - "devops"
 description: "PyCon US 2021 발표영상 중, 파이썬 도커 이미지를 만드는 좋은 방법에 대한 동영상을 번역해봤습니다."
-socialImage: "./media/gwangheungchang.jpg"
+socialImage: { "publicURL": "./media/gwangheungchang.jpg" }
 ---
 
 이 글은 [0 to production-ready: a best-practices process for Docker packaging](https://www.youtube.com/watch?v=EC0CSevbt9k) 을 읽고 제 나름 번역해본 글입니다. 도움이 되길 바랍니다.

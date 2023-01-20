@@ -10,7 +10,7 @@ tags:
   - "iac"
   - "devops"
 description: "Terraform을 프로덕션 레벨 정도로 사용하려면 어느정도는 할 수 있어야하고, 어떤걸 살펴봐야 할까요? 이 포스팅에서는 그 부분을 공부해보았습니다."
-socialImage: "./media/terraform08.jpg"
+socialImage: { "publicURL": "./media/terraform08.jpg" }
 ---
 
 이 내용은 [CloudNet@](https://www.notion.so/gasidaseo/CloudNet-Blog-c9dfa44a27ff431dafdd2edacc8a1863) 에서 진행하는 테라폼 기초 입문 스터디에 대한 연재글입니다.
