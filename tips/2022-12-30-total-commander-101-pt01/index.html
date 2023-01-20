@@ -1,0 +1,488 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="ie=edge"/><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/><meta name="generator" content="Gatsby 4.25.4"/><meta name="description" content="OFM의 터줏대감 중 하나인 토탈 커맨더 입문기입니다. 기본적인 사용법에 대해 알아봅시다." data-gatsby-head="true"/><meta name="twitter:card" content="summary_large_image" data-gatsby-head="true"/><meta name="twitter:title" content="토탈 커맨더 입문기 (1) 기본기 - 팔공산 창고" data-gatsby-head="true"/><meta name="twitter:description" content="OFM의 터줏대감 중 하나인 토탈 커맨더 입문기입니다. 기본적인 사용법에 대해 알아봅시다." data-gatsby-head="true"/><meta name="og:title" content="토탈 커맨더 입문기 (1) 기본기 - 팔공산 창고" data-gatsby-head="true"/><meta name="og:type" content="website" data-gatsby-head="true"/><meta name="og:description" content="OFM의 터줏대감 중 하나인 토탈 커맨더 입문기입니다. 기본적인 사용법에 대해 알아봅시다." data-gatsby-head="true"/><meta name="image" content="https://blog.s3ich4n.me[object Object]" data-gatsby-head="true"/><meta name="og:image" content="https://blog.s3ich4n.me[object Object]" data-gatsby-head="true"/><meta name="twitter:image" content="https://blog.s3ich4n.me[object Object]" data-gatsby-head="true"/><meta name="theme-color" content="hsl(31, 92%, 62%)"/><style data-href="/styles.1fbe3e33e3d898c35e17.css" data-identity="gatsby-global-css">:after,:before,:root{--color-white:#fff;--color-primary:#5c92ff;--color-secondary:#f7a145;--color-prism-background:#eaeaeb;--color-typographic-base-font:#242933;--color-typographic-link-p-font:#5c92ff;--color-typographic-link-s-font:#f7a145;--color-page-border:#eaeaeb;--color-page-background:#fff;--color-sidebar-border:#eaeaeb;--color-sidebar-border-fade:#fff;--color-contacts-border:#eaeaeb;--color-button-border:#eaeaeb;--color-button-color:#242933;--color-theme-switcher:#3f485a;--color-theme-switcher-hover:#5c92ff}.dark :after,.dark :before,:root.dark{--color-white:#fff;--color-primary:#5c92ff;--color-secondary:#f7a145;--color-prism-background:#191d24;--color-typographic-base-font:#fff;--color-typographic-link-p-font:#5c92ff;--color-typographic-link-s-font:#f7a145;--color-page-border:#3f485a;--color-page-background:#242933;--color-sidebar-border:#3f485a;--color-sidebar-border-fade:#242933;--color-contacts-border:#3f485a;--color-button-border:#3f485a;--color-button-color:#fff;--color-theme-switcher:#eaeaeb;--color-theme-switcher-hover:#5c92ff}html{font-size:100}body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;background:var(--color-page-background);color:var(--color-typographic-base-font);font-size:16px;line-height:1.625;margin:0 0 0 calc(100vw - 100%);text-rendering:optimizelegibility}body,h1,h2,h3,h4,h5,h6{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif}h1,h2,h3,h4,h5,h6{font-weight:600}h1{font-size:40px;line-height:52px;margin-bottom:26px;margin-top:104px}h2{font-size:27px;line-height:39px}h2,h3{margin-bottom:13px;margin-top:52px}h3{font-size:22px;line-height:26px}h4{font-size:19.2px;margin-top:39px}h4,h5{line-height:26px;margin-bottom:13px}h5,h6{font-size:16px;margin-top:65px}h6{line-height:26px;margin-bottom:13px}img{max-width:100%}hr,img{border:0;display:block}hr{background-image:linear-gradient(180deg,transparent 1px,transparent 11px,#242933 0,#242933 15px,transparent 0,transparent 26px);background-size:100% 26px;color:var(--color-typographic-base-font);height:26px;margin:52px auto;width:100px}a{color:var(--color-typographic-link-p-font);text-decoration:none}a:active,a:focus,a:hover{color:var(--color-typographic-link-s-font)}b,strong{font-weight:600}ul{list-style:square;margin-bottom:26px}ul li{margin-bottom:10px;padding:0 5px}p{line-height:26px;margin-bottom:26px}blockquote{font-style:italic;padding:0;text-align:center}figure{display:block;height:auto;width:100%}figcaption{color:var(--color-typographic-base-font);font-size:14px;font-style:italic;line-height:19.5px;margin-bottom:0;margin-top:6.5px;text-align:center}@media screen and (min-width:685px){figure.float-left,figure.float-right{max-width:310px;padding:0 26px}.float-right{float:right}.float-left{float:left}}code[class*=language-],pre[class*=language-]{word-wrap:normal;color:#657b83;font-family:Consolas,Monaco,Andale Mono,Ubuntu Mono,monospace;font-size:1em;-webkit-hyphens:none;hyphens:none;line-height:1.5;-o-tab-size:4;tab-size:4;text-align:left;white-space:pre;word-break:normal;word-spacing:normal}pre[class*=language-]{border-radius:.3em;margin:.5em 0;overflow:auto;padding:1em}:not(pre)>code[class*=language-],pre[class*=language-]{background-color:var(--color-prism-background)}:not(pre)>code[class*=language-]{border-radius:.3em;padding:.1em}code[class*=language-] ::selection,code[class*=language-]::selection,pre[class*=language-] ::selection,pre[class*=language-]::selection{background:#073642}.token.cdata,.token.comment,.token.doctype,.token.prolog{color:#93a1a1}.token.punctuation{color:#586e75}.namespace{opacity:.7}.token.boolean,.token.constant,.token.deleted,.token.number,.token.property,.token.symbol,.token.tag{color:#268bd2}.token.attr-name,.token.builtin,.token.char,.token.inserted,.token.selector,.token.string,.token.url{color:#2aa198}.token.entity{background:#eee8d5;color:#657b83;cursor:help}.token.atrule,.token.attr-value,.token.keyword{color:#859900}.token.class-name,.token.function{color:#b58900}.token.important,.token.regex,.token.variable{color:#cb4b16}.token.bold,.token.important{font-weight:700}.token.italic{font-style:italic}.Feed-module--feed--a6204 .Feed-module--item--c7a63{margin-bottom:32.5px}.Feed-module--feed--a6204 .Feed-module--item--c7a63:last-child{margin-bottom:13px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f{font-size:27px;line-height:39px;margin-bottom:13px;margin-top:0}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f .Feed-module--link--6123b{color:var(--color-typographic-base-font)}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f .Feed-module--link--6123b:focus,.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f .Feed-module--link--6123b:hover{border-bottom:1px solid #242933;color:var(--color-typographic-base-font)}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--description--57348{font-size:16px;line-height:26px;margin-bottom:19.5px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--time--72864{color:var(--color-typographic-base-font);font-size:14px;font-weight:600;text-transform:uppercase}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--divider--81a18{margin:0 13px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--category--59f58 .Feed-module--link--6123b{color:var(--color-secondary);font-size:14px;font-weight:600;text-transform:uppercase}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--category--59f58 .Feed-module--link--6123b:focus,.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--category--59f58 .Feed-module--link--6123b:hover{color:#5c92ff}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--more--51a4e{color:var(--color-primary);font-size:16px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--more--51a4e:focus,.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--more--51a4e:hover{border-bottom:1px solid #5c92ff;color:var(--color-primary)}.Layout-module--layout--2c933{margin-left:auto;margin-right:auto;max-width:1070px}.Layout-module--layout--2c933:before{content:"";display:table}.Layout-module--layout--2c933:after{clear:both;content:"";display:table}.Page-module--page--24e03{margin-bottom:52px}.Page-module--page--24e03 .Page-module--inner--4b31d{padding:26px 19.5px 0}.Page-module--page--24e03 .Page-module--title--90338{font-size:40px;font-weight:600;line-height:52px;margin-bottom:37.7px;margin-top:0}.Page-module--page--24e03 .Page-module--body--561c4{font-size:16px;line-height:26px;margin:0 0 26px}@media screen and (min-width:685px){.Page-module--page--24e03{width:calc(58.275% - 12.5px)}.Page-module--page--24e03:nth-child(1n){clear:none;float:left;margin-right:30px}.Page-module--page--24e03:last-child{margin-right:0}.Page-module--page--24e03:nth-child(12n){float:right;margin-right:0}.Page-module--page--24e03:nth-child(12n+1){clear:both}.Page-module--page--24e03 .Page-module--inner--4b31d{padding:32.5px 19.5px 0}}@media screen and (min-width:960px){.Page-module--page--24e03{width:calc(66.6% - 10px)}.Page-module--page--24e03:nth-child(1n){clear:none;float:left;margin-right:30px}.Page-module--page--24e03:last-child{margin-right:0}.Page-module--page--24e03:nth-child(3n){float:right;margin-right:0}.Page-module--page--24e03:nth-child(3n+1){clear:both}.Page-module--page--24e03 .Page-module--inner--4b31d{padding:39px 26px 0}}.Pagination-module--pagination--d61cb{display:flex;margin-top:52px}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b{text-align:left;width:50%}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d{color:var(--color-secondary);font-size:26px;font-weight:700}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d:focus,.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d:hover{color:var(--color-primary)}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d.Pagination-module--disable--7e105{color:#3f485a;pointer-events:none}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8{text-align:right;width:50%}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff{color:var(--color-secondary);font-size:26px;font-weight:700}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff:focus,.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff:hover{color:var(--color-primary)}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff.Pagination-module--disable--7e105{color:#3f485a;pointer-events:none}.Button-module--button--b1113{border:1px solid var(--color-button-border);border-radius:20px;color:var(--color-button-color);display:inline-block;font-size:16px;font-weight:400;height:40px;line-height:40px;margin-left:auto;margin-right:auto;padding:0 26px;text-align:center;text-decoration:none}.Button-module--button--b1113:focus,.Button-module--button--b1113:hover{color:#5c92ff}.ThemeSwitcher-module--themeSwitcher--8a77f{--color:var(--color-theme-switcher)}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--button--7cb7b{align-items:center;background:transparent;border:0;cursor:pointer;display:flex;justify-content:center;outline:0}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--button--7cb7b svg{stroke:var(--color);pointer-events:none;transition:stroke .4s}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--button--7cb7b:hover{--color:var(--color-theme-switcher-hover)}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--moon--10537{stroke-dasharray:0 1px;opacity:0;transition:stroke-dasharray .2s ease-in,opacity .4s ease-in}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--sun--2163a{stroke-dasharray:1px 1px;opacity:1;transition:stroke-dasharray .2s ease-in,opacity .4s ease-in}.ThemeSwitcher-module--themeSwitcher--8a77f.ThemeSwitcher-module--dark--6db0c .ThemeSwitcher-module--moon--10537{stroke-dasharray:1px 1px;opacity:1}.ThemeSwitcher-module--themeSwitcher--8a77f.ThemeSwitcher-module--dark--6db0c .ThemeSwitcher-module--sun--2163a{stroke-dasharray:0 1px;opacity:0}.Author-module--author--cbd31 .Author-module--photo--9787b{background-clip:padding-box;border-radius:50%;display:inline-block;height:75px;margin-bottom:0;width:75px}.Author-module--author--cbd31 .Author-module--photo--9787b img{border-radius:50%}.Author-module--author--cbd31 .Author-module--title--cf7e5{font-size:18px;font-weight:600;line-height:29.25px;margin:0}.Author-module--author--cbd31 .Author-module--title--cf7e5 .Author-module--link--09c17,.Author-module--author--cbd31 .Author-module--title--cf7e5 .Author-module--link--09c17:focus,.Author-module--author--cbd31 .Author-module--title--cf7e5 .Author-module--link--09c17:hover{color:var(--color-typographic-base-font)}.Author-module--author--cbd31 .Author-module--bio--8168d,.Author-module--author--cbd31 .Author-module--subtitle--86ec5{color:#7f8ba4;line-height:26px;margin-bottom:26px}.Author-module--author--cbd31 .Author-module--titleContainer--4f576{align-items:center;display:flex;justify-content:space-between;margin:13px 0}.Categories-module--categories--f3389{color:#7f8ba4;font-size:14px}.Icon-module--icon--1d7da{fill:currentcolor;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;speak:none;stroke:currentcolor;stroke-width:0;display:inline-block;font-style:normal;font-variant:normal;font-weight:400;height:1em;line-height:1em;text-align:center;text-transform:none;width:1em}.Contacts-module--contacts--09178{margin-bottom:26px}.Contacts-module--contacts--09178 .Contacts-module--list--9670b{display:flex;flex-flow:row wrap;flex-grow:0;flex-shrink:0;list-style:none;margin:13px 0;max-width:165px;padding:0}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0{align-content:center;align-items:center;border:1px solid var(--color-contacts-border);border-radius:50%;display:flex;height:40px;justify-content:center;line-height:40px;margin:6.5px;padding:0;text-align:center;width:40px}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0:nth-child(3n+1){margin-left:0}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0 .Contacts-module--link--de1e0{border:0;color:var(--color-typographic-base-font);display:flex}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0 .Contacts-module--link--de1e0:focus,.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0 .Contacts-module--link--de1e0:hover{color:var(--color-typographic-link-p-font)}.Copyright-module--copyright--2c602{color:#7f8ba4;font-size:14px}.Menu-module--menu--113a9{margin-bottom:26px}.Menu-module--menu--113a9 .Menu-module--list--e1ae3{list-style:none;margin:0;padding:0}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679{margin:13px 0;padding:0}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02{border:0;color:var(--color-typographic-base-font);font-size:16px;font-weight:400}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02:focus,.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02:hover{border-bottom:1px solid #5c92ff;color:#5c92ff}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02.Menu-module--active--6cb74{border-bottom:1px solid var(--color-typographic-base-font);color:var(--color-typographic-base-font)}.Tags-module--tags--28a57{color:#7f8ba4;font-size:14px}.Sidebar-module--sidebar--1bfa1{width:100%}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0{padding:26px 19.5px 0;position:relative}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0:after{background:var(--color-sidebar-border);background:linear-gradient(to bottom,var(--color-sidebar-border) 0,var(--color-sidebar-border) 48%,var(--color-sidebar-border-fade) 100%)}@media screen and (min-width:685px){.Sidebar-module--sidebar--1bfa1{width:calc(41.625% - 17.5px)}.Sidebar-module--sidebar--1bfa1:nth-child(1n){clear:none;float:left;margin-right:30px}.Sidebar-module--sidebar--1bfa1:last-child{margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(12n){float:right;margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(12n+1){clear:both}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0{padding:32.5px 19.5px 0}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0:after{bottom:0;content:"";height:540px;position:absolute;right:-10px;top:30px;width:1px}}@media screen and (min-width:960px){.Sidebar-module--sidebar--1bfa1{width:calc(33.3% - 20px)}.Sidebar-module--sidebar--1bfa1:nth-child(1n){clear:none;float:left;margin-right:30px}.Sidebar-module--sidebar--1bfa1:last-child{margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(3n){float:right;margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(3n+1){clear:both}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0{padding:39px}}.Author-module--author--1c58d{border-top:1px solid var(--color-page-border);line-height:26px;margin-bottom:52px;margin-top:26px;max-width:920px;padding-top:26px}.Author-module--author--1c58d .Author-module--bio--08950 .Author-module--twitter--90647{display:block;text-decoration:underline}.Author-module--author--1c58d .Author-module--bio--08950 .Author-module--twitter--90647:focus,.Author-module--author--1c58d .Author-module--bio--08950 .Author-module--twitter--90647:hover{color:var(--color-typographic-link-s-font)}@media screen and (min-width:685px){.Author-module--author--1c58d{margin-left:auto;margin-right:auto}}.Content-module--content--80d58{margin:0 auto;max-width:1070px;padding:0 13px}.Content-module--content--80d58 .Content-module--title--09504{font-size:32px;font-weight:600;line-height:42.9px;margin:26px auto 0;max-width:920px;text-align:center}.Content-module--content--80d58 .Content-module--body--726c2 figure{margin-bottom:26px}.Content-module--content--80d58 .Content-module--body--726c2 figure blockquote{font-style:italic;margin-top:0;padding:26px 0;text-align:center}.Content-module--content--80d58 .Content-module--body--726c2 figure blockquote p{font-size:26.9072px;line-height:39px;margin-bottom:26px;margin-top:0;max-width:920px}.Content-module--content--80d58 .Content-module--body--726c2 a{text-decoration:underline}.Content-module--content--80d58 .Content-module--body--726c2 *{margin-left:auto;margin-right:auto;max-width:920px}.Content-module--content--80d58 .Content-module--body--726c2 h2>a{visibility:hidden}.Content-module--content--80d58 .Content-module--body--726c2 h2>a>svg{fill:var(--color-typographic-base-font)}.Content-module--content--80d58 .Content-module--body--726c2 img{max-width:100%}@media screen and (min-width:960px){.Content-module--content--80d58{padding:0}.Content-module--content--80d58 .Content-module--title--09504{font-size:48px;line-height:58.5px;margin-bottom:39px;margin-top:58.5px}.Content-module--content--80d58 .Content-module--body--726c2,.Content-module--content--80d58 .Content-module--body--726c2 p{font-size:18px;line-height:29.25px;margin-bottom:29.25px}.Content-module--content--80d58 .Content-module--body--726c2 h2>a{padding-right:13px;visibility:unset}}.Meta-module--meta--dae0a .Meta-module--date--4d30d{font-style:italic}.Tags-module--tags--18589{margin-bottom:13px}.Tags-module--tags--18589 .Tags-module--list--82ae6{list-style:none;padding:0}.Tags-module--tags--18589 .Tags-module--list--82ae6 .Tags-module--item--52015{display:inline-block;margin:6.5px 0}@media screen and (min-width:685px){.Tags-module--tags--18589 .Tags-module--list--82ae6 .Tags-module--item--52015:first-child{margin-left:0;padding-left:0}}.Post-module--post--3a994 .Post-module--content--3c6e5{margin:0 auto}.Post-module--post--3a994 .Post-module--comments--d3b99,.Post-module--post--3a994 .Post-module--footer--f8705{margin:0 auto;max-width:920px;padding:0 13px}.Post-module--post--3a994 .Post-module--buttons--2972d{align-items:center;display:flex;justify-content:center;margin:26px 0 0;text-align:center}.Post-module--post--3a994 .Post-module--buttons--2972d .Post-module--buttonArticles--d793a{margin:0 13px 0 0}@media screen and (min-width:960px){.Post-module--post--3a994 .Post-module--comments--d3b99,.Post-module--post--3a994 .Post-module--footer--f8705{padding:0}.Post-module--post--3a994 .Post-module--buttons--2972d{left:30px;margin:0 13px 0 0;max-width:none;position:fixed;top:30px}}</style><title data-gatsby-head="true">토탈 커맨더 입문기 (1) 기본기 - 팔공산 창고</title><link rel="alternate" type="application/rss+xml" title="팔공산 창고" href="/rss.xml"/><style type="text/css">
+    .anchor.before {
+      position: absolute;
+      top: 0;
+      left: 0;
+      transform: translateX(-100%);
+      padding-right: 4px;
+    }
+    .anchor.after {
+      display: inline-block;
+      padding-left: 4px;
+    }
+    h1 .anchor svg,
+    h2 .anchor svg,
+    h3 .anchor svg,
+    h4 .anchor svg,
+    h5 .anchor svg,
+    h6 .anchor svg {
+      visibility: hidden;
+    }
+    h1:hover .anchor svg,
+    h2:hover .anchor svg,
+    h3:hover .anchor svg,
+    h4:hover .anchor svg,
+    h5:hover .anchor svg,
+    h6:hover .anchor svg,
+    h1 .anchor:focus svg,
+    h2 .anchor:focus svg,
+    h3 .anchor:focus svg,
+    h4 .anchor:focus svg,
+    h5 .anchor:focus svg,
+    h6 .anchor:focus svg {
+      visibility: visible;
+    }
+  </style><script>
+    document.addEventListener("DOMContentLoaded", function(event) {
+      var hash = window.decodeURI(location.hash.replace('#', ''))
+      if (hash !== '') {
+        var element = document.getElementById(hash)
+        if (element) {
+          var scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+          var clientTop = document.documentElement.clientTop || document.body.clientTop || 0
+          var offset = element.getBoundingClientRect().top + scrollTop - clientTop
+          // Wait for the browser to finish rendering before scrolling.
+          setTimeout((function() {
+            window.scrollTo(0, offset - 0)
+          }), 0)
+        }
+      }
+    })
+  </script><link rel="preconnect" href="https://www.googletagmanager.com"/><link rel="dns-prefetch" href="https://www.googletagmanager.com"/><script async="" src="https://www.googletagmanager.com/gtag/js?id="></script><script>
+      
+      
+      if(true) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){window.dataLayer && window.dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', '', {"send_page_view":false});
+      }
+      </script><link rel="sitemap" type="application/xml" href="/sitemap/sitemap-index.xml"/><link rel="icon" href="/favicon-32x32.png?v=4c2c993a06ee0fd0ee953020b09128a9" type="image/png"/><link rel="manifest" href="/manifest.webmanifest" crossorigin="anonymous"/><link rel="apple-touch-icon" sizes="48x48" href="/icons/icon-48x48.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="72x72" href="/icons/icon-72x72.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="96x96" href="/icons/icon-96x96.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="144x144" href="/icons/icon-144x144.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192x192.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="256x256" href="/icons/icon-256x256.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="384x384" href="/icons/icon-384x384.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="512x512" href="/icons/icon-512x512.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><style>.gatsby-image-wrapper{position:relative;overflow:hidden}.gatsby-image-wrapper picture.object-fit-polyfill{position:static!important}.gatsby-image-wrapper img{bottom:0;height:100%;left:0;margin:0;max-width:none;padding:0;position:absolute;right:0;top:0;width:100%;object-fit:cover}.gatsby-image-wrapper [data-main-image]{opacity:0;transform:translateZ(0);transition:opacity .25s linear;will-change:opacity}.gatsby-image-wrapper-constrained{display:inline-block;vertical-align:top}</style><noscript><style>.gatsby-image-wrapper noscript [data-main-image]{opacity:1!important}.gatsby-image-wrapper [data-placeholder-image]{opacity:0!important}</style></noscript><script type="module">const e="undefined"!=typeof HTMLImageElement&&"loading"in HTMLImageElement.prototype;e&&document.body.addEventListener("load",(function(e){const t=e.target;if(void 0===t.dataset.mainImage)return;if(void 0===t.dataset.gatsbyImageSsr)return;let a=null,n=t;for(;null===a&&n;)void 0!==n.parentNode.dataset.gatsbyImageWrapper&&(a=n.parentNode),n=n.parentNode;const o=a.querySelector("[data-placeholder-image]"),r=new Image;r.src=t.currentSrc,r.decode().catch((()=>{})).then((()=>{t.style.opacity=1,o&&(o.style.opacity=0,o.style.transition="opacity 500ms linear")}))}),!0);</script></head><body><script>
+          void function() {
+            var cachedMode;
+
+            try {
+              var preferredTheme = JSON.parse(localStorage.getItem('diesel:theme-atom'));
+
+              if (preferredTheme && preferredTheme.mode) {
+                cachedMode = preferredTheme.mode;
+              }
+            } catch (err) { }
+
+            function setTheme(newTheme) {
+              document.documentElement.className = newTheme;
+            }
+
+            var darkQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+            setTheme(cachedMode || (darkQuery.matches ? 'dark' : 'light'));
+          }()
+        </script><div id="___gatsby"><div style="outline:none" tabindex="-1" id="gatsby-focus-wrapper"><div class="Layout-module--layout--2c933"><div class="Post-module--post--3a994"><div class="Post-module--buttons--2972d"><a class="Button-module--button--b1113 Post-module--buttonArticles--d793a" href="/">All Articles</a></div><div class="Post-module--content--3c6e5"><div class="Content-module--content--80d58"><h1 class="Content-module--title--09504">토탈 커맨더 입문기 (1) 기본기</h1><div class="Content-module--body--726c2"><h1 id="토탈-커맨더-써보기" style="position:relative;"><a href="#%ED%86%A0%ED%83%88-%EC%BB%A4%EB%A7%A8%EB%8D%94-%EC%8D%A8%EB%B3%B4%EA%B8%B0" aria-label="토탈 커맨더 써보기 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>토탈 커맨더 써보기</h1>
+<h2 id="토탈-커맨더란" style="position:relative;"><a href="#%ED%86%A0%ED%83%88-%EC%BB%A4%EB%A7%A8%EB%8D%94%EB%9E%80" aria-label="토탈 커맨더란 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>토탈 커맨더란?</h2>
+<p>30년 가량의 유구한 전통을 가진 윈도우즈 유틸리티입니다. 현재까지도 무려 Windows 3.1 버전부터 지원을 하는 식입니다. 충분히 닉값하지요. GNU/Linux 진영의 GUI 버전으로는 <a href="https://doublecmd.sourceforge.io/" target="_blank" rel="nofollow noopener noreferrer">Double Commander</a>가 있고, CLI 버전으로는 <a href="https://midnight-commander.org/" target="_blank" rel="nofollow noopener noreferrer">Midnight Commander</a>가 있습니다. 터미널의 편의성에, 생각합니다.</p>
+<p>참고) 이런류의 파일 관리 프로그램을 <a href="https://en.wikipedia.org/wiki/File_manager#Orthodox_file_managers" target="_blank" rel="nofollow noopener noreferrer">Orthodox File Managers</a>(abbr. OFM) 라고 일컫습니다. OFM에 대한 내용은 <a href="https://softpanorama.org/OFM/index.shtml" target="_blank" rel="nofollow noopener noreferrer">이 글</a>을 읽어보는 것을 추천합니다.</p>
+<h2 id="기왕-쓰기로-했다면-잘-써보자구요" style="position:relative;"><a href="#%EA%B8%B0%EC%99%95-%EC%93%B0%EA%B8%B0%EB%A1%9C-%ED%96%88%EB%8B%A4%EB%A9%B4-%EC%9E%98-%EC%8D%A8%EB%B3%B4%EC%9E%90%EA%B5%AC%EC%9A%94" aria-label="기왕 쓰기로 했다면 잘 써보자구요 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>기왕 쓰기로 했다면 잘 써보자구요</h2>
+<p>既来之, 则安之 라는 말이 있습니다. 기왕 쓰기로 했으면, 마음 굳히고 잘 해보자 라는 뜻이죠. 기왕 토탈 커맨더를 써보기로 했다면, OFM을 통해 아끼는 시간이 상당해지길 바랍니다. 이 글을 읽으시는 여러분들께도 마찬가지이길 바랍니다! <a href="https://softpanorama.org/Articles/introduction_to_orthodox_file_managers.shtml#Recommendations_for_Users" target="_blank" rel="nofollow noopener noreferrer">이 글</a>을 읽고 입문에 대한 방향성이 정해지길 바랍니다.</p>
+<ol>
+<li>OFM을 잘 쓰려면 꾸준한 연습이 필요합니다. 마치 악기를 다루는 것 처럼 꾸준히 사용해야 합니다.</li>
+<li><a href="https://dictionary.cambridge.org/dictionary/english/log-book" target="_blank" rel="nofollow noopener noreferrer">로그북</a>을 읽어봅시다. 처음에 무슨 표현인가 했더니, 사용설명서나 도움말 같은 느낌이더군요.
+<ol>
+<li>토탈 커맨더의 도움말은 <code class="language-text">F1</code> 이다!</li>
+</ol>
+</li>
+<li>나만의 단축키를 익힙시다
+<ol>
+<li>토탈 커맨더의 기본 단축키 내용은 <code class="language-text">도움말 >> 단축키</code> 를 차례로 클릭해서 확인할 수 있습니다.</li>
+<li>검색 후 필요한 내용을 찾고, 단축키를 바꿔봅시다.</li>
+</ol>
+</li>
+<li>(더 나아가서) 나만의 키보드 매크로와 유저 메뉴까지 만들어봅시다
+<ol>
+<li>이건 나중에 다뤄봅시다</li>
+</ol>
+</li>
+<li>OFM 유저 포럼이 있다면 “꼭” 들러봅시다!
+<ol>
+<li>선대 사람들이 묻고답한 내용들이 피가되고 살이될 수 있습니다</li>
+<li>당장 아래에서 소개할 커스텀 단축키 내용도, <a href="https://ghisler.ch/board/viewtopic.php?t=3809" target="_blank" rel="nofollow noopener noreferrer">거의 20년된</a> 답변에서 답을 얻었습니다!</li>
+</ol>
+</li>
+</ol>
+<h2 id="주요-동작-익히기" style="position:relative;"><a href="#%EC%A3%BC%EC%9A%94-%EB%8F%99%EC%9E%91-%EC%9D%B5%ED%9E%88%EA%B8%B0" aria-label="주요 동작 익히기 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>주요 동작 익히기</h2>
+<p>메인 화면에서?</p>
+<ul>
+<li>메인화면은 항상 좌측/우측으로 나누어져 있습니다. 좌측 → 우측, 우측 → 좌측으로 이동할 수 있습니다.</li>
+<li>마우스를 안 씁니다!</li>
+<li>앞으로 “이동한다” 라는 뜻은 반대쪽 탭으로 옮김을 일컫습니다.</li>
+</ul>
+<p>주요 동작</p>
+<ul>
+<li>파일/폴더 선택하기 → <code class="language-text">Spacebar</code>
+<ul>
+<li>하나 뿐 아니라 여러개를 선택할 수 있습니다.</li>
+<li>옮기기
+<ul>
+<li><code class="language-text">F6</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>폴더 즐겨찾기 → <code class="language-text">Ctrl + D</code>
+<ul>
+<li>폴더 즐겨찾기 찾아가기</li>
+<li>폴더 즐겨찾기 등록하기 (<code class="language-text">A</code> 입력)</li>
+</ul>
+</li>
+<li>탭에서 선택한 하위 디렉토리를 반대쪽 탭에서 띄우기 (<code class="language-text">Ctrl + Shift + →</code> 혹은 <code class="language-text">Ctrl + Shift + ←</code>)</li>
+<li>이전 디렉토리로 돌아가기 (<code class="language-text">Alt + ←</code>)</li>
+<li>파일 내용 보기 → <code class="language-text">F3</code></li>
+<li>파일 내용 수정하기 → <code class="language-text">F4</code>
+<ul>
+<li>지정한 프로그램을 이용하여 파일을 수정하게 할 수도 있습니다. 아래 탭에서 살펴보시죠.</li>
+</ul>
+</li>
+<li>현재 디렉토리를 탐색기(File Explorer)에서 보기
+<ul>
+<li>(해당 디렉토리 선택 후) <code class="language-text">Ctrl + Enter</code></li>
+<li>(현재 디렉토리 보기)<code class="language-text">.</code> 입력 후 엔터</li>
+</ul>
+</li>
+<li>파일 비교하기
+<ul>
+<li>
+<ol>
+<li>양쪽 탭의 파일을 <code class="language-text">Spacebar</code>로 선택</li>
+</ol>
+</li>
+<li>
+<ol start="2">
+<li><code class="language-text">파일 >> 내용으로 비교</code> 클릭 후 비교</li>
+</ol>
+</li>
+<li>하지만 이렇게 일일이 하기엔 번거롭기 때문에, 커스텀 단축키를 만들어 봅시다!</li>
+</ul>
+</li>
+</ul>
+<h3 id="파일-수정-시-내가-지정한-프로그램으로-수정하기" style="position:relative;"><a href="#%ED%8C%8C%EC%9D%BC-%EC%88%98%EC%A0%95-%EC%8B%9C-%EB%82%B4%EA%B0%80-%EC%A7%80%EC%A0%95%ED%95%9C-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%A8%EC%9C%BC%EB%A1%9C-%EC%88%98%EC%A0%95%ED%95%98%EA%B8%B0" aria-label="파일 수정 시 내가 지정한 프로그램으로 수정하기 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>파일 수정 시, 내가 지정한 프로그램으로 수정하기</h3>
+<ol>
+<li>상단 메뉴바의 <code class="language-text">환경설정 >> 옵션</code>을 클릭합니다</li>
+<li><code class="language-text">동작 >> 보기/편집</code> 란으로 이동합니다</li>
+<li><em>F4로 실행되는 편집 프로그램</em> 을 지정합니다.</li>
+</ol>
+<p><figure class="gatsby-resp-image-figure" style="">
+    <span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 960px; "
+    >
+      <a
+    class="gatsby-resp-image-link"
+    href="/static/2caa7e254b13d0b8e871f8401071e778/99aeb/01_edit_via_vscode.jpg"
+    style="display: block"
+    target="_blank"
+    rel="noopener"
+  >
+    <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 79.16666666666667%; position: relative; bottom: 0; left: 0; background-image: url('data:image/jpeg;base64,/9j/2wBDABALDA4MChAODQ4SERATGCgaGBYWGDEjJR0oOjM9PDkzODdASFxOQERXRTc4UG1RV19iZ2hnPk1xeXBkeFxlZ2P/2wBDARESEhgVGC8aGi9jQjhCY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2P/wgARCAAQABQDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAAAAEF/8QAFAEBAAAAAAAAAAAAAAAAAAAAAP/aAAwDAQACEAMQAAAByYEB/8QAFRABAQAAAAAAAAAAAAAAAAAAIEH/2gAIAQEAAQUCp//EABQRAQAAAAAAAAAAAAAAAAAAABD/2gAIAQMBAT8BP//EABQRAQAAAAAAAAAAAAAAAAAAABD/2gAIAQIBAT8BP//EABQQAQAAAAAAAAAAAAAAAAAAACD/2gAIAQEABj8CX//EABgQAAIDAAAAAAAAAAAAAAAAAAEQEUFh/9oACAEBAAE/ITqXb//aAAwDAQACAAMAAAAQA8//xAAUEQEAAAAAAAAAAAAAAAAAAAAQ/9oACAEDAQE/ED//xAAUEQEAAAAAAAAAAAAAAAAAAAAQ/9oACAECAQE/ED//xAAaEAEAAwEBAQAAAAAAAAAAAAABABEhMRCh/9oACAEBAAE/EDrH1HtTYNpUuPbvfP/Z'); background-size: cover; display: block;"
+  ></span>
+  <picture>
+          <source
+              srcset="/static/2caa7e254b13d0b8e871f8401071e778/8ac56/01_edit_via_vscode.webp 240w,
+/static/2caa7e254b13d0b8e871f8401071e778/d3be9/01_edit_via_vscode.webp 480w,
+/static/2caa7e254b13d0b8e871f8401071e778/e46b2/01_edit_via_vscode.webp 960w,
+/static/2caa7e254b13d0b8e871f8401071e778/26255/01_edit_via_vscode.webp 1284w"
+              sizes="(max-width: 960px) 100vw, 960px"
+              type="image/webp"
+            />
+          <source
+            srcset="/static/2caa7e254b13d0b8e871f8401071e778/09b79/01_edit_via_vscode.jpg 240w,
+/static/2caa7e254b13d0b8e871f8401071e778/7cc5e/01_edit_via_vscode.jpg 480w,
+/static/2caa7e254b13d0b8e871f8401071e778/6a068/01_edit_via_vscode.jpg 960w,
+/static/2caa7e254b13d0b8e871f8401071e778/99aeb/01_edit_via_vscode.jpg 1284w"
+            sizes="(max-width: 960px) 100vw, 960px"
+            type="image/jpeg"
+          />
+          <img
+            class="gatsby-resp-image-image"
+            src="/static/2caa7e254b13d0b8e871f8401071e778/6a068/01_edit_via_vscode.jpg"
+            alt="vscode를 편집프로그램으로 지정합니다."
+            title="vscode를 편집프로그램으로 지정합니다."
+            loading="lazy"
+            decoding="async"
+            style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+          />
+        </picture>
+  </a>
+    </span>
+    <figcaption class="gatsby-resp-image-figcaption"><p>vscode를 편집프로그램으로 지정합니다.</p></figcaption>
+  </figure></p>
+<p>참고) 저는 <a href="https://code.visualstudio.com/" target="_blank" rel="nofollow noopener noreferrer">vscode</a>를 사용하고, 설치 시 <code class="language-text">%PATH%</code> 경로에 등록하여서 <code class="language-text">code</code> 만 기재하였습니다! 추가하는 방법은 <a href="https://code.visualstudio.com/docs/setup/windows" target="_blank" rel="nofollow noopener noreferrer">이 링크</a>를 참고해 주세요.</p>
+<h3 id="커스텀-단축키-만들기-토탈-커맨더-명령-지정" style="position:relative;"><a href="#%EC%BB%A4%EC%8A%A4%ED%85%80-%EB%8B%A8%EC%B6%95%ED%82%A4-%EB%A7%8C%EB%93%A4%EA%B8%B0-%ED%86%A0%ED%83%88-%EC%BB%A4%EB%A7%A8%EB%8D%94-%EB%AA%85%EB%A0%B9-%EC%A7%80%EC%A0%95" aria-label="커스텀 단축키 만들기 토탈 커맨더 명령 지정 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>커스텀 단축키 만들기: 토탈 커맨더 명령 지정</h3>
+<p>토탈 커맨더에 존재하는 명령을 단축키로 지정할 수도 있습니다.</p>
+<ol>
+<li>
+<p>상단 메뉴바의 <code class="language-text">환경설정 >> 옵션</code>을 클릭합니다.</p>
+</li>
+<li>
+<p><code class="language-text">기타</code> 란으로 이동합니다.</p>
+</li>
+<li>
+<p><em>단축키 재정의</em> 를 통해 사용할 단축키를 지정해봅시다!</p>
+<ol>
+<li>명령어가 먼저 등록되어 있는지부터 살펴봅시다. 저는 <code class="language-text">Ctrl + Y</code>로 지정하겠습니다.</li>
+<li>아무 명령이 지정되어있지 않군요. 그렇다면 돋보기 버튼을 눌러 지정해봅시다.</li>
+</ol>
+<p><figure class="gatsby-resp-image-figure" style="">
+    <span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 960px; "
+    >
+      <a
+    class="gatsby-resp-image-link"
+    href="/static/f30e44bbd7976e549e3b426141b39484/99aeb/02-1_find_command_no_cmd_found.jpg"
+    style="display: block"
+    target="_blank"
+    rel="noopener"
+  >
+    <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 79.16666666666667%; position: relative; bottom: 0; left: 0; background-image: url('data:image/jpeg;base64,/9j/2wBDABALDA4MChAODQ4SERATGCgaGBYWGDEjJR0oOjM9PDkzODdASFxOQERXRTc4UG1RV19iZ2hnPk1xeXBkeFxlZ2P/2wBDARESEhgVGC8aGi9jQjhCY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2P/wgARCAAQABQDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAAAAEF/8QAFAEBAAAAAAAAAAAAAAAAAAAAAP/aAAwDAQACEAMQAAAByYEB/8QAFRABAQAAAAAAAAAAAAAAAAAAIEH/2gAIAQEAAQUCp//EABQRAQAAAAAAAAAAAAAAAAAAABD/2gAIAQMBAT8BP//EABQRAQAAAAAAAAAAAAAAAAAAABD/2gAIAQIBAT8BP//EABQQAQAAAAAAAAAAAAAAAAAAACD/2gAIAQEABj8CX//EABcQAAMBAAAAAAAAAAAAAAAAAAAQEQH/2gAIAQEAAT8hGqlX/9oADAMBAAIAAwAAABATz//EABQRAQAAAAAAAAAAAAAAAAAAABD/2gAIAQMBAT8QP//EABQRAQAAAAAAAAAAAAAAAAAAABD/2gAIAQIBAT8QP//EABsQAQACAgMAAAAAAAAAAAAAAAEAIRFREDFh/9oACAEBAAE/EG3lWdq4urgvRFO5nyf/2Q=='); background-size: cover; display: block;"
+  ></span>
+  <picture>
+          <source
+              srcset="/static/f30e44bbd7976e549e3b426141b39484/8ac56/02-1_find_command_no_cmd_found.webp 240w,
+/static/f30e44bbd7976e549e3b426141b39484/d3be9/02-1_find_command_no_cmd_found.webp 480w,
+/static/f30e44bbd7976e549e3b426141b39484/e46b2/02-1_find_command_no_cmd_found.webp 960w,
+/static/f30e44bbd7976e549e3b426141b39484/26255/02-1_find_command_no_cmd_found.webp 1284w"
+              sizes="(max-width: 960px) 100vw, 960px"
+              type="image/webp"
+            />
+          <source
+            srcset="/static/f30e44bbd7976e549e3b426141b39484/09b79/02-1_find_command_no_cmd_found.jpg 240w,
+/static/f30e44bbd7976e549e3b426141b39484/7cc5e/02-1_find_command_no_cmd_found.jpg 480w,
+/static/f30e44bbd7976e549e3b426141b39484/6a068/02-1_find_command_no_cmd_found.jpg 960w,
+/static/f30e44bbd7976e549e3b426141b39484/99aeb/02-1_find_command_no_cmd_found.jpg 1284w"
+            sizes="(max-width: 960px) 100vw, 960px"
+            type="image/jpeg"
+          />
+          <img
+            class="gatsby-resp-image-image"
+            src="/static/f30e44bbd7976e549e3b426141b39484/6a068/02-1_find_command_no_cmd_found.jpg"
+            alt="이제 이 단축키는 제 겁니다"
+            title="이제 이 단축키는 제 겁니다"
+            loading="lazy"
+            decoding="async"
+            style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+          />
+        </picture>
+  </a>
+    </span>
+    <figcaption class="gatsby-resp-image-figcaption"><p>이제 이 단축키는 제 겁니다</p></figcaption>
+  </figure></p>
+<ol>
+<li>두 파일을 비교하는 명령은 <code class="language-text">cm_CompareFilesByContent</code> 입니다. (<a href="https://ghisler.ch/board/viewtopic.php?t=3809" target="_blank" rel="nofollow noopener noreferrer">참고링크</a>)</li>
+</ol>
+<p><figure class="gatsby-resp-image-figure" style="">
+    <span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 960px; "
+    >
+      <a
+    class="gatsby-resp-image-link"
+    href="/static/5a5c6993b13dfc7a02cb200c913b58a1/de280/02-2_find_command_done.jpg"
+    style="display: block"
+    target="_blank"
+    rel="noopener"
+  >
+    <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 57.91666666666667%; position: relative; bottom: 0; left: 0; background-image: url('data:image/jpeg;base64,/9j/2wBDABALDA4MChAODQ4SERATGCgaGBYWGDEjJR0oOjM9PDkzODdASFxOQERXRTc4UG1RV19iZ2hnPk1xeXBkeFxlZ2P/2wBDARESEhgVGC8aGi9jQjhCY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2P/wgARCAAMABQDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAAAQAF/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAH/2gAMAwEAAhADEAAAAckhGI//xAAUEAEAAAAAAAAAAAAAAAAAAAAg/9oACAEBAAEFAl//xAAUEQEAAAAAAAAAAAAAAAAAAAAQ/9oACAEDAQE/AT//xAAUEQEAAAAAAAAAAAAAAAAAAAAQ/9oACAECAQE/AT//xAAUEAEAAAAAAAAAAAAAAAAAAAAg/9oACAEBAAY/Al//xAAZEAACAwEAAAAAAAAAAAAAAAABEQAQIWH/2gAIAQEAAT8heDBHwR8o1//aAAwDAQACAAMAAAAQHD//xAAVEQEBAAAAAAAAAAAAAAAAAAAAEf/aAAgBAwEBPxCI/8QAFREBAQAAAAAAAAAAAAAAAAAAABH/2gAIAQIBAT8Qqv/EABsQAQACAgMAAAAAAAAAAAAAAAEAERAhMWFx/9oACAEBAAE/EGuyXdp3GzDwnIQU4//Z'); background-size: cover; display: block;"
+  ></span>
+  <picture>
+          <source
+              srcset="/static/5a5c6993b13dfc7a02cb200c913b58a1/8ac56/02-2_find_command_done.webp 240w,
+/static/5a5c6993b13dfc7a02cb200c913b58a1/d3be9/02-2_find_command_done.webp 480w,
+/static/5a5c6993b13dfc7a02cb200c913b58a1/e46b2/02-2_find_command_done.webp 960w,
+/static/5a5c6993b13dfc7a02cb200c913b58a1/f992d/02-2_find_command_done.webp 1440w,
+/static/5a5c6993b13dfc7a02cb200c913b58a1/65131/02-2_find_command_done.webp 1586w"
+              sizes="(max-width: 960px) 100vw, 960px"
+              type="image/webp"
+            />
+          <source
+            srcset="/static/5a5c6993b13dfc7a02cb200c913b58a1/09b79/02-2_find_command_done.jpg 240w,
+/static/5a5c6993b13dfc7a02cb200c913b58a1/7cc5e/02-2_find_command_done.jpg 480w,
+/static/5a5c6993b13dfc7a02cb200c913b58a1/6a068/02-2_find_command_done.jpg 960w,
+/static/5a5c6993b13dfc7a02cb200c913b58a1/644c5/02-2_find_command_done.jpg 1440w,
+/static/5a5c6993b13dfc7a02cb200c913b58a1/de280/02-2_find_command_done.jpg 1586w"
+            sizes="(max-width: 960px) 100vw, 960px"
+            type="image/jpeg"
+          />
+          <img
+            class="gatsby-resp-image-image"
+            src="/static/5a5c6993b13dfc7a02cb200c913b58a1/6a068/02-2_find_command_done.jpg"
+            alt="설정을 완료합시다."
+            title="설정을 완료합시다."
+            loading="lazy"
+            decoding="async"
+            style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+          />
+        </picture>
+  </a>
+    </span>
+    <figcaption class="gatsby-resp-image-figcaption"><p>설정을 완료합시다.</p></figcaption>
+  </figure></p>
+</li>
+<li>
+<p>초록 체크버튼을 눌러 단축키를 지정합니다.</p>
+</li>
+</ol>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 960px; "
+    >
+      <a
+    class="gatsby-resp-image-link"
+    href="/static/b1615abf3a046611cd25153b873fcdf9/d7177/03-1_compare_before.jpg"
+    style="display: block"
+    target="_blank"
+    rel="noopener"
+  >
+    <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 79.16666666666667%; position: relative; bottom: 0; left: 0; background-image: url('data:image/jpeg;base64,/9j/2wBDABALDA4MChAODQ4SERATGCgaGBYWGDEjJR0oOjM9PDkzODdASFxOQERXRTc4UG1RV19iZ2hnPk1xeXBkeFxlZ2P/2wBDARESEhgVGC8aGi9jQjhCY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2P/wgARCAAQABQDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAAAAEF/8QAFAEBAAAAAAAAAAAAAAAAAAAAAP/aAAwDAQACEAMQAAAByYEB/8QAFRABAQAAAAAAAAAAAAAAAAAAIEH/2gAIAQEAAQUCp//EABQRAQAAAAAAAAAAAAAAAAAAABD/2gAIAQMBAT8BP//EABQRAQAAAAAAAAAAAAAAAAAAABD/2gAIAQIBAT8BP//EABQQAQAAAAAAAAAAAAAAAAAAACD/2gAIAQEABj8CX//EABgQAAMBAQAAAAAAAAAAAAAAAAABEBEx/9oACAEBAAE/IX0OabP/2gAMAwEAAgADAAAAELPP/8QAFBEBAAAAAAAAAAAAAAAAAAAAEP/aAAgBAwEBPxA//8QAFBEBAAAAAAAAAAAAAAAAAAAAEP/aAAgBAgEBPxA//8QAGxABAQACAwEAAAAAAAAAAAAAAREAIRAxQVH/2gAIAQEAAT8Q2s3O2uF1UC/MVJvFvkz/2Q=='); background-size: cover; display: block;"
+  ></span>
+  <picture>
+          <source
+              srcset="/static/b1615abf3a046611cd25153b873fcdf9/8ac56/03-1_compare_before.webp 240w,
+/static/b1615abf3a046611cd25153b873fcdf9/d3be9/03-1_compare_before.webp 480w,
+/static/b1615abf3a046611cd25153b873fcdf9/e46b2/03-1_compare_before.webp 960w,
+/static/b1615abf3a046611cd25153b873fcdf9/78301/03-1_compare_before.webp 1282w"
+              sizes="(max-width: 960px) 100vw, 960px"
+              type="image/webp"
+            />
+          <source
+            srcset="/static/b1615abf3a046611cd25153b873fcdf9/09b79/03-1_compare_before.jpg 240w,
+/static/b1615abf3a046611cd25153b873fcdf9/7cc5e/03-1_compare_before.jpg 480w,
+/static/b1615abf3a046611cd25153b873fcdf9/6a068/03-1_compare_before.jpg 960w,
+/static/b1615abf3a046611cd25153b873fcdf9/d7177/03-1_compare_before.jpg 1282w"
+            sizes="(max-width: 960px) 100vw, 960px"
+            type="image/jpeg"
+          />
+          <img
+            class="gatsby-resp-image-image"
+            src="/static/b1615abf3a046611cd25153b873fcdf9/6a068/03-1_compare_before.jpg"
+            alt="03 1 compare before"
+            title="03 1 compare before"
+            loading="lazy"
+            decoding="async"
+            style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+          />
+        </picture>
+  </a>
+    </span></p>
+<ol>
+<li>그러면 빨갛게 변합니다. 단축키 지정을 완료했습니다!</li>
+</ol>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 960px; "
+    >
+      <a
+    class="gatsby-resp-image-link"
+    href="/static/249b80fc83d017716fedc343e6f9e8a5/d7177/03-2_setting_command_done.jpg"
+    style="display: block"
+    target="_blank"
+    rel="noopener"
+  >
+    <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 79.16666666666667%; position: relative; bottom: 0; left: 0; background-image: url('data:image/jpeg;base64,/9j/2wBDABALDA4MChAODQ4SERATGCgaGBYWGDEjJR0oOjM9PDkzODdASFxOQERXRTc4UG1RV19iZ2hnPk1xeXBkeFxlZ2P/2wBDARESEhgVGC8aGi9jQjhCY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2P/wgARCAAQABQDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAAAAEF/8QAFAEBAAAAAAAAAAAAAAAAAAAAAP/aAAwDAQACEAMQAAAByYEB/8QAFRABAQAAAAAAAAAAAAAAAAAAIEH/2gAIAQEAAQUCp//EABQRAQAAAAAAAAAAAAAAAAAAABD/2gAIAQMBAT8BP//EABQRAQAAAAAAAAAAAAAAAAAAABD/2gAIAQIBAT8BP//EABQQAQAAAAAAAAAAAAAAAAAAACD/2gAIAQEABj8CX//EABcQAAMBAAAAAAAAAAAAAAAAAAAQEQH/2gAIAQEAAT8hGqlX/9oADAMBAAIAAwAAABATz//EABQRAQAAAAAAAAAAAAAAAAAAABD/2gAIAQMBAT8QP//EABQRAQAAAAAAAAAAAAAAAAAAABD/2gAIAQIBAT8QP//EABoQAAMBAAMAAAAAAAAAAAAAAAABESEQMVH/2gAIAQEAAT8QevXTtnG23Er4htJpT//Z'); background-size: cover; display: block;"
+  ></span>
+  <picture>
+          <source
+              srcset="/static/249b80fc83d017716fedc343e6f9e8a5/8ac56/03-2_setting_command_done.webp 240w,
+/static/249b80fc83d017716fedc343e6f9e8a5/d3be9/03-2_setting_command_done.webp 480w,
+/static/249b80fc83d017716fedc343e6f9e8a5/e46b2/03-2_setting_command_done.webp 960w,
+/static/249b80fc83d017716fedc343e6f9e8a5/78301/03-2_setting_command_done.webp 1282w"
+              sizes="(max-width: 960px) 100vw, 960px"
+              type="image/webp"
+            />
+          <source
+            srcset="/static/249b80fc83d017716fedc343e6f9e8a5/09b79/03-2_setting_command_done.jpg 240w,
+/static/249b80fc83d017716fedc343e6f9e8a5/7cc5e/03-2_setting_command_done.jpg 480w,
+/static/249b80fc83d017716fedc343e6f9e8a5/6a068/03-2_setting_command_done.jpg 960w,
+/static/249b80fc83d017716fedc343e6f9e8a5/d7177/03-2_setting_command_done.jpg 1282w"
+            sizes="(max-width: 960px) 100vw, 960px"
+            type="image/jpeg"
+          />
+          <img
+            class="gatsby-resp-image-image"
+            src="/static/249b80fc83d017716fedc343e6f9e8a5/6a068/03-2_setting_command_done.jpg"
+            alt="03 2 setting command done"
+            title="03 2 setting command done"
+            loading="lazy"
+            decoding="async"
+            style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+          />
+        </picture>
+  </a>
+    </span></p>
+<h4 id="직접-해봅시다" style="position:relative;"><a href="#%EC%A7%81%EC%A0%91-%ED%95%B4%EB%B4%85%EC%8B%9C%EB%8B%A4" aria-label="직접 해봅시다 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>직접 해봅시다!</h4>
+<p><code class="language-text">Ctrl + Y</code> 를 눌러, 두 파일을 비교해봅시다! 아래와 같은 창이 뜨며 비교한다면 성공입니다.</p>
+<p><figure class="gatsby-resp-image-figure" style="">
+    <span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 960px; "
+    >
+      <a
+    class="gatsby-resp-image-link"
+    href="/static/0d98d4a1b6e30993056402fe125bda41/25339/04_compare_done.jpg"
+    style="display: block"
+    target="_blank"
+    rel="noopener"
+  >
+    <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 49.16666666666667%; position: relative; bottom: 0; left: 0; background-image: url('data:image/jpeg;base64,/9j/2wBDABALDA4MChAODQ4SERATGCgaGBYWGDEjJR0oOjM9PDkzODdASFxOQERXRTc4UG1RV19iZ2hnPk1xeXBkeFxlZ2P/2wBDARESEhgVGC8aGi9jQjhCY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2P/wgARCAAKABQDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAAAAIF/8QAFAEBAAAAAAAAAAAAAAAAAAAAAP/aAAwDAQACEAMQAAAByFCVj//EABQQAQAAAAAAAAAAAAAAAAAAACD/2gAIAQEAAQUCX//EABQRAQAAAAAAAAAAAAAAAAAAABD/2gAIAQMBAT8BP//EABQRAQAAAAAAAAAAAAAAAAAAABD/2gAIAQIBAT8BP//EABQQAQAAAAAAAAAAAAAAAAAAACD/2gAIAQEABj8CX//EABgQAQADAQAAAAAAAAAAAAAAAAEAEBFh/9oACAEBAAE/IV2bykon/9oADAMBAAIAAwAAABBjD//EABQRAQAAAAAAAAAAAAAAAAAAABD/2gAIAQMBAT8QP//EABQRAQAAAAAAAAAAAAAAAAAAABD/2gAIAQIBAT8QP//EABsQAQEBAAIDAAAAAAAAAAAAAAERADFBUXGh/9oACAEBAAE/EKqhdMke8I9fcF4NDwYE4N//2Q=='); background-size: cover; display: block;"
+  ></span>
+  <picture>
+          <source
+              srcset="/static/0d98d4a1b6e30993056402fe125bda41/8ac56/04_compare_done.webp 240w,
+/static/0d98d4a1b6e30993056402fe125bda41/d3be9/04_compare_done.webp 480w,
+/static/0d98d4a1b6e30993056402fe125bda41/e46b2/04_compare_done.webp 960w,
+/static/0d98d4a1b6e30993056402fe125bda41/f992d/04_compare_done.webp 1440w,
+/static/0d98d4a1b6e30993056402fe125bda41/de45f/04_compare_done.webp 1664w"
+              sizes="(max-width: 960px) 100vw, 960px"
+              type="image/webp"
+            />
+          <source
+            srcset="/static/0d98d4a1b6e30993056402fe125bda41/09b79/04_compare_done.jpg 240w,
+/static/0d98d4a1b6e30993056402fe125bda41/7cc5e/04_compare_done.jpg 480w,
+/static/0d98d4a1b6e30993056402fe125bda41/6a068/04_compare_done.jpg 960w,
+/static/0d98d4a1b6e30993056402fe125bda41/644c5/04_compare_done.jpg 1440w,
+/static/0d98d4a1b6e30993056402fe125bda41/25339/04_compare_done.jpg 1664w"
+            sizes="(max-width: 960px) 100vw, 960px"
+            type="image/jpeg"
+          />
+          <img
+            class="gatsby-resp-image-image"
+            src="/static/0d98d4a1b6e30993056402fe125bda41/6a068/04_compare_done.jpg"
+            alt="두 파일을 성공적으로 비교하였습니다."
+            title="두 파일을 성공적으로 비교하였습니다."
+            loading="lazy"
+            decoding="async"
+            style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+          />
+        </picture>
+  </a>
+    </span>
+    <figcaption class="gatsby-resp-image-figcaption"><p>두 파일을 성공적으로 비교하였습니다.</p></figcaption>
+  </figure></p>
+<h2 id="토탈-커맨더-로그" style="position:relative;"><a href="#%ED%86%A0%ED%83%88-%EC%BB%A4%EB%A7%A8%EB%8D%94-%EB%A1%9C%EA%B7%B8" aria-label="토탈 커맨더 로그 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>토탈 커맨더 로그</h2>
+<ul>
+<li><code class="language-text">%TEMP%</code> 에 저장됩니다.</li>
+<li>성공한 커맨드에 대해서는 로그가 남는데, 실패한 커맨드(E.g., 잘못 입력한 명령 등)는 로그가 안 남더라구요.</li>
+</ul>
+<h2 id="마무리" style="position:relative;"><a href="#%EB%A7%88%EB%AC%B4%EB%A6%AC" aria-label="마무리 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>마무리</h2>
+<p>이 정도만 해도 제가 쓰는 완전 기본적인 내용은 소개가 된 듯 합니다. 향후에도 괜찮은 내용이 있다면 소개드리겠습니다. 봐주셔서 감사합니다.</p></div></div></div><div class="Post-module--footer--f8705"><div class="Meta-module--meta--dae0a"><p class="Meta-module--date--4d30d">Published<!-- --> <!-- -->Dec 30, 2022</p></div><div class="Tags-module--tags--18589"><ul class="Tags-module--list--82ae6"><li class="Tags-module--item--52015"><a class="Button-module--button--b1113" href="/tag/ofm/">ofm</a></li></ul></div><div class="Author-module--author--1c58d"><p class="Non scholæ sed vitæ discimus.">Non scholæ sed vitæ discimus.</p><p class="Author-module--bio--08950">his/him</p></div></div><div class="Post-module--comments--d3b99"><div></div></div></div></div></div><div id="gatsby-announcer" style="position:absolute;top:0;width:1px;height:1px;padding:0;overflow:hidden;clip:rect(0, 0, 0, 0);white-space:nowrap;border:0" aria-live="assertive" aria-atomic="true"></div></div><script id="gatsby-script-loader">/*<![CDATA[*/window.pagePath="/tips/2022-12-30-total-commander-101-pt01";window.___webpackCompilationHash="2cc90c7bf969c92ecbf4";/*]]>*/</script><script id="gatsby-chunk-mapping">/*<![CDATA[*/window.___chunkMapping={"polyfill":["/polyfill-877fc533220b2bce0b1e.js"],"app":["/app-b344f477a15ca78ada57.js"],"component---cache-caches-gatsby-plugin-offline-app-shell-js":["/component---cache-caches-gatsby-plugin-offline-app-shell-js-0c915c7b1bdb5eac4fdf.js"],"component---src-templates-categories-template-categories-template-tsx":["/component---src-templates-categories-template-categories-template-tsx-e2d2add397e32e3517ca.js"],"component---src-templates-category-template-category-template-tsx":["/component---src-templates-category-template-category-template-tsx-078f2adfba160a34229f.js"],"component---src-templates-index-template-index-template-tsx":["/component---src-templates-index-template-index-template-tsx-83380c7954c9f6621026.js"],"component---src-templates-not-found-template-not-found-template-tsx":["/component---src-templates-not-found-template-not-found-template-tsx-56fe4d3b015459d56c99.js"],"component---src-templates-page-template-page-template-tsx":["/component---src-templates-page-template-page-template-tsx-c6c21d7369a9356db3a1.js"],"component---src-templates-post-template-post-template-tsx":["/component---src-templates-post-template-post-template-tsx-119cd0258cb38628d01f.js"],"component---src-templates-tag-template-tag-template-tsx":["/component---src-templates-tag-template-tag-template-tsx-8d0b3090e775aa3c4584.js"],"component---src-templates-tags-template-tags-template-tsx":["/component---src-templates-tags-template-tags-template-tsx-30027e87af7d042f3afb.js"]};/*]]>*/</script><script src="/polyfill-877fc533220b2bce0b1e.js" nomodule=""></script><script src="/app-b344f477a15ca78ada57.js" async=""></script><script src="/framework-481a1b6416c14416b2fb.js" async=""></script><script src="/webpack-runtime-b8c30787ddb902e678f7.js" async=""></script></body></html>

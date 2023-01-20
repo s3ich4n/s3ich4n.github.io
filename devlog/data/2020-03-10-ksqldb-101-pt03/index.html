@@ -1,0 +1,327 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="ie=edge"/><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/><meta name="generator" content="Gatsby 4.25.4"/><meta name="description" content="ksqlDB을 활용한 오픈소스의 예시를 통해, 보안 이벤트를 실시간으로 걸러내는 방안에 대해 학습해보고 이를 토대로 어떤식으로 활용하면 좋을지 살펴봅시다." data-gatsby-head="true"/><meta name="twitter:card" content="summary_large_image" data-gatsby-head="true"/><meta name="twitter:title" content="ksqlDB 101, part 3. 실전 예시: 오픈소스를 통해 살펴보는 실시간 보안 이벤트 탐지 룰 - 팔공산 창고" data-gatsby-head="true"/><meta name="twitter:description" content="ksqlDB을 활용한 오픈소스의 예시를 통해, 보안 이벤트를 실시간으로 걸러내는 방안에 대해 학습해보고 이를 토대로 어떤식으로 활용하면 좋을지 살펴봅시다." data-gatsby-head="true"/><meta name="og:title" content="ksqlDB 101, part 3. 실전 예시: 오픈소스를 통해 살펴보는 실시간 보안 이벤트 탐지 룰 - 팔공산 창고" data-gatsby-head="true"/><meta name="og:type" content="website" data-gatsby-head="true"/><meta name="og:description" content="ksqlDB을 활용한 오픈소스의 예시를 통해, 보안 이벤트를 실시간으로 걸러내는 방안에 대해 학습해보고 이를 토대로 어떤식으로 활용하면 좋을지 살펴봅시다." data-gatsby-head="true"/><meta name="image" content="https://blog.s3ich4n.me[object Object]" data-gatsby-head="true"/><meta name="og:image" content="https://blog.s3ich4n.me[object Object]" data-gatsby-head="true"/><meta name="twitter:image" content="https://blog.s3ich4n.me[object Object]" data-gatsby-head="true"/><meta name="theme-color" content="hsl(31, 92%, 62%)"/><style data-href="/styles.1fbe3e33e3d898c35e17.css" data-identity="gatsby-global-css">:after,:before,:root{--color-white:#fff;--color-primary:#5c92ff;--color-secondary:#f7a145;--color-prism-background:#eaeaeb;--color-typographic-base-font:#242933;--color-typographic-link-p-font:#5c92ff;--color-typographic-link-s-font:#f7a145;--color-page-border:#eaeaeb;--color-page-background:#fff;--color-sidebar-border:#eaeaeb;--color-sidebar-border-fade:#fff;--color-contacts-border:#eaeaeb;--color-button-border:#eaeaeb;--color-button-color:#242933;--color-theme-switcher:#3f485a;--color-theme-switcher-hover:#5c92ff}.dark :after,.dark :before,:root.dark{--color-white:#fff;--color-primary:#5c92ff;--color-secondary:#f7a145;--color-prism-background:#191d24;--color-typographic-base-font:#fff;--color-typographic-link-p-font:#5c92ff;--color-typographic-link-s-font:#f7a145;--color-page-border:#3f485a;--color-page-background:#242933;--color-sidebar-border:#3f485a;--color-sidebar-border-fade:#242933;--color-contacts-border:#3f485a;--color-button-border:#3f485a;--color-button-color:#fff;--color-theme-switcher:#eaeaeb;--color-theme-switcher-hover:#5c92ff}html{font-size:100}body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;background:var(--color-page-background);color:var(--color-typographic-base-font);font-size:16px;line-height:1.625;margin:0 0 0 calc(100vw - 100%);text-rendering:optimizelegibility}body,h1,h2,h3,h4,h5,h6{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif}h1,h2,h3,h4,h5,h6{font-weight:600}h1{font-size:40px;line-height:52px;margin-bottom:26px;margin-top:104px}h2{font-size:27px;line-height:39px}h2,h3{margin-bottom:13px;margin-top:52px}h3{font-size:22px;line-height:26px}h4{font-size:19.2px;margin-top:39px}h4,h5{line-height:26px;margin-bottom:13px}h5,h6{font-size:16px;margin-top:65px}h6{line-height:26px;margin-bottom:13px}img{max-width:100%}hr,img{border:0;display:block}hr{background-image:linear-gradient(180deg,transparent 1px,transparent 11px,#242933 0,#242933 15px,transparent 0,transparent 26px);background-size:100% 26px;color:var(--color-typographic-base-font);height:26px;margin:52px auto;width:100px}a{color:var(--color-typographic-link-p-font);text-decoration:none}a:active,a:focus,a:hover{color:var(--color-typographic-link-s-font)}b,strong{font-weight:600}ul{list-style:square;margin-bottom:26px}ul li{margin-bottom:10px;padding:0 5px}p{line-height:26px;margin-bottom:26px}blockquote{font-style:italic;padding:0;text-align:center}figure{display:block;height:auto;width:100%}figcaption{color:var(--color-typographic-base-font);font-size:14px;font-style:italic;line-height:19.5px;margin-bottom:0;margin-top:6.5px;text-align:center}@media screen and (min-width:685px){figure.float-left,figure.float-right{max-width:310px;padding:0 26px}.float-right{float:right}.float-left{float:left}}code[class*=language-],pre[class*=language-]{word-wrap:normal;color:#657b83;font-family:Consolas,Monaco,Andale Mono,Ubuntu Mono,monospace;font-size:1em;-webkit-hyphens:none;hyphens:none;line-height:1.5;-o-tab-size:4;tab-size:4;text-align:left;white-space:pre;word-break:normal;word-spacing:normal}pre[class*=language-]{border-radius:.3em;margin:.5em 0;overflow:auto;padding:1em}:not(pre)>code[class*=language-],pre[class*=language-]{background-color:var(--color-prism-background)}:not(pre)>code[class*=language-]{border-radius:.3em;padding:.1em}code[class*=language-] ::selection,code[class*=language-]::selection,pre[class*=language-] ::selection,pre[class*=language-]::selection{background:#073642}.token.cdata,.token.comment,.token.doctype,.token.prolog{color:#93a1a1}.token.punctuation{color:#586e75}.namespace{opacity:.7}.token.boolean,.token.constant,.token.deleted,.token.number,.token.property,.token.symbol,.token.tag{color:#268bd2}.token.attr-name,.token.builtin,.token.char,.token.inserted,.token.selector,.token.string,.token.url{color:#2aa198}.token.entity{background:#eee8d5;color:#657b83;cursor:help}.token.atrule,.token.attr-value,.token.keyword{color:#859900}.token.class-name,.token.function{color:#b58900}.token.important,.token.regex,.token.variable{color:#cb4b16}.token.bold,.token.important{font-weight:700}.token.italic{font-style:italic}.Feed-module--feed--a6204 .Feed-module--item--c7a63{margin-bottom:32.5px}.Feed-module--feed--a6204 .Feed-module--item--c7a63:last-child{margin-bottom:13px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f{font-size:27px;line-height:39px;margin-bottom:13px;margin-top:0}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f .Feed-module--link--6123b{color:var(--color-typographic-base-font)}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f .Feed-module--link--6123b:focus,.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f .Feed-module--link--6123b:hover{border-bottom:1px solid #242933;color:var(--color-typographic-base-font)}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--description--57348{font-size:16px;line-height:26px;margin-bottom:19.5px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--time--72864{color:var(--color-typographic-base-font);font-size:14px;font-weight:600;text-transform:uppercase}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--divider--81a18{margin:0 13px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--category--59f58 .Feed-module--link--6123b{color:var(--color-secondary);font-size:14px;font-weight:600;text-transform:uppercase}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--category--59f58 .Feed-module--link--6123b:focus,.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--category--59f58 .Feed-module--link--6123b:hover{color:#5c92ff}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--more--51a4e{color:var(--color-primary);font-size:16px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--more--51a4e:focus,.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--more--51a4e:hover{border-bottom:1px solid #5c92ff;color:var(--color-primary)}.Layout-module--layout--2c933{margin-left:auto;margin-right:auto;max-width:1070px}.Layout-module--layout--2c933:before{content:"";display:table}.Layout-module--layout--2c933:after{clear:both;content:"";display:table}.Page-module--page--24e03{margin-bottom:52px}.Page-module--page--24e03 .Page-module--inner--4b31d{padding:26px 19.5px 0}.Page-module--page--24e03 .Page-module--title--90338{font-size:40px;font-weight:600;line-height:52px;margin-bottom:37.7px;margin-top:0}.Page-module--page--24e03 .Page-module--body--561c4{font-size:16px;line-height:26px;margin:0 0 26px}@media screen and (min-width:685px){.Page-module--page--24e03{width:calc(58.275% - 12.5px)}.Page-module--page--24e03:nth-child(1n){clear:none;float:left;margin-right:30px}.Page-module--page--24e03:last-child{margin-right:0}.Page-module--page--24e03:nth-child(12n){float:right;margin-right:0}.Page-module--page--24e03:nth-child(12n+1){clear:both}.Page-module--page--24e03 .Page-module--inner--4b31d{padding:32.5px 19.5px 0}}@media screen and (min-width:960px){.Page-module--page--24e03{width:calc(66.6% - 10px)}.Page-module--page--24e03:nth-child(1n){clear:none;float:left;margin-right:30px}.Page-module--page--24e03:last-child{margin-right:0}.Page-module--page--24e03:nth-child(3n){float:right;margin-right:0}.Page-module--page--24e03:nth-child(3n+1){clear:both}.Page-module--page--24e03 .Page-module--inner--4b31d{padding:39px 26px 0}}.Pagination-module--pagination--d61cb{display:flex;margin-top:52px}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b{text-align:left;width:50%}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d{color:var(--color-secondary);font-size:26px;font-weight:700}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d:focus,.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d:hover{color:var(--color-primary)}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d.Pagination-module--disable--7e105{color:#3f485a;pointer-events:none}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8{text-align:right;width:50%}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff{color:var(--color-secondary);font-size:26px;font-weight:700}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff:focus,.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff:hover{color:var(--color-primary)}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff.Pagination-module--disable--7e105{color:#3f485a;pointer-events:none}.Button-module--button--b1113{border:1px solid var(--color-button-border);border-radius:20px;color:var(--color-button-color);display:inline-block;font-size:16px;font-weight:400;height:40px;line-height:40px;margin-left:auto;margin-right:auto;padding:0 26px;text-align:center;text-decoration:none}.Button-module--button--b1113:focus,.Button-module--button--b1113:hover{color:#5c92ff}.ThemeSwitcher-module--themeSwitcher--8a77f{--color:var(--color-theme-switcher)}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--button--7cb7b{align-items:center;background:transparent;border:0;cursor:pointer;display:flex;justify-content:center;outline:0}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--button--7cb7b svg{stroke:var(--color);pointer-events:none;transition:stroke .4s}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--button--7cb7b:hover{--color:var(--color-theme-switcher-hover)}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--moon--10537{stroke-dasharray:0 1px;opacity:0;transition:stroke-dasharray .2s ease-in,opacity .4s ease-in}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--sun--2163a{stroke-dasharray:1px 1px;opacity:1;transition:stroke-dasharray .2s ease-in,opacity .4s ease-in}.ThemeSwitcher-module--themeSwitcher--8a77f.ThemeSwitcher-module--dark--6db0c .ThemeSwitcher-module--moon--10537{stroke-dasharray:1px 1px;opacity:1}.ThemeSwitcher-module--themeSwitcher--8a77f.ThemeSwitcher-module--dark--6db0c .ThemeSwitcher-module--sun--2163a{stroke-dasharray:0 1px;opacity:0}.Author-module--author--cbd31 .Author-module--photo--9787b{background-clip:padding-box;border-radius:50%;display:inline-block;height:75px;margin-bottom:0;width:75px}.Author-module--author--cbd31 .Author-module--photo--9787b img{border-radius:50%}.Author-module--author--cbd31 .Author-module--title--cf7e5{font-size:18px;font-weight:600;line-height:29.25px;margin:0}.Author-module--author--cbd31 .Author-module--title--cf7e5 .Author-module--link--09c17,.Author-module--author--cbd31 .Author-module--title--cf7e5 .Author-module--link--09c17:focus,.Author-module--author--cbd31 .Author-module--title--cf7e5 .Author-module--link--09c17:hover{color:var(--color-typographic-base-font)}.Author-module--author--cbd31 .Author-module--bio--8168d,.Author-module--author--cbd31 .Author-module--subtitle--86ec5{color:#7f8ba4;line-height:26px;margin-bottom:26px}.Author-module--author--cbd31 .Author-module--titleContainer--4f576{align-items:center;display:flex;justify-content:space-between;margin:13px 0}.Categories-module--categories--f3389{color:#7f8ba4;font-size:14px}.Icon-module--icon--1d7da{fill:currentcolor;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;speak:none;stroke:currentcolor;stroke-width:0;display:inline-block;font-style:normal;font-variant:normal;font-weight:400;height:1em;line-height:1em;text-align:center;text-transform:none;width:1em}.Contacts-module--contacts--09178{margin-bottom:26px}.Contacts-module--contacts--09178 .Contacts-module--list--9670b{display:flex;flex-flow:row wrap;flex-grow:0;flex-shrink:0;list-style:none;margin:13px 0;max-width:165px;padding:0}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0{align-content:center;align-items:center;border:1px solid var(--color-contacts-border);border-radius:50%;display:flex;height:40px;justify-content:center;line-height:40px;margin:6.5px;padding:0;text-align:center;width:40px}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0:nth-child(3n+1){margin-left:0}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0 .Contacts-module--link--de1e0{border:0;color:var(--color-typographic-base-font);display:flex}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0 .Contacts-module--link--de1e0:focus,.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0 .Contacts-module--link--de1e0:hover{color:var(--color-typographic-link-p-font)}.Copyright-module--copyright--2c602{color:#7f8ba4;font-size:14px}.Menu-module--menu--113a9{margin-bottom:26px}.Menu-module--menu--113a9 .Menu-module--list--e1ae3{list-style:none;margin:0;padding:0}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679{margin:13px 0;padding:0}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02{border:0;color:var(--color-typographic-base-font);font-size:16px;font-weight:400}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02:focus,.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02:hover{border-bottom:1px solid #5c92ff;color:#5c92ff}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02.Menu-module--active--6cb74{border-bottom:1px solid var(--color-typographic-base-font);color:var(--color-typographic-base-font)}.Tags-module--tags--28a57{color:#7f8ba4;font-size:14px}.Sidebar-module--sidebar--1bfa1{width:100%}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0{padding:26px 19.5px 0;position:relative}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0:after{background:var(--color-sidebar-border);background:linear-gradient(to bottom,var(--color-sidebar-border) 0,var(--color-sidebar-border) 48%,var(--color-sidebar-border-fade) 100%)}@media screen and (min-width:685px){.Sidebar-module--sidebar--1bfa1{width:calc(41.625% - 17.5px)}.Sidebar-module--sidebar--1bfa1:nth-child(1n){clear:none;float:left;margin-right:30px}.Sidebar-module--sidebar--1bfa1:last-child{margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(12n){float:right;margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(12n+1){clear:both}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0{padding:32.5px 19.5px 0}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0:after{bottom:0;content:"";height:540px;position:absolute;right:-10px;top:30px;width:1px}}@media screen and (min-width:960px){.Sidebar-module--sidebar--1bfa1{width:calc(33.3% - 20px)}.Sidebar-module--sidebar--1bfa1:nth-child(1n){clear:none;float:left;margin-right:30px}.Sidebar-module--sidebar--1bfa1:last-child{margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(3n){float:right;margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(3n+1){clear:both}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0{padding:39px}}.Author-module--author--1c58d{border-top:1px solid var(--color-page-border);line-height:26px;margin-bottom:52px;margin-top:26px;max-width:920px;padding-top:26px}.Author-module--author--1c58d .Author-module--bio--08950 .Author-module--twitter--90647{display:block;text-decoration:underline}.Author-module--author--1c58d .Author-module--bio--08950 .Author-module--twitter--90647:focus,.Author-module--author--1c58d .Author-module--bio--08950 .Author-module--twitter--90647:hover{color:var(--color-typographic-link-s-font)}@media screen and (min-width:685px){.Author-module--author--1c58d{margin-left:auto;margin-right:auto}}.Content-module--content--80d58{margin:0 auto;max-width:1070px;padding:0 13px}.Content-module--content--80d58 .Content-module--title--09504{font-size:32px;font-weight:600;line-height:42.9px;margin:26px auto 0;max-width:920px;text-align:center}.Content-module--content--80d58 .Content-module--body--726c2 figure{margin-bottom:26px}.Content-module--content--80d58 .Content-module--body--726c2 figure blockquote{font-style:italic;margin-top:0;padding:26px 0;text-align:center}.Content-module--content--80d58 .Content-module--body--726c2 figure blockquote p{font-size:26.9072px;line-height:39px;margin-bottom:26px;margin-top:0;max-width:920px}.Content-module--content--80d58 .Content-module--body--726c2 a{text-decoration:underline}.Content-module--content--80d58 .Content-module--body--726c2 *{margin-left:auto;margin-right:auto;max-width:920px}.Content-module--content--80d58 .Content-module--body--726c2 h2>a{visibility:hidden}.Content-module--content--80d58 .Content-module--body--726c2 h2>a>svg{fill:var(--color-typographic-base-font)}.Content-module--content--80d58 .Content-module--body--726c2 img{max-width:100%}@media screen and (min-width:960px){.Content-module--content--80d58{padding:0}.Content-module--content--80d58 .Content-module--title--09504{font-size:48px;line-height:58.5px;margin-bottom:39px;margin-top:58.5px}.Content-module--content--80d58 .Content-module--body--726c2,.Content-module--content--80d58 .Content-module--body--726c2 p{font-size:18px;line-height:29.25px;margin-bottom:29.25px}.Content-module--content--80d58 .Content-module--body--726c2 h2>a{padding-right:13px;visibility:unset}}.Meta-module--meta--dae0a .Meta-module--date--4d30d{font-style:italic}.Tags-module--tags--18589{margin-bottom:13px}.Tags-module--tags--18589 .Tags-module--list--82ae6{list-style:none;padding:0}.Tags-module--tags--18589 .Tags-module--list--82ae6 .Tags-module--item--52015{display:inline-block;margin:6.5px 0}@media screen and (min-width:685px){.Tags-module--tags--18589 .Tags-module--list--82ae6 .Tags-module--item--52015:first-child{margin-left:0;padding-left:0}}.Post-module--post--3a994 .Post-module--content--3c6e5{margin:0 auto}.Post-module--post--3a994 .Post-module--comments--d3b99,.Post-module--post--3a994 .Post-module--footer--f8705{margin:0 auto;max-width:920px;padding:0 13px}.Post-module--post--3a994 .Post-module--buttons--2972d{align-items:center;display:flex;justify-content:center;margin:26px 0 0;text-align:center}.Post-module--post--3a994 .Post-module--buttons--2972d .Post-module--buttonArticles--d793a{margin:0 13px 0 0}@media screen and (min-width:960px){.Post-module--post--3a994 .Post-module--comments--d3b99,.Post-module--post--3a994 .Post-module--footer--f8705{padding:0}.Post-module--post--3a994 .Post-module--buttons--2972d{left:30px;margin:0 13px 0 0;max-width:none;position:fixed;top:30px}}</style><title data-gatsby-head="true">ksqlDB 101, part 3. 실전 예시: 오픈소스를 통해 살펴보는 실시간 보안 이벤트 탐지 룰 - 팔공산 창고</title><link rel="alternate" type="application/rss+xml" title="팔공산 창고" href="/rss.xml"/><style type="text/css">
+    .anchor.before {
+      position: absolute;
+      top: 0;
+      left: 0;
+      transform: translateX(-100%);
+      padding-right: 4px;
+    }
+    .anchor.after {
+      display: inline-block;
+      padding-left: 4px;
+    }
+    h1 .anchor svg,
+    h2 .anchor svg,
+    h3 .anchor svg,
+    h4 .anchor svg,
+    h5 .anchor svg,
+    h6 .anchor svg {
+      visibility: hidden;
+    }
+    h1:hover .anchor svg,
+    h2:hover .anchor svg,
+    h3:hover .anchor svg,
+    h4:hover .anchor svg,
+    h5:hover .anchor svg,
+    h6:hover .anchor svg,
+    h1 .anchor:focus svg,
+    h2 .anchor:focus svg,
+    h3 .anchor:focus svg,
+    h4 .anchor:focus svg,
+    h5 .anchor:focus svg,
+    h6 .anchor:focus svg {
+      visibility: visible;
+    }
+  </style><script>
+    document.addEventListener("DOMContentLoaded", function(event) {
+      var hash = window.decodeURI(location.hash.replace('#', ''))
+      if (hash !== '') {
+        var element = document.getElementById(hash)
+        if (element) {
+          var scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+          var clientTop = document.documentElement.clientTop || document.body.clientTop || 0
+          var offset = element.getBoundingClientRect().top + scrollTop - clientTop
+          // Wait for the browser to finish rendering before scrolling.
+          setTimeout((function() {
+            window.scrollTo(0, offset - 0)
+          }), 0)
+        }
+      }
+    })
+  </script><link rel="preconnect" href="https://www.googletagmanager.com"/><link rel="dns-prefetch" href="https://www.googletagmanager.com"/><script async="" src="https://www.googletagmanager.com/gtag/js?id="></script><script>
+      
+      
+      if(true) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){window.dataLayer && window.dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', '', {"send_page_view":false});
+      }
+      </script><link rel="sitemap" type="application/xml" href="/sitemap/sitemap-index.xml"/><link rel="icon" href="/favicon-32x32.png?v=4c2c993a06ee0fd0ee953020b09128a9" type="image/png"/><link rel="manifest" href="/manifest.webmanifest" crossorigin="anonymous"/><link rel="apple-touch-icon" sizes="48x48" href="/icons/icon-48x48.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="72x72" href="/icons/icon-72x72.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="96x96" href="/icons/icon-96x96.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="144x144" href="/icons/icon-144x144.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192x192.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="256x256" href="/icons/icon-256x256.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="384x384" href="/icons/icon-384x384.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="512x512" href="/icons/icon-512x512.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><style>.gatsby-image-wrapper{position:relative;overflow:hidden}.gatsby-image-wrapper picture.object-fit-polyfill{position:static!important}.gatsby-image-wrapper img{bottom:0;height:100%;left:0;margin:0;max-width:none;padding:0;position:absolute;right:0;top:0;width:100%;object-fit:cover}.gatsby-image-wrapper [data-main-image]{opacity:0;transform:translateZ(0);transition:opacity .25s linear;will-change:opacity}.gatsby-image-wrapper-constrained{display:inline-block;vertical-align:top}</style><noscript><style>.gatsby-image-wrapper noscript [data-main-image]{opacity:1!important}.gatsby-image-wrapper [data-placeholder-image]{opacity:0!important}</style></noscript><script type="module">const e="undefined"!=typeof HTMLImageElement&&"loading"in HTMLImageElement.prototype;e&&document.body.addEventListener("load",(function(e){const t=e.target;if(void 0===t.dataset.mainImage)return;if(void 0===t.dataset.gatsbyImageSsr)return;let a=null,n=t;for(;null===a&&n;)void 0!==n.parentNode.dataset.gatsbyImageWrapper&&(a=n.parentNode),n=n.parentNode;const o=a.querySelector("[data-placeholder-image]"),r=new Image;r.src=t.currentSrc,r.decode().catch((()=>{})).then((()=>{t.style.opacity=1,o&&(o.style.opacity=0,o.style.transition="opacity 500ms linear")}))}),!0);</script></head><body><script>
+          void function() {
+            var cachedMode;
+
+            try {
+              var preferredTheme = JSON.parse(localStorage.getItem('diesel:theme-atom'));
+
+              if (preferredTheme && preferredTheme.mode) {
+                cachedMode = preferredTheme.mode;
+              }
+            } catch (err) { }
+
+            function setTheme(newTheme) {
+              document.documentElement.className = newTheme;
+            }
+
+            var darkQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+            setTheme(cachedMode || (darkQuery.matches ? 'dark' : 'light'));
+          }()
+        </script><div id="___gatsby"><div style="outline:none" tabindex="-1" id="gatsby-focus-wrapper"><div class="Layout-module--layout--2c933"><div class="Post-module--post--3a994"><div class="Post-module--buttons--2972d"><a class="Button-module--button--b1113 Post-module--buttonArticles--d793a" href="/">All Articles</a></div><div class="Post-module--content--3c6e5"><div class="Content-module--content--80d58"><h1 class="Content-module--title--09504">ksqlDB 101, part 3. 실전 예시: 오픈소스를 통해 살펴보는 실시간 보안 이벤트 탐지 룰</h1><div class="Content-module--body--726c2"><p>이 글은 <code class="language-text">ksqlDB</code>(당시에는 <code class="language-text">KSQL</code>이라는 명칭이었습니다)를 학습하기 위해 정리한 연재글입니다.</p>
+<p>이 글의 순서는 아래와 같습니다.</p>
+<h1 id="목차" style="position:relative;"><a href="#%EB%AA%A9%EC%B0%A8" aria-label="목차 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>목차</h1>
+<ol>
+<li><a href="https://blog.s3ich4n.me/devlog/data/2020-02-05-ksqldb-101-pt01" target="_blank" rel="nofollow noopener noreferrer">part 1. 배경지식</a></li>
+<li><a href="https://blog.s3ich4n.me/devlog/data/2020-02-17-ksqldb-101-pt02" target="_blank" rel="nofollow noopener noreferrer">part 2. Kafka Streams에 대해</a></li>
+<li>part 3. 실전 예시: 오픈소스를 통해 살펴보는 실시간 보안 이벤트 탐지 룰</li>
+</ol>
+<h1 id="3-ksqldb란" style="position:relative;"><a href="#3-ksqldb%EB%9E%80" aria-label="3 ksqldb란 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>3. ksqlDB란?</h1>
+<ul>
+<li>
+<p>카프카를 위한 Streaming SQL engine이며, Kafka Stream 기반으로 만들어졌습니다.</p>
+</li>
+<li>
+<p>파트 2에 언급한 해당 개념 또한 모두 SQL 쿼리로 수행할 수 있습니다:</p>
+<ul>
+<li>stateless processing(<code class="language-text">Filtering</code>, <code class="language-text">Mapping</code>의 개념)</li>
+<li>stateful processing(<code class="language-text">JOIN</code>, <code class="language-text">Aggregation</code>의 개념),
+<ul>
+<li>여러개의 스트림에 대해 실시간으로 JOIN 연산을 수행할 수도 있습니다.</li>
+</ul>
+</li>
+<li>windowing operations 를 지원합니다(<code class="language-text">WINDOW TUMBLING</code>, 정의한 이상행위가 발생했다면 새로운 토픽에 씀)
+<ul>
+<li>이를 활용한 Anomaly Detection이 가능합니다. (<code class="language-text">WINDOW TUMBLING</code> 범위 설정등을 의미합니다.)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>SQL 기반의 real-time 앱을 작성하는데 쓰인다 (별도의 프로세싱)</p>
+<ul>
+<li>그런 이유로 카프카 브로커 위에서 작동하는게 아닙니다. <br />앞서 설명한 Kafka Streams API를 사용하는 앱처럼 구동됩니다.</li>
+<li>ksqlDB에 맞는 SQL문을 작성 후 서비스를 구동하면 프로세싱이 됩니다!</li>
+<li>User-defined Function은 Java/Scala로 사용하여 ksqlDB에 별도로 추가하여 구동하면 됩니다!</li>
+</ul>
+</li>
+<li>
+<p>ksqlDB를 통해 검증하고 배포하는 방법은 아래와 같습니다</p>
+<ul>
+<li>SQL문을 별도로 준비해놓고 Interactive ksqlDB for development에서 쿼리를 개발한다</li>
+<li>Headless ksqlDB inproduction… 필요에 따른 SQL구문을 준비하고 deploy한다</li>
+<li><a href="https://docs.ksqldb.io/en/latest/operate-and-deploy/how-it-works/#ksql-deployment-modes" target="_blank" rel="nofollow noopener noreferrer">참고링크</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="ksqldb을-도입한다면-어떤-관점에서-기술을-바라볼까" style="position:relative;"><a href="#ksqldb%EC%9D%84-%EB%8F%84%EC%9E%85%ED%95%9C%EB%8B%A4%EB%A9%B4-%EC%96%B4%EB%96%A4-%EA%B4%80%EC%A0%90%EC%97%90%EC%84%9C-%EA%B8%B0%EC%88%A0%EC%9D%84-%EB%B0%94%EB%9D%BC%EB%B3%BC%EA%B9%8C" aria-label="ksqldb을 도입한다면 어떤 관점에서 기술을 바라볼까 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>ksqlDB을 도입한다면? ~어떤 관점에서 기술을 바라볼까~</h2>
+<p>이벤트를 가공하여 필요한 카프카 토픽에 별도로 저장하거나 데이터를 저장하여 유의미한 데이터를 뽑아낼 수 있도록 하는 관점으로 바라봐야 한다는 것입니다.</p>
+<p>이는 Apache Spark나 앞서 살펴본 Faust로도 가능하지만, ksqlDB는 이를 쿼리로 빠르게 작성하여 결과를 얻어볼 수 있다는 점에서 의의를 가집니다.</p>
+<ol>
+<li>빠른 테스트를 통해 데이터가 입증을 수행하고 고도화가 필요한 그 시점에 다른 기술을 통하여 비율절감, 성능개선을 수행하면 될 것으로 보입니다.</li>
+</ol>
+<h2 id="ksqldb-실전예시-helkhunting-elk" style="position:relative;"><a href="#ksqldb-%EC%8B%A4%EC%A0%84%EC%98%88%EC%8B%9C-helkhunting-elk" aria-label="ksqldb 실전예시 helkhunting elk permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>ksqlDB 실전예시: HELK(Hunting ELK)</h2>
+<p>ksqlDB를 통해 Anomaly Detection을 수행하고자 하는 예시는 사이버보안 파트에서도 충분히 활용될 수 있는 문제입니다. 소개할 HELK라는 시스템은 이를 잘 활용한 훌륭한 오픈소스입니다. 해커의 고도화된 공격과 같은 <strong>“이상행위”</strong> 가 무엇인지 면밀히 이해한 후, 시스템 이벤트를 수집하고 이를 실시간으로 탐지하고 알림을 준다는 것이 주요 골자입니다.</p>
+<p><img src="https://raw.githubusercontent.com/Cyb3rWard0g/HELK/master/docs/images/HELK-Design.png" alt="HELK의 전체 구조. 이 글에선 Kafka와 KSQL(현 ksqlDB)를 주요하게 살펴볼 것입니다"></p>
+<p>그렇다면, 이상행위를 어떻게 탐지하는지 살펴봅시다. 실제 HELK라는 큰 프로젝트에서 어떻게 쓰이는지는 <a href="https://posts.specterops.io/real-time-sysmon-processing-via-ksql-and-helk-part-3-basic-use-case-8fbf383cb54f" target="_blank" rel="nofollow noopener noreferrer">해당 링크</a>를 참고해주세요(아래 Reference에도 기재해두었습니다).</p>
+<h2 id="ksqldb-쿼리-작성-1" style="position:relative;"><a href="#ksqldb-%EC%BF%BC%EB%A6%AC-%EC%9E%91%EC%84%B1-1" aria-label="ksqldb 쿼리 작성 1 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>ksqlDB 쿼리 작성 (1)</h2>
+<p>WinlogBeat라는 프로그램을 통해 수집된 윈도우즈의 시스템 이벤트를 수집하는 스트림을 생성하였습니다. 아래 쿼리는 해당 내용을 ksqlDB가 해석하도록 하는 코드입니다.</p>
+<div class="gatsby-highlight" data-language="sql"><pre class="language-sql"><code class="language-sql"><span class="token keyword">CREATE</span> STREAM WINLOGBEAT_STREAM <span class="token punctuation">(</span>
+  source_name <span class="token keyword">VARCHAR</span><span class="token punctuation">,</span>
+  <span class="token keyword">type</span> <span class="token keyword">VARCHAR</span><span class="token punctuation">,</span>
+  task <span class="token keyword">VARCHAR</span><span class="token punctuation">,</span>
+  log_name <span class="token keyword">VARCHAR</span><span class="token punctuation">,</span>
+  computer_name <span class="token keyword">VARCHAR</span><span class="token punctuation">,</span>
+  event_data STRUCT<span class="token operator">&lt;</span>
+    UtcTime <span class="token keyword">VARCHAR</span><span class="token punctuation">,</span>
+    ProcessGuid <span class="token keyword">VARCHAR</span><span class="token punctuation">,</span>
+    ProcessId <span class="token keyword">INTEGER</span><span class="token punctuation">,</span>
+    Image <span class="token keyword">VARCHAR</span><span class="token punctuation">,</span>
+    FileVersion <span class="token keyword">VARCHAR</span><span class="token punctuation">,</span>
+    Description <span class="token keyword">VARCHAR</span><span class="token punctuation">,</span>
+    Product <span class="token keyword">VARCHAR</span><span class="token punctuation">,</span>
+    Company <span class="token keyword">VARCHAR</span><span class="token punctuation">,</span>
+    CommandLine <span class="token keyword">VARCHAR</span><span class="token punctuation">,</span>
+    CurrentDirectory <span class="token keyword">VARCHAR</span><span class="token punctuation">,</span>
+    <span class="token keyword">User</span> <span class="token keyword">VARCHAR</span><span class="token punctuation">,</span>
+    LogonGuid <span class="token keyword">VARCHAR</span><span class="token punctuation">,</span>
+    LogonId <span class="token keyword">VARCHAR</span><span class="token punctuation">,</span>
+    TerminalSessionId <span class="token keyword">INTEGER</span><span class="token punctuation">,</span>
+    IntegrityLevel <span class="token keyword">VARCHAR</span><span class="token punctuation">,</span>
+    Hashes <span class="token keyword">VARCHAR</span><span class="token punctuation">,</span>
+    ParentProcessGuid <span class="token keyword">VARCHAR</span><span class="token punctuation">,</span>
+    ParentProcessId <span class="token keyword">INTEGER</span><span class="token punctuation">,</span>
+    ParentImage <span class="token keyword">VARCHAR</span><span class="token punctuation">,</span>
+    ParentCommandLine <span class="token keyword">VARCHAR</span><span class="token punctuation">,</span>
+    Protocol <span class="token keyword">VARCHAR</span><span class="token punctuation">,</span>
+    Initiated <span class="token keyword">VARCHAR</span><span class="token punctuation">,</span>
+    SourceIsIpv6 <span class="token keyword">VARCHAR</span><span class="token punctuation">,</span>
+    SourceIp <span class="token keyword">VARCHAR</span><span class="token punctuation">,</span>
+    SourceHostname <span class="token keyword">VARCHAR</span><span class="token punctuation">,</span>
+    SourcePort <span class="token keyword">INTEGER</span><span class="token punctuation">,</span>
+    SourcePortName <span class="token keyword">VARCHAR</span><span class="token punctuation">,</span>
+    DestinationIsIpv6 <span class="token keyword">VARCHAR</span><span class="token punctuation">,</span>
+    DestinationIp <span class="token keyword">VARCHAR</span><span class="token punctuation">,</span>
+    DestinationHostname <span class="token keyword">VARCHAR</span><span class="token punctuation">,</span>
+    DestinationPort <span class="token keyword">INTEGER</span><span class="token punctuation">,</span>
+    DestinationPortName <span class="token keyword">VARCHAR</span>
+  <span class="token operator">></span><span class="token punctuation">,</span>
+  event_id <span class="token keyword">INTEGER</span><span class="token punctuation">)</span>
+<span class="token keyword">WITH</span> <span class="token punctuation">(</span>KAFKA_TOPIC<span class="token operator">=</span><span class="token string">'winlogbeat'</span><span class="token punctuation">,</span> VALUE_FORMAT<span class="token operator">=</span><span class="token string">'JSON'</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre></div>
+<h2 id="ksqldb-쿼리-작성-2" style="position:relative;"><a href="#ksqldb-%EC%BF%BC%EB%A6%AC-%EC%9E%91%EC%84%B1-2" aria-label="ksqldb 쿼리 작성 2 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>ksqlDB 쿼리 작성 (2)</h2>
+<p>(1)에서 작성한 쿼리를 토대로, 별도의 스트림을 통해 키값을 새로 추가하여 새 스트림을 만들어낼 수도 있습니다. 아래는 해당 내용에 대한 쿼리입니다.</p>
+<div class="gatsby-highlight" data-language="sql"><pre class="language-sql"><code class="language-sql"><span class="token keyword">CREATE</span> STREAM WINLOGBEAT_STREAM_REKEY
+<span class="token keyword">WITH</span> <span class="token punctuation">(</span>VALUE_FORMAT<span class="token operator">=</span><span class="token string">'JSON'</span><span class="token punctuation">,</span> PARTITIONS<span class="token operator">=</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token keyword">TIMESTAMP</span><span class="token operator">=</span><span class="token string">'event_date_creation'</span><span class="token punctuation">)</span>
+<span class="token keyword">AS</span> <span class="token keyword">SELECT</span> STRINGTOTIMESTAMP<span class="token punctuation">(</span>event_data<span class="token operator">-</span><span class="token operator">></span>UtcTime<span class="token punctuation">,</span> <span class="token string">'yyyy-MM-dd HH:mm:ss.SSS'</span><span class="token punctuation">)</span>
+<span class="token keyword">AS</span>
+  event_date_creation<span class="token punctuation">,</span>
+  event_data<span class="token operator">-</span><span class="token operator">></span>ProcessGuid <span class="token keyword">AS</span> process_guid<span class="token punctuation">,</span>
+  event_data<span class="token operator">-</span><span class="token operator">></span>ProcessId <span class="token keyword">AS</span> process_id<span class="token punctuation">,</span>
+  event_data<span class="token operator">-</span><span class="token operator">></span>Image <span class="token keyword">AS</span> process_path<span class="token punctuation">,</span>
+  event_data<span class="token operator">-</span><span class="token operator">></span>FileVersion <span class="token keyword">AS</span> file_version<span class="token punctuation">,</span>
+  event_data<span class="token operator">-</span><span class="token operator">></span>Description <span class="token keyword">AS</span> file_description<span class="token punctuation">,</span>
+  event_data<span class="token operator">-</span><span class="token operator">></span>Company <span class="token keyword">AS</span> file_company<span class="token punctuation">,</span>
+  event_data<span class="token operator">-</span><span class="token operator">></span>CommandLine <span class="token keyword">AS</span> process_command_line<span class="token punctuation">,</span>
+  event_data<span class="token operator">-</span><span class="token operator">></span>CurrentDirectory <span class="token keyword">AS</span> process_current_directory<span class="token punctuation">,</span>
+  event_data<span class="token operator">-</span><span class="token operator">></span><span class="token keyword">User</span> <span class="token keyword">AS</span> user_account<span class="token punctuation">,</span>
+  event_data<span class="token operator">-</span><span class="token operator">></span>LogonGuid <span class="token keyword">AS</span> user_logon_guid<span class="token punctuation">,</span>
+  event_data<span class="token operator">-</span><span class="token operator">></span>LogonId <span class="token keyword">AS</span> user_logon_id<span class="token punctuation">,</span>
+  event_data<span class="token operator">-</span><span class="token operator">></span>TerminalSessionId <span class="token keyword">AS</span> user_session_id<span class="token punctuation">,</span>
+  event_data<span class="token operator">-</span><span class="token operator">></span>IntegrityLevel <span class="token keyword">AS</span> process_integrity_level<span class="token punctuation">,</span>
+  event_data<span class="token operator">-</span><span class="token operator">></span>Hashes <span class="token keyword">AS</span> hashes<span class="token punctuation">,</span>
+  event_data<span class="token operator">-</span><span class="token operator">></span>ParentProcessGuid <span class="token keyword">AS</span> parent_process_guid<span class="token punctuation">,</span>
+  event_data<span class="token operator">-</span><span class="token operator">></span>ParentProcessId <span class="token keyword">AS</span> parent_process_id<span class="token punctuation">,</span>
+  event_data<span class="token operator">-</span><span class="token operator">></span>ParentImage <span class="token keyword">AS</span> parent_process_path<span class="token punctuation">,</span>
+  event_data<span class="token operator">-</span><span class="token operator">></span>ParentCommandLine <span class="token keyword">AS</span> parent_process_command_line<span class="token punctuation">,</span>
+  event_data<span class="token operator">-</span><span class="token operator">></span>Protocol <span class="token keyword">AS</span> network_protocol<span class="token punctuation">,</span>
+  event_data<span class="token operator">-</span><span class="token operator">></span>Initiated <span class="token keyword">AS</span> network_connection_initiated<span class="token punctuation">,</span>
+  event_data<span class="token operator">-</span><span class="token operator">></span>SourceIsIpv6 <span class="token keyword">AS</span> src_is_ipv6<span class="token punctuation">,</span>
+  event_data<span class="token operator">-</span><span class="token operator">></span>SourceIp <span class="token keyword">AS</span> src_ip_addr<span class="token punctuation">,</span>
+  event_data<span class="token operator">-</span><span class="token operator">></span>SourceHostname <span class="token keyword">AS</span> src_host_name<span class="token punctuation">,</span>
+  event_data<span class="token operator">-</span><span class="token operator">></span>SourcePort <span class="token keyword">AS</span> src_port<span class="token punctuation">,</span>
+  event_data<span class="token operator">-</span><span class="token operator">></span>SourcePortName <span class="token keyword">AS</span> src_port_name<span class="token punctuation">,</span>
+  event_data<span class="token operator">-</span><span class="token operator">></span>DestinationIsIpv6 <span class="token keyword">AS</span> dst_is_ipv6<span class="token punctuation">,</span>
+  event_data<span class="token operator">-</span><span class="token operator">></span>DestinationIp <span class="token keyword">AS</span> dst_ip_addr<span class="token punctuation">,</span>
+  event_data<span class="token operator">-</span><span class="token operator">></span>DestinationHostname <span class="token keyword">AS</span> dst_host_name<span class="token punctuation">,</span>
+  event_data<span class="token operator">-</span><span class="token operator">></span>DestinationPort <span class="token keyword">AS</span> dst_port<span class="token punctuation">,</span>
+  event_data<span class="token operator">-</span><span class="token operator">></span>DestinationPortName <span class="token keyword">AS</span> dst_port_name<span class="token punctuation">,</span>
+  event_id<span class="token punctuation">,</span>
+  source_name<span class="token punctuation">,</span>
+  log_name
+<span class="token keyword">FROM</span> WINLOGBEAT_STREAM
+<span class="token keyword">WHERE</span> source_name<span class="token operator">=</span><span class="token string">'Microsoft-Windows-Sysmon'</span> <span class="token keyword">PARTITION</span> <span class="token keyword">BY</span> process_guid<span class="token punctuation">;</span></code></pre></div>
+<h2 id="ksqldb-쿼리-작성-3-응용" style="position:relative;"><a href="#ksqldb-%EC%BF%BC%EB%A6%AC-%EC%9E%91%EC%84%B1-3-%EC%9D%91%EC%9A%A9" aria-label="ksqldb 쿼리 작성 3 응용 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>ksqlDB 쿼리 작성 (3): 응용</h2>
+<p>앞서 작성한 내용을 통해, sysmon에서 유의미한 데이터를 가져오는 쿼리를 작성해보도록 합시다.</p>
+<div class="gatsby-highlight" data-language="sql"><pre class="language-sql"><code class="language-sql"><span class="token keyword">CREATE</span> STREAM SYSMON_PROCESS_CREATE
+<span class="token keyword">WITH</span> <span class="token punctuation">(</span>VALUE_FORMAT<span class="token operator">=</span><span class="token string">'JSON'</span><span class="token punctuation">,</span> PARTITIONS<span class="token operator">=</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token keyword">TIMESTAMP</span><span class="token operator">=</span><span class="token string">'event_date_creation'</span><span class="token punctuation">)</span>
+<span class="token keyword">AS</span> <span class="token keyword">SELECT</span>
+  event_date_creation<span class="token punctuation">,</span>
+  process_guid<span class="token punctuation">,</span>
+  process_id<span class="token punctuation">,</span>
+  process_path<span class="token punctuation">,</span>
+  file_version<span class="token punctuation">,</span>
+  file_description<span class="token punctuation">,</span>
+  file_company<span class="token punctuation">,</span>
+  process_command_line<span class="token punctuation">,</span>
+  process_current_directory<span class="token punctuation">,</span>
+  user_account<span class="token punctuation">,</span>
+  user_logon_guid<span class="token punctuation">,</span>
+  user_logon_id<span class="token punctuation">,</span>
+  user_session_id<span class="token punctuation">,</span>
+  process_integrity_level<span class="token punctuation">,</span>
+  hashes<span class="token punctuation">,</span>
+  parent_process_guid<span class="token punctuation">,</span>
+  parent_process_id<span class="token punctuation">,</span>
+  parent_process_path<span class="token punctuation">,</span>
+  parent_process_command_line<span class="token punctuation">,</span>
+  event_id<span class="token punctuation">,</span>
+  source_name<span class="token punctuation">,</span>
+  log_name
+<span class="token keyword">FROM</span> WINLOGBEAT_STREAM_REKEY
+<span class="token keyword">WHERE</span> event_id<span class="token operator">=</span><span class="token number">1</span><span class="token punctuation">;</span></code></pre></div>
+<p>관련 내용을 테이블에 저장할 수도 있습니다:</p>
+<div class="gatsby-highlight" data-language="sql"><pre class="language-sql"><code class="language-sql"><span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> SYSMON_PROCESS_CREATE_TABLE <span class="token punctuation">(</span>
+  event_date_creation <span class="token keyword">VARCHAR</span><span class="token punctuation">,</span>
+  process_guid <span class="token keyword">VARCHAR</span><span class="token punctuation">,</span>
+  process_id <span class="token keyword">INTEGER</span><span class="token punctuation">,</span>
+  process_path <span class="token keyword">VARCHAR</span><span class="token punctuation">,</span>
+  file_version <span class="token keyword">VARCHAR</span><span class="token punctuation">,</span>
+  file_description <span class="token keyword">VARCHAR</span><span class="token punctuation">,</span>
+  file_company <span class="token keyword">VARCHAR</span><span class="token punctuation">,</span>
+  process_command_line <span class="token keyword">VARCHAR</span><span class="token punctuation">,</span>
+  process_current_directory <span class="token keyword">VARCHAR</span><span class="token punctuation">,</span>
+  user_account <span class="token keyword">VARCHAR</span><span class="token punctuation">,</span>
+  user_logon_guid <span class="token keyword">VARCHAR</span><span class="token punctuation">,</span>
+  user_logon_id <span class="token keyword">VARCHAR</span><span class="token punctuation">,</span>
+  user_session_id <span class="token keyword">INTEGER</span><span class="token punctuation">,</span>
+  process_integrity_level <span class="token keyword">VARCHAR</span><span class="token punctuation">,</span>
+  hashes <span class="token keyword">VARCHAR</span><span class="token punctuation">,</span>
+  parent_process_guid <span class="token keyword">VARCHAR</span><span class="token punctuation">,</span>
+  parent_process_id <span class="token keyword">INTEGER</span><span class="token punctuation">,</span>
+  parent_process_path <span class="token keyword">VARCHAR</span><span class="token punctuation">,</span>
+  parent_process_command_line <span class="token keyword">VARCHAR</span><span class="token punctuation">,</span>
+  event_id <span class="token keyword">INTEGER</span><span class="token punctuation">,</span>
+  source_name <span class="token keyword">VARCHAR</span><span class="token punctuation">,</span>
+  log_name <span class="token keyword">VARCHAR</span><span class="token punctuation">)</span>
+<span class="token keyword">WITH</span> <span class="token punctuation">(</span>KAFKA_TOPIC<span class="token operator">=</span><span class="token string">'SYSMON_PROCESS_CREATE'</span><span class="token punctuation">,</span> VALUE_FORMAT<span class="token operator">=</span><span class="token string">'JSON'</span><span class="token punctuation">,</span> <span class="token keyword">KEY</span><span class="token operator">=</span><span class="token string">'process_guid'</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre></div>
+<h2 id="ksqldb-쿼리-작성-4-이상행위-탐지" style="position:relative;"><a href="#ksqldb-%EC%BF%BC%EB%A6%AC-%EC%9E%91%EC%84%B1-4-%EC%9D%B4%EC%83%81%ED%96%89%EC%9C%84-%ED%83%90%EC%A7%80" aria-label="ksqldb 쿼리 작성 4 이상행위 탐지 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>ksqlDB 쿼리 작성 (4): 이상행위 탐지</h2>
+<p>상기 과정을 이용하여, Lateral Movement 를 수행하여 타 PC에 “측면이동”을 하여 네트워크를 살펴보는 악성행위를 감지할 수 있습니다. 아래 내용이 해당 쿼리입니다.</p>
+<div class="gatsby-highlight" data-language="sql"><pre class="language-sql"><code class="language-sql"><span class="token keyword">CREATE</span> STREAM SYSMON_JOIN <span class="token keyword">WITH</span> <span class="token punctuation">(</span>PARTITIONS<span class="token operator">=</span><span class="token number">1</span><span class="token punctuation">)</span>
+<span class="token keyword">AS</span> <span class="token keyword">SELECT</span>
+  N<span class="token punctuation">.</span>EVENT_DATE_CREATION<span class="token punctuation">,</span>
+  N<span class="token punctuation">.</span>PROCESS_GUID<span class="token punctuation">,</span>
+  N<span class="token punctuation">.</span>PROCESS_ID<span class="token punctuation">,</span>
+  N<span class="token punctuation">.</span>PROCESS_PATH<span class="token punctuation">,</span>
+  N<span class="token punctuation">.</span>USER_ACCOUNT<span class="token punctuation">,</span>
+  N<span class="token punctuation">.</span>NETWORK_PROTOCOL<span class="token punctuation">,</span>
+  N<span class="token punctuation">.</span>NETWORK_CONNECTION_INITIATED<span class="token punctuation">,</span>
+  N<span class="token punctuation">.</span>SRC_IS_IPV6<span class="token punctuation">,</span>
+  N<span class="token punctuation">.</span>SRC_IP_ADDR<span class="token punctuation">,</span>
+  N<span class="token punctuation">.</span>SRC_HOST_NAME<span class="token punctuation">,</span>
+  N<span class="token punctuation">.</span>SRC_PORT<span class="token punctuation">,</span>
+  N<span class="token punctuation">.</span>SRC_PORT_NAME<span class="token punctuation">,</span>
+  N<span class="token punctuation">.</span>DST_IS_IPV6<span class="token punctuation">,</span>
+  N<span class="token punctuation">.</span>DST_IP_ADDR<span class="token punctuation">,</span>
+  N<span class="token punctuation">.</span>DST_HOST_NAME<span class="token punctuation">,</span>
+  N<span class="token punctuation">.</span>DST_PORT<span class="token punctuation">,</span>
+  N<span class="token punctuation">.</span>DST_PORT_NAME<span class="token punctuation">,</span>
+  N<span class="token punctuation">.</span>SOURCE_NAME<span class="token punctuation">,</span>
+  N<span class="token punctuation">.</span>LOG_NAME<span class="token punctuation">,</span>
+  P<span class="token punctuation">.</span>PROCESS_COMMAND_LINE<span class="token punctuation">,</span>
+  P<span class="token punctuation">.</span>HASHES<span class="token punctuation">,</span>
+  P<span class="token punctuation">.</span>PARENT_PROCESS_PATH<span class="token punctuation">,</span>
+  P<span class="token punctuation">.</span>PARENT_PROCESS_COMMAND_LINE<span class="token punctuation">,</span>
+  P<span class="token punctuation">.</span>USER_LOGON_GUID<span class="token punctuation">,</span>
+  P<span class="token punctuation">.</span>USER_LOGON_ID<span class="token punctuation">,</span>
+  P<span class="token punctuation">.</span>USER_SESSION_ID<span class="token punctuation">,</span>
+  P<span class="token punctuation">.</span>PROCESS_CURRENT_DIRECTORY<span class="token punctuation">,</span>
+  P<span class="token punctuation">.</span>PROCESS_INTEGRITY_LEVEL<span class="token punctuation">,</span>
+  P<span class="token punctuation">.</span>PARENT_PROCESS_GUID<span class="token punctuation">,</span>
+  P<span class="token punctuation">.</span>PARENT_PROCESS_ID
+<span class="token keyword">FROM</span> SYSMON_NETWORK_CONNECT N <span class="token keyword">INNER</span> <span class="token keyword">JOIN</span> SYSMON_PROCESS_CREATE_TABLE P <span class="token keyword">ON</span> N<span class="token punctuation">.</span>PROCESS_GUID <span class="token operator">=</span> P<span class="token punctuation">.</span>PROCESS_GUID<span class="token punctuation">;</span></code></pre></div>
+<h2 id="마무리" style="position:relative;"><a href="#%EB%A7%88%EB%AC%B4%EB%A6%AC" aria-label="마무리 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>마무리</h2>
+<p>이번 글을 통해, 아래 내용들을 살펴볼 수 있었습니다:</p>
+<ol>
+<li><code class="language-text">ksqlDB</code>에 대해 이해하였습니다.</li>
+<li>의미있는 데이터를 추려낼 수 있도록 작업하는 것이 <code class="language-text">ksqlDB</code>의 로직을 작성하는 핵심입니다.</li>
+<li>실전 예시를 통해, 어떤식으로 사용하는지에 대한 쿼리 작성법을 배웠습니다.</li>
+</ol>
+<p>읽어주셔서 대단히 감사합니다.</p>
+<hr>
+<p>References</p>
+<ul>
+<li><a href="https://docs.confluent.io/platform/current/ksqldb/tutorials/index.html" target="_blank" rel="nofollow noopener noreferrer">KSQL Tutorials end Examples</a></li>
+<li><a href="https://github.com/kafkakru/meetup/blob/master/conference/1st-conference/KSQL%20vs%20Kafka%20Streams.pdf" target="_blank" rel="nofollow noopener noreferrer">KSQL and Kafka Streams</a></li>
+<li><a href="https://www.confluent.io/ja-jp/blog/sysmon-security-event-processing-real-time-ksql-helk/" target="_blank" rel="nofollow noopener noreferrer">HELK, Hunting ELK</a></li>
+<li><a href="https://posts.specterops.io/real-time-sysmon-processing-via-ksql-and-helk-part-3-basic-use-case-8fbf383cb54f" target="_blank" rel="nofollow noopener noreferrer">Real-time sysmon processing via ksql and HELP pt.3</a></li>
+</ul></div></div></div><div class="Post-module--footer--f8705"><div class="Meta-module--meta--dae0a"><p class="Meta-module--date--4d30d">Published<!-- --> <!-- -->Mar 10, 2020</p></div><div class="Tags-module--tags--18589"><ul class="Tags-module--list--82ae6"><li class="Tags-module--item--52015"><a class="Button-module--button--b1113" href="/tag/data-processing/">data_processing</a></li></ul></div><div class="Author-module--author--1c58d"><p class="Non scholæ sed vitæ discimus.">Non scholæ sed vitæ discimus.</p><p class="Author-module--bio--08950">his/him</p></div></div><div class="Post-module--comments--d3b99"><div></div></div></div></div></div><div id="gatsby-announcer" style="position:absolute;top:0;width:1px;height:1px;padding:0;overflow:hidden;clip:rect(0, 0, 0, 0);white-space:nowrap;border:0" aria-live="assertive" aria-atomic="true"></div></div><script id="gatsby-script-loader">/*<![CDATA[*/window.pagePath="/devlog/data/2020-03-10-ksqldb-101-pt03";window.___webpackCompilationHash="2cc90c7bf969c92ecbf4";/*]]>*/</script><script id="gatsby-chunk-mapping">/*<![CDATA[*/window.___chunkMapping={"polyfill":["/polyfill-877fc533220b2bce0b1e.js"],"app":["/app-b344f477a15ca78ada57.js"],"component---cache-caches-gatsby-plugin-offline-app-shell-js":["/component---cache-caches-gatsby-plugin-offline-app-shell-js-0c915c7b1bdb5eac4fdf.js"],"component---src-templates-categories-template-categories-template-tsx":["/component---src-templates-categories-template-categories-template-tsx-e2d2add397e32e3517ca.js"],"component---src-templates-category-template-category-template-tsx":["/component---src-templates-category-template-category-template-tsx-078f2adfba160a34229f.js"],"component---src-templates-index-template-index-template-tsx":["/component---src-templates-index-template-index-template-tsx-83380c7954c9f6621026.js"],"component---src-templates-not-found-template-not-found-template-tsx":["/component---src-templates-not-found-template-not-found-template-tsx-56fe4d3b015459d56c99.js"],"component---src-templates-page-template-page-template-tsx":["/component---src-templates-page-template-page-template-tsx-c6c21d7369a9356db3a1.js"],"component---src-templates-post-template-post-template-tsx":["/component---src-templates-post-template-post-template-tsx-119cd0258cb38628d01f.js"],"component---src-templates-tag-template-tag-template-tsx":["/component---src-templates-tag-template-tag-template-tsx-8d0b3090e775aa3c4584.js"],"component---src-templates-tags-template-tags-template-tsx":["/component---src-templates-tags-template-tags-template-tsx-30027e87af7d042f3afb.js"]};/*]]>*/</script><script src="/polyfill-877fc533220b2bce0b1e.js" nomodule=""></script><script src="/app-b344f477a15ca78ada57.js" async=""></script><script src="/framework-481a1b6416c14416b2fb.js" async=""></script><script src="/webpack-runtime-b8c30787ddb902e678f7.js" async=""></script></body></html>

@@ -1,0 +1,867 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="ie=edge"/><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/><meta name="generator" content="Gatsby 4.25.4"/><meta name="description" content="API 서비스가 많이 나누어졌을 때, 인가에 대해 살펴보며 **인가** 에 사용되는 OAuth 2.0 스펙을 알아봅시다." data-gatsby-head="true"/><meta name="twitter:card" content="summary_large_image" data-gatsby-head="true"/><meta name="twitter:title" content="인가를 다시 살펴보다 (1) OAuth 2.0 개요와 프로토콜 소개 - 팔공산 창고" data-gatsby-head="true"/><meta name="twitter:description" content="API 서비스가 많이 나누어졌을 때, 인가에 대해 살펴보며 **인가** 에 사용되는 OAuth 2.0 스펙을 알아봅시다." data-gatsby-head="true"/><meta name="og:title" content="인가를 다시 살펴보다 (1) OAuth 2.0 개요와 프로토콜 소개 - 팔공산 창고" data-gatsby-head="true"/><meta name="og:type" content="website" data-gatsby-head="true"/><meta name="og:description" content="API 서비스가 많이 나누어졌을 때, 인가에 대해 살펴보며 **인가** 에 사용되는 OAuth 2.0 스펙을 알아봅시다." data-gatsby-head="true"/><meta name="image" content="https://blog.s3ich4n.me[object Object]" data-gatsby-head="true"/><meta name="og:image" content="https://blog.s3ich4n.me[object Object]" data-gatsby-head="true"/><meta name="twitter:image" content="https://blog.s3ich4n.me[object Object]" data-gatsby-head="true"/><meta name="theme-color" content="hsl(31, 92%, 62%)"/><style data-href="/styles.1fbe3e33e3d898c35e17.css" data-identity="gatsby-global-css">:after,:before,:root{--color-white:#fff;--color-primary:#5c92ff;--color-secondary:#f7a145;--color-prism-background:#eaeaeb;--color-typographic-base-font:#242933;--color-typographic-link-p-font:#5c92ff;--color-typographic-link-s-font:#f7a145;--color-page-border:#eaeaeb;--color-page-background:#fff;--color-sidebar-border:#eaeaeb;--color-sidebar-border-fade:#fff;--color-contacts-border:#eaeaeb;--color-button-border:#eaeaeb;--color-button-color:#242933;--color-theme-switcher:#3f485a;--color-theme-switcher-hover:#5c92ff}.dark :after,.dark :before,:root.dark{--color-white:#fff;--color-primary:#5c92ff;--color-secondary:#f7a145;--color-prism-background:#191d24;--color-typographic-base-font:#fff;--color-typographic-link-p-font:#5c92ff;--color-typographic-link-s-font:#f7a145;--color-page-border:#3f485a;--color-page-background:#242933;--color-sidebar-border:#3f485a;--color-sidebar-border-fade:#242933;--color-contacts-border:#3f485a;--color-button-border:#3f485a;--color-button-color:#fff;--color-theme-switcher:#eaeaeb;--color-theme-switcher-hover:#5c92ff}html{font-size:100}body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;background:var(--color-page-background);color:var(--color-typographic-base-font);font-size:16px;line-height:1.625;margin:0 0 0 calc(100vw - 100%);text-rendering:optimizelegibility}body,h1,h2,h3,h4,h5,h6{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif}h1,h2,h3,h4,h5,h6{font-weight:600}h1{font-size:40px;line-height:52px;margin-bottom:26px;margin-top:104px}h2{font-size:27px;line-height:39px}h2,h3{margin-bottom:13px;margin-top:52px}h3{font-size:22px;line-height:26px}h4{font-size:19.2px;margin-top:39px}h4,h5{line-height:26px;margin-bottom:13px}h5,h6{font-size:16px;margin-top:65px}h6{line-height:26px;margin-bottom:13px}img{max-width:100%}hr,img{border:0;display:block}hr{background-image:linear-gradient(180deg,transparent 1px,transparent 11px,#242933 0,#242933 15px,transparent 0,transparent 26px);background-size:100% 26px;color:var(--color-typographic-base-font);height:26px;margin:52px auto;width:100px}a{color:var(--color-typographic-link-p-font);text-decoration:none}a:active,a:focus,a:hover{color:var(--color-typographic-link-s-font)}b,strong{font-weight:600}ul{list-style:square;margin-bottom:26px}ul li{margin-bottom:10px;padding:0 5px}p{line-height:26px;margin-bottom:26px}blockquote{font-style:italic;padding:0;text-align:center}figure{display:block;height:auto;width:100%}figcaption{color:var(--color-typographic-base-font);font-size:14px;font-style:italic;line-height:19.5px;margin-bottom:0;margin-top:6.5px;text-align:center}@media screen and (min-width:685px){figure.float-left,figure.float-right{max-width:310px;padding:0 26px}.float-right{float:right}.float-left{float:left}}code[class*=language-],pre[class*=language-]{word-wrap:normal;color:#657b83;font-family:Consolas,Monaco,Andale Mono,Ubuntu Mono,monospace;font-size:1em;-webkit-hyphens:none;hyphens:none;line-height:1.5;-o-tab-size:4;tab-size:4;text-align:left;white-space:pre;word-break:normal;word-spacing:normal}pre[class*=language-]{border-radius:.3em;margin:.5em 0;overflow:auto;padding:1em}:not(pre)>code[class*=language-],pre[class*=language-]{background-color:var(--color-prism-background)}:not(pre)>code[class*=language-]{border-radius:.3em;padding:.1em}code[class*=language-] ::selection,code[class*=language-]::selection,pre[class*=language-] ::selection,pre[class*=language-]::selection{background:#073642}.token.cdata,.token.comment,.token.doctype,.token.prolog{color:#93a1a1}.token.punctuation{color:#586e75}.namespace{opacity:.7}.token.boolean,.token.constant,.token.deleted,.token.number,.token.property,.token.symbol,.token.tag{color:#268bd2}.token.attr-name,.token.builtin,.token.char,.token.inserted,.token.selector,.token.string,.token.url{color:#2aa198}.token.entity{background:#eee8d5;color:#657b83;cursor:help}.token.atrule,.token.attr-value,.token.keyword{color:#859900}.token.class-name,.token.function{color:#b58900}.token.important,.token.regex,.token.variable{color:#cb4b16}.token.bold,.token.important{font-weight:700}.token.italic{font-style:italic}.Feed-module--feed--a6204 .Feed-module--item--c7a63{margin-bottom:32.5px}.Feed-module--feed--a6204 .Feed-module--item--c7a63:last-child{margin-bottom:13px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f{font-size:27px;line-height:39px;margin-bottom:13px;margin-top:0}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f .Feed-module--link--6123b{color:var(--color-typographic-base-font)}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f .Feed-module--link--6123b:focus,.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f .Feed-module--link--6123b:hover{border-bottom:1px solid #242933;color:var(--color-typographic-base-font)}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--description--57348{font-size:16px;line-height:26px;margin-bottom:19.5px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--time--72864{color:var(--color-typographic-base-font);font-size:14px;font-weight:600;text-transform:uppercase}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--divider--81a18{margin:0 13px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--category--59f58 .Feed-module--link--6123b{color:var(--color-secondary);font-size:14px;font-weight:600;text-transform:uppercase}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--category--59f58 .Feed-module--link--6123b:focus,.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--category--59f58 .Feed-module--link--6123b:hover{color:#5c92ff}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--more--51a4e{color:var(--color-primary);font-size:16px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--more--51a4e:focus,.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--more--51a4e:hover{border-bottom:1px solid #5c92ff;color:var(--color-primary)}.Layout-module--layout--2c933{margin-left:auto;margin-right:auto;max-width:1070px}.Layout-module--layout--2c933:before{content:"";display:table}.Layout-module--layout--2c933:after{clear:both;content:"";display:table}.Page-module--page--24e03{margin-bottom:52px}.Page-module--page--24e03 .Page-module--inner--4b31d{padding:26px 19.5px 0}.Page-module--page--24e03 .Page-module--title--90338{font-size:40px;font-weight:600;line-height:52px;margin-bottom:37.7px;margin-top:0}.Page-module--page--24e03 .Page-module--body--561c4{font-size:16px;line-height:26px;margin:0 0 26px}@media screen and (min-width:685px){.Page-module--page--24e03{width:calc(58.275% - 12.5px)}.Page-module--page--24e03:nth-child(1n){clear:none;float:left;margin-right:30px}.Page-module--page--24e03:last-child{margin-right:0}.Page-module--page--24e03:nth-child(12n){float:right;margin-right:0}.Page-module--page--24e03:nth-child(12n+1){clear:both}.Page-module--page--24e03 .Page-module--inner--4b31d{padding:32.5px 19.5px 0}}@media screen and (min-width:960px){.Page-module--page--24e03{width:calc(66.6% - 10px)}.Page-module--page--24e03:nth-child(1n){clear:none;float:left;margin-right:30px}.Page-module--page--24e03:last-child{margin-right:0}.Page-module--page--24e03:nth-child(3n){float:right;margin-right:0}.Page-module--page--24e03:nth-child(3n+1){clear:both}.Page-module--page--24e03 .Page-module--inner--4b31d{padding:39px 26px 0}}.Pagination-module--pagination--d61cb{display:flex;margin-top:52px}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b{text-align:left;width:50%}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d{color:var(--color-secondary);font-size:26px;font-weight:700}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d:focus,.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d:hover{color:var(--color-primary)}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d.Pagination-module--disable--7e105{color:#3f485a;pointer-events:none}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8{text-align:right;width:50%}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff{color:var(--color-secondary);font-size:26px;font-weight:700}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff:focus,.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff:hover{color:var(--color-primary)}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff.Pagination-module--disable--7e105{color:#3f485a;pointer-events:none}.Button-module--button--b1113{border:1px solid var(--color-button-border);border-radius:20px;color:var(--color-button-color);display:inline-block;font-size:16px;font-weight:400;height:40px;line-height:40px;margin-left:auto;margin-right:auto;padding:0 26px;text-align:center;text-decoration:none}.Button-module--button--b1113:focus,.Button-module--button--b1113:hover{color:#5c92ff}.ThemeSwitcher-module--themeSwitcher--8a77f{--color:var(--color-theme-switcher)}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--button--7cb7b{align-items:center;background:transparent;border:0;cursor:pointer;display:flex;justify-content:center;outline:0}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--button--7cb7b svg{stroke:var(--color);pointer-events:none;transition:stroke .4s}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--button--7cb7b:hover{--color:var(--color-theme-switcher-hover)}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--moon--10537{stroke-dasharray:0 1px;opacity:0;transition:stroke-dasharray .2s ease-in,opacity .4s ease-in}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--sun--2163a{stroke-dasharray:1px 1px;opacity:1;transition:stroke-dasharray .2s ease-in,opacity .4s ease-in}.ThemeSwitcher-module--themeSwitcher--8a77f.ThemeSwitcher-module--dark--6db0c .ThemeSwitcher-module--moon--10537{stroke-dasharray:1px 1px;opacity:1}.ThemeSwitcher-module--themeSwitcher--8a77f.ThemeSwitcher-module--dark--6db0c .ThemeSwitcher-module--sun--2163a{stroke-dasharray:0 1px;opacity:0}.Author-module--author--cbd31 .Author-module--photo--9787b{background-clip:padding-box;border-radius:50%;display:inline-block;height:75px;margin-bottom:0;width:75px}.Author-module--author--cbd31 .Author-module--photo--9787b img{border-radius:50%}.Author-module--author--cbd31 .Author-module--title--cf7e5{font-size:18px;font-weight:600;line-height:29.25px;margin:0}.Author-module--author--cbd31 .Author-module--title--cf7e5 .Author-module--link--09c17,.Author-module--author--cbd31 .Author-module--title--cf7e5 .Author-module--link--09c17:focus,.Author-module--author--cbd31 .Author-module--title--cf7e5 .Author-module--link--09c17:hover{color:var(--color-typographic-base-font)}.Author-module--author--cbd31 .Author-module--bio--8168d,.Author-module--author--cbd31 .Author-module--subtitle--86ec5{color:#7f8ba4;line-height:26px;margin-bottom:26px}.Author-module--author--cbd31 .Author-module--titleContainer--4f576{align-items:center;display:flex;justify-content:space-between;margin:13px 0}.Categories-module--categories--f3389{color:#7f8ba4;font-size:14px}.Icon-module--icon--1d7da{fill:currentcolor;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;speak:none;stroke:currentcolor;stroke-width:0;display:inline-block;font-style:normal;font-variant:normal;font-weight:400;height:1em;line-height:1em;text-align:center;text-transform:none;width:1em}.Contacts-module--contacts--09178{margin-bottom:26px}.Contacts-module--contacts--09178 .Contacts-module--list--9670b{display:flex;flex-flow:row wrap;flex-grow:0;flex-shrink:0;list-style:none;margin:13px 0;max-width:165px;padding:0}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0{align-content:center;align-items:center;border:1px solid var(--color-contacts-border);border-radius:50%;display:flex;height:40px;justify-content:center;line-height:40px;margin:6.5px;padding:0;text-align:center;width:40px}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0:nth-child(3n+1){margin-left:0}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0 .Contacts-module--link--de1e0{border:0;color:var(--color-typographic-base-font);display:flex}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0 .Contacts-module--link--de1e0:focus,.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0 .Contacts-module--link--de1e0:hover{color:var(--color-typographic-link-p-font)}.Copyright-module--copyright--2c602{color:#7f8ba4;font-size:14px}.Menu-module--menu--113a9{margin-bottom:26px}.Menu-module--menu--113a9 .Menu-module--list--e1ae3{list-style:none;margin:0;padding:0}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679{margin:13px 0;padding:0}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02{border:0;color:var(--color-typographic-base-font);font-size:16px;font-weight:400}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02:focus,.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02:hover{border-bottom:1px solid #5c92ff;color:#5c92ff}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02.Menu-module--active--6cb74{border-bottom:1px solid var(--color-typographic-base-font);color:var(--color-typographic-base-font)}.Tags-module--tags--28a57{color:#7f8ba4;font-size:14px}.Sidebar-module--sidebar--1bfa1{width:100%}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0{padding:26px 19.5px 0;position:relative}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0:after{background:var(--color-sidebar-border);background:linear-gradient(to bottom,var(--color-sidebar-border) 0,var(--color-sidebar-border) 48%,var(--color-sidebar-border-fade) 100%)}@media screen and (min-width:685px){.Sidebar-module--sidebar--1bfa1{width:calc(41.625% - 17.5px)}.Sidebar-module--sidebar--1bfa1:nth-child(1n){clear:none;float:left;margin-right:30px}.Sidebar-module--sidebar--1bfa1:last-child{margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(12n){float:right;margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(12n+1){clear:both}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0{padding:32.5px 19.5px 0}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0:after{bottom:0;content:"";height:540px;position:absolute;right:-10px;top:30px;width:1px}}@media screen and (min-width:960px){.Sidebar-module--sidebar--1bfa1{width:calc(33.3% - 20px)}.Sidebar-module--sidebar--1bfa1:nth-child(1n){clear:none;float:left;margin-right:30px}.Sidebar-module--sidebar--1bfa1:last-child{margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(3n){float:right;margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(3n+1){clear:both}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0{padding:39px}}.Author-module--author--1c58d{border-top:1px solid var(--color-page-border);line-height:26px;margin-bottom:52px;margin-top:26px;max-width:920px;padding-top:26px}.Author-module--author--1c58d .Author-module--bio--08950 .Author-module--twitter--90647{display:block;text-decoration:underline}.Author-module--author--1c58d .Author-module--bio--08950 .Author-module--twitter--90647:focus,.Author-module--author--1c58d .Author-module--bio--08950 .Author-module--twitter--90647:hover{color:var(--color-typographic-link-s-font)}@media screen and (min-width:685px){.Author-module--author--1c58d{margin-left:auto;margin-right:auto}}.Content-module--content--80d58{margin:0 auto;max-width:1070px;padding:0 13px}.Content-module--content--80d58 .Content-module--title--09504{font-size:32px;font-weight:600;line-height:42.9px;margin:26px auto 0;max-width:920px;text-align:center}.Content-module--content--80d58 .Content-module--body--726c2 figure{margin-bottom:26px}.Content-module--content--80d58 .Content-module--body--726c2 figure blockquote{font-style:italic;margin-top:0;padding:26px 0;text-align:center}.Content-module--content--80d58 .Content-module--body--726c2 figure blockquote p{font-size:26.9072px;line-height:39px;margin-bottom:26px;margin-top:0;max-width:920px}.Content-module--content--80d58 .Content-module--body--726c2 a{text-decoration:underline}.Content-module--content--80d58 .Content-module--body--726c2 *{margin-left:auto;margin-right:auto;max-width:920px}.Content-module--content--80d58 .Content-module--body--726c2 h2>a{visibility:hidden}.Content-module--content--80d58 .Content-module--body--726c2 h2>a>svg{fill:var(--color-typographic-base-font)}.Content-module--content--80d58 .Content-module--body--726c2 img{max-width:100%}@media screen and (min-width:960px){.Content-module--content--80d58{padding:0}.Content-module--content--80d58 .Content-module--title--09504{font-size:48px;line-height:58.5px;margin-bottom:39px;margin-top:58.5px}.Content-module--content--80d58 .Content-module--body--726c2,.Content-module--content--80d58 .Content-module--body--726c2 p{font-size:18px;line-height:29.25px;margin-bottom:29.25px}.Content-module--content--80d58 .Content-module--body--726c2 h2>a{padding-right:13px;visibility:unset}}.Meta-module--meta--dae0a .Meta-module--date--4d30d{font-style:italic}.Tags-module--tags--18589{margin-bottom:13px}.Tags-module--tags--18589 .Tags-module--list--82ae6{list-style:none;padding:0}.Tags-module--tags--18589 .Tags-module--list--82ae6 .Tags-module--item--52015{display:inline-block;margin:6.5px 0}@media screen and (min-width:685px){.Tags-module--tags--18589 .Tags-module--list--82ae6 .Tags-module--item--52015:first-child{margin-left:0;padding-left:0}}.Post-module--post--3a994 .Post-module--content--3c6e5{margin:0 auto}.Post-module--post--3a994 .Post-module--comments--d3b99,.Post-module--post--3a994 .Post-module--footer--f8705{margin:0 auto;max-width:920px;padding:0 13px}.Post-module--post--3a994 .Post-module--buttons--2972d{align-items:center;display:flex;justify-content:center;margin:26px 0 0;text-align:center}.Post-module--post--3a994 .Post-module--buttons--2972d .Post-module--buttonArticles--d793a{margin:0 13px 0 0}@media screen and (min-width:960px){.Post-module--post--3a994 .Post-module--comments--d3b99,.Post-module--post--3a994 .Post-module--footer--f8705{padding:0}.Post-module--post--3a994 .Post-module--buttons--2972d{left:30px;margin:0 13px 0 0;max-width:none;position:fixed;top:30px}}</style><title data-gatsby-head="true">인가를 다시 살펴보다 (1) OAuth 2.0 개요와 프로토콜 소개 - 팔공산 창고</title><link rel="alternate" type="application/rss+xml" title="팔공산 창고" href="/rss.xml"/><style type="text/css">
+    .anchor.before {
+      position: absolute;
+      top: 0;
+      left: 0;
+      transform: translateX(-100%);
+      padding-right: 4px;
+    }
+    .anchor.after {
+      display: inline-block;
+      padding-left: 4px;
+    }
+    h1 .anchor svg,
+    h2 .anchor svg,
+    h3 .anchor svg,
+    h4 .anchor svg,
+    h5 .anchor svg,
+    h6 .anchor svg {
+      visibility: hidden;
+    }
+    h1:hover .anchor svg,
+    h2:hover .anchor svg,
+    h3:hover .anchor svg,
+    h4:hover .anchor svg,
+    h5:hover .anchor svg,
+    h6:hover .anchor svg,
+    h1 .anchor:focus svg,
+    h2 .anchor:focus svg,
+    h3 .anchor:focus svg,
+    h4 .anchor:focus svg,
+    h5 .anchor:focus svg,
+    h6 .anchor:focus svg {
+      visibility: visible;
+    }
+  </style><script>
+    document.addEventListener("DOMContentLoaded", function(event) {
+      var hash = window.decodeURI(location.hash.replace('#', ''))
+      if (hash !== '') {
+        var element = document.getElementById(hash)
+        if (element) {
+          var scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+          var clientTop = document.documentElement.clientTop || document.body.clientTop || 0
+          var offset = element.getBoundingClientRect().top + scrollTop - clientTop
+          // Wait for the browser to finish rendering before scrolling.
+          setTimeout((function() {
+            window.scrollTo(0, offset - 0)
+          }), 0)
+        }
+      }
+    })
+  </script><link rel="preconnect" href="https://www.googletagmanager.com"/><link rel="dns-prefetch" href="https://www.googletagmanager.com"/><script async="" src="https://www.googletagmanager.com/gtag/js?id="></script><script>
+      
+      
+      if(true) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){window.dataLayer && window.dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', '', {"send_page_view":false});
+      }
+      </script><link rel="sitemap" type="application/xml" href="/sitemap/sitemap-index.xml"/><link rel="icon" href="/favicon-32x32.png?v=4c2c993a06ee0fd0ee953020b09128a9" type="image/png"/><link rel="manifest" href="/manifest.webmanifest" crossorigin="anonymous"/><link rel="apple-touch-icon" sizes="48x48" href="/icons/icon-48x48.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="72x72" href="/icons/icon-72x72.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="96x96" href="/icons/icon-96x96.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="144x144" href="/icons/icon-144x144.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192x192.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="256x256" href="/icons/icon-256x256.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="384x384" href="/icons/icon-384x384.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="512x512" href="/icons/icon-512x512.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><style>.gatsby-image-wrapper{position:relative;overflow:hidden}.gatsby-image-wrapper picture.object-fit-polyfill{position:static!important}.gatsby-image-wrapper img{bottom:0;height:100%;left:0;margin:0;max-width:none;padding:0;position:absolute;right:0;top:0;width:100%;object-fit:cover}.gatsby-image-wrapper [data-main-image]{opacity:0;transform:translateZ(0);transition:opacity .25s linear;will-change:opacity}.gatsby-image-wrapper-constrained{display:inline-block;vertical-align:top}</style><noscript><style>.gatsby-image-wrapper noscript [data-main-image]{opacity:1!important}.gatsby-image-wrapper [data-placeholder-image]{opacity:0!important}</style></noscript><script type="module">const e="undefined"!=typeof HTMLImageElement&&"loading"in HTMLImageElement.prototype;e&&document.body.addEventListener("load",(function(e){const t=e.target;if(void 0===t.dataset.mainImage)return;if(void 0===t.dataset.gatsbyImageSsr)return;let a=null,n=t;for(;null===a&&n;)void 0!==n.parentNode.dataset.gatsbyImageWrapper&&(a=n.parentNode),n=n.parentNode;const o=a.querySelector("[data-placeholder-image]"),r=new Image;r.src=t.currentSrc,r.decode().catch((()=>{})).then((()=>{t.style.opacity=1,o&&(o.style.opacity=0,o.style.transition="opacity 500ms linear")}))}),!0);</script></head><body><script>
+          void function() {
+            var cachedMode;
+
+            try {
+              var preferredTheme = JSON.parse(localStorage.getItem('diesel:theme-atom'));
+
+              if (preferredTheme && preferredTheme.mode) {
+                cachedMode = preferredTheme.mode;
+              }
+            } catch (err) { }
+
+            function setTheme(newTheme) {
+              document.documentElement.className = newTheme;
+            }
+
+            var darkQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+            setTheme(cachedMode || (darkQuery.matches ? 'dark' : 'light'));
+          }()
+        </script><div id="___gatsby"><div style="outline:none" tabindex="-1" id="gatsby-focus-wrapper"><div class="Layout-module--layout--2c933"><div class="Post-module--post--3a994"><div class="Post-module--buttons--2972d"><a class="Button-module--button--b1113 Post-module--buttonArticles--d793a" href="/">All Articles</a></div><div class="Post-module--content--3c6e5"><div class="Content-module--content--80d58"><h1 class="Content-module--title--09504">인가를 다시 살펴보다 (1) OAuth 2.0 개요와 프로토콜 소개</h1><div class="Content-module--body--726c2"><h1 id="연재-안내" style="position:relative;"><a href="#%EC%97%B0%EC%9E%AC-%EC%95%88%EB%82%B4" aria-label="연재 안내 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>연재 안내</h1>
+<ul>
+<li>인가를 다시 살펴보다 (1)</li>
+<li><a href="/devlog/backend/2022-10-17-considering-authn-and-authz-revisited-pt02">인가를 다시 살펴보다 (2)</a></li>
+</ul>
+<h1 id="들어가며" style="position:relative;"><a href="#%EB%93%A4%EC%96%B4%EA%B0%80%EB%A9%B0" aria-label="들어가며 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>들어가며</h1>
+<p>필요한 API 서비스를 나누고 서비스의 규모가 커지면, 인증과 인가에 대해 구조적으로 돌아보게 됩니다. 그러면서 자연스럽게 SSO(IdP, SP)나 OAuth 2.0, OpenID Connect 같은 큰 개념을 돌아보게 되고, 어떻게 이를 위임하거나 전파할지를 구상하게 됩니다.</p>
+<h1 id="single-sign-onsso-이란" style="position:relative;"><a href="#single-sign-onsso-%EC%9D%B4%EB%9E%80" aria-label="single sign onsso 이란 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Single-sign On(SSO) 이란?</h1>
+<p>단일 로그인입니다. 자기 서비스에 한번만 로그인 하면, 연관있는 다른 “서비스”를 로그인 없이 이용할 수 있게 하는 것이지요. 사용자에게는 여러 서비스를 한번에 쓸 수 있게끔 세팅해주는 것이고, 뒷단에서는 각 서비스에 대해 별도 인증시스템을 따로 꾸리지 않으며 사용자 접근관리를 하도록 합니다.</p>
+<h2 id="sso-구현-모델에-대해" style="position:relative;"><a href="#sso-%EA%B5%AC%ED%98%84-%EB%AA%A8%EB%8D%B8%EC%97%90-%EB%8C%80%ED%95%B4" aria-label="sso 구현 모델에 대해 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>SSO 구현 모델에 대해</h2>
+<p>SSO를 구현하는 구현모델 및 기법을 살펴봅시다. 여기서는 제가 이해한 모델에 대해서 기술하겠습니다.</p>
+<h3 id="delegation-model" style="position:relative;"><a href="#delegation-model" aria-label="delegation model permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Delegation model</h3>
+<p>SSO 에이전트가 중앙에서 인증을 대행합니다.
+대상 애플리케이션의 인증방식을 변경하기 어려울 때 서비스에 일일이 붙여주는 방식으로 사용합니다.
+사용자의 인증 정보를 SSO 에이전트가 관리합니다(SPOF가 될 수 있겠지요).</p>
+<p><figure class="gatsby-resp-image-figure" style="">
+    <span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 945px; "
+    >
+      <a
+    class="gatsby-resp-image-link"
+    href="/static/549e80f403be0429f455ef576795da7a/0ede0/00_SSO_delegation_diagram.jpg"
+    style="display: block"
+    target="_blank"
+    rel="noopener"
+  >
+    <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 50%; position: relative; bottom: 0; left: 0; background-image: url('data:image/jpeg;base64,/9j/2wBDABALDA4MChAODQ4SERATGCgaGBYWGDEjJR0oOjM9PDkzODdASFxOQERXRTc4UG1RV19iZ2hnPk1xeXBkeFxlZ2P/2wBDARESEhgVGC8aGi9jQjhCY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2P/wgARCAAKABQDASIAAhEBAxEB/8QAFwABAQEBAAAAAAAAAAAAAAAAAAIDBf/EABUBAQEAAAAAAAAAAAAAAAAAAAAB/9oADAMBAAIQAxAAAAHuRsIWT//EABgQAQEAAwAAAAAAAAAAAAAAAAERAhIg/9oACAEBAAEFAlhtcTj/xAAUEQEAAAAAAAAAAAAAAAAAAAAQ/9oACAEDAQE/AT//xAAUEQEAAAAAAAAAAAAAAAAAAAAQ/9oACAECAQE/AT//xAAWEAEBAQAAAAAAAAAAAAAAAAAA4SD/2gAIAQEABj8CVcf/xAAcEAEAAQQDAAAAAAAAAAAAAAABEQAQIUExUWH/2gAIAQEAAT8hVFAj2sJkM6ouc7sg6t//2gAMAwEAAgADAAAAEKj/AP/EABURAQEAAAAAAAAAAAAAAAAAABBB/9oACAEDAQE/EIf/xAAVEQEBAAAAAAAAAAAAAAAAAAAAEf/aAAgBAgEBPxBX/8QAHRABAAICAgMAAAAAAAAAAAAAAQARQVEhMYGRsf/aAAgBAQABPxAP1k8fkXgU6T3Usy+SIJSCaYAUANBKn//Z'); background-size: cover; display: block;"
+  ></span>
+  <picture>
+          <source
+              srcset="/static/549e80f403be0429f455ef576795da7a/8ac56/00_SSO_delegation_diagram.webp 240w,
+/static/549e80f403be0429f455ef576795da7a/d3be9/00_SSO_delegation_diagram.webp 480w,
+/static/549e80f403be0429f455ef576795da7a/a70f5/00_SSO_delegation_diagram.webp 945w"
+              sizes="(max-width: 945px) 100vw, 945px"
+              type="image/webp"
+            />
+          <source
+            srcset="/static/549e80f403be0429f455ef576795da7a/09b79/00_SSO_delegation_diagram.jpg 240w,
+/static/549e80f403be0429f455ef576795da7a/7cc5e/00_SSO_delegation_diagram.jpg 480w,
+/static/549e80f403be0429f455ef576795da7a/0ede0/00_SSO_delegation_diagram.jpg 945w"
+            sizes="(max-width: 945px) 100vw, 945px"
+            type="image/jpeg"
+          />
+          <img
+            class="gatsby-resp-image-image"
+            src="/static/549e80f403be0429f455ef576795da7a/0ede0/00_SSO_delegation_diagram.jpg"
+            alt="Delegation model의 도식&lt;br /&gt;(출처: https://itwiki.kr/w/SSO)"
+            title="Delegation model의 도식&lt;br /&gt;(출처: https://itwiki.kr/w/SSO)"
+            loading="lazy"
+            decoding="async"
+            style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+          />
+        </picture>
+  </a>
+    </span>
+    <figcaption class="gatsby-resp-image-figcaption"><p>Delegation model의 도식<br />(출처: <a href="https://itwiki.kr/w/SSO" target="_blank" rel="nofollow noopener noreferrer">https://itwiki.kr/w/SSO</a>)</p></figcaption>
+  </figure></p>
+<h3 id="propagation-model" style="position:relative;"><a href="#propagation-model" aria-label="propagation model permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Propagation model</h3>
+<p>통합인증 서비스에서 인증을 수행하고 인증 토큰을 받아옵니다.
+서비스 접근 시, 인증토큰을 서비스에 전달하고, 이를 가지고 사용자를 확인할 수 있는 구조입니다.</p>
+<p><figure class="gatsby-resp-image-figure" style="">
+    <span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 945px; "
+    >
+      <a
+    class="gatsby-resp-image-link"
+    href="/static/9a847bcbd3eac8d49d838fb23932f7f9/0ede0/00_SSO_propagation_diagram.jpg"
+    style="display: block"
+    target="_blank"
+    rel="noopener"
+  >
+    <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 50%; position: relative; bottom: 0; left: 0; background-image: url('data:image/jpeg;base64,/9j/2wBDABALDA4MChAODQ4SERATGCgaGBYWGDEjJR0oOjM9PDkzODdASFxOQERXRTc4UG1RV19iZ2hnPk1xeXBkeFxlZ2P/2wBDARESEhgVGC8aGi9jQjhCY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2P/wgARCAAKABQDASIAAhEBAxEB/8QAGAAAAwEBAAAAAAAAAAAAAAAAAAIDBAX/xAAUAQEAAAAAAAAAAAAAAAAAAAAB/9oADAMBAAIQAxAAAAHtz0SRxgf/xAAYEAADAQEAAAAAAAAAAAAAAAAAAQIRMf/aAAgBAQABBQLWKSViJ6f/xAAUEQEAAAAAAAAAAAAAAAAAAAAQ/9oACAEDAQE/AT//xAAUEQEAAAAAAAAAAAAAAAAAAAAQ/9oACAECAQE/AT//xAAWEAEBAQAAAAAAAAAAAAAAAAABEAD/2gAIAQEABj8CzWf/xAAYEAEBAQEBAAAAAAAAAAAAAAABEQAgof/aAAgBAQABPyFRgIGFlH3DI4//2gAMAwEAAgADAAAAEOTP/8QAFBEBAAAAAAAAAAAAAAAAAAAAEP/aAAgBAwEBPxA//8QAFREBAQAAAAAAAAAAAAAAAAAAARD/2gAIAQIBAT8QJ//EABoQAQEAAwEBAAAAAAAAAAAAAAERABAhMbH/2gAIAQEAAT8QZoCLOuImxedH1yb0Let0QkHuv//Z'); background-size: cover; display: block;"
+  ></span>
+  <picture>
+          <source
+              srcset="/static/9a847bcbd3eac8d49d838fb23932f7f9/8ac56/00_SSO_propagation_diagram.webp 240w,
+/static/9a847bcbd3eac8d49d838fb23932f7f9/d3be9/00_SSO_propagation_diagram.webp 480w,
+/static/9a847bcbd3eac8d49d838fb23932f7f9/a70f5/00_SSO_propagation_diagram.webp 945w"
+              sizes="(max-width: 945px) 100vw, 945px"
+              type="image/webp"
+            />
+          <source
+            srcset="/static/9a847bcbd3eac8d49d838fb23932f7f9/09b79/00_SSO_propagation_diagram.jpg 240w,
+/static/9a847bcbd3eac8d49d838fb23932f7f9/7cc5e/00_SSO_propagation_diagram.jpg 480w,
+/static/9a847bcbd3eac8d49d838fb23932f7f9/0ede0/00_SSO_propagation_diagram.jpg 945w"
+            sizes="(max-width: 945px) 100vw, 945px"
+            type="image/jpeg"
+          />
+          <img
+            class="gatsby-resp-image-image"
+            src="/static/9a847bcbd3eac8d49d838fb23932f7f9/0ede0/00_SSO_propagation_diagram.jpg"
+            alt="Propagation model의 도식&lt;br /&gt;(출처: https://itwiki.kr/w/SSO)"
+            title="Propagation model의 도식&lt;br /&gt;(출처: https://itwiki.kr/w/SSO)"
+            loading="lazy"
+            decoding="async"
+            style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+          />
+        </picture>
+  </a>
+    </span>
+    <figcaption class="gatsby-resp-image-figcaption"><p>Propagation model의 도식<br />(출처: <a href="https://itwiki.kr/w/SSO" target="_blank" rel="nofollow noopener noreferrer">https://itwiki.kr/w/SSO</a>)</p></figcaption>
+  </figure></p>
+<h1 id="oauth-20이란" style="position:relative;"><a href="#oauth-20%EC%9D%B4%EB%9E%80" aria-label="oauth 20이란 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>OAuth 2.0이란?</h1>
+<p>유저에게 자신, 타인의 리소스에 접근할 수 있는 <strong>권한을 토큰으로 부여</strong> 하는 프로토콜(<a href="https://tools.ietf.org/html/rfc6749" target="_blank" rel="nofollow noopener noreferrer">RFC 6749</a>)입니다.</p>
+<h2 id="oauth-20의-특징" style="position:relative;"><a href="#oauth-20%EC%9D%98-%ED%8A%B9%EC%A7%95" aria-label="oauth 20의 특징 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>OAuth 2.0의 특징</h2>
+<p>OAuth 2.0은 인증 성공시 제한된 권한을 가진 <strong>Access Token</strong>과, 이를 갱신하는 <strong>Refresh Token</strong>을 동시에 발급받습니다. 이를 통해 유저별로 다양한 서비스에 대해 필요한 권한을 부여할 수 있습니다.</p>
+<p>이처럼 권한을 부여하고 토큰을 관리하는 구조를 이해하는 것이 <strong>OAuth 2.0의 핵심</strong> 입니다.</p>
+<h2 id="oauth-20의-주요-용어" style="position:relative;"><a href="#oauth-20%EC%9D%98-%EC%A3%BC%EC%9A%94-%EC%9A%A9%EC%96%B4" aria-label="oauth 20의 주요 용어 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>OAuth 2.0의 주요 용어</h2>
+<p>OAuth 2.0을 이해하기에 앞서, 용어를 정리해봅시다.</p>
+<h3 id="역할에-대해" style="position:relative;"><a href="#%EC%97%AD%ED%95%A0%EC%97%90-%EB%8C%80%ED%95%B4" aria-label="역할에 대해 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>역할에 대해</h3>
+<p>OAuth 2.0을 구성하고 있는 주요 4가지 객체(Roles)는 다음과 같습니다. 이 글을 기술하며, 아래의 상황을 가정합시다.</p>
+<blockquote>
+<p>“나”는, “파이어폭스”로 “가나다” 서비스에서 “곰곰”이라는 서비스에 접근하는 권한을 주려합니다.</p>
+</blockquote>
+<ul>
+<li>
+<p>Resource owner</p>
+<ul>
+<li>Resource Server(후술할 서버)의 데이터의 주인, 즉 “나” 입니다(참고: 개인 뿐 아니라 회사 단위일 수도 있습니다).</li>
+<li>각자의 계정을 가지고 있지요.</li>
+<li>정보에 접근할 수 있는 범위(scope)를 스스로 지정합니다.
+<ul>
+<li>외부 Resource Server에 어떤 행동을 할지에 대한 권한을 부여합니다.</li>
+<li>read, write 뿐 아니라 다른 권한 또한 주고 빼고를 결정할 수 있습니다.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>Resource server</p>
+<ul>
+<li>일반 사용자(Resouce owner)의 정보를 가지고있는 API 서버입니다. 즉 “곰곰”이라는 서비스의 서버지요.</li>
+<li>Access token을 사용하여 요청을 수신할 때, 권한을 검증한 후 적절한 결과를 응답합니다.
+<ul>
+<li>권한이 있으면 값을 주고, 아니면 401이나 403을 리턴하겠죠.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>Client</p>
+<ul>
+<li><code class="language-text">Resource owner</code>가 리소스에 접근하는 애플리케이션을 의미합니다. “가나다” 서비스에 접근하는 “파이어폭스” 이자, “가나다” 서비스 내부의 비밀정보를 저장하는 프로그램을 의미합니다.</li>
+<li>참고로, 이는 클라이언트는 노출될 수도, 내부에 존재할 수도 있습니다.
+<ul>
+<li>Confidential Client(이하 내부 클라이언트)는 사용자가 직접 관리할 수 없는 공간에 있습니다.</li>
+<li>Public Client(이하 외부 클라이언트)는 브라우저, 모바일 앱, IoT 디바이스입니다.</li>
+</ul>
+</li>
+<li>참고. Client 등록은 앱에 접근하기 위한 자격을 얻는 것을 의미합니다.</li>
+</ul>
+</li>
+<li>
+<p>Authorization server</p>
+<ul>
+<li>OAuth 2.0 프레임워크가 구현된 <strong>권한 부여</strong> 처리용 서버입니다. “가나다” 서비스의 OAuth 2.0 처리서버를 의미합니다.</li>
+<li><code class="language-text">Resource owner</code>를 인증한 후, Client에 대해 적절한 권한을 부여해줍니다.</li>
+<li><code class="language-text">Access token</code>, <code class="language-text">Refresh token</code>를 발급합니다.
+<ul>
+<li><code class="language-text">Access token</code>에는 각종 권한과 유효기간 등 주요정보가 들어가있습니다.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="토큰에-대해" style="position:relative;"><a href="#%ED%86%A0%ED%81%B0%EC%97%90-%EB%8C%80%ED%95%B4" aria-label="토큰에 대해 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>토큰에 대해</h3>
+<p>OAuth 2.0에서 “토큰”이란 아래와 같은 두 가지가 있습니다. 토큰을 어떤 스펙으로 정해야 하는지는 정해져있진 않습니다만, 주로 <code class="language-text">JWT</code>를 사용합니다.</p>
+<h4 id="access-token" style="position:relative;"><a href="#access-token" aria-label="access token permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code class="language-text">Access token</code></h4>
+<p>Access token의 주요 특징은 아래와 같습니다:</p>
+<ul>
+<li>보호된 리소스에 접근하기 위해 필요한 토큰입니다.</li>
+<li>살아있는 기간이 짧습니다. 보통 시간단위나 분단위입니다.</li>
+<li>외부 클라이언트가 사용합니다.</li>
+<li><code class="language-text">Access Token</code> 만료시 <code class="language-text">Refresh Token</code>으로 갱신합니다.</li>
+</ul>
+<h4 id="refresh-token" style="position:relative;"><a href="#refresh-token" aria-label="refresh token permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code class="language-text">Refresh token</code></h4>
+<p>Refresh token의 주요 특징은 아래와 같습니다:</p>
+<ul>
+<li>유효기간이 지나 만료된 <code class="language-text">Access token</code> 을 갱신하기 위한 토큰입니다.</li>
+<li>보통 일간, 월간, 연간 단위로 살아있을 수 있습니다.</li>
+<li>외부 클라이언트가 <strong>인증</strong>을 하여 획득합니다.</li>
+<li>갱신될 수 없으며, 유효기간이 만료되면 재로그인을 수행해야 합니다.</li>
+<li>“삭제(revoke)“가 가능하며, 그러면 더이상 <strong>권한 부여</strong>를 하지 않게 됩니다.</li>
+</ul>
+<p>Refresh token에 담긴 주요 리소스들을 살펴보도록 합시다.</p>
+<h3 id="토큰과-연관된-엔드포인트" style="position:relative;"><a href="#%ED%86%A0%ED%81%B0%EA%B3%BC-%EC%97%B0%EA%B4%80%EB%90%9C-%EC%97%94%EB%93%9C%ED%8F%AC%EC%9D%B8%ED%8A%B8" aria-label="토큰과 연관된 엔드포인트 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>토큰과 연관된 엔드포인트</h3>
+<p>이 토큰은 <strong>인증 서버</strong>로부터 받아옵니다. 관련 엔드포인트는 <code class="language-text">authorize</code>, <code class="language-text">token</code> 이라는 두 개의 엔드포인트를 일컫습니다.</p>
+<ul>
+<li><code class="language-text">token</code> 엔드포인트
+<ul>
+<li>상기 <code class="language-text">authorize</code> 엔드포인트에 성공적으로 응답을 받고, <code class="language-text">Access token</code> 과 <code class="language-text">Refresh token</code> 을 받습니다.</li>
+</ul>
+</li>
+<li><code class="language-text">authorize</code> 엔드포인트
+<ul>
+<li>사용자로부터 동의 및 권한 부여, 유저에 대한 <strong>권한 정보</strong>를 받기 위해 이동하는 곳입니다.</li>
+<li>“나”는 “가나다” 서비스로부터 “권한부여를 허용하시겠어요?” 와 같은 메시지를 받습니다.</li>
+</ul>
+</li>
+<li><code class="language-text">introspect</code> 엔드포인트
+<ul>
+<li>Authorization Server가 Resource server에 접근하기 위해, <code class="language-text">token</code> 엔드포인트로부터 받은 토큰을 물어보는 과정입니다.</li>
+<li>“가나다” 서비스가 “곰곰” 서비스에 물어본다고 할 수 있지요.</li>
+<li>“나”가 “파이어폭스”로 직접 해당 서비스를 호출할 수도 있습니다.</li>
+</ul>
+</li>
+<li><code class="language-text">revoke</code> 엔드포인트
+<ul>
+<li>사용하지 않을 <code class="language-text">Refresh token</code>을 “만료시키는” 엔드포인트 입니다. 유저가 특정 앱에 대해 권한을 주지 않음을 명시할 때 호출합니다.</li>
+</ul>
+</li>
+</ul>
+<p>획득한 Access token으로 API에 접근할 때 사용하며, 만료되면 내부 클라이언트가 Refresh token을 가지고 Access token을 갱신합니다.</p>
+<h1 id="oauth-20의-작동방식" style="position:relative;"><a href="#oauth-20%EC%9D%98-%EC%9E%91%EB%8F%99%EB%B0%A9%EC%8B%9D" aria-label="oauth 20의 작동방식 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>OAuth 2.0의 작동방식</h1>
+<blockquote>
+<p>아래 내용을 시행하기에 앞서, 클라이언트는 자신의 서비스에 먼저 “로그인” 한 것을 가정한 것으로 이해하시면 됩니다. 저는 RFC 문서 상의 2.3. Client Authentication 을 보고 이를 판단했습니다:</p>
+<p>If the client type is confidential, the client and authorization server establish a client authentication method suitable for the security requirements of the authorization server. The authorization server MAY accept any form of client authentication meeting its security requirements. (후략)</p>
+<p>그 후에 추가적인 “인가” 를 받고(OAuth 2.0) Resource Server에 통신하거나, 추가적인 “인증”, “인가” 를 모두 받고(OpenID Connect) Resource Server와 통신하는 것으로 이해하시면 됩니다.</p>
+<p>상세한 내용은 후술하겠습니다.</p>
+</blockquote>
+<p>OAuth 2.0의 전체 프레임워크의 가장 기본적인 Flow는 다음과 같습니다.</p>
+<div class="gatsby-highlight" data-language="text"><pre class="language-text"><code class="language-text">          +--------+                               +---------------+
+          |        |--(A)- Authorization Request ->|   Resource    |
+          |        |                               |     Owner     |
+          |        |&lt;-(B)-- Authorization Grant ---|               |
+          |        |                               +---------------+
+          |        |
+          |        |                               +---------------+
+          |        |--(C)-- Authorization Grant -->| Authorization |
+          | Client |                               |     Server    |
+          |        |&lt;-(D)----- Access Token -------|               |
+          |        |                               +---------------+
+          |        |
+          |        |                               +---------------+
+          |        |--(E)----- Access Token ------>|    Resource   |
+          |        |                               |     Server    |
+          |        |&lt;-(F)--- Protected Resource ---|               |
+          +--------+                               +---------------+
+
+                          Figure 1: Abstract Protocol Flow</code></pre></div>
+<p>또한, 이 문서에서는 Front channel이란 용어와, Back channel이란 용어를 각각 사용하겠습니다. Front channel은 고객(클라이언트 사이드)과 연관있는 파트를, Back channel은 Authorization Server, Resource server 와 같이 프로그래머 및 서비스와 밀접한 관계가 있는 파트를 의미합니다.</p>
+<h2 id="front-channel에서의-작업" style="position:relative;"><a href="#front-channel%EC%97%90%EC%84%9C%EC%9D%98-%EC%9E%91%EC%97%85" aria-label="front channel에서의 작업 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Front channel에서의 작업</h2>
+<p>“나”가 “파이어폭스”를 통해, “가나다” 서비스에서 “곰곰” 서비스로 요청하는 과정을 도식화한 것입니다. 여기서는 간략히 설명하겠습니다.</p>
+<ul>
+<li>
+<p>(A): 클라이언트는 <strong>인가</strong>를 resource owner에 요청합니다. 인증요청은 resource owner에 직접적으로 요청되거나, authorization server를 중간에 거쳐서 수행합니다.</p>
+</li>
+<li>
+<p>(B): Resource owner는 Client에게 인증허가를 수행합니다. 인증허가 방법은 총 4가지가 있습니다. 인증허가 방식은 하단에서 자세히 후술하겠습니다. 여기서는 특징만을 기술합니다.</p>
+<ul>
+<li>
+<p>Authorization Code Grant</p>
+<ul>
+<li>클라이언트가 resource owner에게 권한부여를 요청하는 대신, resource owner가 authorization server에서 인증을 받고 권한을 허가합니다.</li>
+<li>owner가 권한을 허가하면 authorization code가 발급되고 이를 클라이언트에 전달합니다.</li>
+<li>클라이언트는 authorization code를 authorization server에 코드를 보내며 권한허가 사실을 알리고 access token을 받습니다.</li>
+<li>후술할 Back channel과 Front channel이 확실히 분리되어 있어, 훨씬 안전합니다.</li>
+<li>해당 프로토콜의 다이어그램은 다음과 같습니다:
+<figure class="gatsby-resp-image-figure" style="">
+    <span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 737px; "
+    >
+      <a
+    class="gatsby-resp-image-link"
+    href="/static/9d1fd5e124b5e02589bb8b4832aa9cea/d125e/01-oauth-auth-code.png"
+    style="display: block"
+    target="_blank"
+    rel="noopener"
+  >
+    <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 64.58333333333334%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAANCAIAAAAmMtkJAAAACXBIWXMAAAsTAAALEwEAmpwYAAABp0lEQVQoz4WS266bMBBF8//f1LdElfIQRVFIEEICDObikBQMvo2N7Za44kSqdDpv45nl2dueHSGkbZtpmpRSUkrGWNu1r9cvIddUCFmWZZqmwzCod1BK7/d73/ev12s3juP1GgGAf4dS6ng8YlR476213vssyw6HgzEmNADAfr/vuk4ptZNSUjo750JNa5Pcox9R0Urv/XrY9/3pdDqfz6FBCBHH8eVyeT6fOwBYlkUIwRijdJoZ53T8WU0Fc4HWWqdpmiTJmjpnrR3HESFECNlprQEA4zq63W7RLctypdQmcvPymWqtnXOc8xVWStZ1nedFmqZ5XszzzIVYlsUYE+xIKTdfwba1doWNMUIIAGCM1XXTtR3GGCFUVVWWZ8MwzDNjjH9OBoCvycH2dre1NvBFUVS4Ig/CufgO/lRlrUUlul6jOI4JIcYYxlh4rdD2JftfeFmWx+NR17hpO1xhzvm2Bf+fbIyZpplzjgqU50XQ3zQNxphz8a5O38GUUgDgnE8TzfI8SRKESkqplCKssPf+L7x9ySZba72lzjmlVFjVYDtswR/4N8ne5l07c/+0AAAAAElFTkSuQmCC'); background-size: cover; display: block;"
+  ></span>
+  <picture>
+          <source
+              srcset="/static/9d1fd5e124b5e02589bb8b4832aa9cea/8ac56/01-oauth-auth-code.webp 240w,
+/static/9d1fd5e124b5e02589bb8b4832aa9cea/d3be9/01-oauth-auth-code.webp 480w,
+/static/9d1fd5e124b5e02589bb8b4832aa9cea/a99e1/01-oauth-auth-code.webp 737w"
+              sizes="(max-width: 737px) 100vw, 737px"
+              type="image/webp"
+            />
+          <source
+            srcset="/static/9d1fd5e124b5e02589bb8b4832aa9cea/8ff5a/01-oauth-auth-code.png 240w,
+/static/9d1fd5e124b5e02589bb8b4832aa9cea/e85cb/01-oauth-auth-code.png 480w,
+/static/9d1fd5e124b5e02589bb8b4832aa9cea/d125e/01-oauth-auth-code.png 737w"
+            sizes="(max-width: 737px) 100vw, 737px"
+            type="image/png"
+          />
+          <img
+            class="gatsby-resp-image-image"
+            src="/static/9d1fd5e124b5e02589bb8b4832aa9cea/d125e/01-oauth-auth-code.png"
+            alt="Authorization Code Grant의 도식"
+            title="Authorization Code Grant의 도식"
+            loading="lazy"
+            decoding="async"
+            style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+          />
+        </picture>
+  </a>
+    </span>
+    <figcaption class="gatsby-resp-image-figcaption"><p>Authorization Code Grant의 도식</p></figcaption>
+  </figure></li>
+</ul>
+</li>
+<li>
+<p>Implicit</p>
+<ul>
+<li>Authorization code 방식에서 마지막의 코드 관련 통신을 뺀것입니다.</li>
+<li>Refresh token을 지원하지 않습니다.</li>
+<li>이는 자격증명을 안전하게 저장하기 힘든 클라이언트에 최적화된 방식입니다. Resource Owner와 Client가 모두 한 디바이스인 것을 가정합니다.</li>
+<li>이러한 연유로 보안성이 낮아집니다. 주의해야 할 부분의 링크는 <a href="https://tools.ietf.org/html/rfc6749#section-10.16" target="_blank" rel="nofollow noopener noreferrer">여기를 참고</a>해주세요.
+<ul>
+<li>Front channel에 Access token이 노출되는 케이스이기 때문입니다.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>Resource Owner Password Credentials</p>
+<ul>
+<li>계정 인증정보(ID/PW) 같은 정보가 access token을 얻기 위한 authorizaion grant로 쓰입니다. access token을 얻으면 리소스 요청을 위해 ID/PW를 클라이언트가 보관할 필요는 없습니다.</li>
+<li>해당 프로토콜의 다이어그램은 다음과 같습니다:
+<figure class="gatsby-resp-image-figure" style="">
+    <span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 746px; "
+    >
+      <a
+    class="gatsby-resp-image-link"
+    href="/static/c68f9acd46f568aa7ae3e4578a820b50/62de4/02-oauth-password.png"
+    style="display: block"
+    target="_blank"
+    rel="noopener"
+  >
+    <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 55.41666666666667%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAALCAIAAADwazoUAAAACXBIWXMAAAsTAAALEwEAmpwYAAABd0lEQVQoz12QWY7jMAxEc//79AUCDwIE+ZieTi/ZJrGy2LLcsK1doigNYmWMRupLFOuBLM4opbfbTQjuvXfOGWMul3PdNNZ5Zy0AEEJeX/8wxgAgG9brNSHEez/r+/5t/a61TqMAYLVa7beblBLGmFJq23Y+n0+GlNJyudztdimlmVJKSoWIuREC/t1+vfw+vPcxpTvMOS+KX0VR/DeE/X6/WCwYY3cYMVprhRBKaYzRG7VhspQxuxGxruvj8ZjLGKPWuqqqYRhmWmsAX5anj4/PzWZblkQIOS0yZflZhhDimOgOe+8RMcaIiABgrW2/v2tKa0qrqjpfLlyIPDPDzrkQwgPOr0kxxq7rKKXNKKnU02QAyKvdMz/1EHG8orxer2dybpqmbduu61jLjDE58wMeMz/DxhjvvVKq7/uyJIfD4XQ6dV1njHHOjTceYWPM09qI6JybSu+9lNI5N2UGgMfBGGOcc/FDfNRUSik550qp6WcYhmz4B0lwdcaj5YoDAAAAAElFTkSuQmCC'); background-size: cover; display: block;"
+  ></span>
+  <picture>
+          <source
+              srcset="/static/c68f9acd46f568aa7ae3e4578a820b50/8ac56/02-oauth-password.webp 240w,
+/static/c68f9acd46f568aa7ae3e4578a820b50/d3be9/02-oauth-password.webp 480w,
+/static/c68f9acd46f568aa7ae3e4578a820b50/f7ebd/02-oauth-password.webp 746w"
+              sizes="(max-width: 746px) 100vw, 746px"
+              type="image/webp"
+            />
+          <source
+            srcset="/static/c68f9acd46f568aa7ae3e4578a820b50/8ff5a/02-oauth-password.png 240w,
+/static/c68f9acd46f568aa7ae3e4578a820b50/e85cb/02-oauth-password.png 480w,
+/static/c68f9acd46f568aa7ae3e4578a820b50/62de4/02-oauth-password.png 746w"
+            sizes="(max-width: 746px) 100vw, 746px"
+            type="image/png"
+          />
+          <img
+            class="gatsby-resp-image-image"
+            src="/static/c68f9acd46f568aa7ae3e4578a820b50/62de4/02-oauth-password.png"
+            alt="Resource Owner Password Credentials의 도식"
+            title="Resource Owner Password Credentials의 도식"
+            loading="lazy"
+            decoding="async"
+            style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+          />
+        </picture>
+  </a>
+    </span>
+    <figcaption class="gatsby-resp-image-figcaption"><p>Resource Owner Password Credentials의 도식</p></figcaption>
+  </figure></li>
+</ul>
+</li>
+<li>
+<p>Client Credentials</p>
+<ul>
+<li>자원 소유자가 유저가 아니고 클라이언트면 사용하는 방식.</li>
+<li>client가 관리하는 리소스에 접근하는 경우로 권한이 한정되어있을 때 씁니다. 클라이언트 각각이 resource owner가 될 수 있습니다.</li>
+<li>해당 프로토콜의 다이어그램은 다음과 같습니다:
+<figure class="gatsby-resp-image-figure" style="">
+    <span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 573px; "
+    >
+      <a
+    class="gatsby-resp-image-link"
+    href="/static/85b7b29c60834a648b9a206543917a12/3c024/03-oauth-client-creds.png"
+    style="display: block"
+    target="_blank"
+    rel="noopener"
+  >
+    <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 65.41666666666667%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAANCAIAAAAmMtkJAAAACXBIWXMAAAsTAAALEwEAmpwYAAABpklEQVQoz42RyY7bMBBE9f+fkS/w2Qgi5GxYRmDDC+MxRVoLSVmLtZAiKakDmTOewUwC5B10KHR1V4leWZbDA2NM/4ZSKn+QZZmU0ola67qub7dbVVXGGMaYp5TCGAdBwBgHAJgmeEAp9X3/dDpND8V9y7JcLpf7/R4AiqLwrLWEEN//kSSxG3rOrddrjPFHsa7rIAgQQq9mF+Cw/fX9EF86ABjHcQSAWTwcfN8/Ho9OdQaE0Gq1iuO4LEtPa13VdUou33bFTzGvHx9H2rZljC0Wi+12+zQrpdI03Ww2u91uviylBACt9TiOgqVhGJKQCCGmaTLGwBe01tba19hPs1Tq5eWCMT6fzwj9rqqqbVv3ENPbX3STbum7ue97ITihJEln4jiWUv3vZaWUlLKTknNOKI2iiM3wvCiKPBdCdF33NA/D8Dn2MAzW2vv9nmWZEOIaRYTQJEk450KIpmmstX3fN03zbnYru66TUlprXUOt9fUaXTAOyVzENXeBpZSuTp7nXt/3AGCMcY/xkb92dgcAoKoqj1KaZZnL9ol/iZzzPM8RQn8Af/TfHgZXV7QAAAAASUVORK5CYII='); background-size: cover; display: block;"
+  ></span>
+  <picture>
+          <source
+              srcset="/static/85b7b29c60834a648b9a206543917a12/8ac56/03-oauth-client-creds.webp 240w,
+/static/85b7b29c60834a648b9a206543917a12/d3be9/03-oauth-client-creds.webp 480w,
+/static/85b7b29c60834a648b9a206543917a12/351b3/03-oauth-client-creds.webp 573w"
+              sizes="(max-width: 573px) 100vw, 573px"
+              type="image/webp"
+            />
+          <source
+            srcset="/static/85b7b29c60834a648b9a206543917a12/8ff5a/03-oauth-client-creds.png 240w,
+/static/85b7b29c60834a648b9a206543917a12/e85cb/03-oauth-client-creds.png 480w,
+/static/85b7b29c60834a648b9a206543917a12/3c024/03-oauth-client-creds.png 573w"
+            sizes="(max-width: 573px) 100vw, 573px"
+            type="image/png"
+          />
+          <img
+            class="gatsby-resp-image-image"
+            src="/static/85b7b29c60834a648b9a206543917a12/3c024/03-oauth-client-creds.png"
+            alt="Client Credentials의 도식"
+            title="Client Credentials의 도식"
+            loading="lazy"
+            decoding="async"
+            style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+          />
+        </picture>
+  </a>
+    </span>
+    <figcaption class="gatsby-resp-image-figcaption"><p>Client Credentials의 도식</p></figcaption>
+  </figure></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>참고) 인증 허가 후의 과정은 아래의 Back channel과도 밀접한 연관을 가집니다. Back channel에서의 플로우 및 상세 구현방법이 정해지기 때문입니다. 여기서는 개념만 짚고 넘어가도록 하겠습니다.</p>
+<h2 id="back-channel에서의-작업" style="position:relative;"><a href="#back-channel%EC%97%90%EC%84%9C%EC%9D%98-%EC%9E%91%EC%97%85" aria-label="back channel에서의 작업 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Back Channel에서의 작업</h2>
+<p>유저에게 동의(consent)를 구하고, 클라이언트는 토큰을 통해 작업하는 큰 흐름에 대해 설명합니다. 상세한 구현방법은 상기 (B) 과정에 설명한 내용입니다. 아래 내용은 OAuth 2.0의 대략적인 플로우를 의미합니다.</p>
+<ul>
+<li>(C): 권한부여를 받은 클라이언트는 access token을 authorization server 에 요청합니다.</li>
+<li>(D): authorization server는 권한부여가 올바른지 유효성을 검증하고, 유효하다면 access token을 발급한 후 클라이언트에 결과를 보냅니다.</li>
+<li>(E): 발급받은 access token으로 client는 resource server에 리소스를 요청합니다.</li>
+<li>(F): resource server는 access token의 유효성을 점검 후 필요한 리소스를 줍니다.</li>
+</ul>
+<h1 id="oauth-20의-grant-flow에-대해" style="position:relative;"><a href="#oauth-20%EC%9D%98-grant-flow%EC%97%90-%EB%8C%80%ED%95%B4" aria-label="oauth 20의 grant flow에 대해 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>OAuth 2.0의 Grant flow에 대해</h1>
+<p>토큰 부여까지는 살펴보았고, 그렇다면 이제 그 토큰을 통해 어떤식으로 <strong>권한 처리</strong> 에 대한 플로우를 사용하는지 알아봅시다. 이 글에서는 Authorization Code Grant만을 살펴보도록 하겠습니다. 보다 더 상세한 스펙과 내용에 대해서는 RFC 문서를 참고해주시기 바랍니다.</p>
+<h2 id="grant-flow에-대해" style="position:relative;"><a href="#grant-flow%EC%97%90-%EB%8C%80%ED%95%B4" aria-label="grant flow에 대해 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Grant flow에 대해</h2>
+<p>인가 이 후 어떤 식으로 동작하는지에 대해 살펴봅시다. Back channel에서 일어나는 일에 대해 보다 소상히 살펴본다고 생각하시면 됩니다.</p>
+<h3 id="authorization-code-grant" style="position:relative;"><a href="#authorization-code-grant" aria-label="authorization code grant permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Authorization Code Grant</h3>
+<p>Authorization code grant type은 Access token과 Refresh token을 모두 얻는 데 사용되며 기밀 클라이언트에 최적화되어 있습니다. 이것은 리디렉션 기반 흐름이므로 클라이언트는 Resource Owner의 사용자 에이전트(일반적으로 웹 브라우저)와 상호 작용할 수 있어야 하며 Authorization Server에서 들어오는 요청(리디렉션을 통해)을 수신할 수 있어야 합니다.</p>
+<div class="gatsby-highlight" data-language="text"><pre class="language-text"><code class="language-text">          +----------+
+          | Resource |
+          |   Owner  |
+          |          |
+          +----------+
+                ^
+                |
+              (B)
+          +----|-----+          Client Identifier      +---------------+
+          |         -+----(A)-- &amp; Redirection URI ---->|               |
+          |  User-   |                                 | Authorization |
+          |  Agent  -+----(B)-- User authenticates --->|     Server    |
+          |          |                                 |               |
+          |         -+----(C)-- Authorization Code ---&lt;|               |
+          +-|----|---+                                 +---------------+
+            |    |                                         ^      v
+            (A)  (C)                                       |      |
+            |    |                                         |      |
+            ^    v                                         |      |
+          +---------+                                      |      |
+          |         |>---(D)-- Authorization Code ---------'      |
+          |  Client |          &amp; Redirection URI                  |
+          |         |                                             |
+          |         |&lt;---(E)----- Access Token -------------------'
+          +---------+       (w/ Optional Refresh Token)
+
+        Note: The lines illustrating steps (A), (B), and (C) are broken into
+        two parts as they pass through the user-agent.
+
+                          Figure 3: Authorization Code Flow</code></pre></div>
+<h4 id="권한요청시" style="position:relative;"><a href="#%EA%B6%8C%ED%95%9C%EC%9A%94%EC%B2%AD%EC%8B%9C" aria-label="권한요청시 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>권한요청시</h4>
+<p>Authorization Code Grant 플로우 중, 권한요청 시에는 아래 request 쿼리값이 들어갈 수 있습니다. <code class="language-text">application/x-www-form-urlencoded</code> 포맷으로 전송합니다.</p>
+<table>
+<thead>
+<tr>
+<th>필드명</th>
+<th>필수여부</th>
+<th>상세설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="language-text">response_type</code></td>
+<td>REQUIRED</td>
+<td>반드시 <code class="language-text">code</code> 라는 문자열이야 합니다.</td>
+</tr>
+<tr>
+<td><code class="language-text">client_id</code></td>
+<td>REQUIRED</td>
+<td>Client identifier 값입니다.</td>
+</tr>
+<tr>
+<td><code class="language-text">redirect_uri</code></td>
+<td>OPTIONAL</td>
+<td>토큰이 발급받을 위치를 지정합니다. 이 값을 엉뚱한 값으로 바꾸어 리소스에 접근할 수 없도록 하는 약속입니다.</td>
+</tr>
+<tr>
+<td><code class="language-text">scope</code></td>
+<td>OPTIONAL</td>
+<td>클라이언트가 수행할 수 있는 “범위”를 지정해주는 값입니다.</td>
+</tr>
+<tr>
+<td><code class="language-text">state</code></td>
+<td>RECOMMENDED</td>
+<td>요청-콜백 간 상태를 유지하기 위해 클라이언트 측에서 사용하는 opaque한 값입니다. CSRF를 방지하기 위해 사용됩니다.</td>
+</tr>
+</tbody>
+</table>
+<p>요청 예시는 아래와 같습니다:</p>
+<div class="gatsby-highlight" data-language="text"><pre class="language-text"><code class="language-text">
+GET /authorize?response_type=code&amp;client_id=s6BhdRkqt3&amp;state=xyz
+    &amp;redirect_uri=https%3A%2F%2Fclient%2Eexample%2Ecom%2Fcb HTTP/1.1
+Host: server.example.com</code></pre></div>
+<h4 id="권한응답시-정상처리" style="position:relative;"><a href="#%EA%B6%8C%ED%95%9C%EC%9D%91%EB%8B%B5%EC%8B%9C-%EC%A0%95%EC%83%81%EC%B2%98%EB%A6%AC" aria-label="권한응답시 정상처리 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>권한응답시 (정상처리)</h4>
+<table>
+<thead>
+<tr>
+<th>필드명</th>
+<th>필수여부</th>
+<th>상세설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="language-text">code</code></td>
+<td>REQUIRED</td>
+<td>Authrization 서버로부터 생성된 <strong>권한 부여</strong> 코드값입니다. 이 값은 악의적인 사용(유출되거나 하는 등)을 방지하기 위해 만료시간이 짧아야 합니다(<code class="language-text">10분</code> 이 권장됩니다). <br />해당 값은 반드시 한번 이상 <strong>사용할 수 없도록</strong> 해야합니다. 한번 이상 사용한다면 요청을 <strong>반드시</strong> 거부해야합니다.</td>
+</tr>
+<tr>
+<td><code class="language-text">state</code></td>
+<td>REQUIRED</td>
+<td>앞선 요청에 <code class="language-text">state</code> 필드값이 있었다면, 요청과 동일한 값을 응답해줍니다.</td>
+</tr>
+</tbody>
+</table>
+<p>응답 예시는 아래와 같습니다:</p>
+<div class="gatsby-highlight" data-language="text"><pre class="language-text"><code class="language-text">HTTP/1.1 302 Found
+Location: https://client.example.com/cb?code=SplxlOBeZQQYbYS6WxSbIA
+          &amp;state=xyz</code></pre></div>
+<p>클라이언트 측에서도 식별되지 않은 응답 파라미터는 <strong>반드시</strong> 무시해야합니다.</p>
+<h4 id="권한응답시-비정상-처리" style="position:relative;"><a href="#%EA%B6%8C%ED%95%9C%EC%9D%91%EB%8B%B5%EC%8B%9C-%EB%B9%84%EC%A0%95%EC%83%81-%EC%B2%98%EB%A6%AC" aria-label="권한응답시 비정상 처리 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>권한응답시 (비정상 처리)</h4>
+<p>Authorization server는 아래 상황에 대해 에러를 리턴해야 하고, 잘못된 리디렉션 URI로 <strong>반드시 가게해선 안 됩니다</strong>.</p>
+<table>
+<thead>
+<tr>
+<th>필드명</th>
+<th>필수여부</th>
+<th>상세설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="language-text">error</code></td>
+<td>REQUIRED</td>
+<td>에러를 표기하기 위한 <code class="language-text">ASCII</code> 값입니다(알파벳 대소문자, 숫자 이외의 값은 포함하면 안됩니다). 값들은 아래와 같습니다: <br /><code class="language-text">invalid_request</code>: 필수 파라미터를 포함하지 않았거나 잘못 사용한 경우 <br /><code class="language-text">unauthorized_client</code>: 클라이언트가 해당 리소스를 사용하기에 적절한 권한이 없는 경우 <br /><code class="language-text">access_denied</code>: Resource owner 혹은 Authorization server가 요청을 거부한 경우 <br /><code class="language-text">unsupported_response_type</code>: Authorization server가 이 방법을 사용한 액세스 토큰 획득을 지원하지 않는 경우 <br /><code class="language-text">invalid_scope</code>: 요청의 <code class="language-text">scope</code> 값이 유효하지 않거나, 알려지지 않은 값이거나, 손상된 경우 <br /><code class="language-text">server_error</code>: Authorization server 측의 예기치 않은 에러가 발생된 경우. <code class="language-text">500 Internal Server Error</code> Response를 줄 수 없는 경우 사용합니다. <br /><code class="language-text">temporarily_unavailable</code>: Authorization server 측의 과부화 혹은 점검의 이유로 인해 해당 요청을 처리할 수 없는 경우 사용합니다. <code class="language-text">503 Service Unavailable</code> Response를 줄 수 없는 경우 사용합니다.</td>
+</tr>
+<tr>
+<td><code class="language-text">error_description</code></td>
+<td>OPTIONAL</td>
+<td>human-readable <code class="language-text">ASCII</code> 텍스트. 클라이언트 개발자에게 보다 유용한 에러 메시지를 전달하기 위한 필드입니다. <br />알파벳 대소문자, 숫자 이외의 값을 포함하면 안됩니다.</td>
+</tr>
+<tr>
+<td><code class="language-text">error_uri</code></td>
+<td>OPTIONAL</td>
+<td>클라이언트 개발자에게 보다 유용한 에러 메시지를 전달하기 위한 human-readable 웹페이지 URI 값입니다.</td>
+</tr>
+<tr>
+<td><code class="language-text">state</code></td>
+<td>REQUIRED</td>
+<td>앞선 요청에 <code class="language-text">state</code> 필드값이 있었다면, 요청과 동일한 값을 응답해줍니다.</td>
+</tr>
+</tbody>
+</table>
+<ol>
+<li>URI 리디렉션이 잘못되었거나, 유효하지 않거나, 없는 값인 경우</li>
+<li>Client identifier가 없거나 유요하지 않은경우</li>
+</ol>
+<p>Authorization server가 요청을 거부한 경우에 대한 응답 예시는 아래와 같습니다.</p>
+<div class="gatsby-highlight" data-language="text"><pre class="language-text"><code class="language-text">HTTP/1.1 302 Found
+Location: https://client.example.com/cb#error=access_denied&amp;state=xyz</code></pre></div>
+<h4 id="token-발행-요청" style="position:relative;"><a href="#token-%EB%B0%9C%ED%96%89-%EC%9A%94%EC%B2%AD" aria-label="token 발행 요청 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Token 발행 요청</h4>
+<p>HTTP request entity-body에 <code class="language-text">UTF-8</code> 인코딩을 사용하고, <code class="language-text">application/x-www-form-urlencoded</code> 포맷으로 보냅니다.</p>
+<table>
+<thead>
+<tr>
+<th>필드명</th>
+<th>필수여부</th>
+<th>상세설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="language-text">grant_type</code></td>
+<td>REQUIRED</td>
+<td>이 값은 <strong>반드시</strong> 문자열 <code class="language-text">authorization_code</code> 값이어야합니다.</td>
+</tr>
+<tr>
+<td><code class="language-text">code</code></td>
+<td>REQUIRED</td>
+<td>Authorization server로부터 받은 authorization code 값입니다.</td>
+</tr>
+<tr>
+<td><code class="language-text">redirect_url</code></td>
+<td>REQUIRED</td>
+<td>Authorization request 과정에서 해당 값이 포함되어 있었다면, <strong>반드시</strong> 그 값과 동일해야합니다.</td>
+</tr>
+<tr>
+<td><code class="language-text">client_id</code></td>
+<td>REQUIRED</td>
+<td>클라이언트 자격증명에 사용됩니다. 클라이언트가 권한 서버에 등록하면 발급받을 수 있으며 권한 서버 연동 시 클라이언트의 검증에 사용됩니다.</td>
+</tr>
+</tbody>
+</table>
+<p>요청 예시는 아래와 같습니다:</p>
+<div class="gatsby-highlight" data-language="text"><pre class="language-text"><code class="language-text">POST /token HTTP/1.1
+Host: server.example.com
+Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=authorization_code&amp;code=SplxlOBeZQQYbYS6WxSbIA
+&amp;redirect_uri=https%3A%2F%2Fclient%2Eexample%2Ecom%2Fcb</code></pre></div>
+<h4 id="token-발행-요청에-대한-응답-정상처리" style="position:relative;"><a href="#token-%EB%B0%9C%ED%96%89-%EC%9A%94%EC%B2%AD%EC%97%90-%EB%8C%80%ED%95%9C-%EC%9D%91%EB%8B%B5-%EC%A0%95%EC%83%81%EC%B2%98%EB%A6%AC" aria-label="token 발행 요청에 대한 응답 정상처리 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Token 발행 요청에 대한 응답 (정상처리)</h4>
+<p>해당 값 리턴 시, 헤더에 <code class="language-text">Cache-Control: no-store</code> 값과 <code class="language-text">Pragma: no-cache</code> 값이 <strong>반드시</strong> 존재해야 합니다. <code class="language-text">Content-Type</code> 은 <code class="language-text">application/json</code> 입니다.</p>
+<table>
+<thead>
+<tr>
+<th>필드명</th>
+<th>필수여부</th>
+<th>상세설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="language-text">access_token</code></td>
+<td>REQUIRED</td>
+<td>Authorization server로부터 발급받은 Access token 값입니다.</td>
+</tr>
+<tr>
+<td><code class="language-text">token_type</code></td>
+<td>REQUIRED</td>
+<td>발급한 토큰의 타입을 기재합니다. 대소문자를 구별합니다.</td>
+</tr>
+<tr>
+<td><code class="language-text">expires_in</code></td>
+<td>RECOMMENDED</td>
+<td>Access token의 유효기간입니다. <br /><code class="language-text">3600</code> 이라면, 1시간 후 만료됩니다. 만약 이 값이 없다면 Authorization server에서 만료 시간을 기본값으로 정해주어야 합니다.</td>
+</tr>
+<tr>
+<td><code class="language-text">refresh_token</code></td>
+<td>OPTIONAL</td>
+<td>Refresh token값입니다. 이 값은 동일한 authorization grant 과정에 사용되는 새로운 Access token을 발급받는데 사용됩니다.</td>
+</tr>
+<tr>
+<td><code class="language-text">scope</code></td>
+<td>OPTIONAL</td>
+<td>어떤 권한을 요청할 것인지에 대한 범위입니다. 유저별로 구별되어있다면 OPTIONAL이지만, 그렇지 않다면 REQUIRED 입니다.</td>
+</tr>
+</tbody>
+</table>
+<p>응답 예시는 아래와 같습니다:</p>
+<div class="gatsby-highlight" data-language="text"><pre class="language-text"><code class="language-text">HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+Cache-Control: no-store
+Pragma: no-cache
+
+{
+  "access_token":"2YotnFZFEjr1zCsicMWpAA",
+  "token_type":"example",
+  "expires_in":3600,
+  "refresh_token":"tGzv3JOkF0XG5Qx2TlKWIA",
+  "example_parameter":"example_value"
+}</code></pre></div>
+<p>상단에서 살펴본 Access token과 Refresh token이 보입니다. 이를 통해 리소스 요청 및 Access token 갱신을 수행합니다. 또한 클라이언트 측에서도 식별되지 않은 응답 파라미터는 <strong>반드시</strong> 무시해야합니다.</p>
+<h4 id="token-발행-요청에-대한-응답-정상처리-1" style="position:relative;"><a href="#token-%EB%B0%9C%ED%96%89-%EC%9A%94%EC%B2%AD%EC%97%90-%EB%8C%80%ED%95%9C-%EC%9D%91%EB%8B%B5-%EC%A0%95%EC%83%81%EC%B2%98%EB%A6%AC-1" aria-label="token 발행 요청에 대한 응답 정상처리 1 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Token 발행 요청에 대한 응답 (정상처리)</h4>
+<table>
+<thead>
+<tr>
+<th>필드명</th>
+<th>필수여부</th>
+<th>상세설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="language-text">error</code></td>
+<td>REQUIRED</td>
+<td>에러를 표기하기 위한 <code class="language-text">ASCII</code> 값입니다(알파벳 대소문자, 숫자 이외의 값은 포함하면 안됩니다). 값들은 아래와 같습니다: <br /><code class="language-text">invalid_request</code>: 파라미터가 잘못되거나, 클라이언트 인증에 문제가 있거나, 값이 변조된 경우 <br /><code class="language-text">invalid_client</code>: 클라이언트 인증에 실패하는 경우 <br /><code class="language-text">invalid_grant</code>: authorization grant 과정 혹은 refresh token이 잘못된 경우 <br /><code class="language-text">unauthorized_client</code> : 클라이언트가 적절한 권한을 가지지 않은 경우<br /><code class="language-text">unsupported_grant_type</code> : authorization server에서 지원하지 않는 authorization grant type인 경우 <br /><code class="language-text">invalid_scope</code>: resource owner가 제공하지 않은 권한 밖의 <code class="language-text">scope</code> 를 요청한 경우</td>
+</tr>
+<tr>
+<td><code class="language-text">error_description</code></td>
+<td>OPTIONAL</td>
+<td>human-readable <code class="language-text">ASCII</code> 텍스트. 클라이언트 개발자에게 보다 유용한 에러 메시지를 전달하기 위한 필드입니다. <br />알파벳 대소문자, 숫자 이외의 값을 포함하면 안됩니다.</td>
+</tr>
+<tr>
+<td><code class="language-text">error_uri</code></td>
+<td>OPTIONAL</td>
+<td>클라이언트 개발자에게 보다 유용한 에러 메시지를 전달하기 위한 human-readable 웹페이지 URI 값입니다.</td>
+</tr>
+</tbody>
+</table>
+<p>응답 예시는 아래와 같습니다:</p>
+<div class="gatsby-highlight" data-language="text"><pre class="language-text"><code class="language-text">HTTP/1.1 400 Bad Request
+Content-Type: application/json;charset=UTF-8
+Cache-Control: no-store
+Pragma: no-cache
+
+{
+  "error":"invalid_request"
+}</code></pre></div>
+<p>또한 클라이언트 측에서도 식별되지 않은 응답 파라미터는 <strong>반드시</strong> 무시해야합니다.</p>
+<h4 id="access-token-갱신" style="position:relative;"><a href="#access-token-%EA%B0%B1%EC%8B%A0" aria-label="access token 갱신 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Access token 갱신</h4>
+<p>권한서버는</p>
+<table>
+<thead>
+<tr>
+<th>필드명</th>
+<th>필수여부</th>
+<th>상세설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="language-text">grant_type</code></td>
+<td>REQUIRED</td>
+<td>이 값은 <strong>반드시</strong> <code class="language-text">refresh_token</code> 이라는 문자열이어야 합니다.</td>
+</tr>
+<tr>
+<td><code class="language-text">refresh_token</code></td>
+<td>REQUIRED</td>
+<td>클라이언트에게 발급된 refresh token 값입니다.</td>
+</tr>
+<tr>
+<td><code class="language-text">scope</code></td>
+<td>OPTIONAL</td>
+<td>어떤 권한을 요청할 것인지에 대한 범위입니다. 유저별로 구별되어있다면 OPTIONAL이지만, 그렇지 않다면 REQUIRED 입니다.</td>
+</tr>
+</tbody>
+</table>
+<p>요청 예시는 아래와 같습니다</p>
+<div class="gatsby-highlight" data-language="text"><pre class="language-text"><code class="language-text">POST /token HTTP/1.1
+Host: server.example.com
+Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=refresh_token&amp;refresh_token=tGzv3JOkF0XG5Qx2TlKWIA</code></pre></div>
+<h2 id="그-외" style="position:relative;"><a href="#%EA%B7%B8-%EC%99%B8" aria-label="그 외 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>그 외?</h2>
+<ul>
+<li>상세한 내용 및 스펙에 대한 기재사항은 OAuth 2.0의 RFC 문서를 참고해 주십시오.</li>
+<li><a href="https://www.rfc-editor.org/rfc/rfc7662" target="_blank" rel="nofollow noopener noreferrer">Introspection 스펙</a>과 <a href="https://www.rfc-editor.org/rfc/rfc7009" target="_blank" rel="nofollow noopener noreferrer">Revocation 스펙</a>은 RFC 링크를 참고해 주십시오.</li>
+</ul>
+<h1 id="마무리" style="position:relative;"><a href="#%EB%A7%88%EB%AC%B4%EB%A6%AC" aria-label="마무리 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>마무리</h1>
+<p>이번 글을 통해, 아래 내용들을 살펴볼 수 있었습니다:</p>
+<ol>
+<li>OAuth 2.0의 기본 원리와 도식을 살펴보았습니다.
+<ol>
+<li>OAuth 2.0에 사용되는 주요 용어와</li>
+</ol>
+</li>
+<li>어떤식으로 <strong>권한 부여</strong>에 활용되는지 살펴보았습니다.
+<ol>
+<li>권한 부여를 위해, 어떤 설계가 이루어지는지 살펴보았습니다.</li>
+<li>토큰 요청과 응답과 관련한 스펙을 살펴보고, 어떤 식으로 작동하는지 살펴보았습니다.</li>
+</ol>
+</li>
+</ol>
+<p>잘못된 사항은 언제든 댓글로 되짚어주십시오.</p>
+<p>읽어주셔서 감사합니다.</p>
+<hr>
+<ul>
+<li>References
+<ul>
+<li>[1] <a href="https://datatracker.ietf.org/doc/rfc6749/" target="_blank" rel="nofollow noopener noreferrer">OAuth 2.0의 RFC 문서입니다</a></li>
+<li>[2] <a href="https://developer.okta.com/blog/2017/06/21/what-the-heck-is-oauth" target="_blank" rel="nofollow noopener noreferrer">OAuth 2.0의 flow를 확인하며 정말 도움되었던 글입니다</a></li>
+<li>[3] <a href="https://www.youtube.com/watch?v=nSa0ZCfF2Sc" target="_blank" rel="nofollow noopener noreferrer">OAuth 2.0의 Introspection에 대한 해설을 이해하는데 도움되었습니다</a></li>
+<li>[4] <a href="https://auth0.com/blog/what-is-and-how-does-single-sign-on-work/" target="_blank" rel="nofollow noopener noreferrer">Single Sign-on 이해에 상당히 도움되었습니다</a></li>
+<li>[5] <a href="https://wiki.wikisecurity.net/wiki:sso" target="_blank" rel="nofollow noopener noreferrer">SSO 구현 모델에 대해 살펴보는데 도움되었습니다</a></li>
+<li>[6] <a href="https://blog.naver.com/mds_datasecurity/222182943542" target="_blank" rel="nofollow noopener noreferrer">OAuth 2.0의 구동 관련 내용을 번역해둔 사항에 대해 참고하였습니다</a></li>
+</ul>
+</li>
+</ul></div></div></div><div class="Post-module--footer--f8705"><div class="Meta-module--meta--dae0a"><p class="Meta-module--date--4d30d">Published<!-- --> <!-- -->Oct 16, 2022</p></div><div class="Tags-module--tags--18589"><ul class="Tags-module--list--82ae6"><li class="Tags-module--item--52015"><a class="Button-module--button--b1113" href="/tag/backend/">backend</a></li></ul></div><div class="Author-module--author--1c58d"><p class="Non scholæ sed vitæ discimus.">Non scholæ sed vitæ discimus.</p><p class="Author-module--bio--08950">his/him</p></div></div><div class="Post-module--comments--d3b99"><div></div></div></div></div></div><div id="gatsby-announcer" style="position:absolute;top:0;width:1px;height:1px;padding:0;overflow:hidden;clip:rect(0, 0, 0, 0);white-space:nowrap;border:0" aria-live="assertive" aria-atomic="true"></div></div><script id="gatsby-script-loader">/*<![CDATA[*/window.pagePath="/devlog/backend/2022-10-16-considering-authn-and-authz-revisited-pt01";window.___webpackCompilationHash="2cc90c7bf969c92ecbf4";/*]]>*/</script><script id="gatsby-chunk-mapping">/*<![CDATA[*/window.___chunkMapping={"polyfill":["/polyfill-877fc533220b2bce0b1e.js"],"app":["/app-b344f477a15ca78ada57.js"],"component---cache-caches-gatsby-plugin-offline-app-shell-js":["/component---cache-caches-gatsby-plugin-offline-app-shell-js-0c915c7b1bdb5eac4fdf.js"],"component---src-templates-categories-template-categories-template-tsx":["/component---src-templates-categories-template-categories-template-tsx-e2d2add397e32e3517ca.js"],"component---src-templates-category-template-category-template-tsx":["/component---src-templates-category-template-category-template-tsx-078f2adfba160a34229f.js"],"component---src-templates-index-template-index-template-tsx":["/component---src-templates-index-template-index-template-tsx-83380c7954c9f6621026.js"],"component---src-templates-not-found-template-not-found-template-tsx":["/component---src-templates-not-found-template-not-found-template-tsx-56fe4d3b015459d56c99.js"],"component---src-templates-page-template-page-template-tsx":["/component---src-templates-page-template-page-template-tsx-c6c21d7369a9356db3a1.js"],"component---src-templates-post-template-post-template-tsx":["/component---src-templates-post-template-post-template-tsx-119cd0258cb38628d01f.js"],"component---src-templates-tag-template-tag-template-tsx":["/component---src-templates-tag-template-tag-template-tsx-8d0b3090e775aa3c4584.js"],"component---src-templates-tags-template-tags-template-tsx":["/component---src-templates-tags-template-tags-template-tsx-30027e87af7d042f3afb.js"]};/*]]>*/</script><script src="/polyfill-877fc533220b2bce0b1e.js" nomodule=""></script><script src="/app-b344f477a15ca78ada57.js" async=""></script><script src="/framework-481a1b6416c14416b2fb.js" async=""></script><script src="/webpack-runtime-b8c30787ddb902e678f7.js" async=""></script></body></html>

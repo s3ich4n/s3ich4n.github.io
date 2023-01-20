@@ -1,0 +1,452 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="ie=edge"/><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/><meta name="generator" content="Gatsby 4.25.4"/><meta name="description" content="OAuth 2.0에 **인증** 을 추가한 OpenID Connect 스펙을 살펴보고, OpenID Connect의 주요 사항과 개념들, 그리고 유의사항에 대해 확인해보도록 하겠습니다." data-gatsby-head="true"/><meta name="twitter:card" content="summary_large_image" data-gatsby-head="true"/><meta name="twitter:title" content="인가를 다시 살펴보다 (2) OpenID Connect 스펙과 OAuth 2.0, OpenID Connect 구현체 살펴보기 - 팔공산 창고" data-gatsby-head="true"/><meta name="twitter:description" content="OAuth 2.0에 **인증** 을 추가한 OpenID Connect 스펙을 살펴보고, OpenID Connect의 주요 사항과 개념들, 그리고 유의사항에 대해 확인해보도록 하겠습니다." data-gatsby-head="true"/><meta name="og:title" content="인가를 다시 살펴보다 (2) OpenID Connect 스펙과 OAuth 2.0, OpenID Connect 구현체 살펴보기 - 팔공산 창고" data-gatsby-head="true"/><meta name="og:type" content="website" data-gatsby-head="true"/><meta name="og:description" content="OAuth 2.0에 **인증** 을 추가한 OpenID Connect 스펙을 살펴보고, OpenID Connect의 주요 사항과 개념들, 그리고 유의사항에 대해 확인해보도록 하겠습니다." data-gatsby-head="true"/><meta name="image" content="https://blog.s3ich4n.me[object Object]" data-gatsby-head="true"/><meta name="og:image" content="https://blog.s3ich4n.me[object Object]" data-gatsby-head="true"/><meta name="twitter:image" content="https://blog.s3ich4n.me[object Object]" data-gatsby-head="true"/><meta name="theme-color" content="hsl(31, 92%, 62%)"/><style data-href="/styles.1fbe3e33e3d898c35e17.css" data-identity="gatsby-global-css">:after,:before,:root{--color-white:#fff;--color-primary:#5c92ff;--color-secondary:#f7a145;--color-prism-background:#eaeaeb;--color-typographic-base-font:#242933;--color-typographic-link-p-font:#5c92ff;--color-typographic-link-s-font:#f7a145;--color-page-border:#eaeaeb;--color-page-background:#fff;--color-sidebar-border:#eaeaeb;--color-sidebar-border-fade:#fff;--color-contacts-border:#eaeaeb;--color-button-border:#eaeaeb;--color-button-color:#242933;--color-theme-switcher:#3f485a;--color-theme-switcher-hover:#5c92ff}.dark :after,.dark :before,:root.dark{--color-white:#fff;--color-primary:#5c92ff;--color-secondary:#f7a145;--color-prism-background:#191d24;--color-typographic-base-font:#fff;--color-typographic-link-p-font:#5c92ff;--color-typographic-link-s-font:#f7a145;--color-page-border:#3f485a;--color-page-background:#242933;--color-sidebar-border:#3f485a;--color-sidebar-border-fade:#242933;--color-contacts-border:#3f485a;--color-button-border:#3f485a;--color-button-color:#fff;--color-theme-switcher:#eaeaeb;--color-theme-switcher-hover:#5c92ff}html{font-size:100}body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;background:var(--color-page-background);color:var(--color-typographic-base-font);font-size:16px;line-height:1.625;margin:0 0 0 calc(100vw - 100%);text-rendering:optimizelegibility}body,h1,h2,h3,h4,h5,h6{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif}h1,h2,h3,h4,h5,h6{font-weight:600}h1{font-size:40px;line-height:52px;margin-bottom:26px;margin-top:104px}h2{font-size:27px;line-height:39px}h2,h3{margin-bottom:13px;margin-top:52px}h3{font-size:22px;line-height:26px}h4{font-size:19.2px;margin-top:39px}h4,h5{line-height:26px;margin-bottom:13px}h5,h6{font-size:16px;margin-top:65px}h6{line-height:26px;margin-bottom:13px}img{max-width:100%}hr,img{border:0;display:block}hr{background-image:linear-gradient(180deg,transparent 1px,transparent 11px,#242933 0,#242933 15px,transparent 0,transparent 26px);background-size:100% 26px;color:var(--color-typographic-base-font);height:26px;margin:52px auto;width:100px}a{color:var(--color-typographic-link-p-font);text-decoration:none}a:active,a:focus,a:hover{color:var(--color-typographic-link-s-font)}b,strong{font-weight:600}ul{list-style:square;margin-bottom:26px}ul li{margin-bottom:10px;padding:0 5px}p{line-height:26px;margin-bottom:26px}blockquote{font-style:italic;padding:0;text-align:center}figure{display:block;height:auto;width:100%}figcaption{color:var(--color-typographic-base-font);font-size:14px;font-style:italic;line-height:19.5px;margin-bottom:0;margin-top:6.5px;text-align:center}@media screen and (min-width:685px){figure.float-left,figure.float-right{max-width:310px;padding:0 26px}.float-right{float:right}.float-left{float:left}}code[class*=language-],pre[class*=language-]{word-wrap:normal;color:#657b83;font-family:Consolas,Monaco,Andale Mono,Ubuntu Mono,monospace;font-size:1em;-webkit-hyphens:none;hyphens:none;line-height:1.5;-o-tab-size:4;tab-size:4;text-align:left;white-space:pre;word-break:normal;word-spacing:normal}pre[class*=language-]{border-radius:.3em;margin:.5em 0;overflow:auto;padding:1em}:not(pre)>code[class*=language-],pre[class*=language-]{background-color:var(--color-prism-background)}:not(pre)>code[class*=language-]{border-radius:.3em;padding:.1em}code[class*=language-] ::selection,code[class*=language-]::selection,pre[class*=language-] ::selection,pre[class*=language-]::selection{background:#073642}.token.cdata,.token.comment,.token.doctype,.token.prolog{color:#93a1a1}.token.punctuation{color:#586e75}.namespace{opacity:.7}.token.boolean,.token.constant,.token.deleted,.token.number,.token.property,.token.symbol,.token.tag{color:#268bd2}.token.attr-name,.token.builtin,.token.char,.token.inserted,.token.selector,.token.string,.token.url{color:#2aa198}.token.entity{background:#eee8d5;color:#657b83;cursor:help}.token.atrule,.token.attr-value,.token.keyword{color:#859900}.token.class-name,.token.function{color:#b58900}.token.important,.token.regex,.token.variable{color:#cb4b16}.token.bold,.token.important{font-weight:700}.token.italic{font-style:italic}.Feed-module--feed--a6204 .Feed-module--item--c7a63{margin-bottom:32.5px}.Feed-module--feed--a6204 .Feed-module--item--c7a63:last-child{margin-bottom:13px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f{font-size:27px;line-height:39px;margin-bottom:13px;margin-top:0}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f .Feed-module--link--6123b{color:var(--color-typographic-base-font)}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f .Feed-module--link--6123b:focus,.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f .Feed-module--link--6123b:hover{border-bottom:1px solid #242933;color:var(--color-typographic-base-font)}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--description--57348{font-size:16px;line-height:26px;margin-bottom:19.5px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--time--72864{color:var(--color-typographic-base-font);font-size:14px;font-weight:600;text-transform:uppercase}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--divider--81a18{margin:0 13px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--category--59f58 .Feed-module--link--6123b{color:var(--color-secondary);font-size:14px;font-weight:600;text-transform:uppercase}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--category--59f58 .Feed-module--link--6123b:focus,.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--category--59f58 .Feed-module--link--6123b:hover{color:#5c92ff}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--more--51a4e{color:var(--color-primary);font-size:16px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--more--51a4e:focus,.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--more--51a4e:hover{border-bottom:1px solid #5c92ff;color:var(--color-primary)}.Layout-module--layout--2c933{margin-left:auto;margin-right:auto;max-width:1070px}.Layout-module--layout--2c933:before{content:"";display:table}.Layout-module--layout--2c933:after{clear:both;content:"";display:table}.Page-module--page--24e03{margin-bottom:52px}.Page-module--page--24e03 .Page-module--inner--4b31d{padding:26px 19.5px 0}.Page-module--page--24e03 .Page-module--title--90338{font-size:40px;font-weight:600;line-height:52px;margin-bottom:37.7px;margin-top:0}.Page-module--page--24e03 .Page-module--body--561c4{font-size:16px;line-height:26px;margin:0 0 26px}@media screen and (min-width:685px){.Page-module--page--24e03{width:calc(58.275% - 12.5px)}.Page-module--page--24e03:nth-child(1n){clear:none;float:left;margin-right:30px}.Page-module--page--24e03:last-child{margin-right:0}.Page-module--page--24e03:nth-child(12n){float:right;margin-right:0}.Page-module--page--24e03:nth-child(12n+1){clear:both}.Page-module--page--24e03 .Page-module--inner--4b31d{padding:32.5px 19.5px 0}}@media screen and (min-width:960px){.Page-module--page--24e03{width:calc(66.6% - 10px)}.Page-module--page--24e03:nth-child(1n){clear:none;float:left;margin-right:30px}.Page-module--page--24e03:last-child{margin-right:0}.Page-module--page--24e03:nth-child(3n){float:right;margin-right:0}.Page-module--page--24e03:nth-child(3n+1){clear:both}.Page-module--page--24e03 .Page-module--inner--4b31d{padding:39px 26px 0}}.Pagination-module--pagination--d61cb{display:flex;margin-top:52px}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b{text-align:left;width:50%}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d{color:var(--color-secondary);font-size:26px;font-weight:700}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d:focus,.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d:hover{color:var(--color-primary)}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d.Pagination-module--disable--7e105{color:#3f485a;pointer-events:none}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8{text-align:right;width:50%}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff{color:var(--color-secondary);font-size:26px;font-weight:700}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff:focus,.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff:hover{color:var(--color-primary)}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff.Pagination-module--disable--7e105{color:#3f485a;pointer-events:none}.Button-module--button--b1113{border:1px solid var(--color-button-border);border-radius:20px;color:var(--color-button-color);display:inline-block;font-size:16px;font-weight:400;height:40px;line-height:40px;margin-left:auto;margin-right:auto;padding:0 26px;text-align:center;text-decoration:none}.Button-module--button--b1113:focus,.Button-module--button--b1113:hover{color:#5c92ff}.ThemeSwitcher-module--themeSwitcher--8a77f{--color:var(--color-theme-switcher)}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--button--7cb7b{align-items:center;background:transparent;border:0;cursor:pointer;display:flex;justify-content:center;outline:0}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--button--7cb7b svg{stroke:var(--color);pointer-events:none;transition:stroke .4s}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--button--7cb7b:hover{--color:var(--color-theme-switcher-hover)}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--moon--10537{stroke-dasharray:0 1px;opacity:0;transition:stroke-dasharray .2s ease-in,opacity .4s ease-in}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--sun--2163a{stroke-dasharray:1px 1px;opacity:1;transition:stroke-dasharray .2s ease-in,opacity .4s ease-in}.ThemeSwitcher-module--themeSwitcher--8a77f.ThemeSwitcher-module--dark--6db0c .ThemeSwitcher-module--moon--10537{stroke-dasharray:1px 1px;opacity:1}.ThemeSwitcher-module--themeSwitcher--8a77f.ThemeSwitcher-module--dark--6db0c .ThemeSwitcher-module--sun--2163a{stroke-dasharray:0 1px;opacity:0}.Author-module--author--cbd31 .Author-module--photo--9787b{background-clip:padding-box;border-radius:50%;display:inline-block;height:75px;margin-bottom:0;width:75px}.Author-module--author--cbd31 .Author-module--photo--9787b img{border-radius:50%}.Author-module--author--cbd31 .Author-module--title--cf7e5{font-size:18px;font-weight:600;line-height:29.25px;margin:0}.Author-module--author--cbd31 .Author-module--title--cf7e5 .Author-module--link--09c17,.Author-module--author--cbd31 .Author-module--title--cf7e5 .Author-module--link--09c17:focus,.Author-module--author--cbd31 .Author-module--title--cf7e5 .Author-module--link--09c17:hover{color:var(--color-typographic-base-font)}.Author-module--author--cbd31 .Author-module--bio--8168d,.Author-module--author--cbd31 .Author-module--subtitle--86ec5{color:#7f8ba4;line-height:26px;margin-bottom:26px}.Author-module--author--cbd31 .Author-module--titleContainer--4f576{align-items:center;display:flex;justify-content:space-between;margin:13px 0}.Categories-module--categories--f3389{color:#7f8ba4;font-size:14px}.Icon-module--icon--1d7da{fill:currentcolor;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;speak:none;stroke:currentcolor;stroke-width:0;display:inline-block;font-style:normal;font-variant:normal;font-weight:400;height:1em;line-height:1em;text-align:center;text-transform:none;width:1em}.Contacts-module--contacts--09178{margin-bottom:26px}.Contacts-module--contacts--09178 .Contacts-module--list--9670b{display:flex;flex-flow:row wrap;flex-grow:0;flex-shrink:0;list-style:none;margin:13px 0;max-width:165px;padding:0}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0{align-content:center;align-items:center;border:1px solid var(--color-contacts-border);border-radius:50%;display:flex;height:40px;justify-content:center;line-height:40px;margin:6.5px;padding:0;text-align:center;width:40px}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0:nth-child(3n+1){margin-left:0}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0 .Contacts-module--link--de1e0{border:0;color:var(--color-typographic-base-font);display:flex}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0 .Contacts-module--link--de1e0:focus,.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0 .Contacts-module--link--de1e0:hover{color:var(--color-typographic-link-p-font)}.Copyright-module--copyright--2c602{color:#7f8ba4;font-size:14px}.Menu-module--menu--113a9{margin-bottom:26px}.Menu-module--menu--113a9 .Menu-module--list--e1ae3{list-style:none;margin:0;padding:0}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679{margin:13px 0;padding:0}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02{border:0;color:var(--color-typographic-base-font);font-size:16px;font-weight:400}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02:focus,.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02:hover{border-bottom:1px solid #5c92ff;color:#5c92ff}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02.Menu-module--active--6cb74{border-bottom:1px solid var(--color-typographic-base-font);color:var(--color-typographic-base-font)}.Tags-module--tags--28a57{color:#7f8ba4;font-size:14px}.Sidebar-module--sidebar--1bfa1{width:100%}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0{padding:26px 19.5px 0;position:relative}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0:after{background:var(--color-sidebar-border);background:linear-gradient(to bottom,var(--color-sidebar-border) 0,var(--color-sidebar-border) 48%,var(--color-sidebar-border-fade) 100%)}@media screen and (min-width:685px){.Sidebar-module--sidebar--1bfa1{width:calc(41.625% - 17.5px)}.Sidebar-module--sidebar--1bfa1:nth-child(1n){clear:none;float:left;margin-right:30px}.Sidebar-module--sidebar--1bfa1:last-child{margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(12n){float:right;margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(12n+1){clear:both}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0{padding:32.5px 19.5px 0}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0:after{bottom:0;content:"";height:540px;position:absolute;right:-10px;top:30px;width:1px}}@media screen and (min-width:960px){.Sidebar-module--sidebar--1bfa1{width:calc(33.3% - 20px)}.Sidebar-module--sidebar--1bfa1:nth-child(1n){clear:none;float:left;margin-right:30px}.Sidebar-module--sidebar--1bfa1:last-child{margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(3n){float:right;margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(3n+1){clear:both}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0{padding:39px}}.Author-module--author--1c58d{border-top:1px solid var(--color-page-border);line-height:26px;margin-bottom:52px;margin-top:26px;max-width:920px;padding-top:26px}.Author-module--author--1c58d .Author-module--bio--08950 .Author-module--twitter--90647{display:block;text-decoration:underline}.Author-module--author--1c58d .Author-module--bio--08950 .Author-module--twitter--90647:focus,.Author-module--author--1c58d .Author-module--bio--08950 .Author-module--twitter--90647:hover{color:var(--color-typographic-link-s-font)}@media screen and (min-width:685px){.Author-module--author--1c58d{margin-left:auto;margin-right:auto}}.Content-module--content--80d58{margin:0 auto;max-width:1070px;padding:0 13px}.Content-module--content--80d58 .Content-module--title--09504{font-size:32px;font-weight:600;line-height:42.9px;margin:26px auto 0;max-width:920px;text-align:center}.Content-module--content--80d58 .Content-module--body--726c2 figure{margin-bottom:26px}.Content-module--content--80d58 .Content-module--body--726c2 figure blockquote{font-style:italic;margin-top:0;padding:26px 0;text-align:center}.Content-module--content--80d58 .Content-module--body--726c2 figure blockquote p{font-size:26.9072px;line-height:39px;margin-bottom:26px;margin-top:0;max-width:920px}.Content-module--content--80d58 .Content-module--body--726c2 a{text-decoration:underline}.Content-module--content--80d58 .Content-module--body--726c2 *{margin-left:auto;margin-right:auto;max-width:920px}.Content-module--content--80d58 .Content-module--body--726c2 h2>a{visibility:hidden}.Content-module--content--80d58 .Content-module--body--726c2 h2>a>svg{fill:var(--color-typographic-base-font)}.Content-module--content--80d58 .Content-module--body--726c2 img{max-width:100%}@media screen and (min-width:960px){.Content-module--content--80d58{padding:0}.Content-module--content--80d58 .Content-module--title--09504{font-size:48px;line-height:58.5px;margin-bottom:39px;margin-top:58.5px}.Content-module--content--80d58 .Content-module--body--726c2,.Content-module--content--80d58 .Content-module--body--726c2 p{font-size:18px;line-height:29.25px;margin-bottom:29.25px}.Content-module--content--80d58 .Content-module--body--726c2 h2>a{padding-right:13px;visibility:unset}}.Meta-module--meta--dae0a .Meta-module--date--4d30d{font-style:italic}.Tags-module--tags--18589{margin-bottom:13px}.Tags-module--tags--18589 .Tags-module--list--82ae6{list-style:none;padding:0}.Tags-module--tags--18589 .Tags-module--list--82ae6 .Tags-module--item--52015{display:inline-block;margin:6.5px 0}@media screen and (min-width:685px){.Tags-module--tags--18589 .Tags-module--list--82ae6 .Tags-module--item--52015:first-child{margin-left:0;padding-left:0}}.Post-module--post--3a994 .Post-module--content--3c6e5{margin:0 auto}.Post-module--post--3a994 .Post-module--comments--d3b99,.Post-module--post--3a994 .Post-module--footer--f8705{margin:0 auto;max-width:920px;padding:0 13px}.Post-module--post--3a994 .Post-module--buttons--2972d{align-items:center;display:flex;justify-content:center;margin:26px 0 0;text-align:center}.Post-module--post--3a994 .Post-module--buttons--2972d .Post-module--buttonArticles--d793a{margin:0 13px 0 0}@media screen and (min-width:960px){.Post-module--post--3a994 .Post-module--comments--d3b99,.Post-module--post--3a994 .Post-module--footer--f8705{padding:0}.Post-module--post--3a994 .Post-module--buttons--2972d{left:30px;margin:0 13px 0 0;max-width:none;position:fixed;top:30px}}</style><title data-gatsby-head="true">인가를 다시 살펴보다 (2) OpenID Connect 스펙과 OAuth 2.0, OpenID Connect 구현체 살펴보기 - 팔공산 창고</title><link rel="alternate" type="application/rss+xml" title="팔공산 창고" href="/rss.xml"/><style type="text/css">
+    .anchor.before {
+      position: absolute;
+      top: 0;
+      left: 0;
+      transform: translateX(-100%);
+      padding-right: 4px;
+    }
+    .anchor.after {
+      display: inline-block;
+      padding-left: 4px;
+    }
+    h1 .anchor svg,
+    h2 .anchor svg,
+    h3 .anchor svg,
+    h4 .anchor svg,
+    h5 .anchor svg,
+    h6 .anchor svg {
+      visibility: hidden;
+    }
+    h1:hover .anchor svg,
+    h2:hover .anchor svg,
+    h3:hover .anchor svg,
+    h4:hover .anchor svg,
+    h5:hover .anchor svg,
+    h6:hover .anchor svg,
+    h1 .anchor:focus svg,
+    h2 .anchor:focus svg,
+    h3 .anchor:focus svg,
+    h4 .anchor:focus svg,
+    h5 .anchor:focus svg,
+    h6 .anchor:focus svg {
+      visibility: visible;
+    }
+  </style><script>
+    document.addEventListener("DOMContentLoaded", function(event) {
+      var hash = window.decodeURI(location.hash.replace('#', ''))
+      if (hash !== '') {
+        var element = document.getElementById(hash)
+        if (element) {
+          var scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+          var clientTop = document.documentElement.clientTop || document.body.clientTop || 0
+          var offset = element.getBoundingClientRect().top + scrollTop - clientTop
+          // Wait for the browser to finish rendering before scrolling.
+          setTimeout((function() {
+            window.scrollTo(0, offset - 0)
+          }), 0)
+        }
+      }
+    })
+  </script><link rel="preconnect" href="https://www.googletagmanager.com"/><link rel="dns-prefetch" href="https://www.googletagmanager.com"/><script async="" src="https://www.googletagmanager.com/gtag/js?id="></script><script>
+      
+      
+      if(true) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){window.dataLayer && window.dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', '', {"send_page_view":false});
+      }
+      </script><link rel="sitemap" type="application/xml" href="/sitemap/sitemap-index.xml"/><link rel="icon" href="/favicon-32x32.png?v=4c2c993a06ee0fd0ee953020b09128a9" type="image/png"/><link rel="manifest" href="/manifest.webmanifest" crossorigin="anonymous"/><link rel="apple-touch-icon" sizes="48x48" href="/icons/icon-48x48.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="72x72" href="/icons/icon-72x72.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="96x96" href="/icons/icon-96x96.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="144x144" href="/icons/icon-144x144.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192x192.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="256x256" href="/icons/icon-256x256.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="384x384" href="/icons/icon-384x384.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="512x512" href="/icons/icon-512x512.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><style>.gatsby-image-wrapper{position:relative;overflow:hidden}.gatsby-image-wrapper picture.object-fit-polyfill{position:static!important}.gatsby-image-wrapper img{bottom:0;height:100%;left:0;margin:0;max-width:none;padding:0;position:absolute;right:0;top:0;width:100%;object-fit:cover}.gatsby-image-wrapper [data-main-image]{opacity:0;transform:translateZ(0);transition:opacity .25s linear;will-change:opacity}.gatsby-image-wrapper-constrained{display:inline-block;vertical-align:top}</style><noscript><style>.gatsby-image-wrapper noscript [data-main-image]{opacity:1!important}.gatsby-image-wrapper [data-placeholder-image]{opacity:0!important}</style></noscript><script type="module">const e="undefined"!=typeof HTMLImageElement&&"loading"in HTMLImageElement.prototype;e&&document.body.addEventListener("load",(function(e){const t=e.target;if(void 0===t.dataset.mainImage)return;if(void 0===t.dataset.gatsbyImageSsr)return;let a=null,n=t;for(;null===a&&n;)void 0!==n.parentNode.dataset.gatsbyImageWrapper&&(a=n.parentNode),n=n.parentNode;const o=a.querySelector("[data-placeholder-image]"),r=new Image;r.src=t.currentSrc,r.decode().catch((()=>{})).then((()=>{t.style.opacity=1,o&&(o.style.opacity=0,o.style.transition="opacity 500ms linear")}))}),!0);</script></head><body><script>
+          void function() {
+            var cachedMode;
+
+            try {
+              var preferredTheme = JSON.parse(localStorage.getItem('diesel:theme-atom'));
+
+              if (preferredTheme && preferredTheme.mode) {
+                cachedMode = preferredTheme.mode;
+              }
+            } catch (err) { }
+
+            function setTheme(newTheme) {
+              document.documentElement.className = newTheme;
+            }
+
+            var darkQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+            setTheme(cachedMode || (darkQuery.matches ? 'dark' : 'light'));
+          }()
+        </script><div id="___gatsby"><div style="outline:none" tabindex="-1" id="gatsby-focus-wrapper"><div class="Layout-module--layout--2c933"><div class="Post-module--post--3a994"><div class="Post-module--buttons--2972d"><a class="Button-module--button--b1113 Post-module--buttonArticles--d793a" href="/">All Articles</a></div><div class="Post-module--content--3c6e5"><div class="Content-module--content--80d58"><h1 class="Content-module--title--09504">인가를 다시 살펴보다 (2) OpenID Connect 스펙과 OAuth 2.0, OpenID Connect 구현체 살펴보기</h1><div class="Content-module--body--726c2"><h1 id="연재-안내" style="position:relative;"><a href="#%EC%97%B0%EC%9E%AC-%EC%95%88%EB%82%B4" aria-label="연재 안내 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>연재 안내</h1>
+<ul>
+<li><a href="/devlog/backend/2022-10-17-considering-authn-and-authz-revisited-pt01">인가를 다시 살펴보다 (1)</a></li>
+<li>인가를 다시 살펴보다 (2)</li>
+</ul>
+<h1 id="들어가며" style="position:relative;"><a href="#%EB%93%A4%EC%96%B4%EA%B0%80%EB%A9%B0" aria-label="들어가며 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>들어가며</h1>
+<p>OAuth 2.0 스펙에 대해 알아보았으니, 흔히 잘못 사용되는 <em>OAuth 2.0을 인증으로 사용하기</em> 의 오개념을 바로잡고, 이를 보완하기 위해 등장한 OpenID Connect를 살펴봅니다. 이는 OAuth 2.0 스펙에 <strong>인증</strong>을 추가한 프로토콜이며, 어떤 식의 개념을 알아야 올바르게 사용할 수 있는지 확인해봅시다.</p>
+<h1 id="openid-connect이하-oidc란" style="position:relative;"><a href="#openid-connect%EC%9D%B4%ED%95%98-oidc%EB%9E%80" aria-label="openid connect이하 oidc란 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>OpenID Connect(이하 OIDC)란?</h1>
+<p>OpenID Connect 1.0은 OAuth 2.0[RFC6749] 프로토콜 위에 있는 간단한 ID 계층입니다. 이를 통해 클라이언트는 권한 부여 서버에서 수행한 인증을 기반으로 최종 사용자의 신원을 확인할 수 있을 뿐만 아니라 상호 운용 가능한 REST 방식으로 최종 사용자에 대한 기본 프로필 정보를 얻을 수 있습니다.</p>
+<p>다시말해, OAuth 2.0은 상황에 맞는 <strong>권한 부여</strong>에 적합한 프로토콜이며 여기에 인증 레이어를 추가한 기술로 이해하면 될 것입니다.</p>
+<h2 id="oidc의-등장배경" style="position:relative;"><a href="#oidc%EC%9D%98-%EB%93%B1%EC%9E%A5%EB%B0%B0%EA%B2%BD" aria-label="oidc의 등장배경 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>OIDC의 등장배경</h2>
+<p>OAuth 2.0을 <strong>인증</strong> 프로토콜로 <strong>잘못 사용</strong>하는 케이스가 많았고, 이를 Pseudo-Authentication 이라고 부릅니다.</p>
+<p>페이스북, 트위터로 로그인하기 기능을 구현하는 API들을 보면, Access token을 바로 사용하여 Resource owner(페이스북, 트위터 등)로부터 값을 가져옵니다.</p>
+<p>이러한 방식은 문제가 있습니다. 사항은 아래와 같습니다:</p>
+<ol>
+<li>유저 정보를 직접적으로 가져오는 API는 OAuth 2.0 표준에 존재하지 않습니다. OAuth 2.0은 처음부터 <strong>권한 부여</strong> 프로토콜로 설계되었기 때문입니다.</li>
+<li><strong>인증</strong>을 고려할 때는 “누가”, “언제”, “어떻게” 유저 자신임을 증명하는 것이기 때문에, 단순히 Access token만을 가지고 <strong>인증</strong> 하는 것은 옳지 않습니다.</li>
+</ol>
+<p>이러한 문제를 해결하기 위해 OIDC가 등장하였고, 후술할 <code class="language-text">id_token</code> 이라는 값을 인증으로 사용할 수 있습니다.</p>
+<h2 id="용어소개" style="position:relative;"><a href="#%EC%9A%A9%EC%96%B4%EC%86%8C%EA%B0%9C" aria-label="용어소개 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>용어소개</h2>
+<p>작성되지 않은 용어는 <a href="https://openid.net/specs/openid-connect-core-1_0.html#Terminology" target="_blank" rel="nofollow noopener noreferrer">해당 링크</a>를 참고해주시기 바랍니다.</p>
+<ul>
+<li>Access Token
+<ul>
+<li>OAuth 2.0의 액세스 토큰을 의미합니다.</li>
+</ul>
+</li>
+<li>Authentication
+<ul>
+<li>엔터티와 제시된 아이덴티티 간의 바인딩에서 충분한 신뢰를 얻기 위해 사용되는 프로세스입니다.</li>
+</ul>
+</li>
+<li>End-User
+<ul>
+<li>서비스를 이용하는 <strong>사람</strong>을 의미합니다.</li>
+</ul>
+</li>
+<li>OpenID Connect Provider (OP)
+<ul>
+<li>인증, 인가 모두를 연관있는 Relying parties (RPs)에 제공합니다.</li>
+<li>이는 OIDC Provider(OP)일 수도 있고, 타 인증 제공처(IdP, Identity Provider. E.g., 외부 LDAP, WS-Federation, 등등)일 수도 있습니다.</li>
+</ul>
+</li>
+<li>Relying Party(RP)
+<ul>
+<li>OpenID Provider로부터 받아온 End-User 인증과 클레임을 요구하는 OAuth 2.0 클라이언트 앱을 의미합니다.</li>
+</ul>
+</li>
+<li>UserInfo Endpoint
+<ul>
+<li>클라이언트가 액세스 토큰을 제공할 때 해당 권한 부여(Authorization Grant)가 나타내는 최종 사용자에 대한 권한 있는 정보를 반환하는 API 입니다.</li>
+<li>권한에 따라 보호받는 리소스값을 줍니다.</li>
+<li>이 엔드포인트는 <code class="language-text">https</code> 로 서비스 해야합니다.</li>
+<li>포트, 경로, 쿼리 파라미터 컴포넌트는 포함될 수 있습니다.</li>
+</ul>
+</li>
+</ul>
+<h2 id="대략적인-워크플로우-설명" style="position:relative;"><a href="#%EB%8C%80%EB%9E%B5%EC%A0%81%EC%9D%B8-%EC%9B%8C%ED%81%AC%ED%94%8C%EB%A1%9C%EC%9A%B0-%EC%84%A4%EB%AA%85" aria-label="대략적인 워크플로우 설명 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>대략적인 워크플로우 설명</h2>
+<div class="gatsby-highlight" data-language="text"><pre class="language-text"><code class="language-text">+--------+                                   +--------+
+|        |                                   |        |
+|        |---------(1) AuthN Request-------->|        |
+|        |                                   |        |
+|        |  +--------+                       |        |
+|        |  |        |                       |        |
+|        |  |  End-  |&lt;--(2) AuthN &amp; AuthZ-->|        |
+|        |  |  User  |                       |        |
+|   RP   |  |        |                       |   OP   |
+|        |  +--------+                       |        |
+|        |                                   |        |
+|        |&lt;--------(3) AuthN Response--------|        |
+|        |                                   |        |
+|        |---------(4) UserInfo Request----->|        |
+|        |                                   |        |
+|        |&lt;--------(5) UserInfo Response-----|        |
+|        |                                   |        |
++--------+                                   +--------+</code></pre></div>
+<ol>
+<li>RP(클라이언트)가 OP(OpenID Provider)에 인증 요청을 보냅니다.</li>
+<li>OP가 (IdP 혹은 자기자신을 통해) End-User을 <strong>인증</strong> 하고, 적당한 <strong>권한</strong>을 부여합니다.
+<ol>
+<li>OP는 ID Token과 Access Token을 RP에 응답합니다.</li>
+<li>이때 ID Token[1]은 JWT를 사용합니다.</li>
+</ol>
+</li>
+<li>RP는 Access Token을 가지고 UserInfo Endpoint에 요청합니다.</li>
+<li>UserInfo Endpoint는 그 End-User에 대한 Claim을 리턴합니다.</li>
+</ol>
+<h3 id="설명을-풀어서-이해해봅시다" style="position:relative;"><a href="#%EC%84%A4%EB%AA%85%EC%9D%84-%ED%92%80%EC%96%B4%EC%84%9C-%EC%9D%B4%ED%95%B4%ED%95%B4%EB%B4%85%EC%8B%9C%EB%8B%A4" aria-label="설명을 풀어서 이해해봅시다 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>설명을 풀어서 이해해봅시다!</h3>
+<p>그렇다면 상기 내용을 모질라에서 제공하는 OIDC 다이어그램으로 다시 살펴봅시다.</p>
+<p><figure class="gatsby-resp-image-figure" style="">
+    <span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 960px; "
+    >
+      <a
+    class="gatsby-resp-image-link"
+    href="/static/e87b7799d999d5459562e5da330a61ac/77f8f/00_OIDC_diagram.png"
+    style="display: block"
+    target="_blank"
+    rel="noopener"
+  >
+    <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 57.91666666666667%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAMCAIAAADtbgqsAAAACXBIWXMAABYlAAAWJQFJUiTwAAABXElEQVQoz31S24rCMBTs/3+KX+KbCAVNaG1NjSapTQq511wWDRTR3Z2HcMJhzmQmp4oxTtMkpcy/Ib1Qipyz1ppzvixL6VZCiMPhYIzJ/yKEoJRCCPV9jzF2zj3J1+u1ruu/lI0x3vsQwjiOQghK6TiOnHNr7ZN8Pp+PxyNCqDyswDmnlMIYN00DACCEFCmtNUKobVtCSEqpcs6904paGcw5b9vWe2+MKeaHYYAQAgC6rluWpWKMdV2HMZ7nefWWcxZCAADquu77njG2hvSOylrLOS/jc84xxlJorQkhjDFCiJTSe7+Gv35BtdvtNpvNdruNMRafEEIhxLvU4/EoRj6Vh2HY7/en00lKSSlljE3TRCktCcUYc87e+3L9JGutL5cLY+wjtnUxUkrW2u/uk5xSCiFIKbXW9gVjzP1+b9sWQtg0ze12U0p577/51YdU+WHxwjzP5VRK/bqCP+1OsblS02TKAAAAAElFTkSuQmCC'); background-size: cover; display: block;"
+  ></span>
+  <picture>
+          <source
+              srcset="/static/e87b7799d999d5459562e5da330a61ac/8ac56/00_OIDC_diagram.webp 240w,
+/static/e87b7799d999d5459562e5da330a61ac/d3be9/00_OIDC_diagram.webp 480w,
+/static/e87b7799d999d5459562e5da330a61ac/e46b2/00_OIDC_diagram.webp 960w,
+/static/e87b7799d999d5459562e5da330a61ac/87c73/00_OIDC_diagram.webp 1353w"
+              sizes="(max-width: 960px) 100vw, 960px"
+              type="image/webp"
+            />
+          <source
+            srcset="/static/e87b7799d999d5459562e5da330a61ac/8ff5a/00_OIDC_diagram.png 240w,
+/static/e87b7799d999d5459562e5da330a61ac/e85cb/00_OIDC_diagram.png 480w,
+/static/e87b7799d999d5459562e5da330a61ac/d9199/00_OIDC_diagram.png 960w,
+/static/e87b7799d999d5459562e5da330a61ac/77f8f/00_OIDC_diagram.png 1353w"
+            sizes="(max-width: 960px) 100vw, 960px"
+            type="image/png"
+          />
+          <img
+            class="gatsby-resp-image-image"
+            src="/static/e87b7799d999d5459562e5da330a61ac/d9199/00_OIDC_diagram.png"
+            alt="OIDC 인증/인가와 관련한 도식"
+            title="OIDC 인증/인가와 관련한 도식"
+            loading="lazy"
+            decoding="async"
+            style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+          />
+        </picture>
+  </a>
+    </span>
+    <figcaption class="gatsby-resp-image-figcaption"><p>OIDC 인증/인가와 관련한 도식</p></figcaption>
+  </figure></p>
+<p>OIDC는 웹 애플리케이션(여기선 RP를 의미)이 OIDC Provider (OP)로부터 유저 정보를 <strong>인증</strong> 하는 기능을 제공하는 프로토콜 입니다. RP가 브라우저에 OP의 인증을 입력하는 로그인 폼을 제공하면<code class="language-text">(1)</code>, OP는 인증을 수행하고<code class="language-text">(2)</code> 성공시 유저 정보를 타 인증 제공처(IdP, Identity Provider)로부터 정보를 가지고옵니다<code class="language-text">(3)</code>. 참고로 IdP는 유저의 인증정보와 유저 정보를 가지고 있는 데이터베이스를 의미합니다.</p>
+<p>OP와의 통신은 토큰을 사용하여 수행됩니다. ID token이란 값이 RP에 주어지는데, 이는 OP로부터 <strong>인증</strong>을 완료하면 제공받습니다. 이 값은 JSON 으로 받으며 이 데이터 안에는 어떻게, 언제 인증을 완료하였는지와 필요한 어트리뷰트들, 그리고 인증의 만료기간은 언제까지인지 하는 정보들이 담겨있습니다. 이 토큰 또한 RP를 통해 갱신이 가능합니다. 이를 통해 유저와 각종 어트리뷰트들이 최신이자 유효한 값임을 확인시켜 줍니다.</p>
+<p>예를 들자면, ID token의 어트리뷰트 중 <code class="language-text">audience</code>를 가지고 유효한 클라이언트에서 온 값인지 확인할 수도 있으며, ID token 내에 담긴 어트리뷰트를 통해서도 관련 정보를 확인할 수 있겠습니다.</p>
+<p>다른 Access token이나 Refresh token은 OAuth 2.0에서 쓰던 방식과 동일하게 사용하면 됩니다. OIDC는 OAuth 2.0 스펙에 인증을 추가하기 위한 기능이기 때문입니다.</p>
+<h1 id="oidc-인증-과정" style="position:relative;"><a href="#oidc-%EC%9D%B8%EC%A6%9D-%EA%B3%BC%EC%A0%95" aria-label="oidc 인증 과정 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>OIDC 인증 과정</h1>
+<ul>
+<li>
+<p>개요</p>
+<ul>
+<li>OIDC는 인증을 수행하여 최종 사용자에 로그인하거나 최종 사용자가 이미 로그인했는지 확인합니다.</li>
+<li>OIDC는 서버에 의해 연산한 인증 결과를 클라이언트에게 보안규칙을 지켜서, 클라이언트가 이를 사용할 수 있도록 보냅니다.</li>
+<li>이런 이유로 클라이언트는 Relying Party(RP)를 호출합니다.</li>
+</ul>
+</li>
+<li>
+<p>인증 결과</p>
+<ul>
+<li>인증 결과로는 ID Token을 리턴합니다. ID Token엔 아래 클레임들이 포함됩니다
+<ul>
+<li>Issuer(식별자 발행인)</li>
+<li>Subject Identifier(개인 고유식별값)</li>
+<li>Authentication expires(토큰 만료기간)</li>
+<li>등등, REQUIRED 값들과 OPTIONAL 값들</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>인증 플로우</p>
+<ul>
+<li>아래 인증 플로우를 따릅니다
+<ul>
+<li>Authorization Code Flow(<code class="language-text">response_type=code</code>)</li>
+<li>Implicit Flow(<code class="language-text">response_type=id_token token</code> 혹은 <code class="language-text">response_type=id_token</code>)</li>
+<li>Hybrid Flow(<a href="https://openid.net/specs/oauth-v2-multiple-response-types-1_0.html" target="_blank" rel="nofollow noopener noreferrer">OAuth 형식의 응답값</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="인증-과정의-플로우" style="position:relative;"><a href="#%EC%9D%B8%EC%A6%9D-%EA%B3%BC%EC%A0%95%EC%9D%98-%ED%94%8C%EB%A1%9C%EC%9A%B0" aria-label="인증 과정의 플로우 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>인증 과정의 플로우</h2>
+<p>상세 요구사항까지는 들여다보지 않겠습니다. 다만 이 글은 이런 플로우로 흐름을 살펴보고자 합니다.</p>
+<p>OIDC의 다양한 플로우에 대한 상세한 설명은 <a href="https://darutk.medium.com/diagrams-of-all-the-openid-connect-flows-6968e3990660" target="_blank" rel="nofollow noopener noreferrer">이 링크</a>를 참고하시면 상당히 도움이 됩니다.</p>
+<h3 id="authorization-code-flow" style="position:relative;"><a href="#authorization-code-flow" aria-label="authorization code flow permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Authorization Code Flow</h3>
+<ol>
+<li>클라이언트는 인증 Request를 원하는 리퀘스트 파라미터에 담아 보낼 준비를 합니다.</li>
+<li>클라이언트가 <strong>인가 서버</strong>에 요청을 보냅니다.</li>
+<li>인가 서버가 엔드유저를 인증합니다.</li>
+<li>인가 서버는 엔드유저의 Consent와 인가를 획득합니다.</li>
+<li>인가 서버는 인증 코드와 함께 엔드유저를 클라이언트로 다시 보냅니다.</li>
+<li>클라이언트는 인가 코드를 사용하여 토큰 엔드포인트에 응답을 요청합니다.</li>
+<li>클라이언트는 응답 바디값에 ID 토큰과 액세스 토큰이 담긴 응답을 받습니다.</li>
+<li>클라이언트는 ID 토큰을 검증하고, 엔드 유저의 Subject Identifier를 획득합니다.</li>
+</ol>
+<h3 id="implicit-flow" style="position:relative;"><a href="#implicit-flow" aria-label="implicit flow permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Implicit Flow</h3>
+<ol>
+<li>클라이언트는 인증 Request를 원하는 리퀘스트 파라미터에 담아 보낼 준비를 합니다.</li>
+<li>클라이언트가 <strong>인가 서버</strong>에 요청을 보냅니다.</li>
+<li>인가 서버가 엔드유저를 인증합니다.</li>
+<li>인가 서버는 엔드유저의 Consent와 인가를 획득합니다.</li>
+<li>인가 서버는, ID 토큰과 요청 시 액세스 토큰과 함께 엔드유저를 클라이언트로 다시 보냅니다.</li>
+<li>클라이언트는 ID 토큰을 검증하고, 엔드 유저의 Subject Identifier를 획득합니다.</li>
+</ol>
+<h3 id="hybrid-flow" style="position:relative;"><a href="#hybrid-flow" aria-label="hybrid flow permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Hybrid Flow</h3>
+<ol>
+<li>클라이언트는 인증 Request를 원하는 리퀘스트 파라미터에 담아 보낼 준비를 합니다.</li>
+<li>클라이언트가 <strong>인가 서버</strong>에 요청을 보냅니다.</li>
+<li>인가 서버가 엔드유저를 인증합니다.</li>
+<li>인가 서버는 엔드유저의 Consent와 인가를 획득합니다.</li>
+<li>인가 서버는 인증 코드와, 응답 타입에 따라 하나 이상의 추가 파라미터를 담고 함께 엔드유저를 클라이언트로 다시 보냅니다.</li>
+<li>클라이언트는 인가 코드를 사용하여 토큰 엔드포인트에 응답을 요청합니다.</li>
+<li>클라이언트는 응답 바디값에 ID 토큰과 액세스 토큰이 담긴 응답을 받습니다.</li>
+<li>클라이언트는 ID 토큰을 검증하고, 엔드 유저의 Subject Identifier를 획득합니다.</li>
+</ol>
+<h1 id="oidc-시퀀스-다이어그램-살펴보기" style="position:relative;"><a href="#oidc-%EC%8B%9C%ED%80%80%EC%8A%A4-%EB%8B%A4%EC%9D%B4%EC%96%B4%EA%B7%B8%EB%9E%A8-%EC%82%B4%ED%8E%B4%EB%B3%B4%EA%B8%B0" aria-label="oidc 시퀀스 다이어그램 살펴보기 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>OIDC 시퀀스 다이어그램 살펴보기</h1>
+<p>마찬가지로, 모질라 재단에서 작성한 도식을 보고 이해해봅시다. 이해하기 위해, 상단에 먼저 작성한 <a href="#%EB%8C%80%EB%9E%B5%EC%A0%81%EC%9D%B8-%EC%9B%8C%ED%81%AC%ED%94%8C%EB%A1%9C%EC%9A%B0-%EC%84%A4%EB%AA%85">대략적인 워크플로우 설명</a>을 활용해봅시다.</p>
+<p><figure class="gatsby-resp-image-figure" style="">
+    <span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 960px; "
+    >
+      <a
+    class="gatsby-resp-image-link"
+    href="/static/e75384ebc39dc3c4dfc9779e790af9ca/d5eae/01_OIDC_sequence_diagram.png"
+    style="display: block"
+    target="_blank"
+    rel="noopener"
+  >
+    <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 113.75%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAXCAYAAAALHW+jAAAACXBIWXMAAAsTAAALEwEAmpwYAAAB8UlEQVQ4y5WU127DMAxF8/+/l7c8ZCJ77x0WR8AxZNVFWwGELJm6vJytiIjT6RTb7TbJ8/kM1+FwiH6/H8PhMP3jfD6f4/F4xGazif1+H5/Ppzrvdrto8RDlyWSShAev1ysBs3O+XC5RLkh4j97xeEy6LSywAEBut1tS5idnrPPNHYyQHMwlTgX4fr+jaWF9NBpFt9uNXq+XvqfTaXKPf7keGBXg/X5PtI0V34iM2dGBMTuSkwAQrAoQFzqdTrTb7RiPx8k146dO6SKA/vsGCIPlcpkEZrAic4vFItbrdVyv14odO/q5Ib5rgLmyLgGCAcLAGRBdh71GNFCLoWXCJWLWBeIRZ93kjrDAHiHuNUAfAIrMZrOUzdVqldjI3tjlDdDossXMYwQgsytzwyH7smy+AWolDzZA1N5gMKjqD/d+LRsvysrnnjIyOcSNKtD9PwHmLLkHbD6fJ3aEwfD8i2HuMkODJAEGM+8bAfOHeQd4djSZLKTUqQHygCA7D8munWKplCUigTJ5CdCaAsDhAChCH9MNAFufllBTI6TC1gKuCEbMKBFcNbPOQ6e208gwcI83teFAFhGB7RQHbs6oLJvK5TIpeZBtel3P3bSXnVBVL0ObAw1u7Cxe48oOoG2osTKGiaF9KQtBOMvop/pscvkLB4cFLmHxcOcAAAAASUVORK5CYII='); background-size: cover; display: block;"
+  ></span>
+  <picture>
+          <source
+              srcset="/static/e75384ebc39dc3c4dfc9779e790af9ca/8ac56/01_OIDC_sequence_diagram.webp 240w,
+/static/e75384ebc39dc3c4dfc9779e790af9ca/d3be9/01_OIDC_sequence_diagram.webp 480w,
+/static/e75384ebc39dc3c4dfc9779e790af9ca/e46b2/01_OIDC_sequence_diagram.webp 960w,
+/static/e75384ebc39dc3c4dfc9779e790af9ca/3dc6e/01_OIDC_sequence_diagram.webp 1407w"
+              sizes="(max-width: 960px) 100vw, 960px"
+              type="image/webp"
+            />
+          <source
+            srcset="/static/e75384ebc39dc3c4dfc9779e790af9ca/8ff5a/01_OIDC_sequence_diagram.png 240w,
+/static/e75384ebc39dc3c4dfc9779e790af9ca/e85cb/01_OIDC_sequence_diagram.png 480w,
+/static/e75384ebc39dc3c4dfc9779e790af9ca/d9199/01_OIDC_sequence_diagram.png 960w,
+/static/e75384ebc39dc3c4dfc9779e790af9ca/d5eae/01_OIDC_sequence_diagram.png 1407w"
+            sizes="(max-width: 960px) 100vw, 960px"
+            type="image/png"
+          />
+          <img
+            class="gatsby-resp-image-image"
+            src="/static/e75384ebc39dc3c4dfc9779e790af9ca/d9199/01_OIDC_sequence_diagram.png"
+            alt="AuthN Sequence w/ OIDC"
+            title="AuthN Sequence w/ OIDC"
+            loading="lazy"
+            decoding="async"
+            style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+          />
+        </picture>
+  </a>
+    </span>
+    <figcaption class="gatsby-resp-image-figcaption"><p>AuthN Sequence w/ OIDC</p></figcaption>
+  </figure></p>
+<ol>
+<li><strong>(추가됨)</strong> 인증 전 단계입니다.
+<ol>
+<li>End-User가 브라우저를 통해 RP에 접속합니다. RP는 OP의 <code class="language-text">.well-known/openid-configuration</code> 을 호출합니다.</li>
+<li>JSON 데이터를 받습니다. 이때 OIDC 프로토콜에 사용되는 엔드포인트의 메타데이터를 받습니다(<a href="https://zetawiki.com/wiki/OpenID_%EB%94%94%EC%8A%A4%EC%BB%A4%EB%B2%84%EB%A6%AC_%EC%97%94%EB%93%9C%ED%8F%AC%EC%9D%B8%ED%8A%B8_/.well-known/openid-configuration" target="_blank" rel="nofollow noopener noreferrer">이 링크</a>를 참고해주세요).
+<ol>
+<li>이를테면, <code class="language-text">token_endpoint</code>, <code class="language-text">authorizaion_endpoint</code> 등을 받습니다.</li>
+</ol>
+</li>
+<li>OP의 <code class="language-text">authorize</code> 엔드포인트로 리디렉션을 수행합니다.
+<ol>
+<li>이 때 보안 취약점을 방지하기 위한 값들과 <code class="language-text">redirect_url</code> 값과 <code class="language-text">response_code</code>, 그리고 클라이언트 고유 식별값 등을 제공받고, End-User의 브라우저는 이를 리디렉션 처리합니다.</li>
+</ol>
+</li>
+<li>로그인 페이지를 받아봅니다.</li>
+</ol>
+</li>
+<li>RP(클라이언트)가 OP(OpenID Provider)에 <strong>인증</strong> 요청을 보냅니다.</li>
+<li>OP가 (IdP 혹은 자기자신을 통해) End-User을 <strong>인증</strong> 하고, <strong>(상세과정 추가됨)</strong> 적당한 <strong>권한</strong>을 부여합니다.
+<ol>
+<li><code class="language-text">callback</code> 엔드포인트를 통해 <code class="language-text">state</code> 값와 <code class="language-text">code</code> 필드를 요청하도록 End-User의 브라우저가 RP에 리디렉션 처리할 수 있도록 합니다.</li>
+<li>RP는 토큰 요청을 수행합니다.</li>
+<li>OP는 ID Token과 Access Token을 RP에 응답합니다.
+<ol>
+<li>이때 ID Token[1]은 JWT를 사용합니다.</li>
+</ol>
+</li>
+<li>토큰이 유효한지, OP에 의해 서명된 것인지 확인합니다.</li>
+</ol>
+</li>
+<li><strong>(도식에 표현되어있지 않음)</strong> RP는 Access Token을 가지고 UserInfo Endpoint에 요청합니다.</li>
+<li><strong>(도식에 표현되어있지 않음)</strong> UserInfo Endpoint는 그 End-User에 대한 Claim을 리턴합니다.</li>
+<li>세션 만료 시, RP는 URL에 <code class="language-text">prompt=none</code> 값을 추가하고 OP에 요청합니다.</li>
+<li>유저에 대해 <strong>재인증</strong>을 수행합니다.</li>
+</ol>
+<h1 id="oidc-사용-시-보안-점검사항" style="position:relative;"><a href="#oidc-%EC%82%AC%EC%9A%A9-%EC%8B%9C-%EB%B3%B4%EC%95%88-%EC%A0%90%EA%B2%80%EC%82%AC%ED%95%AD" aria-label="oidc 사용 시 보안 점검사항 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>OIDC 사용 시 보안 점검사항</h1>
+<h2 id="세션-관리" style="position:relative;"><a href="#%EC%84%B8%EC%85%98-%EA%B4%80%EB%A6%AC" aria-label="세션 관리 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>세션 관리</h2>
+<p>OIDC의 OP는 일반적으로 유저의 세션쿠키를 생성합니다. 따라서 웹 애플리케이션(RP)에서 너무 자주 사용자에게 자격 증명을 다시 요청할 필요가 없습니다. 세션 만료는 OP가 세션을 설정하는 방법에 따라 다르며 쿠키가 사용자의 브라우저에 표시되는 것보다 빨리 OpenID Connect 공급자(OP)에 의해 세션이 강제로 만료될 수 있습니다. 이를 통해 OP는 OP 관점에서 사용자를 강제로 로그아웃시킬 수 있습니다. 그러나 OP와의 사용자 세션 조기 종료는 사용자가 로그인한 웹 애플리케이션(RP)에서 사용자 세션을 종료하지 않습니다.</p>
+<p>이러한 이유로 RP는 세션 관리에 대해 아래 규칙을 지키는 것이 매우 중요합니다.</p>
+<ol>
+<li>RP는 유저세션을 <code class="language-text">exp</code> 값이 곧 다가오거나 지난다면, 유저의 세션을 <strong>반드시</strong> 비활성화 해야합니다.</li>
+<li>만약 유저세션의 길이가 <code class="language-text">15분</code>을 넘는다면, 매 15분 혹은 다음 요청때마다, 어느쪽 먼저 되든지 간에 <strong>반드시</strong> ID token을 재점검 혹은 업데이트 해야합니다. 이를 통해 유저가 여전히 유효한지, 적합한 <strong>권한</strong>을 가지고있는지 확인합니다.
+<ol>
+<li>OpenID Connect 공급자(OP)에 의해 사용자 계정이 비활성화된 경우 15분 이내에 액세스 권한이 취소될 수 있습니다.</li>
+<li>유저에 대해 새 ID 토큰과 어트리뷰트를 발급받을 수 있습니다.</li>
+<li>ID 토큰의 만료시간을 갱신할 수 있습니다.</li>
+<li>OIDC <code class="language-text">authorize</code> 엔드포인트 호출 시 <code class="language-text">prompt=none</code> 파라미터로 처리할 수 있습니다.</li>
+</ol>
+</li>
+</ol>
+<h2 id="추가-고려사항" style="position:relative;"><a href="#%EC%B6%94%EA%B0%80-%EA%B3%A0%EB%A0%A4%EC%82%AC%ED%95%AD" aria-label="추가 고려사항 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>추가 고려사항</h2>
+<h3 id="id-토큰에-대해" style="position:relative;"><a href="#id-%ED%86%A0%ED%81%B0%EC%97%90-%EB%8C%80%ED%95%B4" aria-label="id 토큰에 대해 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>ID 토큰에 대해</h3>
+<ul>
+<li>토큰 시그니처에 대해 <strong>언제나</strong> 유효한지 확인하십시오.</li>
+<li>ID 토큰의 유효기간이 지난 토큰은 <strong>언제나</strong> 비활성화 하십시오.</li>
+<li>토큰 만료 전 OP에 주기적으로 쿼리하여 ID 토큰의 컨텐츠를 업데이트 하십시오.</li>
+</ul>
+<h3 id="authorization-code-grant" style="position:relative;"><a href="#authorization-code-grant" aria-label="authorization code grant permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Authorization code grant</h3>
+<ul>
+<li>Front channel, Back channel 을 구별하여 구현하기를 권장합니다.</li>
+<li><code class="language-text">HttpOnly</code> 세션 쿠키를 유저에게 전달하기를 권장합니다.</li>
+<li>Authorization code가 탈취당하는 케이스를 방지하기 위해, <a href="https://www.rfc-editor.org/rfc/rfc7636" target="_blank" rel="nofollow noopener noreferrer">PKCE</a>를 도입하여 추가 챌린지를 수행할 것을 권장합니다. <a href="https://oauth.net/2/pkce/" target="_blank" rel="nofollow noopener noreferrer">참고링크 또한 읽어보세요</a>.</li>
+<li>SPA 및 기본 애플리케이션은 리버스 엔지니어링에 취약합니다. SPA의 경우 애플리케이션의 소스 코드를 브라우저에서 사용할 수 있습니다.
+<ul>
+<li>네이티브 앱은 디컴파일할 수 있습니다.</li>
+<li>이러한 이유로 SPA 및 기본 애플리케이션은 클라이언트 자격 증명(특히 클라이언트 암호)을 안전하게 저장할 수 없습니다.</li>
+<li>이러한 이유로 퍼블릭 클라이언트로 간주됩니다.</li>
+</ul>
+</li>
+<li>참고) OAuth 2.1 드래프트에는 Authorization code grant 사용 시, “반드시” 사용하도록 되어있다고 합니다.</li>
+<li>참고2) PKCE 또한 <strong>인증</strong> 을 대체하는 로직이 아님에 유의하십시오!</li>
+</ul>
+<h3 id="implicit-grant" style="position:relative;"><a href="#implicit-grant" aria-label="implicit grant permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Implicit grant</h3>
+<ul>
+<li>가급적이면 해당 방안을 구현하지 않는 편을 권장합니다.</li>
+<li>Implicit grant는 Single Page Application(SPA)에 자주 쓰입니다.
+<ul>
+<li>서버단에 주기적으로 호출하지 않고 웹 브라우저 쿠키에 획득한 토큰을 보관하려 하지 마십시오.</li>
+<li>웹 브라우저가 이러한 정보를 담는다면 XSS와 CSRF에 취약할 수 있습니다.</li>
+<li>브라우저의 스토리지에 보관하지 말고 가급적 메모리에 보관하십시오.</li>
+</ul>
+</li>
+<li>Authorization code grant의 경우, 모든 요청이 적절한지 검증을 수행하기 때문에 이러한 문제를 해결할 수 있습니다.</li>
+</ul>
+<h3 id="state-파라미터-사용" style="position:relative;"><a href="#state-%ED%8C%8C%EB%9D%BC%EB%AF%B8%ED%84%B0-%EC%82%AC%EC%9A%A9" aria-label="state 파라미터 사용 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code class="language-text">state</code> 파라미터 사용</h3>
+<ul>
+<li>CSRF 공격을 방지하기 위해 <strong>언제나</strong> <code class="language-text">state</code> 파라미터를 사용하시길 권장합니다.</li>
+</ul>
+<h3 id="refresh-token" style="position:relative;"><a href="#refresh-token" aria-label="refresh token permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Refresh token</h3>
+<ul>
+<li>Refresh token은 RP 단(클라이언트)에서 연산되게 관리하십시오.</li>
+<li>웹 브라우저가 직접 받고 처리하지 않도록 관리하십시오.</li>
+</ul>
+<h1 id="마무리" style="position:relative;"><a href="#%EB%A7%88%EB%AC%B4%EB%A6%AC" aria-label="마무리 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>마무리</h1>
+<p>이번 글을 통해, 아래 내용들을 살펴볼 수 있었습니다:</p>
+<ol>
+<li>OIDC는 OAuth 2.0에서 어떤 식의 발전을 이루었는지 살펴볼 수 있었습니다.</li>
+<li>OIDC의 주요 플로우를 살펴보고, OIDC 구현 시 주요하게 살펴보아야 할 주의사항에 대해 확인할 수 있었습니다.</li>
+</ol>
+<p>작성하며 많은 헷갈렸던 부분들이 정리되어 매우 기쁘게 생각합니다. 이 글을 읽으시는 여러분들께도 부디 도움이 되길 바랍니다.</p>
+<p>읽어주셔서 감사합니다.</p>
+<hr>
+<ul>
+<li>References
+<ul>
+<li>[1] <a href="https://infosec.mozilla.org/guidelines/iam/openid_connect.html" target="_blank" rel="nofollow noopener noreferrer">OIDC의 전체 플로우를 이해하는데 큰 도움이 되었습니다</a></li>
+<li>[2] <a href="https://nordicapis.com/what-is-openid-connect/" target="_blank" rel="nofollow noopener noreferrer">OIDC 개념을 잡는데 큰 도움이 되었습니다</a></li>
+<li>[3] <a href="https://6991httam.medium.com/oauth%EB%9E%80-%EA%B7%B8%EB%A6%AC%EA%B3%A0-openid-8c46a65616e6" target="_blank" rel="nofollow noopener noreferrer">OIDC의 보안 위험성 mitigation 뿐 아니라 기존 OAuth 2.0의 pseudo-authentication 이란 개념을 명확히 이해하는데 도움이 되었습니다</a></li>
+<li>[4] <a href="https://swalloow.github.io/social-api-cognito/" target="_blank" rel="nofollow noopener noreferrer">OAuth 2.0의 Serverless + Cognito 구현 방안에 대해 알 수 있었습니다</a></li>
+<li>[5] <a href="https://medium.com/@robert.broeckelmann/when-to-use-which-oauth2-grants-and-oidc-flows-ec6a5c00d864" target="_blank" rel="nofollow noopener noreferrer">언제 OAuth 2.0을 쓰고 OIDC를 써야할지, 그리고 OAuth 2.1 드래프트를 살펴보며 어떤 식의 변화와 차이점에 주목해야 할지 알 수 있었습니다</a></li>
+</ul>
+</li>
+</ul></div></div></div><div class="Post-module--footer--f8705"><div class="Meta-module--meta--dae0a"><p class="Meta-module--date--4d30d">Published<!-- --> <!-- -->Oct 17, 2022</p></div><div class="Tags-module--tags--18589"><ul class="Tags-module--list--82ae6"><li class="Tags-module--item--52015"><a class="Button-module--button--b1113" href="/tag/backend/">backend</a></li></ul></div><div class="Author-module--author--1c58d"><p class="Non scholæ sed vitæ discimus.">Non scholæ sed vitæ discimus.</p><p class="Author-module--bio--08950">his/him</p></div></div><div class="Post-module--comments--d3b99"><div></div></div></div></div></div><div id="gatsby-announcer" style="position:absolute;top:0;width:1px;height:1px;padding:0;overflow:hidden;clip:rect(0, 0, 0, 0);white-space:nowrap;border:0" aria-live="assertive" aria-atomic="true"></div></div><script id="gatsby-script-loader">/*<![CDATA[*/window.pagePath="/devlog/backend/2022-10-17-considering-authn-and-authz-revisited-pt02";window.___webpackCompilationHash="2cc90c7bf969c92ecbf4";/*]]>*/</script><script id="gatsby-chunk-mapping">/*<![CDATA[*/window.___chunkMapping={"polyfill":["/polyfill-877fc533220b2bce0b1e.js"],"app":["/app-b344f477a15ca78ada57.js"],"component---cache-caches-gatsby-plugin-offline-app-shell-js":["/component---cache-caches-gatsby-plugin-offline-app-shell-js-0c915c7b1bdb5eac4fdf.js"],"component---src-templates-categories-template-categories-template-tsx":["/component---src-templates-categories-template-categories-template-tsx-e2d2add397e32e3517ca.js"],"component---src-templates-category-template-category-template-tsx":["/component---src-templates-category-template-category-template-tsx-078f2adfba160a34229f.js"],"component---src-templates-index-template-index-template-tsx":["/component---src-templates-index-template-index-template-tsx-83380c7954c9f6621026.js"],"component---src-templates-not-found-template-not-found-template-tsx":["/component---src-templates-not-found-template-not-found-template-tsx-56fe4d3b015459d56c99.js"],"component---src-templates-page-template-page-template-tsx":["/component---src-templates-page-template-page-template-tsx-c6c21d7369a9356db3a1.js"],"component---src-templates-post-template-post-template-tsx":["/component---src-templates-post-template-post-template-tsx-119cd0258cb38628d01f.js"],"component---src-templates-tag-template-tag-template-tsx":["/component---src-templates-tag-template-tag-template-tsx-8d0b3090e775aa3c4584.js"],"component---src-templates-tags-template-tags-template-tsx":["/component---src-templates-tags-template-tags-template-tsx-30027e87af7d042f3afb.js"]};/*]]>*/</script><script src="/polyfill-877fc533220b2bce0b1e.js" nomodule=""></script><script src="/app-b344f477a15ca78ada57.js" async=""></script><script src="/framework-481a1b6416c14416b2fb.js" async=""></script><script src="/webpack-runtime-b8c30787ddb902e678f7.js" async=""></script></body></html>
