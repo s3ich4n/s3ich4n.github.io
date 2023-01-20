@@ -65,7 +65,7 @@ socialImage: { "publicURL": "./media/terraform02.jpg" }
 
 데이터 소스 블록을 사용하는 방법은 아래와 같습니다:
 
-```terraform
+```hcl
 data "<PROVIDER>_<TYPE>" "<NAME>" {
   [CONFIG …]
 }
@@ -79,7 +79,7 @@ data "<PROVIDER>_<TYPE>" "<NAME>" {
 
 이런 방식으로 호출할 수 있지요:
 
-```terraform
+```hcl
 data "aws_ami" "s3ich4n-chapter02-ex01-amazonlinux2" {
   most_recent = true
   filter {

@@ -8,7 +8,7 @@ category: "devlog"
 tags:
   - "data_processing"
 description: "ksqlDB을 활용한 오픈소스의 예시를 통해, 보안 이벤트를 실시간으로 걸러내는 방안에 대해 학습해보고 이를 토대로 어떤식으로 활용하면 좋을지 살펴봅시다."
-socialImage: { "publicURL": "./media/__j__.jpg" }
+socialImage: { "publicURL": "./media/j1.jpg" }
 ---
 
 이 글은 `ksqlDB`(당시에는 `KSQL`이라는 명칭이었습니다)를 학습하기 위해 정리한 연재글입니다.
