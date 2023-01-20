@@ -8,7 +8,7 @@ category: "devlog"
 tags:
   - "data_processing"
 description: "ksqlDB를 어느정도 이해하기 위해 필요한 기본지식을 설명하였습니다."
-socialImage: { "publicURL": "./media/__j__.jpg" }
+socialImage: { "publicURL": "./media/j1.jpg" }
 ---
 
 이 글은 `ksqlDB`(당시에는 `KSQL`이라는 명칭이었습니다)를 학습하기 위해 정리한 연재글입니다.

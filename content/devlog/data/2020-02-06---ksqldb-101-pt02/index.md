@@ -8,7 +8,7 @@ category: "devlog"
 tags:
   - "data_processing"
 description: "ksqlDB의 내부 구조인 Apache Kafka의 Kafka Streams를 간략하게 살펴봅시다."
-socialImage: { "publicURL": "./media/__j__.jpg" }
+socialImage: { "publicURL": "./media/j1.jpg" }
 ---
 
 이 글은 `ksqlDB`(당시에는 `KSQL`이라는 명칭이었습니다)를 학습하기 위해 정리한 연재글입니다.
