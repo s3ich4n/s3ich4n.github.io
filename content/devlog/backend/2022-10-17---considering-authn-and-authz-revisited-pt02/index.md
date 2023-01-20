@@ -1,5 +1,5 @@
 ---
-title: "OAuth 2.0 (2) OAuth 2.0 Provider와 OIDC, 그리고 OAuth 2.0 사용 앱에 대해"
+title: "인가를 다시 살펴보다 (2) OpenID Connect 스펙과 OAuth 2.0, OpenID Connect 구현체 살펴보기"
 date: "2022-10-17T21:50:00.000Z"
 template: "post"
 draft: false
@@ -7,88 +7,252 @@ slug: "/devlog/backend/2022-10-17-considering-authn-and-authz-revisited-pt02"
 category: "devlog"
 tags:
   - "backend"
-description: ""
+description: "OAuth 2.0에 **인증** 을 추가한 OpenID Connect 스펙을 살펴보고, OpenID Connect의 주요 사항과 개념들, 그리고 유의사항에 대해 확인해보도록 하겠습니다."
 socialImage: { "publicURL": "./media/pomeranian.jpg" }
 ---
 
-# OAuth 2.0 provider 학습과정
+# 연재 안내
 
-## Django에는 어떤 구현체가 있을까?
+- [인가를 다시 살펴보다 (1)](/devlog/backend/2022-10-17-considering-authn-and-authz-revisited-pt01)
+- 인가를 다시 살펴보다 (2)
 
-1. Django의 [Django OAuth Toolkit](https://django-oauth-toolkit.readthedocs.io/en/latest/) 을 사용하여 개발했다.
-2. Django REST Framework(이하 DRE)에 맞게 구현하고 Django의 유저 ID/PW를 기반으로 Authn을 하고, 토큰으로 Authz를 수행하기위해 구상했다.
-3. 구현중 다음 문제에 봉착했다
-   1. 로그인시 Client ID, Client secert을 가지고 토큰을 요청한다. 이때 아무런 제재없이 두 값을 담는 것은 잠재적인 보안이슈다.
-      1. 우리는 클라이언트가 Vue.js같은 웹앱이기 때문에, Client secret 값이 노출될 수 있다.
-      2. 이럴 때 PKCE를 도입하여 Client secret 값을 보호하는 것이 필요하다.
-         아래의 추후 고려해야할 점에 상세기술한다.
-   2. Django OAuth Toolkit의 generate_token() 함수는, Python의 `SystemRandom()` 함수를 통해 30글자를 만들어 리턴한다.
-      1. 이를 JWT로 오버라이딩하는데 시간이 걸렸다.
-      2. [해당 라이브러리](https://github.com/Humanitec/django-oauth-toolkit-jwt)를 추가하여 전달하는 토큰으로 JWT를 사용하도록 한다.
-   3. 또한 OAuth 2.0으로 구현하면, 다른 서비스 (Manager server, API server, API Client, Dashboard 등)들이 모두 수정되어야한다.
-4. 따라서 기존 JWT 구현을 그대로 이어가되, _deprecated_ 라이브러리를 _maintained_ 라이브러리로 이전한 후, DRF의 인증 백엔드를 오버라이딩하는 것이 빠르게 구현하는 방법인 것으로 판단했다.
+# 들어가며
 
-## 다른 부분에 대해 조사한 내용
+OAuth 2.0 스펙에 대해 알아보았으니, 흔히 잘못 사용되는 _OAuth 2.0을 인증으로 사용하기_ 의 오개념을 바로잡고, 이를 보완하기 위해 등장한 OpenID Connect를 살펴봅니다. 이는 OAuth 2.0 스펙에 **인증**을 추가한 프로토콜이며, 어떤 식의 개념을 알아야 올바르게 사용할 수 있는지 확인해봅시다.
 
-1. [Authlib](https://github.com/lepture/authlib) 을 가지고 처음부터 구현하는 것은 바퀴를 재발명하는 것 만큼 힘든 짓이다.
-2. ~~[Django OIDC Provider](https://github.com/juanifioren/django-oidc-provider) 는 방치되어있어서 아예 Fork하고 새로 구현해야했다.~~ OIDC는 [이쪽](https://github.com/jazzband/django-oauth-toolkit)에서 개발이 이어지고 있습니다.
-3. [AWS KMS](https://aws.amazon.com/ko/kms/)가 아닌 [AWS Secrets Master](https://aws.amazon.com/ko/secrets-manager/)를 사용하는 이유는 다음과 같다.
+# OpenID Connect(이하 OIDC)란?
 
-- AWS Secrets Master로 `JWT_SECRET_KEY`나 django의 `SECRET_KEY` 등을 보관할 수 있다.
+OpenID Connect 1.0은 OAuth 2.0[RFC6749] 프로토콜 위에 있는 간단한 ID 계층입니다. 이를 통해 클라이언트는 권한 부여 서버에서 수행한 인증을 기반으로 최종 사용자의 신원을 확인할 수 있을 뿐만 아니라 상호 운용 가능한 REST 방식으로 최종 사용자에 대한 기본 프로필 정보를 얻을 수 있습니다.
 
-  - 왜 AWS KMS가 아닌가?
+다시말해, OAuth 2.0은 상황에 맞는 **권한 부여**에 적합한 프로토콜이며 여기에 인증 레이어를 추가한 기술로 이해하면 될 것입니다.
 
-    - KMS 는 데이터 암호화에 쓰이는 암호화 키를 보관한다
-      - Customer Master Key(CMK)라 불리는 마스터키로 데이터를 암호화한다.
-      - 이 키를 가지고 Plaintext data key, Encrypted data key를 생성한다.
-        - Plaintext data key: AWS에 의해 발급되며 암복호화시에 사용된다
-        - Encrypted data key: Plaintext data key를 암호화한 키값. 복호화시 plaintext data key를 얻을 때 쓰인다.
-    - 지금처럼 `JWT_SECRET_KEY`를 간단하게 저장하기에는 복잡하며, 고도화시 추가하는 것이 옳다고 판단했다.
+## OIDC의 등장배경
 
-  - 왜 secrets master인가?
+OAuth 2.0을 **인증** 프로토콜로 **잘못 사용**하는 케이스가 많았고, 이를 Pseudo-Authentication 이라고 부릅니다.
 
-    - k, v형태로 저장되는 secret key들은 AWS의 API를 호출하는 식으로 보관하는 것이 좋다고 판단했다.
-    - 참조링크 1: https://sarc.io/index.php/aws/1818-aws-8
-    - 참조링크 2: https://aws.amazon.com/ko/secrets-manager/
-    - KMS와 함께 쓸 수도 있다.
-    - 쓴만큼 금액을 지불한다.
-      - 보안 암호당 `$0.40/월`
-      - API 호출 `10,000건당 $0.05`
+페이스북, 트위터로 로그인하기 기능을 구현하는 API들을 보면, Access token을 바로 사용하여 Resource owner(페이스북, 트위터 등)로부터 값을 가져옵니다.
 
-  - 이렇게 적용하면 추가로 해야될 일은 무엇인가?
-    - [boto3](https://github.com/boto/boto3) 라이브러리를 MDP에 추가해야 한다
-    - AWS API를 호출하기 위한 IAM을 함께 작업해야한다.
-      - 이 때 쓸데없는 권한을 주지 않도록 여러번 검토하여 계정을 생성하도록 한다.
+이러한 방식은 문제가 있습니다. 사항은 아래와 같습니다:
 
-## OAuth 2.0 도입 후 개발할 때 고려사항
+1. 유저 정보를 직접적으로 가져오는 API는 OAuth 2.0 표준에 존재하지 않습니다. OAuth 2.0은 처음부터 **권한 부여** 프로토콜로 설계되었기 때문입니다.
+1. **인증**을 고려할 때는 "누가", "언제", "어떻게" 유저 자신임을 증명하는 것이기 때문에, 단순히 Access token만을 가지고 **인증** 하는 것은 옳지 않습니다.
 
-- OpenID Connect(이하 OIDC)를 커스텀하여 구현하거나, 관련한 라이브러리를 사용하여 OAuth 2.0으로 Authn을 함께 수행하도록 한다.
-  - OIDC는 OAuth 2.0에서 Authn을 추가한 확장이다.
-  - OAuth 2.0스펙과 크게 다르지 않다. JWT 토큰을 동일하게 사용하되, JWT 토큰의 claim에 어떤 값을 넣을지는 구현하기에 달려있다.
-    - claim값은 [OIDC의 core specs](https://openid.net/specs/openid-connect-core-1_0.html#Claims)을 참조하도록 한다.
-  - `response_type` 값을 정의하는 것으로 Authn 흐름을 정할 수 있다.
+이러한 문제를 해결하기 위해 OIDC가 등장하였고, 후술할 `id_token` 이라는 값을 인증으로 사용할 수 있습니다.
 
-### 보안적 측면
+## 용어소개
 
-- [PKCE](https://oauth.net/2/pkce/) 를 함께 추가하여(혹은 그러한 코드가 사용할 라이브러리에 있는지 살펴보면서) Authentication을 수행하도록 한다.
+작성되지 않은 용어는 [해당 링크](https://openid.net/specs/openid-connect-core-1_0.html#Terminology)를 참고해주시기 바랍니다.
 
-  - PKCE를 도입하면, OAuth 2.0 (혹은 이를 추가구현한 OIDC)에서 Client secret 값에 대해 해시 함수를 적용한 Code verifier, 이를 검증할 Code Challenge 과정을 추가하여 Client secret 값을 보호한다.
-  - 다음 도식은 PKCE의 논리적인 작동방식이다. 웹앱의 예시코드는 [다음 링크](https://github.com/oktadeveloper/okta-auth-js-pkce-example)를 참조한다.
+- Access Token
+  - OAuth 2.0의 액세스 토큰을 의미합니다.
+- Authentication
+  - 엔터티와 제시된 아이덴티티 간의 바인딩에서 충분한 신뢰를 얻기 위해 사용되는 프로세스입니다.
+- End-User
+  - 서비스를 이용하는 **사람**을 의미합니다.
+- OpenID Connect Provider (OP)
+  - 인증, 인가 모두를 연관있는 Relying parties (RPs)에 제공합니다.
+  - 이는 OIDC Provider(OP)일 수도 있고, 타 인증 제공처(IdP, Identity Provider. E.g., 외부 LDAP, WS-Federation, 등등)일 수도 있습니다.
+- Relying Party(RP)
+  - OpenID Provider로부터 받아온 End-User 인증과 클레임을 요구하는 OAuth 2.0 클라이언트 앱을 의미합니다.
+- UserInfo Endpoint
+  - 클라이언트가 액세스 토큰을 제공할 때 해당 권한 부여(Authorization Grant)가 나타내는 최종 사용자에 대한 권한 있는 정보를 반환하는 API 입니다.
+  - 권한에 따라 보호받는 리소스값을 줍니다.
+  - 이 엔드포인트는 `https` 로 서비스 해야합니다.
+  - 포트, 경로, 쿼리 파라미터 컴포넌트는 포함될 수 있습니다.
 
-  ![PKCE explained](../img/MDP-OAuth2.0/04-pkce.png)
+## 대략적인 워크플로우 설명
 
-- 인증요청시, client_id, client_secret에 대해 3-legged로 사용할 필요가 있다.
-  - https://docs.microsoft.com/en-us/linkedin/shared/authentication/authorization-code-flow
+```
++--------+                                   +--------+
+|        |                                   |        |
+|        |---------(1) AuthN Request-------->|        |
+|        |                                   |        |
+|        |  +--------+                       |        |
+|        |  |        |                       |        |
+|        |  |  End-  |<--(2) AuthN & AuthZ-->|        |
+|        |  |  User  |                       |        |
+|   RP   |  |        |                       |   OP   |
+|        |  +--------+                       |        |
+|        |                                   |        |
+|        |<--------(3) AuthN Response--------|        |
+|        |                                   |        |
+|        |---------(4) UserInfo Request----->|        |
+|        |                                   |        |
+|        |<--------(5) UserInfo Response-----|        |
+|        |                                   |        |
++--------+                                   +--------+
+```
+
+1. RP(클라이언트)가 OP(OpenID Provider)에 인증 요청을 보냅니다.
+1. OP가 (IdP 혹은 자기자신을 통해) End-User을 **인증** 하고, 적당한 **권한**을 부여합니다.
+   1. OP는 ID Token과 Access Token을 RP에 응답합니다.
+   1. 이때 ID Token[1]은 JWT를 사용합니다.
+1. RP는 Access Token을 가지고 UserInfo Endpoint에 요청합니다.
+1. UserInfo Endpoint는 그 End-User에 대한 Claim을 리턴합니다.
+
+### 설명을 풀어서 이해해봅시다!
+
+그렇다면 상기 내용을 모질라에서 제공하는 OIDC 다이어그램으로 다시 살펴봅시다.
+
+![OIDC 인증/인가와 관련한 도식](./media/00_OIDC_diagram.png)
+
+OIDC는 웹 애플리케이션(여기선 RP를 의미)이 OIDC Provider (OP)로부터 유저 정보를 **인증** 하는 기능을 제공하는 프로토콜 입니다. RP가 브라우저에 OP의 인증을 입력하는 로그인 폼을 제공하면`(1)`, OP는 인증을 수행하고`(2)` 성공시 유저 정보를 타 인증 제공처(IdP, Identity Provider)로부터 정보를 가지고옵니다`(3)`. 참고로 IdP는 유저의 인증정보와 유저 정보를 가지고 있는 데이터베이스를 의미합니다.
+
+OP와의 통신은 토큰을 사용하여 수행됩니다. ID token이란 값이 RP에 주어지는데, 이는 OP로부터 **인증**을 완료하면 제공받습니다. 이 값은 JSON 으로 받으며 이 데이터 안에는 어떻게, 언제 인증을 완료하였는지와 필요한 어트리뷰트들, 그리고 인증의 만료기간은 언제까지인지 하는 정보들이 담겨있습니다. 이 토큰 또한 RP를 통해 갱신이 가능합니다. 이를 통해 유저와 각종 어트리뷰트들이 최신이자 유효한 값임을 확인시켜 줍니다.
+
+예를 들자면, ID token의 어트리뷰트 중 `audience`를 가지고 유효한 클라이언트에서 온 값인지 확인할 수도 있으며, ID token 내에 담긴 어트리뷰트를 통해서도 관련 정보를 확인할 수 있겠습니다.
+
+다른 Access token이나 Refresh token은 OAuth 2.0에서 쓰던 방식과 동일하게 사용하면 됩니다. OIDC는 OAuth 2.0 스펙에 인증을 추가하기 위한 기능이기 때문입니다.
+
+# OIDC 인증 과정
+
+- 개요
+
+  - OIDC는 인증을 수행하여 최종 사용자에 로그인하거나 최종 사용자가 이미 로그인했는지 확인합니다.
+  - OIDC는 서버에 의해 연산한 인증 결과를 클라이언트에게 보안규칙을 지켜서, 클라이언트가 이를 사용할 수 있도록 보냅니다.
+  - 이런 이유로 클라이언트는 Relying Party(RP)를 호출합니다.
+
+- 인증 결과
+
+  - 인증 결과로는 ID Token을 리턴합니다. ID Token엔 아래 클레임들이 포함됩니다
+    - Issuer(식별자 발행인)
+    - Subject Identifier(개인 고유식별값)
+    - Authentication expires(토큰 만료기간)
+    - 등등, REQUIRED 값들과 OPTIONAL 값들
+
+- 인증 플로우
+
+  - 아래 인증 플로우를 따릅니다
+    - Authorization Code Flow(`response_type=code`)
+    - Implicit Flow(`response_type=id_token token` 혹은 `response_type=id_token`)
+    - Hybrid Flow([OAuth 형식의 응답값](https://openid.net/specs/oauth-v2-multiple-response-types-1_0.html)
+
+## 인증 과정의 플로우
+
+상세 요구사항까지는 들여다보지 않겠습니다. 다만 이 글은 이런 플로우로 흐름을 살펴보고자 합니다.
+
+OIDC의 다양한 플로우에 대한 상세한 설명은 [이 링크](https://darutk.medium.com/diagrams-of-all-the-openid-connect-flows-6968e3990660)를 참고하시면 상당히 도움이 됩니다.
+
+### Authorization Code Flow
+
+1. 클라이언트는 인증 Request를 원하는 리퀘스트 파라미터에 담아 보낼 준비를 합니다.
+1. 클라이언트가 **인가 서버**에 요청을 보냅니다.
+1. 인가 서버가 엔드유저를 인증합니다.
+1. 인가 서버는 엔드유저의 Consent와 인가를 획득합니다.
+1. 인가 서버는 인증 코드와 함께 엔드유저를 클라이언트로 다시 보냅니다.
+1. 클라이언트는 인가 코드를 사용하여 토큰 엔드포인트에 응답을 요청합니다.
+1. 클라이언트는 응답 바디값에 ID 토큰과 액세스 토큰이 담긴 응답을 받습니다.
+1. 클라이언트는 ID 토큰을 검증하고, 엔드 유저의 Subject Identifier를 획득합니다.
+
+### Implicit Flow
+
+1. 클라이언트는 인증 Request를 원하는 리퀘스트 파라미터에 담아 보낼 준비를 합니다.
+1. 클라이언트가 **인가 서버**에 요청을 보냅니다.
+1. 인가 서버가 엔드유저를 인증합니다.
+1. 인가 서버는 엔드유저의 Consent와 인가를 획득합니다.
+1. 인가 서버는, ID 토큰과 요청 시 액세스 토큰과 함께 엔드유저를 클라이언트로 다시 보냅니다.
+1. 클라이언트는 ID 토큰을 검증하고, 엔드 유저의 Subject Identifier를 획득합니다.
+
+### Hybrid Flow
+
+1. 클라이언트는 인증 Request를 원하는 리퀘스트 파라미터에 담아 보낼 준비를 합니다.
+1. 클라이언트가 **인가 서버**에 요청을 보냅니다.
+1. 인가 서버가 엔드유저를 인증합니다.
+1. 인가 서버는 엔드유저의 Consent와 인가를 획득합니다.
+1. 인가 서버는 인증 코드와, 응답 타입에 따라 하나 이상의 추가 파라미터를 담고 함께 엔드유저를 클라이언트로 다시 보냅니다.
+1. 클라이언트는 인가 코드를 사용하여 토큰 엔드포인트에 응답을 요청합니다.
+1. 클라이언트는 응답 바디값에 ID 토큰과 액세스 토큰이 담긴 응답을 받습니다.
+1. 클라이언트는 ID 토큰을 검증하고, 엔드 유저의 Subject Identifier를 획득합니다.
+
+# OIDC 시퀀스 다이어그램 살펴보기
+
+마찬가지로, 모질라 재단에서 작성한 도식을 보고 이해해봅시다. 이해하기 위해, 상단에 먼저 작성한 [대략적인 워크플로우 설명](#대략적인-워크플로우-설명)을 활용해봅시다.
+
+![AuthN Sequence w/ OIDC](./media/01_OIDC_sequence_diagram.png)
+
+1. **(추가됨)** 인증 전 단계입니다.
+   1. End-User가 브라우저를 통해 RP에 접속합니다. RP는 OP의 `.well-known/openid-configuration` 을 호출합니다.
+   1. JSON 데이터를 받습니다. 이때 OIDC 프로토콜에 사용되는 엔드포인트의 메타데이터를 받습니다([이 링크](https://zetawiki.com/wiki/OpenID_%EB%94%94%EC%8A%A4%EC%BB%A4%EB%B2%84%EB%A6%AC_%EC%97%94%EB%93%9C%ED%8F%AC%EC%9D%B8%ED%8A%B8_/.well-known/openid-configuration)를 참고해주세요).
+      1. 이를테면, `token_endpoint`, `authorizaion_endpoint` 등을 받습니다.
+   1. OP의 `authorize` 엔드포인트로 리디렉션을 수행합니다.
+      1. 이 때 보안 취약점을 방지하기 위한 값들과 `redirect_url` 값과 `response_code`, 그리고 클라이언트 고유 식별값 등을 제공받고, End-User의 브라우저는 이를 리디렉션 처리합니다.
+   1. 로그인 페이지를 받아봅니다.
+1. RP(클라이언트)가 OP(OpenID Provider)에 **인증** 요청을 보냅니다.
+1. OP가 (IdP 혹은 자기자신을 통해) End-User을 **인증** 하고, **(상세과정 추가됨)** 적당한 **권한**을 부여합니다.
+   1. `callback` 엔드포인트를 통해 `state` 값와 `code` 필드를 요청하도록 End-User의 브라우저가 RP에 리디렉션 처리할 수 있도록 합니다.
+   1. RP는 토큰 요청을 수행합니다.
+   1. OP는 ID Token과 Access Token을 RP에 응답합니다.
+      1. 이때 ID Token[1]은 JWT를 사용합니다.
+   1. 토큰이 유효한지, OP에 의해 서명된 것인지 확인합니다.
+1. **(도식에 표현되어있지 않음)** RP는 Access Token을 가지고 UserInfo Endpoint에 요청합니다.
+1. **(도식에 표현되어있지 않음)** UserInfo Endpoint는 그 End-User에 대한 Claim을 리턴합니다.
+1. 세션 만료 시, RP는 URL에 `prompt=none` 값을 추가하고 OP에 요청합니다.
+1. 유저에 대해 **재인증**을 수행합니다.
+
+# OIDC 사용 시 보안 점검사항
+
+## 세션 관리
+
+OIDC의 OP는 일반적으로 유저의 세션쿠키를 생성합니다. 따라서 웹 애플리케이션(RP)에서 너무 자주 사용자에게 자격 증명을 다시 요청할 필요가 없습니다. 세션 만료는 OP가 세션을 설정하는 방법에 따라 다르며 쿠키가 사용자의 브라우저에 표시되는 것보다 빨리 OpenID Connect 공급자(OP)에 의해 세션이 강제로 만료될 수 있습니다. 이를 통해 OP는 OP 관점에서 사용자를 강제로 로그아웃시킬 수 있습니다. 그러나 OP와의 사용자 세션 조기 종료는 사용자가 로그인한 웹 애플리케이션(RP)에서 사용자 세션을 종료하지 않습니다.
+
+이러한 이유로 RP는 세션 관리에 대해 아래 규칙을 지키는 것이 매우 중요합니다.
+
+1. RP는 유저세션을 `exp` 값이 곧 다가오거나 지난다면, 유저의 세션을 **반드시** 비활성화 해야합니다.
+1. 만약 유저세션의 길이가 `15분`을 넘는다면, 매 15분 혹은 다음 요청때마다, 어느쪽 먼저 되든지 간에 **반드시** ID token을 재점검 혹은 업데이트 해야합니다. 이를 통해 유저가 여전히 유효한지, 적합한 **권한**을 가지고있는지 확인합니다.
+   1. OpenID Connect 공급자(OP)에 의해 사용자 계정이 비활성화된 경우 15분 이내에 액세스 권한이 취소될 수 있습니다.
+   1. 유저에 대해 새 ID 토큰과 어트리뷰트를 발급받을 수 있습니다.
+   1. ID 토큰의 만료시간을 갱신할 수 있습니다.
+   1. OIDC `authorize` 엔드포인트 호출 시 `prompt=none` 파라미터로 처리할 수 있습니다.
+
+## 추가 고려사항
+
+### ID 토큰에 대해
+
+- 토큰 시그니처에 대해 **언제나** 유효한지 확인하십시오.
+- ID 토큰의 유효기간이 지난 토큰은 **언제나** 비활성화 하십시오.
+- 토큰 만료 전 OP에 주기적으로 쿼리하여 ID 토큰의 컨텐츠를 업데이트 하십시오.
+
+### Authorization code grant
+
+- Front channel, Back channel 을 구별하여 구현하기를 권장합니다.
+- `HttpOnly` 세션 쿠키를 유저에게 전달하기를 권장합니다.
+- Authorization code가 탈취당하는 케이스를 방지하기 위해, [PKCE](https://www.rfc-editor.org/rfc/rfc7636)를 도입하여 추가 챌린지를 수행할 것을 권장합니다. [참고링크 또한 읽어보세요](https://oauth.net/2/pkce/).
+  - 참고) OAuth 2.1 드래프트에는 Authorization code grant 사용 시, "반드시" 사용하도록 되어있다고 합니다.
+
+### Implicit grant
+
+- 가급적이면 해당 방안을 구현하지 않는 편을 권장합니다.
+- Implicit grant는 Single Page Application(SPA)에 자주 쓰입니다.
+  - 서버단에 주기적으로 호출하지 않고 웹 브라우저 쿠키에 획득한 토큰을 보관하려 하지 마십시오.
+  - 웹 브라우저가 이러한 정보를 담는다면 XSS와 CSRF에 취약할 수 있습니다.
+  - 브라우저의 스토리지에 보관하지 말고 가급적 메모리에 보관하십시오.
+- Authorization code grant의 경우, 모든 요청이 적절한지 검증을 수행하기 때문에 이러한 문제를 해결할 수 있습니다.
+
+### `state` 파라미터 사용
+
+- CSRF 공격을 방지하기 위해 **언제나** `state` 파라미터를 사용하시길 권장합니다.
+
+### Refresh token
+
+- Refresh token은 RP 단(클라이언트)에서 연산되게 관리하십시오.
+- 웹 브라우저가 직접 받고 처리하지 않도록 관리하십시오.
 
 # 마무리
 
 이번 글을 통해, 아래 내용들을 살펴볼 수 있었습니다:
 
-1.
+1. OIDC는 OAuth 2.0에서 어떤 식의 발전을 이루었는지 살펴볼 수 있었습니다.
+2. OIDC의 주요 플로우를 살펴보고, OIDC 구현 시 주요하게 살펴보아야 할 주의사항에 대해 확인할 수 있었습니다.
+
+작성하며 많은 헷갈렸던 부분들이 정리되어 매우 기쁘게 생각합니다. 이 글을 읽으시는 여러분들께도 부디 도움이 되길 바랍니다.
 
 읽어주셔서 감사합니다.
 
 ---
 
 - References
-  - ..
+  - [1] [OIDC의 전체 플로우를 이해하는데 큰 도움이 되었습니다](https://infosec.mozilla.org/guidelines/iam/openid_connect.html)
+  - [2] [OIDC 개념을 잡는데 큰 도움이 되었습니다](https://nordicapis.com/what-is-openid-connect/)
+  - [3] [OIDC의 보안 위험성 mitigation 뿐 아니라 기존 OAuth 2.0의 pseudo-authentication 이란 개념을 명확히 이해하는데 도움이 되었습니다](https://6991httam.medium.com/oauth%EB%9E%80-%EA%B7%B8%EB%A6%AC%EA%B3%A0-openid-8c46a65616e6)
+  - [4] [OAuth 2.0의 Serverless + Cognito 구현 방안에 대해 알 수 있었습니다](https://swalloow.github.io/social-api-cognito/)
+  - [5] [언제 OAuth 2.0을 쓰고 OIDC를 써야할지, 그리고 OAuth 2.1 드래프트를 살펴보며 어떤 식의 변화와 차이점에 주목해야 할지 알 수 있었습니다](https://medium.com/@robert.broeckelmann/when-to-use-which-oauth2-grants-and-oidc-flows-ec6a5c00d864)

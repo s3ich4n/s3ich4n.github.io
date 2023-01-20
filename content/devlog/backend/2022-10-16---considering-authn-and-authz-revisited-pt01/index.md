@@ -11,6 +11,11 @@ description: "API 서비스가 많이 나누어졌을 때, 인가에 대해 살�
 socialImage: { "publicURL": "./media/pomeranian.jpg" }
 ---
 
+# 연재 안내
+
+- 인가를 다시 살펴보다 (1)
+- [인가를 다시 살펴보다 (2)](/devlog/backend/2022-10-17-considering-authn-and-authz-revisited-pt02)
+
 # 들어가며
 
 필요한 API 서비스를 나누고 서비스의 규모가 커지면, 인증과 인가에 대해 구조적으로 돌아보게 됩니다. 그러면서 자연스럽게 SSO(IdP, SP)나 OAuth 2.0, OpenID Connect 같은 큰 개념을 돌아보게 되고, 어떻게 이를 위임하거나 전파할지를 구상하게 됩니다.
