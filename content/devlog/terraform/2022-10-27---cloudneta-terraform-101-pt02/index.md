@@ -10,7 +10,7 @@ tags:
   - "iac"
   - "devops"
 description: "Terraform 코드를 통해 VPC 구성과 ALB, ASG 설정을 작성하고, 데이터 소스 블록에 대해 학습합니다."
-socialImage: "./media/terraform02.jpg"
+socialImage: { "publicURL": "./media/terraform02.jpg" }
 ---
 
 이 내용은 CloudNet@ 에서 진행하는 테라폼 기초 입문 스터디에 대한 연재글입니다.

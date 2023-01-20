@@ -10,7 +10,7 @@ tags:
   - "iac"
   - "devops"
 description: "여태 스터디를 하며 배웠던 부분에 대한 one-point lesson을 해봅시다."
-socialImage: "./media/terraform07.jpg"
+socialImage: { "publicURL": "./media/terraform07.jpg" }
 ---
 
 이 내용은 [CloudNet@](https://www.notion.so/gasidaseo/CloudNet-Blog-c9dfa44a27ff431dafdd2edacc8a1863) 에서 진행하는 테라폼 기초 입문 스터디에 대한 연재글입니다.

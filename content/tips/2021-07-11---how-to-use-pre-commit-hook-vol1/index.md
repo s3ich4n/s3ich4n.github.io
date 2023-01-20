@@ -8,7 +8,7 @@ category: "tips"
 tags:
   - "pre_commit"
 description: "pre-commit hook 말만 들었지 실제로 써보지 못했는데, 이참에 써보고 팀원들에게 공유하기 위해 글을 씁니다. 제 1탄입니다."
-socialImage: "./media/pangyo_01.jpg"
+socialImage: { "publicURL": "./media/pangyo_01.jpg" }
 ---
 
 이 글은 pre-commit hook 을 사용하고 전파하기 위해 작성한 시리즈 글입니다.

@@ -8,7 +8,7 @@ category: "tips"
 tags:
   - "pycharm"
 description: "매일 입력하는 파일 설명(시그니처)을 귀찮지 않게 커맨드 하나로 자동입력되게 하는 방안을 찾았습니다. 회사 팀원들과 주변사람들에게만 공유하기는 아까워서 짧은 글을 써봤습니다."
-socialImage: "./media/pangyo_01.jpg"
+socialImage: { "publicURL": "./media/pangyo_01.jpg" }
 ---
 
 PyCharm에서 파일 시그니처를 바로 입력하려면?

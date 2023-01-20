@@ -10,7 +10,7 @@ tags:
   - "iac"
   - "devops"
 description: "테라폼 코드를 테스트하는 방안과 팀에서 어떻게 활용할지에 대해 공부해봅시다."
-socialImage: "./media/terraform10.jpg"
+socialImage: { "publicURL": "./media/terraform10.jpg" }
 ---
 
 이 내용은 개별적으로 추가공부한 내용입니다.

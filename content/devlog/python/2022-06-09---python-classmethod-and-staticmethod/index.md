@@ -8,7 +8,7 @@ categories: "devlog"
 tags:
   - "python"
 description: 'Python의 "@classmethod" 와 "@staticmethod"에 대해'
-socialImage: "./media/sangdo-dong.jpg"
+socialImage: { "publicURL": "./media/sangdo-dong.jpg" }
 ---
 
 본 페이지에서는 Python의 `@classmethod`, `@staticmethod` 에 대한 차이와 실제 예시를 통해 어떤식의 차이가 있는지 기술한다.

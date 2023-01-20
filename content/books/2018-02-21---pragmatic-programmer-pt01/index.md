@@ -8,7 +8,7 @@ category: "books"
 tags:
   - "book_review"
 description: "실용주의 프로그래머 2nd edition을 읽은 후... pt. 1"
-socialImage: "./media/gwangheungchang.jpg"
+socialImage: { "publicURL": "./media/gwangheungchang.jpg" }
 ---
 
 ### 읽기에 앞서...
