@@ -3,7 +3,7 @@ title: "실용주의 프로그래머 pt. 1"
 date: "2018-02-21T00:00:00.000Z"
 template: "post"
 draft: false
-slug: "/books/2018-02-21-pragmatic-programmer-pt01"
+slug: "/books/pragmatic-programmer-1st/2018-02-21-pt01"
 category: "books"
 tags:
   - "book_review"
