@@ -2,7 +2,7 @@
 title: "PEP 공부해보기 - PEP 333, PEP 3333에 대하여 (2)"
 date: "2023-01-24T23:57:00.000Z"
 template: "post"
-draft: false
+draft: true
 slug: "/devlog/python/2023-01-24-probing-pep-333-3-wsgi-and-asgi-pt02"
 category: "devlog"
 tags:
