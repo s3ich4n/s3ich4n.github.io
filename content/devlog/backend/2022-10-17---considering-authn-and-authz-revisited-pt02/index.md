@@ -13,7 +13,7 @@ socialImage: { "publicURL": "./media/pomeranian.jpg" }
 
 # 연재 안내
 
-- [인가를 다시 살펴보다 (1)](/devlog/backend/2022-10-17-considering-authn-and-authz-revisited-pt01)
+- [인가를 다시 살펴보다 (1)](/devlog/backend/2022-10-16-considering-authn-and-authz-revisited-pt01)
 - 인가를 다시 살펴보다 (2)
 
 # 들어가며
