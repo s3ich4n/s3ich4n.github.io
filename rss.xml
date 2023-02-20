@@ -1,4 +1,365 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[팔공산 창고]]></title><description><![CDATA[팔공산 창고]]></description><link>http://github.com/dylang/node-rss</link><generator>GatsbyJS</generator><lastBuildDate>Wed, 15 Feb 2023 11:28:39 GMT</lastBuildDate><item><title><![CDATA[클린 코드 스터디 (10): 클래스]]></title><description><![CDATA[2023년 1월부터 시작한 클린 코드 독파 스터디 후, 매 모임 전 준비하는 게시글을 공유합니다. 이 글은 10장, 클래스에 대해 살펴봅니다.]]></description><link>https://blog.s3ich4n.me/books/clean-code/2023-02-10-pt10</link><guid isPermaLink="false">https://blog.s3ich4n.me/books/clean-code/2023-02-10-pt10</guid><pubDate>Fri, 10 Feb 2023 22:55:00 GMT</pubDate><content:encoded>&lt;h1 id=&quot;10-클래스&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#10-%ED%81%B4%EB%9E%98%EC%8A%A4&quot; aria-label=&quot;10 클래스 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;10. 클래스&lt;/h1&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[팔공산 창고]]></title><description><![CDATA[팔공산 창고]]></description><link>http://github.com/dylang/node-rss</link><generator>GatsbyJS</generator><lastBuildDate>Mon, 20 Feb 2023 15:17:31 GMT</lastBuildDate><item><title><![CDATA[2023년 과제형 코딩 테스트 후기 (2)]]></title><description><![CDATA[2월에 수행한 과제형 코딩 테스트에 대해 리뷰하는 글입니다. 이 글에서는 무엇이 모자랐고, 어떤 것을 집중해야할지 배운 내용에 대해 작성하였습니다.]]></description><link>https://blog.s3ich4n.me/retrospect/2023-02-20-assignment-pt02</link><guid isPermaLink="false">https://blog.s3ich4n.me/retrospect/2023-02-20-assignment-pt02</guid><pubDate>Mon, 20 Feb 2023 18:01:00 GMT</pubDate><content:encoded>&lt;h1 id=&quot;연재-안내&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%97%B0%EC%9E%AC-%EC%95%88%EB%82%B4&quot; aria-label=&quot;연재 안내 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;연재 안내&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;/retrospect/2023-02-20-assignment-pt01&quot;&gt;2023년 과제형 코딩 테스트 후기 (1)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;2023년 과제형 코딩 테스트 후기 (2)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&quot;들어가며&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EB%93%A4%EC%96%B4%EA%B0%80%EB%A9%B0&quot; aria-label=&quot;들어가며 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;들어가며&lt;/h1&gt;
+&lt;p&gt;이 게시글은 최근 치렀던 코딩 테스트를 회고하는 게시글입니다.&lt;/p&gt;
+&lt;p&gt;이 게시글에선 무엇으로 인해 코딩 테스트에서 탈락이라는 고배를 마셨는지, 그 원인을 스스로 반추해보는 내용이 주가 될 것입니다.&lt;/p&gt;
+&lt;h1 id=&quot;목차&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EB%AA%A9%EC%B0%A8&quot; aria-label=&quot;목차 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;목차&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;#%EC%99%9C-%EB%96%A8%EC%96%B4%EC%A1%8C%EC%9D%84%EA%B9%8C&quot;&gt;왜 떨어졌을까?&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;#%EC%99%84%EC%84%B1%EB%90%9C-%EC%86%8C%ED%94%84%ED%8A%B8%EC%9B%A8%EC%96%B4%EA%B0%80-%EA%B8%B0%EB%B3%B8%EC%9D%B4%EB%8B%A4&quot;&gt;완성된 소프트웨어가 기본이다&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;#%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98-%ED%95%99%EC%8A%B5-%EB%B6%80%EC%A1%B1&quot;&gt;아키텍처 학습 부족&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;#%ED%8C%8C%EC%9D%B4%EC%8D%AC-deep-dive-%EC%A7%84%EC%A7%9C-%ED%95%98%EA%B3%A0%EC%9E%88%EB%82%98&quot;&gt;파이썬 deep-dive, 진짜 하고있나?&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;#%EC%82%AC%EC%9A%A9%ED%95%98%EB%8A%94-%EB%9D%BC%EC%9D%B4%EB%B8%8C%EB%9F%AC%EB%A6%AC%EC%97%90-%EB%8C%80%ED%95%9C-deep-dive%EA%B0%80-%EB%AA%A8%EC%9E%90%EB%9D%BC%EC%A7%80-%EC%95%8A%EC%95%98%EB%82%98&quot;&gt;사용하는 라이브러리에 대한 deep-dive가 모자라지 않았나?&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;#%ED%8F%89%EC%86%8C-%EC%A4%91%EC%8B%9C%ED%95%98%EB%8A%94-%EB%8F%99%EB%A3%8C%EC%97%90-%EB%8C%80%ED%95%9C-%EB%B0%B0%EB%A0%A4%EB%A5%BC-%ED%95%B4%EB%91%90%EC%97%88%EB%82%98&quot;&gt;평소 중시하는 ‘동료에 대한 배려’를 해두었나?&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;#%EB%A7%88%EB%AC%B4%EB%A6%AC&quot;&gt;마무리&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&quot;왜-떨어졌을까&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%99%9C-%EB%96%A8%EC%96%B4%EC%A1%8C%EC%9D%84%EA%B9%8C&quot; aria-label=&quot;왜 떨어졌을까 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;왜 떨어졌을까?&lt;/h1&gt;
+&lt;p&gt;완성하지 못한 소프트웨어에, 외부 공부의 모자람, 그리고 막상 파이썬을 사랑한다고는 하지만 정말 그렇지 않음이 복합적으로 적용된 것이라고 복기할 수 있겠습니다.&lt;/p&gt;
+&lt;h2 id=&quot;완성된-소프트웨어가-기본이다&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%99%84%EC%84%B1%EB%90%9C-%EC%86%8C%ED%94%84%ED%8A%B8%EC%9B%A8%EC%96%B4%EA%B0%80-%EA%B8%B0%EB%B3%B8%EC%9D%B4%EB%8B%A4&quot; aria-label=&quot;완성된 소프트웨어가 기본이다 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;완성된 소프트웨어가 기본이다&lt;/h2&gt;
+&lt;p&gt;앞서 말했듯 많은 것을 배웠으나, 가장 중요한 결과 달성에 실패했습니다. 이것이 가장 큰 원인이지 않았을까 합니다.&lt;/p&gt;
+&lt;p&gt;완성되지 않은 소프트웨어는 내부적으로 아무리 깔끔하고 좋다고 한들 아무런 가치를 창출하지 않습니다. 과제의 본 목적을 벗어나 기술을 탐미하는 것은 엔지니어로서의 자세라고 할 수 없습니다. 신기술이어서, 뜻대로 돌아가는게 신기해서, 뭔가 블록맞추기가 완성되는 즐거움에 취해서 본질을 생각하지 않는 것은 경계해야 할 자세입니다.&lt;/p&gt;
+&lt;h2 id=&quot;아키텍처-학습-부족&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98-%ED%95%99%EC%8A%B5-%EB%B6%80%EC%A1%B1&quot; aria-label=&quot;아키텍처 학습 부족 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;아키텍처 학습 부족&lt;/h2&gt;
+&lt;p&gt;DDD나 클린 아키텍처, 헥사고널 아키텍처를 단기간에 올바른 방안으로 쓰기는 쉽지 않습니다. 이견없는 주제를 향해 많은 사람이 머리를 맞대는 현업과 달리, 이 자리는 제 역량을 점검받는 자리였기 때문입니다. 따라서 평소에 얼마나 이런 설계 방법이나 외부 사항들을 학습했는지, 토이프로젝트를 수행해본 적은 있는지를 평가받는 자리입니다. 매력적인 지원자가 되고 싶었다면 평소에 미리미리 했어야 했습니다.&lt;/p&gt;
+&lt;p&gt;‘망치를 들면 모든 것이 못으로 보인다’라는 격언이 있습니다. (발언의 의도와 다르게) 여러 망치를 가진 기술자는 선택의 폭이 그만큼 넓어지죠. 어느 도메인에 속하더라도 사용할 수 있는 여러가지 접근 방법을 학습해야 하지 않을까요? 이 점을 사무치게 반성했습니다.&lt;/p&gt;
+&lt;h2 id=&quot;파이썬-deep-dive-진짜-하고있나&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%ED%8C%8C%EC%9D%B4%EC%8D%AC-deep-dive-%EC%A7%84%EC%A7%9C-%ED%95%98%EA%B3%A0%EC%9E%88%EB%82%98&quot; aria-label=&quot;파이썬 deep dive 진짜 하고있나 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;파이썬 deep-dive, 진짜 하고있나?&lt;/h2&gt;
+&lt;p&gt;주력 언어를 파이썬으로 두고, 이를 잘 쓰고자 하는 노력이 부족했지 않았나 하는 생각을 하게 되었습니다. 아래에서 설명하겠습니다.&lt;/p&gt;
+&lt;h3 id=&quot;random-라이브러리는-seed-기반임을-알고있었나&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#random-%EB%9D%BC%EC%9D%B4%EB%B8%8C%EB%9F%AC%EB%A6%AC%EB%8A%94-seed-%EA%B8%B0%EB%B0%98%EC%9E%84%EC%9D%84-%EC%95%8C%EA%B3%A0%EC%9E%88%EC%97%88%EB%82%98&quot; aria-label=&quot;random 라이브러리는 seed 기반임을 알고있었나 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;&lt;code class=&quot;language-text&quot;&gt;random&lt;/code&gt; 라이브러리는 seed 기반임을 알고있었나?&lt;/h3&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/python/cpython/blob/main/Lib/random.py&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;random&lt;/code&gt;이란 파이썬 기본 라이브러리&lt;/a&gt;는 객체 생성 시의 &lt;code class=&quot;language-text&quot;&gt;seed&lt;/code&gt; 값을 기반으로 연산을 하는 유사-난수 생성로직 입니다. &lt;code class=&quot;language-text&quot;&gt;random&lt;/code&gt; 라이브러리의 시드는 기본값으로 현재 시각을 시드로 사용하고, 랜덤난수가 주어진다면 이를 사용합니다(&lt;a href=&quot;https://docs.python.org/3/library/random.html&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;관련 설명&lt;/a&gt;). 특정 시드를 누군가가 &lt;em&gt;예측한다&lt;/em&gt; 면, 어떤 값이 리턴됨을 “예측”할 수 있을 것입니다. 설령 MT19937 로 난수를 훌륭하게 예측했다 하더라도요. 또한 현재 제가 사용한 로직은 &lt;a href=&quot;https://mhibio.tistory.com/62&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;이 CTF 문제의 write-up&lt;/a&gt;을 보아도 충분히 깨질 수 있는 가능성이 열려있음을 알 수 있습니다.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;참고) &lt;code class=&quot;language-text&quot;&gt;random&lt;/code&gt;은 cryptographically secure 하지 않습니다. &lt;br &gt;그러한 목적이라면 &lt;code class=&quot;language-text&quot;&gt;secure&lt;/code&gt; 같은 라이브러리를 사용하기를 권장합니다.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;논외로, 매 호출 시 새로운 시드값을 계속 생성하여 사용하는 것도 좋은 방법은 아닌 듯 합니다. 뾰족한 대안이 생각나지 않고 빠르게 구현해야 했다면, 차라리 이런 최소한의 조치라도 했다면 어땠을까 합니다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;로직 설계
+&lt;ol&gt;
+&lt;li&gt;확신이 서지 않는 로직이므로, 비록 공식 라이브러리라 할지라도 이른바 &lt;a href=&quot;/books/clean-code/2023-02-03-pt08&quot;&gt;“경계” 소프트웨어&lt;/a&gt;로 간주한다.&lt;/li&gt;
+&lt;li&gt;얼마든지 교체할 수 있도록 ‘랜덤 값 제공 라이브러리’를 wrapping 하여 객체간의 상호작용으로 사용한다.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;로직구현
+&lt;ol&gt;
+&lt;li&gt;“랜덤”한 시간에 한번씩 시드값을 외부 in-memory service에 기록한다. 시드값은 예측하기 어려운 값을 사용한다(현재시각값에 &lt;code class=&quot;language-text&quot;&gt;salt&lt;/code&gt;를 추가한 해시 등).&lt;/li&gt;
+&lt;li&gt;“랜덤”한 값이 필요하다면, in-memory service에서 가지고와서 사용한다.&lt;/li&gt;
+&lt;li&gt;“랜덤”한 시간 후 시드값을 새로운 값으로 갱신한다.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&quot;사용하는-라이브러리에-대한-deep-dive가-모자라지-않았나&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%82%AC%EC%9A%A9%ED%95%98%EB%8A%94-%EB%9D%BC%EC%9D%B4%EB%B8%8C%EB%9F%AC%EB%A6%AC%EC%97%90-%EB%8C%80%ED%95%9C-deep-dive%EA%B0%80-%EB%AA%A8%EC%9E%90%EB%9D%BC%EC%A7%80-%EC%95%8A%EC%95%98%EB%82%98&quot; aria-label=&quot;사용하는 라이브러리에 대한 deep dive가 모자라지 않았나 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;사용하는 라이브러리에 대한 deep-dive가 모자라지 않았나?&lt;/h2&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;pytest&lt;/code&gt;의 미숙함이 너무나 아쉬웠습니다. 테스트의 중요성은 이미 알고있음에도, 정작 필요한 부분을 테스트해보지 못하였습니다. 그리고 &lt;code class=&quot;language-text&quot;&gt;pytest&lt;/code&gt;의 사용법이 미숙하여 적재적소에 이를 활용하지 못했습니다.&lt;/p&gt;
+&lt;h3 id=&quot;애플리케이션-테스트는-왜-못했나&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%95%A0%ED%94%8C%EB%A6%AC%EC%BC%80%EC%9D%B4%EC%85%98-%ED%85%8C%EC%8A%A4%ED%8A%B8%EB%8A%94-%EC%99%9C-%EB%AA%BB%ED%96%88%EB%82%98&quot; aria-label=&quot;애플리케이션 테스트는 왜 못했나 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;애플리케이션 테스트는 왜 못했나?&lt;/h3&gt;
+&lt;p&gt;서비스 레이어에서, &lt;code class=&quot;language-text&quot;&gt;Mocking&lt;/code&gt; 을 통해 얼마든지 객체를 갈아끼워서 테스트할 수 있음을 꾀했습니다만 이를 많이 다뤄보지 못했기 때문에 시간이 지체되었습니다. 따라서, 로직만을 검증하자는 케이스를 작성할 때도 쓸데없이 시간이 많이 소요되어 결국 틀만 짜고 테스트를 마무리하지 못했습니다.&lt;/p&gt;
+&lt;h3 id=&quot;e2e-test는-왜-못했나&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#e2e-test%EB%8A%94-%EC%99%9C-%EB%AA%BB%ED%96%88%EB%82%98&quot; aria-label=&quot;e2e test는 왜 못했나 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;e2e test는 왜 못했나?&lt;/h3&gt;
+&lt;p&gt;FastAPI에서 제공하는 &lt;code class=&quot;language-text&quot;&gt;TestClient&lt;/code&gt;는 이벤트 루프 관리를 제대로 못해주는 것으로 파악되었습니다. 따라서 차라리 늦더라도 &lt;code class=&quot;language-text&quot;&gt;httpx&lt;/code&gt; 의 &lt;code class=&quot;language-text&quot;&gt;AsyncClient&lt;/code&gt;를 어떻게든 학습하여 풀어내는 것이 필요했습니다. 또한 테스트코드 구동 시 DB관련 이슈도 &lt;code class=&quot;language-text&quot;&gt;mark.anyio&lt;/code&gt;로 했더니 &lt;code class=&quot;language-text&quot;&gt;trio&lt;/code&gt; 쪽에서 이벤트 루프 문제가 생깁니다. 이 또한 이벤트 루프를 &lt;code class=&quot;language-text&quot;&gt;asyncio&lt;/code&gt; 로 지정해서 풀어냈어야 했습니다. 이런 유스케이스는 일일이 학습하지 않으면 절대 알 수 없는 것들입니다. &lt;a href=&quot;https://fastapi.tiangolo.com/advanced/async-tests/&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;공식 문서를 봤음에도&lt;/a&gt; 배우지 못함에 반성합니다.&lt;/p&gt;
+&lt;h2 id=&quot;평소-중시하는-동료에-대한-배려를-해두었나&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%ED%8F%89%EC%86%8C-%EC%A4%91%EC%8B%9C%ED%95%98%EB%8A%94-%EB%8F%99%EB%A3%8C%EC%97%90-%EB%8C%80%ED%95%9C-%EB%B0%B0%EB%A0%A4%EB%A5%BC-%ED%95%B4%EB%91%90%EC%97%88%EB%82%98&quot; aria-label=&quot;평소 중시하는 동료에 대한 배려를 해두었나 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;평소 중시하는 ‘동료에 대한 배려’를 해두었나?&lt;/h2&gt;
+&lt;p&gt;마지막까지 섬세함을 보일 수 있는 부분 또한 채우지 못해 매우 아쉬웠습니다.&lt;/p&gt;
+&lt;h3 id=&quot;api-docs-제공은-왜-하지-못했나&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#api-docs-%EC%A0%9C%EA%B3%B5%EC%9D%80-%EC%99%9C-%ED%95%98%EC%A7%80-%EB%AA%BB%ED%96%88%EB%82%98&quot; aria-label=&quot;api docs 제공은 왜 하지 못했나 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;API Docs 제공은 왜 하지 못했나?&lt;/h3&gt;
+&lt;p&gt;FastAPI는 OAS 3.0 표준에 의거한 문서 뿐 아니라 ReDoc과 Swagger 페이지를 함께 제공해줍니다. 이는 FastAPI의 강점 중 하나이지요. 원래라면, 스펙 공유를 위해 OAS 3.0 YAML 파일을 작성하는 수고를 들일 필요가 있습니다. 그렇지만 로직에 코드로 작성하여 이러한 문제를 최소한으로 하는 방안은 외부에 너무나도 쉽게 잘 정리되어 있습니다. &lt;sup id=&quot;fnref-1&quot;&gt;&lt;a href=&quot;#fn-1&quot; class=&quot;footnote-ref&quot;&gt;1&lt;/a&gt;&lt;/sup&gt; 그렇지만 다른 부분에 시간을 너무 투자하여 이러한 디테일을 더한 채로 서비스하지 못한 것이 너무 아쉽습니다.&lt;/p&gt;
+&lt;h3 id=&quot;진행사항-공유를-위한-문서화-제공은&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%A7%84%ED%96%89%EC%82%AC%ED%95%AD-%EA%B3%B5%EC%9C%A0%EB%A5%BC-%EC%9C%84%ED%95%9C-%EB%AC%B8%EC%84%9C%ED%99%94-%EC%A0%9C%EA%B3%B5%EC%9D%80&quot; aria-label=&quot;진행사항 공유를 위한 문서화 제공은 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;진행사항 공유를 위한 문서화 제공은?&lt;/h3&gt;
+&lt;p&gt;진행사항 공유는 전체 구성원들에게 정말 중요한 일입니다. 특히나 애자일함을 중시하는 조직이라면 더더욱 그렇지요. DDD에서 말하는 유비쿼터스 언어를 잘 정의한 문서라도 하나 만들었다면, 이를 토대로 의사소통할 수 있는 방안을 제공할 수 있지 않았나 싶습니다. 이런 부분들에 대해 &lt;strong&gt;제 스스로만 ‘알고있고’&lt;/strong&gt; 공유하려는 시그널을 보여주지 못한 것이 아쉽습니다.&lt;/p&gt;
+&lt;h1 id=&quot;마무리&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EB%A7%88%EB%AC%B4%EB%A6%AC&quot; aria-label=&quot;마무리 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;마무리&lt;/h1&gt;
+&lt;p&gt;이번 테스트를 통해 아래 사항을 얻을 수 있었습니다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;무엇이 모자랐는지 돌아볼 수 있었습니다.
+&lt;ol&gt;
+&lt;li&gt;완성을 못했습니다. 사실 이것만 해도 할 말이 없습니다.&lt;/li&gt;
+&lt;li&gt;기술적으로는 아래 면면들을 돌이켜볼 수 있었습니다.
+&lt;ol&gt;
+&lt;li&gt;아키텍처에 대해 스스로 공부해야 할 필요가 있겠습니다.&lt;/li&gt;
+&lt;li&gt;사용하는 라이브러리나 기술에 대해 스스로 공부해야 할 필요가 있겠습니다.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;(가상의?) 팀원을 배려하지 못한 사항에 대해 돌이켜 볼 수 있었습니다.
+&lt;ol&gt;
+&lt;li&gt;API 문서화의 부재가 아쉬웠습니다.&lt;/li&gt;
+&lt;li&gt;작업사항 공유의 부재가 아쉬웠습니다.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h1 id=&quot;마지막으로&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EB%A7%88%EC%A7%80%EB%A7%89%EC%9C%BC%EB%A1%9C&quot; aria-label=&quot;마지막으로 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;마지막으로…&lt;/h1&gt;
+&lt;p&gt;이런 기회가 흔치 않습니다. 회사와 나 서로의 시간은 모두 소중합니다. 서로의 시간이 헛되지 않기 위해 기술적으로 더 나아진 프로그래머가 되도록 해야겠습니다. 끊임없이 배우고 익혀서 두번 다시 이런 아쉬움을 남기지 않도록 합시다. 현업에서도 이런 부분들을 보이지는 않는지 반성하고 보다 나은 프로그래머가 되도록 노력해야겠습니다.&lt;/p&gt;
+&lt;p&gt;떨어지면 씁쓸하죠. 하지만 걸어온 발자취를 복기해보니 지나온 발걸음에도 감사할 수 있었습니다. 더 달라져봅시다.&lt;/p&gt;
+&lt;p&gt;긴 글 읽어주셔서 감사합니다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Ignis aurum probat, miseria fortes viros.&lt;/p&gt;
+&lt;p&gt;Seneca, &lt;em&gt;De Providentia&lt;/em&gt; &lt;a href=&quot;https://www.perseus.tufts.edu/hopper/text?doc=Perseus%3Atext%3A2007.01.0012%3Abook%3D1%3Achapter%3D5%3Asection%3D10&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;1.5.10.&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;div class=&quot;footnotes&quot;&gt;
+&lt;hr&gt;
+&lt;ol&gt;
+&lt;li id=&quot;fn-1&quot;&gt;&lt;a href=&quot;https://buzzni.com/blog/47&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;이러한 사용례&lt;/a&gt;를 현업에서 사용한 바 있으나, 자주 보지않아 놓치게 되곤 합니다. 앞으로는 이런 사항을 토이프로젝트로 미리 구현해놓아야 하겠습니다.&lt;a href=&quot;#fnref-1&quot; class=&quot;footnote-backref&quot;&gt;↩&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;</content:encoded></item><item><title><![CDATA[2023년 과제형 코딩 테스트 후기 (1)]]></title><description><![CDATA[2월에 수행한 과제형 코딩 테스트에 대해 리뷰하는 글입니다. 이 글에서는 어떤 사항을 몸으로 익혔고, 무엇을 느꼈는지 주로 작성하였습니다.]]></description><link>https://blog.s3ich4n.me/retrospect/2023-02-20-assignment-pt01</link><guid isPermaLink="false">https://blog.s3ich4n.me/retrospect/2023-02-20-assignment-pt01</guid><pubDate>Mon, 20 Feb 2023 16:38:00 GMT</pubDate><content:encoded>&lt;h1 id=&quot;연재-안내&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%97%B0%EC%9E%AC-%EC%95%88%EB%82%B4&quot; aria-label=&quot;연재 안내 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;연재 안내&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;2023년 과제형 코딩 테스트 후기 (1)&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;/retrospect/2023-02-20-assignment-pt02&quot;&gt;2023년 과제형 코딩 테스트 후기 (2)&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&quot;들어가며&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EB%93%A4%EC%96%B4%EA%B0%80%EB%A9%B0&quot; aria-label=&quot;들어가며 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;들어가며&lt;/h1&gt;
+&lt;p&gt;이 게시글은 최근 치렀던 코딩 테스트를 회고하는 게시글입니다.&lt;/p&gt;
+&lt;p&gt;결론은 떨어졌습니다. 그렇지만, 많은 것을 얻었습니다.&lt;/p&gt;
+&lt;p&gt;이 게시글에서는 그간 갈급했던 모든 지식들이 한번이 소화되는 느낌이 들었고, 저를 다시 되돌아보게 되는 소중한 경험을 얻었습니다.&lt;/p&gt;
+&lt;h1 id=&quot;목차&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EB%AA%A9%EC%B0%A8&quot; aria-label=&quot;목차 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;목차&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;#%ED%81%B4%EB%A6%B0-%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98-hexagonal-architecture&quot;&gt;클린 아키텍처, Hexagonal Architecture&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;#%EB%8F%84%EB%A9%94%EC%9D%B8-%EA%B5%AC%EC%83%81-%EB%B0%8F-%EA%B5%AC%EC%A1%B0-%EC%8C%93%EC%95%84%EC%98%AC%EB%A6%AC%EA%B8%B0&quot;&gt;도메인 구상 및 구조 쌓아올리기&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;#TDD%EC%99%80-%ED%85%8C%EC%8A%A4%ED%8A%B8-%ED%94%BC%EB%9D%BC%EB%AF%B8%EB%93%9C&quot;&gt;TDD와 테스트 피라미드&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;#%EC%BD%94%EB%93%9C-%EC%99%84%EC%84%B1%EA%B3%BC%EC%A0%95&quot;&gt;코드 완성과정&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;#%EA%B5%AC%EC%B2%B4%EC%A0%81%EC%9D%B8-%EC%8A%A4%ED%8E%99-%EA%B2%B0%EC%A0%95%EC%9D%84-%ED%86%B5%ED%95%9C-%EC%99%84%EC%84%B1&quot;&gt;구체적인 스펙 결정을 통한 완성&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;#%EC%84%A4%EA%B3%84-%EB%B0%8F-%EA%B0%9C%EB%B0%9C%EC%97%90-%EC%82%AC%EC%9A%A9%EB%90%9C-%EB%8F%84%EA%B5%AC%EB%93%A4&quot;&gt;설계 및 개발에 사용된 도구들&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&quot;클린-아키텍처-hexagonal-architecture&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%ED%81%B4%EB%A6%B0-%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98-hexagonal-architecture&quot; aria-label=&quot;클린 아키텍처 hexagonal architecture permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;클린 아키텍처, Hexagonal Architecture&lt;/h1&gt;
+&lt;p&gt;먼저 이 글은 과제형 테스트를 수행한 소개를 위주로 말씀드리고자 합니다(사실 DDD나 클린 아키텍처 등을 하나의 게시글로 요약하기도 힘들겠죠). 보다 상세한 내용은 연재글로 다시 기록하겠습니다. &lt;sup id=&quot;fnref-1&quot;&gt;&lt;a href=&quot;#fn-1&quot; class=&quot;footnote-ref&quot;&gt;1&lt;/a&gt;&lt;/sup&gt; &lt;sup id=&quot;fnref-2&quot;&gt;&lt;a href=&quot;#fn-2&quot; class=&quot;footnote-ref&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
+&lt;p&gt;본 과제를 수행하며 이름으로만 듣던 DDD(Domain-driven Design)를 접하게 되었습니다. DDD는 Eric Evans가 제시한 개념입니다. 소프트웨어 설계를 회사(혹은 단체)와 연관있는 일련의 요구사항(비즈니스)을 표현하기 위한 “도메인”이란 단어로 묶어 설계하는 소프트웨어 설계 기법입니다. 도메인은 “(지식·활동의) 영역[분야], (책임의) 범위” 를 의미하지요. 즉, 개발하고자 하는 일련의 아키텍처를 도메인 간의 상호작용으로 이해하고 풀어나가는 방식입니다. 이를 적용하기 위해 자연스럽게 객체지향 패러다임으로 접근하게 되었습니다.&lt;/p&gt;
+&lt;p&gt;저는 과제에 필요한 도메인을 설계하고, 이를 그림으로 묶었습니다. 이후 설계방법에 대한 방향성을 잡고, 클린 아키텍처와 Hexagonal Architecture(aka. Ports and Adapters Architecture, 이하 헥사고널 아키텍처) 를 참고하였습니다. 그 키워드를 토대로 프로젝트를 구성하였습니다. &lt;sup id=&quot;fnref-3&quot;&gt;&lt;a href=&quot;#fn-3&quot; class=&quot;footnote-ref&quot;&gt;3&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;&quot; alt=&quot;이제야 어렴풋이 이해가 가는 육각형입니다&quot;&gt;&lt;/p&gt;
+&lt;p&gt;본 과제를 수행하며 참고한 프로젝트 5개를 소개드리고자 합니다. 모두 파이썬으로 구성되어 있습니다. 추후 DDD 및 클린아키텍처, 나아가 헥사고널 아키텍처를 연재하며 해당 프로젝트를 다시 살펴보도록 하겠습니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;프로젝트를 한번에 소화하긴 어렵지만 정말 도움되는 리포지토리
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://github.com/pgorecki/python-ddd&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;https://github.com/pgorecki/python-ddd&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;실질적인 구현에 도움되었던 리포지토리
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://github.com/GArmane/python-fastapi-hex-todo&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;https://github.com/GArmane/python-fastapi-hex-todo&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://github.com/iktakahiro/dddpy&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;https://github.com/iktakahiro/dddpy&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://github.com/slimovich/Realworld-fastapi-gino-template&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;https://github.com/slimovich/Realworld-fastapi-gino-template&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://github.com/fkromer/code/tree/appendix_fastapi&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;https://github.com/fkromer/code/tree/appendix_fastapi 접근 후 &lt;code class=&quot;language-text&quot;&gt;appendix_fastapi&lt;/code&gt; 브랜치를 참고&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&quot;도메인-구상-및-구조-쌓아올리기&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EB%8F%84%EB%A9%94%EC%9D%B8-%EA%B5%AC%EC%83%81-%EB%B0%8F-%EA%B5%AC%EC%A1%B0-%EC%8C%93%EC%95%84%EC%98%AC%EB%A6%AC%EA%B8%B0&quot; aria-label=&quot;도메인 구상 및 구조 쌓아올리기 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;도메인 구상 및 구조 쌓아올리기&lt;/h1&gt;
+&lt;p&gt;과제 전반을 보고, 도메인이 어떻게 흘러갈지를 결정해야겠지요. 저는 우선 도메인이 어떻게 흐르는지에 먼저 집중했습니다. &lt;sup id=&quot;fnref-4&quot;&gt;&lt;a href=&quot;#fn-4&quot; class=&quot;footnote-ref&quot;&gt;4&lt;/a&gt;&lt;/sup&gt; 아래와 같은 도표를 통해 전체 프로젝트가 어떻게 구상될지 이해하였습니다.&lt;/p&gt;
+&lt;p&gt;&lt;figure class=&quot;gatsby-resp-image-figure&quot; style=&quot;&quot;&gt;
+    &lt;span
+      class=&quot;gatsby-resp-image-wrapper&quot;
+      style=&quot;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 473px; &quot;
+    &gt;
+      &lt;a
+    class=&quot;gatsby-resp-image-link&quot;
+    href=&quot;/static/a49d027e7b75350e20b5ab9fcdae33f3/c7c3c/01_domain.png&quot;
+    style=&quot;display: block&quot;
+    target=&quot;_blank&quot;
+    rel=&quot;noopener&quot;
+  &gt;
+    &lt;span
+    class=&quot;gatsby-resp-image-background-image&quot;
+    style=&quot;padding-bottom: 89.58333333333334%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAASCAYAAABb0P4QAAAACXBIWXMAAAsTAAALEwEAmpwYAAACTklEQVQ4y4VU63qqMBD0XU6V+yUhIURAAUVF2/5oz/u/ypxvl0oL+p3+CMjuOpnszGbl+jl+W46n4YUF3MjAi+wUe1a7+h/I9NtV2Pg5EqngxxprR001S+DVM4CfMVp+aFA1N0ht0PY3GNvjZSOf1q9+go0A43vjjixSueN1Hj6h7RFCNVC6RSprbFw9bXrHeGDoBcQoRxRbqLxFIkpItftimkPICo6nkIiK42O9QRgX3wxpESMqKusO3fGC9nDlwvPwivYwIIgKqLzk73p/4vrL8Ib+fMNwfcehv3HsKcMgMkhlhT9rAaV3DOz4mnNhbKDyBmsng+srZJzPmfV05GUPqeHGHtEc3hGmFfzQTjliEUQWTfeKSNaI5Q6Oq+eiPNiEfBcYmLKD0AZOYCaRaBG7bX2BLkoESQ6H41+iLL30bRWLWFqUuwan61/4YcGg99q1q5CqHKEwI+Cjyt8sWZzqjNPwATc0sOWZbSKyPVx/ZOsFBee8qJidcDV6LoPnj/KTVcLYQmQ1A79sBISsWShSWpsxT0f0FtPCPaQGb6sO+7bH7e2DE/v2hP78yn0s6wOO/cD22FYNx2nTtrugOw6TulMP6eGHGnFqIVWNjZOxFYgR5ehNdknEFqnYwgsU4rRkg1P8DrQ4suKmn4ZPtkEi6tkFQCNGbCkfJBUzHIdhbrcfooyJrNgjyTRcuqpml4VmMaTZI04lQlHP+jZjeP8D7ZBkW0ilHgCZgW8QSTp2Ci8uFxsurq9p7MgCseHLdOnNMW/hRjm8r8l5BvgPN+A1dwgcnxkAAAAASUVORK5CYII=&apos;); background-size: cover; display: block;&quot;
+  &gt;&lt;/span&gt;
+  &lt;picture&gt;
+          &lt;source
+              srcset=&quot;/static/a49d027e7b75350e20b5ab9fcdae33f3/8ac56/01_domain.webp 240w,
+/static/a49d027e7b75350e20b5ab9fcdae33f3/7124e/01_domain.webp 473w&quot;
+              sizes=&quot;(max-width: 473px) 100vw, 473px&quot;
+              type=&quot;image/webp&quot;
+            /&gt;
+          &lt;source
+            srcset=&quot;/static/a49d027e7b75350e20b5ab9fcdae33f3/8ff5a/01_domain.png 240w,
+/static/a49d027e7b75350e20b5ab9fcdae33f3/c7c3c/01_domain.png 473w&quot;
+            sizes=&quot;(max-width: 473px) 100vw, 473px&quot;
+            type=&quot;image/png&quot;
+          /&gt;
+          &lt;img
+            class=&quot;gatsby-resp-image-image&quot;
+            src=&quot;/static/a49d027e7b75350e20b5ab9fcdae33f3/c7c3c/01_domain.png&quot;
+            alt=&quot;이런 식으로 도메인을 기본 흐름을 정리해 보았습니다.&quot;
+            title=&quot;이런 식으로 도메인을 기본 흐름을 정리해 보았습니다.&quot;
+            loading=&quot;lazy&quot;
+            decoding=&quot;async&quot;
+            style=&quot;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&quot;
+          /&gt;
+        &lt;/picture&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;
+    &lt;figcaption class=&quot;gatsby-resp-image-figcaption&quot;&gt;&lt;p&gt;이런 식으로 도메인을 기본 흐름을 정리해 보았습니다.&lt;/p&gt;&lt;/figcaption&gt;
+  &lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;여기까지 정리하고 코드를 쌓는 사항이 가장 오래 걸렸습니다. 정말 오랜만에 학습과 설계를 동시에 하다보니, 노트로 적어가며 필수개념들을 해제했었네요.&lt;/p&gt;
+&lt;p&gt;&lt;figure class=&quot;gatsby-resp-image-figure&quot; style=&quot;&quot;&gt;
+    &lt;span
+      class=&quot;gatsby-resp-image-wrapper&quot;
+      style=&quot;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 960px; &quot;
+    &gt;
+      &lt;a
+    class=&quot;gatsby-resp-image-link&quot;
+    href=&quot;/static/f7ec5fef710ac54da2d6134e66147dc5/93719/02_work_in_progress.jpg&quot;
+    style=&quot;display: block&quot;
+    target=&quot;_blank&quot;
+    rel=&quot;noopener&quot;
+  &gt;
+    &lt;span
+    class=&quot;gatsby-resp-image-background-image&quot;
+    style=&quot;padding-bottom: 75%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/jpeg;base64,/9j/2wBDABALDA4MChAODQ4SERATGCgaGBYWGDEjJR0oOjM9PDkzODdASFxOQERXRTc4UG1RV19iZ2hnPk1xeXBkeFxlZ2P/2wBDARESEhgVGC8aGi9jQjhCY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2P/wgARCAAPABQDASIAAhEBAxEB/8QAFwABAQEBAAAAAAAAAAAAAAAAAwACBP/EABUBAQEAAAAAAAAAAAAAAAAAAAID/9oADAMBAAIQAxAAAAEXx0hFBTf/xAAaEAADAAMBAAAAAAAAAAAAAAABAgMABBES/9oACAEBAAEFApx6J6qozDyZ0HWqFBuDn//EABURAQEAAAAAAAAAAAAAAAAAAAAR/9oACAEDAQE/AVf/xAAVEQEBAAAAAAAAAAAAAAAAAAAAEf/aAAgBAgEBPwFH/8QAGxAAAgIDAQAAAAAAAAAAAAAAAAERIRIxkaH/2gAIAQEABj8Ctk5vhBCLN+H/xAAYEAEBAQEBAAAAAAAAAAAAAAABEQAhYf/aAAgBAQABPyEbzpigRk7hVZYTuBXL5nKhz//aAAwDAQACAAMAAAAQvz//xAAWEQEBAQAAAAAAAAAAAAAAAAAAAUH/2gAIAQMBAT8Q1D//xAAYEQACAwAAAAAAAAAAAAAAAAAAARFBUf/aAAgBAgEBPxCoHg//xAAZEAEBAQEBAQAAAAAAAAAAAAABEQAhMVH/2gAIAQEAAT8QGsDcCwckZIGHfV9H6Z87FCJwy1HYNPTePRBrzf/Z&apos;); background-size: cover; display: block;&quot;
+  &gt;&lt;/span&gt;
+  &lt;picture&gt;
+          &lt;source
+              srcset=&quot;/static/f7ec5fef710ac54da2d6134e66147dc5/8ac56/02_work_in_progress.webp 240w,
+/static/f7ec5fef710ac54da2d6134e66147dc5/d3be9/02_work_in_progress.webp 480w,
+/static/f7ec5fef710ac54da2d6134e66147dc5/e46b2/02_work_in_progress.webp 960w,
+/static/f7ec5fef710ac54da2d6134e66147dc5/f992d/02_work_in_progress.webp 1440w,
+/static/f7ec5fef710ac54da2d6134e66147dc5/882b9/02_work_in_progress.webp 1920w,
+/static/f7ec5fef710ac54da2d6134e66147dc5/c67aa/02_work_in_progress.webp 4000w&quot;
+              sizes=&quot;(max-width: 960px) 100vw, 960px&quot;
+              type=&quot;image/webp&quot;
+            /&gt;
+          &lt;source
+            srcset=&quot;/static/f7ec5fef710ac54da2d6134e66147dc5/09b79/02_work_in_progress.jpg 240w,
+/static/f7ec5fef710ac54da2d6134e66147dc5/7cc5e/02_work_in_progress.jpg 480w,
+/static/f7ec5fef710ac54da2d6134e66147dc5/6a068/02_work_in_progress.jpg 960w,
+/static/f7ec5fef710ac54da2d6134e66147dc5/644c5/02_work_in_progress.jpg 1440w,
+/static/f7ec5fef710ac54da2d6134e66147dc5/0f98f/02_work_in_progress.jpg 1920w,
+/static/f7ec5fef710ac54da2d6134e66147dc5/93719/02_work_in_progress.jpg 4000w&quot;
+            sizes=&quot;(max-width: 960px) 100vw, 960px&quot;
+            type=&quot;image/jpeg&quot;
+          /&gt;
+          &lt;img
+            class=&quot;gatsby-resp-image-image&quot;
+            src=&quot;/static/f7ec5fef710ac54da2d6134e66147dc5/6a068/02_work_in_progress.jpg&quot;
+            alt=&quot;이를 준비하며 작성한 종이는 이정도로 양이 늘었습니다.&quot;
+            title=&quot;이를 준비하며 작성한 종이는 이정도로 양이 늘었습니다.&quot;
+            loading=&quot;lazy&quot;
+            decoding=&quot;async&quot;
+            style=&quot;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&quot;
+          /&gt;
+        &lt;/picture&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;
+    &lt;figcaption class=&quot;gatsby-resp-image-figcaption&quot;&gt;&lt;p&gt;이를 준비하며 작성한 종이는 이정도로 양이 늘었습니다.&lt;/p&gt;&lt;/figcaption&gt;
+  &lt;/figure&gt;&lt;/p&gt;
+&lt;h1 id=&quot;tdd와-테스트-피라미드&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#tdd%EC%99%80-%ED%85%8C%EC%8A%A4%ED%8A%B8-%ED%94%BC%EB%9D%BC%EB%AF%B8%EB%93%9C&quot; aria-label=&quot;tdd와 테스트 피라미드 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;TDD와 테스트 피라미드&lt;/h1&gt;
+&lt;p&gt;&lt;a href=&quot;/books/clean-code/2023-02-10-pt09#first&quot;&gt;FIRST 원칙&lt;/a&gt;에 맞게 내 로직을 방어할 수 있는 코드가 있다면 그것만큼 든든한게 없죠. 클린 아키텍처, 헥사고널 아키텍처에서도 마찬가지입니다. 각 레이어별로 필요한 테스트는 반드시 존재해야 한다고 생각했고, 이에 따라 디렉토리를 구성하였습니다. 각각 도메인 레이어 테스트, 인프라스트럭처 레이어 테스트, 서비스 레이어 테스트, e2e 테스트로 나누었고 공통 코드를 &lt;code class=&quot;language-text&quot;&gt;util&lt;/code&gt; 디렉토리로 빼서 이 쪽을 바라보도록 했습니다.&lt;/p&gt;
+&lt;p&gt;본 과제에서는 아래와 같은 디렉토리 구조로 구상하였습니다:&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;.
+└── tests
+    ├── modules
+    │   ├── DOMAIN01
+    │   │   ├── domain
+    │   │   └── e2e
+    │   ├── DOMAIN02
+    │   │   ├── domain
+    │   │   ├── e2e
+    │   │   ├── factories
+    │   │   ├── infrastructure
+    │   │   └── service
+    │   └── DOMAIN03
+    │       ├── domain
+    │       ├── e2e
+    │       └── factories
+    └── utils&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h1 id=&quot;코드-완성과정&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%BD%94%EB%93%9C-%EC%99%84%EC%84%B1%EA%B3%BC%EC%A0%95&quot; aria-label=&quot;코드 완성과정 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;코드 완성과정&lt;/h1&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;코드 규칙에 대한 추가사항을 정의했습니다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;프로젝트 세팅과 동시에 pre-commit hook을 두어 일관된 규칙을 통해 코드를 작성하도록 했습니다.&lt;/li&gt;
+&lt;li&gt;하나의 커밋에는 하나의 작업단위만을 커밋하고, 커밋 컨벤션에 의거하여 작업내용을 기록하였습니다.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;서비스 레이어에서 커맨드와 쿼리를 별도로 분리해두었습니다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;커맨드보다는 쿼리가 훨씬 더 빈번하게 일어나는 작업이므로, 이를 처리하는 역할을 분리하도록 생각했습니다.&lt;/li&gt;
+&lt;li&gt;커맨드는 atomic한 작업을 반드시 수반해야 하므로, 코드의 관심사를 분리해야 추후 유지보수가 쉬운 코드가 될 것이라는 생각이 들었습니다.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;필요에 따른 분기별 로직 처리를 &lt;a href=&quot;https://refactoring.guru/design-patterns/strategy&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;STRATEGY 패턴&lt;/a&gt;으로 풀어보았습니다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;조건에 따라 수행하는 알고리즘이 계속해서 증가할 것으로 판단하였습니다.&lt;/li&gt;
+&lt;li&gt;알고리즘이 추가/삭제됨과 상관 없이, 객체가 “필요한 값을 요청한다” 만 호출해도 원하는 결과를 얻어올 수 있는 이점을 얻었습니다.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h1 id=&quot;구체적인-스펙-결정을-통한-완성&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EA%B5%AC%EC%B2%B4%EC%A0%81%EC%9D%B8-%EC%8A%A4%ED%8E%99-%EA%B2%B0%EC%A0%95%EC%9D%84-%ED%86%B5%ED%95%9C-%EC%99%84%EC%84%B1&quot; aria-label=&quot;구체적인 스펙 결정을 통한 완성 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;구체적인 스펙 결정을 통한 완성&lt;/h1&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;인프라스트럭처 레이어에 쓰이는 기술들은 아래와 같이 선택했습니다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;영속적 데이터 저장에는 &lt;code class=&quot;language-text&quot;&gt;PostgreSQL&lt;/code&gt;을, 인메모리 DB에는 &lt;code class=&quot;language-text&quot;&gt;Redis&lt;/code&gt;를 사용하였습니다(Redis는 시간상의 문제로 구현까지는 생각하지 못하였습니다).&lt;/li&gt;
+&lt;li&gt;특정 도메인 메시지를 주고받을 때 사용할 이벤트 전달용 메시지 큐로는, 익숙하게 사용하던 &lt;code class=&quot;language-text&quot;&gt;Kafka&lt;/code&gt; 혹은 레퍼런스가 많은 &lt;code class=&quot;language-text&quot;&gt;RabbitMQ&lt;/code&gt; 를 생각하였습니다(이 또한 제한 시간 내에는 구현하지 못했네요).&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;표현 레이어에 사용할 웹 프레임워크는 FastAPI를 사용하였습니다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;토이프로젝트처럼 간단히 접근할 것이 아니라, 수많은 요청에도 부담없이 사용될 수 있도록 하기 위하여 기존에 프로덕션 레벨에서 사용해본 경험을 이용하였습니다.&lt;/li&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;Gunicorn&lt;/code&gt; 매니저 프로세스와 &lt;code class=&quot;language-text&quot;&gt;uvicorn&lt;/code&gt; 프로세스들을 경우에 맞게 확장하여 Throughput을 확장하도록 구성했습니다.&lt;/li&gt;
+&lt;li&gt;비동기 처리를 할 수 있도록 라이브러리부터 프레임워크까지 쉽게 대비할 수 있는 프레임워크를 선택하였습니다.&lt;/li&gt;
+&lt;li&gt;작은 서비스를 여럿을 만들고 서로 통신하도록 하여, 표현계층도 다른 표현계층과 서로 메시지를 주고받을 수 있도록 설계하였습니다.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;이후, 최종적으로 아래와 같은 디렉토리 구조를 구상하였습니다: &lt;sup id=&quot;fnref-5&quot;&gt;&lt;a href=&quot;#fn-5&quot; class=&quot;footnote-ref&quot;&gt;5&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;.
+├── api
+│   └── endpoints
+├── config
+├── modules
+│   ├── DOMAIN01
+│   │   ├── application
+│   │   ├── domain
+│   │   └── infrastructure
+│   │   │   └── postgres
+│   │   │       └── models
+│   ├── DOMAIN02
+│   │   ├── application
+│   │   ├── domain
+│   │   │   └── OBJECT01          # [5]
+│   │   │       └── helpers
+│   │   └── infrastructure
+│   │       └── postgres
+│   │           ├── models
+│   │           └── repositories
+│   └── DOMAIN03
+│   │   ├── application
+│   │   ├── domain
+│   │   └── infrastructure
+│   │       └── postgres
+│   │           ├── models
+│   │           └── repositories
+│   └── common
+└── tests
+│   └── ...(아래에 테스트코드 구조를 그대로)
+└── utils
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h1 id=&quot;설계-및-개발에-사용된-도구들&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%84%A4%EA%B3%84-%EB%B0%8F-%EA%B0%9C%EB%B0%9C%EC%97%90-%EC%82%AC%EC%9A%A9%EB%90%9C-%EB%8F%84%EA%B5%AC%EB%93%A4&quot; aria-label=&quot;설계 및 개발에 사용된 도구들 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;설계 및 개발에 사용된 도구들&lt;/h1&gt;
+&lt;h2 id=&quot;mermaidjs를-통한-도식-표현&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#mermaidjs%EB%A5%BC-%ED%86%B5%ED%95%9C-%EB%8F%84%EC%8B%9D-%ED%91%9C%ED%98%84&quot; aria-label=&quot;mermaidjs를 통한 도식 표현 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;&lt;code class=&quot;language-text&quot;&gt;mermaid.js&lt;/code&gt;를 통한 도식 표현&lt;/h2&gt;
+&lt;p&gt;간단한 도식을 표현하는데는 &lt;a href=&quot;https://mermaid.js.org/&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;mermaid.js&lt;/a&gt; 만한 도구가 없지요. 복잡해진다면 복잡해질 수록 전문 툴을 사용하는 것이 맞으나, 간단히 처리하는 데는 이만한 녀석이 없습니다.&lt;/p&gt;
+&lt;h2 id=&quot;jetbrains의-http-client&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#jetbrains%EC%9D%98-http-client&quot; aria-label=&quot;jetbrains의 http client permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;JetBrains의 &lt;code class=&quot;language-text&quot;&gt;HTTP Client&lt;/code&gt;&lt;/h2&gt;
+&lt;p&gt;마침 이런 도구를 최근에 학습하였고, 빠르게 IDE 내에서 바로 사용할 수 있다는 장점을 십분 활용하였습니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://www.jetbrains.com/help/pycharm/http-client-in-product-code-editor.html&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;참고 링크 #1&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://www.jetbrains.com/help/pycharm/exploring-http-syntax.html&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;참고 링크 #2&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&quot;er-diagram엔&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#er-diagram%EC%97%94&quot; aria-label=&quot;er diagram엔 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;ER diagram엔?&lt;/h2&gt;
+&lt;p&gt;&lt;a href=&quot;https://www.erdcloud.com/&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;ERD Cloud&lt;/a&gt; 라는 도구가 쓰기 정말 쉽고 좋았습니다.&lt;/p&gt;
+&lt;h1 id=&quot;마무리&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EB%A7%88%EB%AC%B4%EB%A6%AC&quot; aria-label=&quot;마무리 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;마무리&lt;/h1&gt;
+&lt;p&gt;이번 테스트를 통해 아래 사항을 얻을 수 있었습니다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;객체지향적 패러다임을 논리적으로 꽃피울 수 있는 DDD의 개념의 기초를 배웠습니다.&lt;/li&gt;
+&lt;li&gt;도메인 별로 어떻게 객체를 끌어내고, 이를 통해 어떻게 메시지를 주고받으며 어떤 방식으로 서로 상호작용하는지 확실히 알게 되었습니다.&lt;/li&gt;
+&lt;li&gt;이를 실현하는 방법인 클린 아키텍처, 헥사고널 아키텍처의 기초적인 부분을 배우고 구현하였습니다. 또, 기술을 필요에 따라 선택하는 이유를 확실히 알게 되었습니다.&lt;/li&gt;
+&lt;li&gt;테스트 피라미드를 두어, 주요 레이어 별 테스팅이 어떻게 되면 좋을지 구상하였습니다.&lt;/li&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;mermaid.js&lt;/code&gt; 및 JetBrians의 기본 도구와 ER Diagram 설계 도구를 익혔습니다.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;다음 2부에서는, 왜 떨어졌을지에 대해 스스로 반추하는 게시글로 찾아뵙겠습니다.&lt;/p&gt;
+&lt;div class=&quot;footnotes&quot;&gt;
+&lt;hr&gt;
+&lt;ol&gt;
+&lt;li id=&quot;fn-1&quot;&gt;이를 학습하기 전, 이 전에 읽었던 객체지향의 사실과 오해의 내용이 정말 도움되었습니다(&lt;a href=&quot;https://www.youtube.com/watch?v=26S4VFUWlJM&amp;#x26;t=3434s&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;이 영상&lt;/a&gt;은 그 일부를 올린 것이니 보시면 매우 좋습니다). 저는 &lt;a href=&quot;https://search.shopping.naver.com/book/catalog/32436316743?NaPm=ct%3Dlebllqq0%7Cci%3D69c2124ba02d2115182c8d68fe4f85205a3ace74%7Ctr%3Dboksl1%7Csn%3D95694%7Chk%3D0425ef7e53fce8d8c45d6816648c48f8ec5cb238&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;도메인 주도 개발 시작하기: DDD 핵심 개념 정리부터 구현까지&lt;/a&gt; 와 &lt;a href=&quot;https://play.google.com/store/books/details/%ED%8C%8C%EC%9D%B4%EC%8D%AC%EC%9C%BC%EB%A1%9C*%EC%82%B4%ED%8E%B4%EB%B3%B4%EB%8A%94*%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98*%ED%8C%A8%ED%84%B4_TDD_DDD_EDM*%EC%A0%81%EC%9A%A9%ED%95%98%EA%B8%B0?id=PeUxEAAAQBAJ&amp;#x26;hl=ko&amp;#x26;gl=US&amp;#x26;pli=1&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;파이썬으로 살펴보는 아키텍처 패턴: TDD, DDD, EDM 적용하기&lt;/a&gt; 를 상당부분 참고하였습니다.&lt;a href=&quot;#fnref-1&quot; class=&quot;footnote-backref&quot;&gt;↩&lt;/a&gt;&lt;/li&gt;
+&lt;li id=&quot;fn-2&quot;&gt;DDD에 대한 전반적인 이해에 아래 글들이 상당히 도움되었습니다.&lt;br &gt;&lt;a href=&quot;https://happycloud-lee.tistory.com/94&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;DDD 핵심만 빠르게 이해하기&lt;/a&gt;&lt;br &gt;&lt;a href=&quot;https://incheol-jung.gitbook.io/docs/q-and-a/architecture/ddd&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;Domain Driven Design&lt;/a&gt; &lt;br &gt;상기 글들을 보고 &lt;a href=&quot;https://tech.kakao.com/2022/12/12/ddd-of-recommender-team/&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;이 글을&lt;/a&gt; 함께 보신다면 보다 빠르게 이해하실 수 있으시리라 믿습니다.&lt;a href=&quot;#fnref-2&quot; class=&quot;footnote-backref&quot;&gt;↩&lt;/a&gt;&lt;/li&gt;
+&lt;li id=&quot;fn-3&quot;&gt;Hexagonal Architecture는 이 글들을 참고하시면 상당히 도움되시리라 믿습니다. &lt;br &gt;&lt;a href=&quot;https://dataportal.kr/74#DDD%EC%25--%25--%25--%EA%25B-%25-D%EC%25B-%25B-%EC%25A-%25--%ED%25--%25A-&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;Why DDD, Clean Architecture and Hexagonal?&lt;/a&gt;&lt;br &gt;&lt;a href=&quot;https://engineering.linecorp.com/ko/blog/port-and-adapter-architecture/&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;지속 가능한 소프트웨어 설계 패턴: 포트와 어댑터 아키텍처 적용하기&lt;/a&gt;&lt;br &gt;&lt;a href=&quot;https://blog.imqa.io/hexagonal-architecture/&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;헥사고날 아키텍쳐(Hexagonal Architecture)&lt;/a&gt;&lt;br &gt;&lt;a href=&quot;https://mesh.dev/20210910-dev-notes-007-hexagonal-architecture/&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;헥사고날(Hexagonal) 아키텍처 in 메쉬코리아&lt;/a&gt;&lt;a href=&quot;#fnref-3&quot; class=&quot;footnote-backref&quot;&gt;↩&lt;/a&gt;&lt;/li&gt;
+&lt;li id=&quot;fn-4&quot;&gt;늦게 회고하자면, &lt;a href=&quot;https://www.youtube.com/watch?v=F7EnW8dfetU&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;이 영상&lt;/a&gt; 을 함께 보았다면 더 좋았을 것입니다. 이벤트 스토밍을 통해 도메인 간의 유기적인 정보교환 뿐 아니라, 실제 업무를 수행하면서 나올 법한 행위를 수행할 수 있었음을 보여줄 수 있었을 것입니다.&lt;a href=&quot;#fnref-4&quot; class=&quot;footnote-backref&quot;&gt;↩&lt;/a&gt;&lt;/li&gt;
+&lt;li id=&quot;fn-5&quot;&gt;이 부분은 정확히 어떻게 설계할지 몰라서 다른 서비스들을 최대한 참고하였습니다. 도메인 객체가 이렇게 비대해지는 것을 어떻게 제어해야할지도 학습해야겠습니다.&lt;a href=&quot;#fnref-5&quot; class=&quot;footnote-backref&quot;&gt;↩&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;</content:encoded></item><item><title><![CDATA[클린 코드 스터디 (10): 클래스]]></title><description><![CDATA[2023년 1월부터 시작한 클린 코드 독파 스터디 후, 매 모임 전 준비하는 게시글을 공유합니다. 이 글은 10장, 클래스에 대해 살펴봅니다.]]></description><link>https://blog.s3ich4n.me/books/clean-code/2023-02-10-pt10</link><guid isPermaLink="false">https://blog.s3ich4n.me/books/clean-code/2023-02-10-pt10</guid><pubDate>Fri, 10 Feb 2023 22:55:00 GMT</pubDate><content:encoded>&lt;h1 id=&quot;10-클래스&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#10-%ED%81%B4%EB%9E%98%EC%8A%A4&quot; aria-label=&quot;10 클래스 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;10. 클래스&lt;/h1&gt;
 &lt;p&gt;클래스에 대해 살펴봅시다.&lt;/p&gt;
 &lt;h2 id=&quot;클래스-체계&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%ED%81%B4%EB%9E%98%EC%8A%A4-%EC%B2%B4%EA%B3%84&quot; aria-label=&quot;클래스 체계 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;클래스 체계&lt;/h2&gt;
 &lt;p&gt;자바의 클래스 정의 표준 관례는 아래와 같은 순으로 코드 작성을 기대합니다:&lt;/p&gt;
@@ -5627,7 +5988,7 @@ EOF&lt;/span&gt;
 &lt;hr&gt;
 &lt;p&gt;[1]: “작성된 코드에 대한 환경을 배포한다” 로 이해하면 쉽습니다. 적절한 권한을 가진 유저가 인프라 구성 명령을 내려서 실제 인프라 구성을 수행하는 것이지요.&lt;/p&gt;</content:encoded></item><item><title><![CDATA[인가를 다시 살펴보다 (2) OpenID Connect 스펙과 OAuth 2.0, OpenID Connect 구현체 살펴보기]]></title><description><![CDATA[OAuth 2.0에 **인증** 을 추가한 OpenID Connect 스펙을 살펴보고, OpenID Connect의 주요 사항과 개념들, 그리고 유의사항에 대해 확인해보도록 하겠습니다.]]></description><link>https://blog.s3ich4n.me/devlog/backend/2022-10-17-considering-authn-and-authz-revisited-pt02</link><guid isPermaLink="false">https://blog.s3ich4n.me/devlog/backend/2022-10-17-considering-authn-and-authz-revisited-pt02</guid><pubDate>Mon, 17 Oct 2022 21:50:00 GMT</pubDate><content:encoded>&lt;h1 id=&quot;연재-안내&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%97%B0%EC%9E%AC-%EC%95%88%EB%82%B4&quot; aria-label=&quot;연재 안내 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;연재 안내&lt;/h1&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;a href=&quot;/devlog/backend/2022-10-17-considering-authn-and-authz-revisited-pt01&quot;&gt;인가를 다시 살펴보다 (1)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;/devlog/backend/2022-10-16-considering-authn-and-authz-revisited-pt01&quot;&gt;인가를 다시 살펴보다 (1)&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;인가를 다시 살펴보다 (2)&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h1 id=&quot;들어가며&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EB%93%A4%EC%96%B4%EA%B0%80%EB%A9%B0&quot; aria-label=&quot;들어가며 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;들어가며&lt;/h1&gt;
