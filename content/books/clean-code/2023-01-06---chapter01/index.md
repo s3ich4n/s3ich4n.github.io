@@ -38,7 +38,7 @@ ChatGPT로 기술 발전이 무섭게 발전하는 지금, 기계가 못하는 �
    3. 오류를 전략적으로 처리하라
    4. 성능은 최적으로. 그렇다고 원칙없이 잘 돌아가는 코드를 짜면 안됨
    5. 하나의 코드는 하나의 작동을 한다
-2. [Grady Booch](https://zetawiki.com/wiki/%EA%B7%B8%EB%9E%98%EB%94%94_%EB%B6%80%EC%B9%98) (Object Oriented Analysis and Design with Application](https://product.kyobobook.co.kr/detail/S000006439884)[1]의 저자)
+2. [Grady Booch](https://zetawiki.com/wiki/%EA%B7%B8%EB%9E%98%EB%94%94_%EB%B6%80%EC%B9%98) (Object Oriented Analysis and Design with Application](https://product.kyobobook.co.kr/detail/S000006439884)[^1]의 저자)
    1. 단순하고 직접적이다.
    2. 잘 쓴 문장처럼 읽힌다.
    3. 설계자의 의도가 바로 드러난다.
@@ -50,7 +50,7 @@ ChatGPT로 기술 발전이 무섭게 발전하는 지금, 기계가 못하는 �
    4. 코드를 통해 목적을 달성하는 방법은 명확한 하나만 제공된다.
    5. API는 concise하다.
    6. 어떤 면에서는 문학적이다. 모든 정보를 코드로 풀 수 없기 때문이다. → 사람이 읽기 쉬운 코드라는 뜻
-4. Michale Feathers ([Working Effectively with Legacy Code](https://www.amazon.com/Working-Effectively-Legacy-Michael-Feathers/dp/0131177052)[2] 의 저자)
+4. Michale Feathers ([Working Effectively with Legacy Code](https://www.amazon.com/Working-Effectively-Legacy-Michael-Feathers/dp/0131177052)[^2] 의 저자)
    1. 손댈 곳이 없어보이는 코드를 짜자
    2. 주의깊게 보이는 코드
 5. Ron Jeffries (Extreme Programming Installed, Extreme Progreaaming Adventure in C#의 저자)
@@ -83,8 +83,5 @@ ChatGPT로 기술 발전이 무섭게 발전하는 지금, 기계가 못하는 �
 
 > Hopefully I can convince you that you don’t really need clean code, you need `_____` code. It’s up to you to fill in that blank with words that describe what your project requires.
 
----
-
-[1]: [이 링크](https://soniacomp.medium.com/%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5%EC%A0%81-%EB%B6%84%EC%84%9D%EA%B3%BC-%EB%94%94%EC%9E%90%EC%9D%B8-object-oriented-analysis-and-design-%EC%86%8C%EA%B0%9C-part-1-%EB%B2%88%EC%97%AD-67ff58fd26c9)를 참고하십시오. UML을 만든 사람 중 하나이며, 객체간의 메시지 교환, 책임, 협업과 같은 요소가 있어서 객체지향의 사실과 오해, 오브젝트에서도 언급이 되었을 것입니다.
-
-[2]: 이 링크를 참조하십시오.
+[^1]: [이 링크](https://soniacomp.medium.com/%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5%EC%A0%81-%EB%B6%84%EC%84%9D%EA%B3%BC-%EB%94%94%EC%9E%90%EC%9D%B8-object-oriented-analysis-and-design-%EC%86%8C%EA%B0%9C-part-1-%EB%B2%88%EC%97%AD-67ff58fd26c9)를 참고하십시오. UML을 만든 사람 중 하나이며, 객체간의 메시지 교환, 책임, 협업과 같은 요소가 있어서 객체지향의 사실과 오해, 오브젝트에서도 언급이 되었을 것입니다.&nbsp;&nbsp;
+[^2]: 이 링크를 참조하십시오.&nbsp;&nbsp;
