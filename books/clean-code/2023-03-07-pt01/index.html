@@ -1,0 +1,381 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="ie=edge"/><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/><meta name="generator" content="Gatsby 4.25.4"/><meta name="description" content="2023년 1월부터 시작한 클린 코드 독파 스터디 후, 매 모임 전 준비하는 게시글을 공유합니다. 이 글은 13장, 동시성(concurrency)에 대해 알아봅니다." data-gatsby-head="true"/><meta name="twitter:card" content="summary_large_image" data-gatsby-head="true"/><meta name="twitter:title" content="클린 코드 스터디 (13): 동시성(Concurrency) - 팔공산 창고" data-gatsby-head="true"/><meta name="twitter:description" content="2023년 1월부터 시작한 클린 코드 독파 스터디 후, 매 모임 전 준비하는 게시글을 공유합니다. 이 글은 13장, 동시성(concurrency)에 대해 알아봅니다." data-gatsby-head="true"/><meta name="og:title" content="클린 코드 스터디 (13): 동시성(Concurrency) - 팔공산 창고" data-gatsby-head="true"/><meta name="og:type" content="website" data-gatsby-head="true"/><meta name="og:description" content="2023년 1월부터 시작한 클린 코드 독파 스터디 후, 매 모임 전 준비하는 게시글을 공유합니다. 이 글은 13장, 동시성(concurrency)에 대해 알아봅니다." data-gatsby-head="true"/><meta name="image" content="https://blog.s3ich4n.me[object Object]" data-gatsby-head="true"/><meta name="og:image" content="https://blog.s3ich4n.me[object Object]" data-gatsby-head="true"/><meta name="twitter:image" content="https://blog.s3ich4n.me[object Object]" data-gatsby-head="true"/><meta name="theme-color" content="hsl(31, 92%, 62%)"/><style data-href="/styles.1fbe3e33e3d898c35e17.css" data-identity="gatsby-global-css">:after,:before,:root{--color-white:#fff;--color-primary:#5c92ff;--color-secondary:#f7a145;--color-prism-background:#eaeaeb;--color-typographic-base-font:#242933;--color-typographic-link-p-font:#5c92ff;--color-typographic-link-s-font:#f7a145;--color-page-border:#eaeaeb;--color-page-background:#fff;--color-sidebar-border:#eaeaeb;--color-sidebar-border-fade:#fff;--color-contacts-border:#eaeaeb;--color-button-border:#eaeaeb;--color-button-color:#242933;--color-theme-switcher:#3f485a;--color-theme-switcher-hover:#5c92ff}.dark :after,.dark :before,:root.dark{--color-white:#fff;--color-primary:#5c92ff;--color-secondary:#f7a145;--color-prism-background:#191d24;--color-typographic-base-font:#fff;--color-typographic-link-p-font:#5c92ff;--color-typographic-link-s-font:#f7a145;--color-page-border:#3f485a;--color-page-background:#242933;--color-sidebar-border:#3f485a;--color-sidebar-border-fade:#242933;--color-contacts-border:#3f485a;--color-button-border:#3f485a;--color-button-color:#fff;--color-theme-switcher:#eaeaeb;--color-theme-switcher-hover:#5c92ff}html{font-size:100}body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;background:var(--color-page-background);color:var(--color-typographic-base-font);font-size:16px;line-height:1.625;margin:0 0 0 calc(100vw - 100%);text-rendering:optimizelegibility}body,h1,h2,h3,h4,h5,h6{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif}h1,h2,h3,h4,h5,h6{font-weight:600}h1{font-size:40px;line-height:52px;margin-bottom:26px;margin-top:104px}h2{font-size:27px;line-height:39px}h2,h3{margin-bottom:13px;margin-top:52px}h3{font-size:22px;line-height:26px}h4{font-size:19.2px;margin-top:39px}h4,h5{line-height:26px;margin-bottom:13px}h5,h6{font-size:16px;margin-top:65px}h6{line-height:26px;margin-bottom:13px}img{max-width:100%}hr,img{border:0;display:block}hr{background-image:linear-gradient(180deg,transparent 1px,transparent 11px,#242933 0,#242933 15px,transparent 0,transparent 26px);background-size:100% 26px;color:var(--color-typographic-base-font);height:26px;margin:52px auto;width:100px}a{color:var(--color-typographic-link-p-font);text-decoration:none}a:active,a:focus,a:hover{color:var(--color-typographic-link-s-font)}b,strong{font-weight:600}ul{list-style:square;margin-bottom:26px}ul li{margin-bottom:10px;padding:0 5px}p{line-height:26px;margin-bottom:26px}blockquote{font-style:italic;padding:0;text-align:center}figure{display:block;height:auto;width:100%}figcaption{color:var(--color-typographic-base-font);font-size:14px;font-style:italic;line-height:19.5px;margin-bottom:0;margin-top:6.5px;text-align:center}@media screen and (min-width:685px){figure.float-left,figure.float-right{max-width:310px;padding:0 26px}.float-right{float:right}.float-left{float:left}}code[class*=language-],pre[class*=language-]{word-wrap:normal;color:#657b83;font-family:Consolas,Monaco,Andale Mono,Ubuntu Mono,monospace;font-size:1em;-webkit-hyphens:none;hyphens:none;line-height:1.5;-o-tab-size:4;tab-size:4;text-align:left;white-space:pre;word-break:normal;word-spacing:normal}pre[class*=language-]{border-radius:.3em;margin:.5em 0;overflow:auto;padding:1em}:not(pre)>code[class*=language-],pre[class*=language-]{background-color:var(--color-prism-background)}:not(pre)>code[class*=language-]{border-radius:.3em;padding:.1em}code[class*=language-] ::selection,code[class*=language-]::selection,pre[class*=language-] ::selection,pre[class*=language-]::selection{background:#073642}.token.cdata,.token.comment,.token.doctype,.token.prolog{color:#93a1a1}.token.punctuation{color:#586e75}.namespace{opacity:.7}.token.boolean,.token.constant,.token.deleted,.token.number,.token.property,.token.symbol,.token.tag{color:#268bd2}.token.attr-name,.token.builtin,.token.char,.token.inserted,.token.selector,.token.string,.token.url{color:#2aa198}.token.entity{background:#eee8d5;color:#657b83;cursor:help}.token.atrule,.token.attr-value,.token.keyword{color:#859900}.token.class-name,.token.function{color:#b58900}.token.important,.token.regex,.token.variable{color:#cb4b16}.token.bold,.token.important{font-weight:700}.token.italic{font-style:italic}.Feed-module--feed--a6204 .Feed-module--item--c7a63{margin-bottom:32.5px}.Feed-module--feed--a6204 .Feed-module--item--c7a63:last-child{margin-bottom:13px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f{font-size:27px;line-height:39px;margin-bottom:13px;margin-top:0}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f .Feed-module--link--6123b{color:var(--color-typographic-base-font)}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f .Feed-module--link--6123b:focus,.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f .Feed-module--link--6123b:hover{border-bottom:1px solid #242933;color:var(--color-typographic-base-font)}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--description--57348{font-size:16px;line-height:26px;margin-bottom:19.5px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--time--72864{color:var(--color-typographic-base-font);font-size:14px;font-weight:600;text-transform:uppercase}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--divider--81a18{margin:0 13px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--category--59f58 .Feed-module--link--6123b{color:var(--color-secondary);font-size:14px;font-weight:600;text-transform:uppercase}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--category--59f58 .Feed-module--link--6123b:focus,.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--category--59f58 .Feed-module--link--6123b:hover{color:#5c92ff}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--more--51a4e{color:var(--color-primary);font-size:16px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--more--51a4e:focus,.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--more--51a4e:hover{border-bottom:1px solid #5c92ff;color:var(--color-primary)}.Layout-module--layout--2c933{margin-left:auto;margin-right:auto;max-width:1070px}.Layout-module--layout--2c933:before{content:"";display:table}.Layout-module--layout--2c933:after{clear:both;content:"";display:table}.Page-module--page--24e03{margin-bottom:52px}.Page-module--page--24e03 .Page-module--inner--4b31d{padding:26px 19.5px 0}.Page-module--page--24e03 .Page-module--title--90338{font-size:40px;font-weight:600;line-height:52px;margin-bottom:37.7px;margin-top:0}.Page-module--page--24e03 .Page-module--body--561c4{font-size:16px;line-height:26px;margin:0 0 26px}@media screen and (min-width:685px){.Page-module--page--24e03{width:calc(58.275% - 12.5px)}.Page-module--page--24e03:nth-child(1n){clear:none;float:left;margin-right:30px}.Page-module--page--24e03:last-child{margin-right:0}.Page-module--page--24e03:nth-child(12n){float:right;margin-right:0}.Page-module--page--24e03:nth-child(12n+1){clear:both}.Page-module--page--24e03 .Page-module--inner--4b31d{padding:32.5px 19.5px 0}}@media screen and (min-width:960px){.Page-module--page--24e03{width:calc(66.6% - 10px)}.Page-module--page--24e03:nth-child(1n){clear:none;float:left;margin-right:30px}.Page-module--page--24e03:last-child{margin-right:0}.Page-module--page--24e03:nth-child(3n){float:right;margin-right:0}.Page-module--page--24e03:nth-child(3n+1){clear:both}.Page-module--page--24e03 .Page-module--inner--4b31d{padding:39px 26px 0}}.Pagination-module--pagination--d61cb{display:flex;margin-top:52px}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b{text-align:left;width:50%}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d{color:var(--color-secondary);font-size:26px;font-weight:700}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d:focus,.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d:hover{color:var(--color-primary)}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d.Pagination-module--disable--7e105{color:#3f485a;pointer-events:none}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8{text-align:right;width:50%}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff{color:var(--color-secondary);font-size:26px;font-weight:700}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff:focus,.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff:hover{color:var(--color-primary)}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff.Pagination-module--disable--7e105{color:#3f485a;pointer-events:none}.Button-module--button--b1113{border:1px solid var(--color-button-border);border-radius:20px;color:var(--color-button-color);display:inline-block;font-size:16px;font-weight:400;height:40px;line-height:40px;margin-left:auto;margin-right:auto;padding:0 26px;text-align:center;text-decoration:none}.Button-module--button--b1113:focus,.Button-module--button--b1113:hover{color:#5c92ff}.ThemeSwitcher-module--themeSwitcher--8a77f{--color:var(--color-theme-switcher)}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--button--7cb7b{align-items:center;background:transparent;border:0;cursor:pointer;display:flex;justify-content:center;outline:0}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--button--7cb7b svg{stroke:var(--color);pointer-events:none;transition:stroke .4s}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--button--7cb7b:hover{--color:var(--color-theme-switcher-hover)}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--moon--10537{stroke-dasharray:0 1px;opacity:0;transition:stroke-dasharray .2s ease-in,opacity .4s ease-in}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--sun--2163a{stroke-dasharray:1px 1px;opacity:1;transition:stroke-dasharray .2s ease-in,opacity .4s ease-in}.ThemeSwitcher-module--themeSwitcher--8a77f.ThemeSwitcher-module--dark--6db0c .ThemeSwitcher-module--moon--10537{stroke-dasharray:1px 1px;opacity:1}.ThemeSwitcher-module--themeSwitcher--8a77f.ThemeSwitcher-module--dark--6db0c .ThemeSwitcher-module--sun--2163a{stroke-dasharray:0 1px;opacity:0}.Author-module--author--cbd31 .Author-module--photo--9787b{background-clip:padding-box;border-radius:50%;display:inline-block;height:75px;margin-bottom:0;width:75px}.Author-module--author--cbd31 .Author-module--photo--9787b img{border-radius:50%}.Author-module--author--cbd31 .Author-module--title--cf7e5{font-size:18px;font-weight:600;line-height:29.25px;margin:0}.Author-module--author--cbd31 .Author-module--title--cf7e5 .Author-module--link--09c17,.Author-module--author--cbd31 .Author-module--title--cf7e5 .Author-module--link--09c17:focus,.Author-module--author--cbd31 .Author-module--title--cf7e5 .Author-module--link--09c17:hover{color:var(--color-typographic-base-font)}.Author-module--author--cbd31 .Author-module--bio--8168d,.Author-module--author--cbd31 .Author-module--subtitle--86ec5{color:#7f8ba4;line-height:26px;margin-bottom:26px}.Author-module--author--cbd31 .Author-module--titleContainer--4f576{align-items:center;display:flex;justify-content:space-between;margin:13px 0}.Categories-module--categories--f3389{color:#7f8ba4;font-size:14px}.Icon-module--icon--1d7da{fill:currentcolor;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;speak:none;stroke:currentcolor;stroke-width:0;display:inline-block;font-style:normal;font-variant:normal;font-weight:400;height:1em;line-height:1em;text-align:center;text-transform:none;width:1em}.Contacts-module--contacts--09178{margin-bottom:26px}.Contacts-module--contacts--09178 .Contacts-module--list--9670b{display:flex;flex-flow:row wrap;flex-grow:0;flex-shrink:0;list-style:none;margin:13px 0;max-width:165px;padding:0}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0{align-content:center;align-items:center;border:1px solid var(--color-contacts-border);border-radius:50%;display:flex;height:40px;justify-content:center;line-height:40px;margin:6.5px;padding:0;text-align:center;width:40px}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0:nth-child(3n+1){margin-left:0}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0 .Contacts-module--link--de1e0{border:0;color:var(--color-typographic-base-font);display:flex}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0 .Contacts-module--link--de1e0:focus,.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0 .Contacts-module--link--de1e0:hover{color:var(--color-typographic-link-p-font)}.Copyright-module--copyright--2c602{color:#7f8ba4;font-size:14px}.Menu-module--menu--113a9{margin-bottom:26px}.Menu-module--menu--113a9 .Menu-module--list--e1ae3{list-style:none;margin:0;padding:0}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679{margin:13px 0;padding:0}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02{border:0;color:var(--color-typographic-base-font);font-size:16px;font-weight:400}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02:focus,.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02:hover{border-bottom:1px solid #5c92ff;color:#5c92ff}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02.Menu-module--active--6cb74{border-bottom:1px solid var(--color-typographic-base-font);color:var(--color-typographic-base-font)}.Tags-module--tags--28a57{color:#7f8ba4;font-size:14px}.Sidebar-module--sidebar--1bfa1{width:100%}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0{padding:26px 19.5px 0;position:relative}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0:after{background:var(--color-sidebar-border);background:linear-gradient(to bottom,var(--color-sidebar-border) 0,var(--color-sidebar-border) 48%,var(--color-sidebar-border-fade) 100%)}@media screen and (min-width:685px){.Sidebar-module--sidebar--1bfa1{width:calc(41.625% - 17.5px)}.Sidebar-module--sidebar--1bfa1:nth-child(1n){clear:none;float:left;margin-right:30px}.Sidebar-module--sidebar--1bfa1:last-child{margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(12n){float:right;margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(12n+1){clear:both}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0{padding:32.5px 19.5px 0}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0:after{bottom:0;content:"";height:540px;position:absolute;right:-10px;top:30px;width:1px}}@media screen and (min-width:960px){.Sidebar-module--sidebar--1bfa1{width:calc(33.3% - 20px)}.Sidebar-module--sidebar--1bfa1:nth-child(1n){clear:none;float:left;margin-right:30px}.Sidebar-module--sidebar--1bfa1:last-child{margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(3n){float:right;margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(3n+1){clear:both}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0{padding:39px}}.Author-module--author--1c58d{border-top:1px solid var(--color-page-border);line-height:26px;margin-bottom:52px;margin-top:26px;max-width:920px;padding-top:26px}.Author-module--author--1c58d .Author-module--bio--08950 .Author-module--twitter--90647{display:block;text-decoration:underline}.Author-module--author--1c58d .Author-module--bio--08950 .Author-module--twitter--90647:focus,.Author-module--author--1c58d .Author-module--bio--08950 .Author-module--twitter--90647:hover{color:var(--color-typographic-link-s-font)}@media screen and (min-width:685px){.Author-module--author--1c58d{margin-left:auto;margin-right:auto}}.Content-module--content--80d58{margin:0 auto;max-width:1070px;padding:0 13px}.Content-module--content--80d58 .Content-module--title--09504{font-size:32px;font-weight:600;line-height:42.9px;margin:26px auto 0;max-width:920px;text-align:center}.Content-module--content--80d58 .Content-module--body--726c2 figure{margin-bottom:26px}.Content-module--content--80d58 .Content-module--body--726c2 figure blockquote{font-style:italic;margin-top:0;padding:26px 0;text-align:center}.Content-module--content--80d58 .Content-module--body--726c2 figure blockquote p{font-size:26.9072px;line-height:39px;margin-bottom:26px;margin-top:0;max-width:920px}.Content-module--content--80d58 .Content-module--body--726c2 a{text-decoration:underline}.Content-module--content--80d58 .Content-module--body--726c2 *{margin-left:auto;margin-right:auto;max-width:920px}.Content-module--content--80d58 .Content-module--body--726c2 h2>a{visibility:hidden}.Content-module--content--80d58 .Content-module--body--726c2 h2>a>svg{fill:var(--color-typographic-base-font)}.Content-module--content--80d58 .Content-module--body--726c2 img{max-width:100%}@media screen and (min-width:960px){.Content-module--content--80d58{padding:0}.Content-module--content--80d58 .Content-module--title--09504{font-size:48px;line-height:58.5px;margin-bottom:39px;margin-top:58.5px}.Content-module--content--80d58 .Content-module--body--726c2,.Content-module--content--80d58 .Content-module--body--726c2 p{font-size:18px;line-height:29.25px;margin-bottom:29.25px}.Content-module--content--80d58 .Content-module--body--726c2 h2>a{padding-right:13px;visibility:unset}}.Meta-module--meta--dae0a .Meta-module--date--4d30d{font-style:italic}.Tags-module--tags--18589{margin-bottom:13px}.Tags-module--tags--18589 .Tags-module--list--82ae6{list-style:none;padding:0}.Tags-module--tags--18589 .Tags-module--list--82ae6 .Tags-module--item--52015{display:inline-block;margin:6.5px 0}@media screen and (min-width:685px){.Tags-module--tags--18589 .Tags-module--list--82ae6 .Tags-module--item--52015:first-child{margin-left:0;padding-left:0}}.Post-module--post--3a994 .Post-module--content--3c6e5{margin:0 auto}.Post-module--post--3a994 .Post-module--comments--d3b99,.Post-module--post--3a994 .Post-module--footer--f8705{margin:0 auto;max-width:920px;padding:0 13px}.Post-module--post--3a994 .Post-module--buttons--2972d{align-items:center;display:flex;justify-content:center;margin:26px 0 0;text-align:center}.Post-module--post--3a994 .Post-module--buttons--2972d .Post-module--buttonArticles--d793a{margin:0 13px 0 0}@media screen and (min-width:960px){.Post-module--post--3a994 .Post-module--comments--d3b99,.Post-module--post--3a994 .Post-module--footer--f8705{padding:0}.Post-module--post--3a994 .Post-module--buttons--2972d{left:30px;margin:0 13px 0 0;max-width:none;position:fixed;top:30px}}</style><title data-gatsby-head="true">클린 코드 스터디 (13): 동시성(Concurrency) - 팔공산 창고</title><link rel="alternate" type="application/rss+xml" title="팔공산 창고" href="/rss.xml"/><style type="text/css">
+    .anchor.before {
+      position: absolute;
+      top: 0;
+      left: 0;
+      transform: translateX(-100%);
+      padding-right: 4px;
+    }
+    .anchor.after {
+      display: inline-block;
+      padding-left: 4px;
+    }
+    h1 .anchor svg,
+    h2 .anchor svg,
+    h3 .anchor svg,
+    h4 .anchor svg,
+    h5 .anchor svg,
+    h6 .anchor svg {
+      visibility: hidden;
+    }
+    h1:hover .anchor svg,
+    h2:hover .anchor svg,
+    h3:hover .anchor svg,
+    h4:hover .anchor svg,
+    h5:hover .anchor svg,
+    h6:hover .anchor svg,
+    h1 .anchor:focus svg,
+    h2 .anchor:focus svg,
+    h3 .anchor:focus svg,
+    h4 .anchor:focus svg,
+    h5 .anchor:focus svg,
+    h6 .anchor:focus svg {
+      visibility: visible;
+    }
+  </style><script>
+    document.addEventListener("DOMContentLoaded", function(event) {
+      var hash = window.decodeURI(location.hash.replace('#', ''))
+      if (hash !== '') {
+        var element = document.getElementById(hash)
+        if (element) {
+          var scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+          var clientTop = document.documentElement.clientTop || document.body.clientTop || 0
+          var offset = element.getBoundingClientRect().top + scrollTop - clientTop
+          // Wait for the browser to finish rendering before scrolling.
+          setTimeout((function() {
+            window.scrollTo(0, offset - 0)
+          }), 0)
+        }
+      }
+    })
+  </script><link rel="preconnect" href="https://www.googletagmanager.com"/><link rel="dns-prefetch" href="https://www.googletagmanager.com"/><script async="" src="https://www.googletagmanager.com/gtag/js?id="></script><script>
+      
+      
+      if(true) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){window.dataLayer && window.dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', '', {"send_page_view":false});
+      }
+      </script><link rel="sitemap" type="application/xml" href="/sitemap/sitemap-index.xml"/><link rel="icon" href="/favicon-32x32.png?v=4c2c993a06ee0fd0ee953020b09128a9" type="image/png"/><link rel="manifest" href="/manifest.webmanifest" crossorigin="anonymous"/><link rel="apple-touch-icon" sizes="48x48" href="/icons/icon-48x48.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="72x72" href="/icons/icon-72x72.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="96x96" href="/icons/icon-96x96.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="144x144" href="/icons/icon-144x144.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192x192.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="256x256" href="/icons/icon-256x256.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="384x384" href="/icons/icon-384x384.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="512x512" href="/icons/icon-512x512.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><style>.gatsby-image-wrapper{position:relative;overflow:hidden}.gatsby-image-wrapper picture.object-fit-polyfill{position:static!important}.gatsby-image-wrapper img{bottom:0;height:100%;left:0;margin:0;max-width:none;padding:0;position:absolute;right:0;top:0;width:100%;object-fit:cover}.gatsby-image-wrapper [data-main-image]{opacity:0;transform:translateZ(0);transition:opacity .25s linear;will-change:opacity}.gatsby-image-wrapper-constrained{display:inline-block;vertical-align:top}</style><noscript><style>.gatsby-image-wrapper noscript [data-main-image]{opacity:1!important}.gatsby-image-wrapper [data-placeholder-image]{opacity:0!important}</style></noscript><script type="module">const e="undefined"!=typeof HTMLImageElement&&"loading"in HTMLImageElement.prototype;e&&document.body.addEventListener("load",(function(e){const t=e.target;if(void 0===t.dataset.mainImage)return;if(void 0===t.dataset.gatsbyImageSsr)return;let a=null,n=t;for(;null===a&&n;)void 0!==n.parentNode.dataset.gatsbyImageWrapper&&(a=n.parentNode),n=n.parentNode;const o=a.querySelector("[data-placeholder-image]"),r=new Image;r.src=t.currentSrc,r.decode().catch((()=>{})).then((()=>{t.style.opacity=1,o&&(o.style.opacity=0,o.style.transition="opacity 500ms linear")}))}),!0);</script></head><body><script>
+          void function() {
+            var cachedMode;
+
+            try {
+              var preferredTheme = JSON.parse(localStorage.getItem('diesel:theme-atom'));
+
+              if (preferredTheme && preferredTheme.mode) {
+                cachedMode = preferredTheme.mode;
+              }
+            } catch (err) { }
+
+            function setTheme(newTheme) {
+              document.documentElement.className = newTheme;
+            }
+
+            var darkQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+            setTheme(cachedMode || (darkQuery.matches ? 'dark' : 'light'));
+          }()
+        </script><div id="___gatsby"><div style="outline:none" tabindex="-1" id="gatsby-focus-wrapper"><div class="Layout-module--layout--2c933"><div class="Post-module--post--3a994"><div class="Post-module--buttons--2972d"><a class="Button-module--button--b1113 Post-module--buttonArticles--d793a" href="/">All Articles</a></div><div class="Post-module--content--3c6e5"><div class="Content-module--content--80d58"><h1 class="Content-module--title--09504">클린 코드 스터디 (13): 동시성(Concurrency)</h1><div class="Content-module--body--726c2"><h1 id="13-동시성concurrency" style="position:relative;"><a href="#13-%EB%8F%99%EC%8B%9C%EC%84%B1concurrency" aria-label="13 동시성concurrency permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>13. 동시성(Concurrency)</h1>
+<blockquote>
+<p>객체는 처리의 추상화다. 스레드는 일정의 추상화다.</p>
+<p>James. O. Coplien<sup id="fnref-1"><a href="#fn-1" class="footnote-ref">1</a></sup></p>
+</blockquote>
+<p>동시성과 깔끔한 코드는 양립하기 매우 힘듭니다.</p>
+<ul>
+<li>문제 발생 전까지 올바른 원인을 파악하기 매우 힘듭니다.</li>
+<li>껍데기는 멀쩡하나 깊숙한 곳에 문제가 있는 다중 스레드 코드도 짜기 쉽습니다.</li>
+</ul>
+<p>이 챕터를 통해 아래 내용을 살펴보겠습니다.</p>
+<ul>
+<li>여러 스레드/프로세스를 왜 사용하는가?</li>
+<li>무엇 때문에 동시성이 어려운가?</li>
+<li>이런 어려움을 대처하고 어떻게 깨끗한 코드를 짤 것인가?</li>
+<li>테스트 방법 및 구체적 지침</li>
+</ul>
+<h2 id="일러두기" style="position:relative;"><a href="#%EC%9D%BC%EB%9F%AC%EB%91%90%EA%B8%B0" aria-label="일러두기 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>일러두기</h2>
+<p>먼저, 이 아티클에서는 책에서 제시하는 내용을 간략히 살펴볼 예정입니다.저희 스터디에서는 후에 부록 A 동시성 II 를 함께 보면서 더 다뤄볼 예정입니다. 또한 뮤텍스, 세마포어 및 모니터를 각자 살펴보고 각자 자신이 선택한 언어에서 동시성 프로그래밍을 어떤 원칙으로 구현하였는지 살펴볼 예정입니다.</p>
+<h2 id="동시성이-필요한-이유" style="position:relative;"><a href="#%EB%8F%99%EC%8B%9C%EC%84%B1%EC%9D%B4-%ED%95%84%EC%9A%94%ED%95%9C-%EC%9D%B4%EC%9C%A0" aria-label="동시성이 필요한 이유 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>동시성이 필요한 이유?</h2>
+<p>동시성은 결합(coupling)을 없애는 전략입니다. 이는 ‘무엇’과 ‘언제’를 분리하는 전략입니다. 단일 스레드 프로그램은 이 둘이 항상 밀접합니다. 이런 프로그램을 디버깅한다면 breakpoint를 잡고 시스템의 상태를 파악합니다.</p>
+<p>동시성이 필요하다면 “무엇”과 “언제”를 분리하는 것이 좋습니다. 시스템 상에 큰 루프 하나가 아니라, 작은 협력 프로그램 여럿을 통해 결과를 내는 것을 생각하면 됩니다. 이렇게 만들어진 시스템은 전체 구조파악 및 문제 분리라는 관점에서 수월해집니다.</p>
+<p><code class="language-text">Servelt</code>이 그 예시입니다. 초기 서블릿은 스레드 풀을 만들고 그 한계에 대해 요청/응답을 처리할 수 있었습니다. <a href="https://www.oreilly.com/library/view/head-first-servlets/9780596516680/ch04s04.html" target="_blank" rel="nofollow noopener noreferrer">헤드퍼스트 게시글</a>을 살펴보시면 이해가 빠를겁니다<sup id="fnref-2"><a href="#fn-2" class="footnote-ref">2</a></sup>.</p>
+<p>그렇지만 이런 구현을 문제없이 하기란 결코 쉽지 않습니다! 구조적 이점에 비해 구현 난이도가 어렵기 때문입니다. 그럼에도 불구하고, 한번에 여러 작업(사용자 요청이 되었건, 연산이 되었건…)을 처리할 수 있는 시스템은 성능 향상을 이끌어낼 수 있습니다.</p>
+<h3 id="미신과-오해" style="position:relative;"><a href="#%EB%AF%B8%EC%8B%A0%EA%B3%BC-%EC%98%A4%ED%95%B4" aria-label="미신과 오해 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>미신과 오해</h3>
+<p>동시성은 어렵습니다. 오해하기 쉬운 것들이 몇가지 있습니다.</p>
+<ul>
+<li>동시성은 항상 성능을 올린다?
+<ul>
+<li>대기시간이 아주 길어 여러 스레드가 프로세서를 공유할 수 있거나</li>
+<li>여러 프로세서가 동시에 처리할 독립적 계산이 “충분히” 많아야 성능이 올라갑니다.</li>
+</ul>
+</li>
+<li>동시성을 구현해도 설계는 변하지 않는다?
+<ul>
+<li>“무엇”과 “언제”를 분리하는 것은 시스템 자체가 바뀌는 것을 의미합니다.</li>
+</ul>
+</li>
+<li>웹, EJB 컨테이너 등을 쓰면 동시성을 몰라도 된다?
+<ul>
+<li>사용하는 프레임워크나 라이브러리의 근간이 어떻게 돌아가는지 알아야합니다. 그래야 동시 수정과 데드락을 어떻게 해결할지 생각할 수 있습니다.</li>
+</ul>
+</li>
+</ul>
+<p>그렇지만 아래와 같이 동시성에 대한 타당한 생각을 할 수 있습니다.</p>
+<ul>
+<li>동시성은 다소 부하를 유발합니다.
+<ul>
+<li>성능 측면에서 부하가 걸립니다.</li>
+<li>코드도 더 짜야합니다.</li>
+</ul>
+</li>
+<li>동시성은 복잡합니다.</li>
+<li>동시성 버그는 재현하기 어렵습니다. 그래서 이 버그들을 글리치로 오해할 수도 있습니다.</li>
+<li>동시성을 구현하려면 설계전략을 다시 생각해봐야 합니다.</li>
+</ul>
+<h2 id="난관" style="position:relative;"><a href="#%EB%82%9C%EA%B4%80" aria-label="난관 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>난관</h2>
+<p>왜 동시성을 구현하기 어려울까요?</p>
+<p>자바 진영에서 두 스레드가 동시에 같은 변수를 다루는 케이스를 살펴봅시다.</p>
+<div class="gatsby-highlight" data-language="java"><pre class="language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">X</span> <span class="token punctuation">{</span>
+    <span class="token keyword">private</span> <span class="token keyword">int</span> listIdUsed<span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">int</span> <span class="token function">getNextId</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token operator">++</span>lastIdUsed<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div>
+<p>두 스레드가 <code class="language-text">getNextId()</code> 를 호출한다고 했을 때, 아래 세 경우가 발생합니다.
+264</p>
+<ul>
+<li>스레드 1이 <code class="language-text">43</code>을 받음. 다른 스레드는 <code class="language-text">44</code>를 받음. <code class="language-text">lastIdUsed</code>는 44가 됨</li>
+<li>스레드 1이 <code class="language-text">44</code>을 받음. 다른 스레드는 <code class="language-text">43</code>를 받음. <code class="language-text">lastIdUsed</code>는 44가 됨</li>
+<li>스레드 1이 <code class="language-text">43</code>을 받음. 다른 스레드는 <code class="language-text">43</code>를 받음. <code class="language-text">lastIdUsed</code>는 43이 됨</li>
+</ul>
+<p>두 스레드가 자바 코드 하나를 읽는 “경로” 를 ”<strong>잘못</strong>” 내어놓을 수 있습니다. 이 경로는 정말 많습니다. 이를 알기위해선 정확히 JIT 컴파일러가 바이트코드를 다루는 방식과 자바 메모리 모델이 atomic한 연산으로 판단하는 최소 단위를 알아야 합니다<sup id="fnref-3"><a href="#fn-3" class="footnote-ref">3</a></sup>.</p>
+<p>잘못된 결과를 내어놓는 일부 경로로 인해 답이 달라지는 것이 문제이기 때문입니다. 그렇다면 이러한 문제를 회피하는 방안을 살펴봅시다.</p>
+<h2 id="동시성-방어-원칙" style="position:relative;"><a href="#%EB%8F%99%EC%8B%9C%EC%84%B1-%EB%B0%A9%EC%96%B4-%EC%9B%90%EC%B9%99" aria-label="동시성 방어 원칙 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>동시성 방어 원칙</h2>
+<h3 id="srp" style="position:relative;"><a href="#srp" aria-label="srp permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>SRP</h3>
+<p>동시성을 다루는 코드는 최대한 작게 만듭시다! 아래 사항을 고려하여 제작하는 편이 좋습니다.</p>
+<ul>
+<li>동시성 코드는 독자적인 개발, 변경, 조율 주기가 있습니다.</li>
+<li>잘못 구현한 동시성 코드는 어디로 튈지 모릅니다.</li>
+<li>동시성 코드는 독자적 난관이 있습니다. 다른 코드를 짤 때와는 다르며, 훨씬 어렵습니다.</li>
+</ul>
+<p><strong>권장사항</strong>: 동시성 코드는 다른 코드와 분리합시다.</p>
+<h3 id="따름-정리corollary-자료-범위-제한" style="position:relative;"><a href="#%EB%94%B0%EB%A6%84-%EC%A0%95%EB%A6%ACcorollary-%EC%9E%90%EB%A3%8C-%EB%B2%94%EC%9C%84-%EC%A0%9C%ED%95%9C" aria-label="따름 정리corollary 자료 범위 제한 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>따름 정리(Corollary): 자료 범위 제한</h3>
+<p>critical section을 보호할 필요가 있습니다. 예를들어 자바에서는 <code class="language-text">synchronized</code> 라는 키워드가 있지요.<sup id="fnref-4"><a href="#fn-4" class="footnote-ref">4</a></sup>이런 critical section을 많이 줄이는 것도 필요합니다. 공유 자료를 수정하는 위치가 많아질 수록 다음 가능성도 커집니다:</p>
+<ul>
+<li>보호할 critical section을 빼먹을 수 있습니다. 이는 공유 자료를 수정하는 모든 코드가 망가지는 원인이 됩니다.</li>
+<li>모든 critical section이 보호되었는지 확인하느라 노력과 수고를 기울이게 됩니다.</li>
+<li>버그 찾기가 더 힘들어집니다…</li>
+</ul>
+<p><strong>권장사항</strong>: 자료를 캡슐화하고 공유자료를 최대한 줄입시다.</p>
+<h3 id="corollary-자료-사본을-사용하기" style="position:relative;"><a href="#corollary-%EC%9E%90%EB%A3%8C-%EC%82%AC%EB%B3%B8%EC%9D%84-%EC%82%AC%EC%9A%A9%ED%95%98%EA%B8%B0" aria-label="corollary 자료 사본을 사용하기 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Corollary: 자료 사본을 사용하기</h3>
+<p>가능한 객체 자체를 복사하여 읽기 전용으로 씁시다. 객체를 복사하는 시간과 부하가 걱정된다면 실측해서 비교해봅시다.</p>
+<h3 id="corollary-스레드는-독립적으로-구현합시다" style="position:relative;"><a href="#corollary-%EC%8A%A4%EB%A0%88%EB%93%9C%EB%8A%94-%EB%8F%85%EB%A6%BD%EC%A0%81%EC%9C%BC%EB%A1%9C-%EA%B5%AC%ED%98%84%ED%95%A9%EC%8B%9C%EB%8B%A4" aria-label="corollary 스레드는 독립적으로 구현합시다 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Corollary: 스레드는 독립적으로 구현합시다.</h3>
+<p>각 스레드가 독자적인 시스템에서 동작하는 것 처럼 처리합시다.</p>
+<p>권장사항: 프로그램을 독자적인 스레드로(가능하면 다른 프로세서에서) 구동해도 괜찮도록 자료를 독립적인 단위로 분할합시다.</p>
+<h2 id="라이브러리를-이해하십시오" style="position:relative;"><a href="#%EB%9D%BC%EC%9D%B4%EB%B8%8C%EB%9F%AC%EB%A6%AC%EB%A5%BC-%EC%9D%B4%ED%95%B4%ED%95%98%EC%8B%AD%EC%8B%9C%EC%98%A4" aria-label="라이브러리를 이해하십시오 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>라이브러리를 이해하십시오</h2>
+<p>자바 5 등의 과거 얘기가 주로 나오지만, 핵심을 짚읍시다.</p>
+<h3 id="thread-safe-컬렉션-관련" style="position:relative;"><a href="#thread-safe-%EC%BB%AC%EB%A0%89%EC%85%98-%EA%B4%80%EB%A0%A8" aria-label="thread safe 컬렉션 관련 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Thread-safe 컬렉션 관련</h3>
+<p>언어별로 스레드 간 공유해도 사용할 수 있는 컬렉션을 사용합시다.</p>
+<p><strong>권장사항</strong>: 언어가 제공하는 클래스를 검토하십시오.</p>
+<h2 id="실행-모델을-이해하십시오" style="position:relative;"><a href="#%EC%8B%A4%ED%96%89-%EB%AA%A8%EB%8D%B8%EC%9D%84-%EC%9D%B4%ED%95%B4%ED%95%98%EC%8B%AD%EC%8B%9C%EC%98%A4" aria-label="실행 모델을 이해하십시오 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>실행 모델을 이해하십시오</h2>
+<p>다중 스레드 애플리케이션을 분류하는 방식은 여러가지 입니다. 기본용어부터 이해해봅시다.</p>
+<table>
+<thead>
+<tr>
+<th>용어</th>
+<th>설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Bound Resource</td>
+<td>다중 스레드 환경에서 사용하는 자원으로, 크기나 숫자가 제한적임.<br />DB 연결, 길이가 일정한 읽기/쓰기 버퍼 등.</td>
+</tr>
+<tr>
+<td>Mutual Exclusion</td>
+<td>한 번에 한 스레드만 공유 자료나 공유 자원을 사용할 수 있는 경우.</td>
+</tr>
+<tr>
+<td>Starvation</td>
+<td>한 스레드나 여러 스레드가 영원히/오랫동안 자원을 기다리는 경우.<br />항상 짧은 스레드에만 우선순위를 주면 긴 스레드는 굶어죽는다.</td>
+</tr>
+<tr>
+<td>Deadlock</td>
+<td>여러 스레드가 서로 끝나기를 기다리는 경우. 이러면 서로 기다리니까 진행이 안된다.</td>
+</tr>
+<tr>
+<td>Livelock</td>
+<td>락을 거는 단게에서 각 스레드가 서로를 방해하는 경우. <em>‘상대 스레드가 점유중이다’</em> 라는 상황을 서로 바라보는 탓에 영원히/오랫동안 대기하는 경우를 의미한다.<sup id="fnref-5"><a href="#fn-5" class="footnote-ref">5</a></sup></td>
+</tr>
+</tbody>
+</table>
+<p>아래에는 다중 스레드 프로그래밍에서 사용하는 실행 모델을 살펴봅시다<sup id="fnref-6"><a href="#fn-6" class="footnote-ref">6</a></sup>.</p>
+<h3 id="생산자-소비자producer-consumer-문제" style="position:relative;"><a href="#%EC%83%9D%EC%82%B0%EC%9E%90-%EC%86%8C%EB%B9%84%EC%9E%90producer-consumer-%EB%AC%B8%EC%A0%9C" aria-label="생산자 소비자producer consumer 문제 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>생산자-소비자(Producer-Consumer) 문제</h3>
+<p>생산자 스레드가 정보를 생성하여 버퍼나 큐에 넣고, 소비자 스레드가 이를 가져와 사용하며, 서로에게 정보 여부를 확인하는 시그널을 주고받는 것이 기본 가정입니다. 잘못하면 생산자, 소비자 모두 진행 가능하지만 동시에 <strong>서로에게서 시그널을 기다릴 가능성이 존재</strong>합니다.</p>
+<p>데드락을 어떻게 풀어나갈지 논의하는 문제입니다.</p>
+<p>상세한 내용은 <a href="https://en.wikipedia.org/wiki/Producer%E2%80%93consumer_problem" target="_blank" rel="nofollow noopener noreferrer">영문 위키백과 글</a>을 참고하여 주시길 바랍니다.</p>
+<h3 id="읽기-쓰기readers-writers-문제" style="position:relative;"><a href="#%EC%9D%BD%EA%B8%B0-%EC%93%B0%EA%B8%B0readers-writers-%EB%AC%B8%EC%A0%9C" aria-label="읽기 쓰기readers writers 문제 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>읽기-쓰기(Readers-Writers) 문제</h3>
+<p>읽기 스레드를 위한 주된 정보원으로 공유 자원을 사용하지만, 쓰기 스레드가 이 공유 자원을 이따금 갱신하는 것이 기본 가정입니다. <strong>처리율(throughput)이 높아지면 Starvation이 생겨</strong> 오래된 정보가 쌓이지만, <strong>갱신을 허용하면 처리율에 영향을 미칩</strong>니다.</p>
+<p>쓰기 스레드와 읽기 스레드 양쪽의 균형을 잡는 방안에 대해 논의하는 문제입니다.</p>
+<p>상세한 내용은 <a href="https://en.wikipedia.org/wiki/Readers%E2%80%93writers_problem" target="_blank" rel="nofollow noopener noreferrer">영문 위키백과 글</a>을 참고하여 주시길 바랍니다.</p>
+<h3 id="식사하는-철학자들dining-philosophers-문제" style="position:relative;"><a href="#%EC%8B%9D%EC%82%AC%ED%95%98%EB%8A%94-%EC%B2%A0%ED%95%99%EC%9E%90%EB%93%A4dining-philosophers-%EB%AC%B8%EC%A0%9C" aria-label="식사하는 철학자들dining philosophers 문제 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>식사하는 철학자들(Dining Philosophers) 문제</h3>
+<p>이런 내용입니다. 그림과 함께 살펴보시죠.</p>
+<blockquote>
+<p>둥근 식탁에 철학자들이 둘러 앉아서 식사를 하려 합니다.</p>
+<p>각 철학자 왼쪽에는 젓가락이 있고, 식탁 가운데는 큰 스파게티 접시가 있습니다.</p>
+<p>이들은 배가 고프면 젓가락 두 개를 가지고 먹어야 합니다.</p>
+<p>자신의 좌측 또는 우측 철학자가 젓가락을 쓰는 중이라면, 젓가락을 내려놓을 때 까지 기다려야 합니다.</p>
+</blockquote>
+<p><figure class="gatsby-resp-image-figure" style="">
+    <span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 244px; "
+    >
+      <a
+    class="gatsby-resp-image-link"
+    href="/static/a8f4bb560aada3dd7d45cc9da0bc25c5/603fe/001.jpg"
+    style="display: block"
+    target="_blank"
+    rel="noopener"
+  >
+    <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 96.25000000000001%; position: relative; bottom: 0; left: 0; background-image: url('data:image/jpeg;base64,/9j/2wBDABALDA4MChAODQ4SERATGCgaGBYWGDEjJR0oOjM9PDkzODdASFxOQERXRTc4UG1RV19iZ2hnPk1xeXBkeFxlZ2P/2wBDARESEhgVGC8aGi9jQjhCY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2P/wgARCAATABQDASIAAhEBAxEB/8QAFwABAQEBAAAAAAAAAAAAAAAAAAQCBf/EABQBAQAAAAAAAAAAAAAAAAAAAAD/2gAMAwEAAhADEAAAAethgtSCyELwf//EAB4QAAIBAwUAAAAAAAAAAAAAAAECAAMEEhAREyEx/9oACAEBAAEFAqwJjMWVd8cXip2OaHy20//EABQRAQAAAAAAAAAAAAAAAAAAACD/2gAIAQMBAT8BH//EABQRAQAAAAAAAAAAAAAAAAAAACD/2gAIAQIBAT8BH//EABsQAAEEAwAAAAAAAAAAAAAAAAABEBEhAhIx/9oACAEBAAY/AksiRJ6LtZT5N//EAB4QAAICAgIDAAAAAAAAAAAAAAABESExcRBBUYGh/9oACAEBAAE/IWjqK8EWItMVEPPZileiasibKfg1utoyaM/Tj//aAAwDAQACAAMAAAAQIM88/8QAFBEBAAAAAAAAAAAAAAAAAAAAIP/aAAgBAwEBPxAf/8QAFBEBAAAAAAAAAAAAAAAAAAAAIP/aAAgBAgEBPxAf/8QAHxABAAIBAwUAAAAAAAAAAAAAAQARIRAxcUFhgaHB/9oACAEBAAE/EEhm5DWejHD0S2hZRzjkZahBZ7jsG0ehXmwwBRGgNa8T30V8f1p//9k='); background-size: cover; display: block;"
+  ></span>
+  <picture>
+          <source
+              srcset="/static/a8f4bb560aada3dd7d45cc9da0bc25c5/8ac56/001.webp 240w,
+/static/a8f4bb560aada3dd7d45cc9da0bc25c5/d4674/001.webp 244w"
+              sizes="(max-width: 244px) 100vw, 244px"
+              type="image/webp"
+            />
+          <source
+            srcset="/static/a8f4bb560aada3dd7d45cc9da0bc25c5/09b79/001.jpg 240w,
+/static/a8f4bb560aada3dd7d45cc9da0bc25c5/603fe/001.jpg 244w"
+            sizes="(max-width: 244px) 100vw, 244px"
+            type="image/jpeg"
+          />
+          <img
+            class="gatsby-resp-image-image"
+            src="/static/a8f4bb560aada3dd7d45cc9da0bc25c5/603fe/001.jpg"
+            alt="Dining Philosophers Problem"
+            title="Dining Philosophers Problem"
+            loading="lazy"
+            decoding="async"
+            style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+          />
+        </picture>
+  </a>
+    </span>
+    <figcaption class="gatsby-resp-image-figcaption"><p>Dining Philosophers Problem</p></figcaption>
+  </figure></p>
+<p>이 문제는 철학자를 스레드로, 포크를 리소스로 생각해보면 됩니다. 프로그램 내에서 여러 프로세스가 리소스를 얻기 위해 경쟁해야 합니다. 주의해서 설계하지 않으면 데드락, 라이브락, throughput 저하, 효율 저하가 생기지요.</p>
+<p>상세한 내용은 <a href="https://en.wikipedia.org/wiki/Dining_philosophers_problem" target="_blank" rel="nofollow noopener noreferrer">영문 위키백과 글</a>을 참고하여 주시길 바랍니다.</p>
+<p><strong>권장사항</strong>: 위에서 설명한 기본 알고리즘과 각 해법을 이해합시다.</p>
+<h2 id="동기화하는-메소드-사이에-존재하는-의존성을-이해합시다" style="position:relative;"><a href="#%EB%8F%99%EA%B8%B0%ED%99%94%ED%95%98%EB%8A%94-%EB%A9%94%EC%86%8C%EB%93%9C-%EC%82%AC%EC%9D%B4%EC%97%90-%EC%A1%B4%EC%9E%AC%ED%95%98%EB%8A%94-%EC%9D%98%EC%A1%B4%EC%84%B1%EC%9D%84-%EC%9D%B4%ED%95%B4%ED%95%A9%EC%8B%9C%EB%8B%A4" aria-label="동기화하는 메소드 사이에 존재하는 의존성을 이해합시다 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>동기화하는 메소드 사이에 존재하는 의존성을 이해합시다</h2>
+<p>동기화하는 메소드 사이에 의존성이 존재하면 동시성 코드에 찾기 힘든 버그가 생깁니다. 자바는 개별 메소드를 보호하는 <code class="language-text">synchronized</code> 라는 개념이 있습니다. 하지만 공유 클래스 하나에 동기화된 메소드가 여럿이라면 구현이 올바른지 체크해야 합니다. 이는 <a href="">부록 A 동시성 II의 “메소드 사이에서 존재하는 의존성을 조심하라”</a> 를 참조해주십시오.</p>
+<p><strong>권장사항</strong>: 공유 객체 하나에는 메소드 하나만 사용합시다.</p>
+<p>공유 객체 하나에 여러 메소드가 필요한 상황도 생깁니다. 그럴 떄는 아래 세가지 방법을 고려합시다</p>
+<ul>
+<li>클라이언트에서 잠금
+<ul>
+<li>클라이언트에서 첫 번째 메소드를 호출하기 전 서버를 잠급니다.</li>
+<li>마지막 메소드를 호출할 때 까지 잠금을 유지합니다.</li>
+</ul>
+</li>
+<li>서버에서 잠금
+<ul>
+<li>서버에 아래 메소드를 구현합니다:</li>
+<li>서버를 잠그고 모든 메소드를 호출한 후 잠금을 해제한다</li>
+<li>클라이언트는 상기 메소드를 호출합니다.</li>
+</ul>
+</li>
+<li>연결서버(Adapted Server)
+<ul>
+<li>잠금을 수행하는 중간단계를 생성합니다.</li>
+<li>서버에서 잠금 방식과 유사하지만, 원래 서버를 변경하지 않습니다.</li>
+</ul>
+</li>
+</ul>
+<h2 id="동기화하는-부분을-작게-만드십시오" style="position:relative;"><a href="#%EB%8F%99%EA%B8%B0%ED%99%94%ED%95%98%EB%8A%94-%EB%B6%80%EB%B6%84%EC%9D%84-%EC%9E%91%EA%B2%8C-%EB%A7%8C%EB%93%9C%EC%8B%AD%EC%8B%9C%EC%98%A4" aria-label="동기화하는 부분을 작게 만드십시오 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>동기화하는 부분을 작게 만드십시오</h2>
+<p><code class="language-text">synchronized</code> 를 사용하여 락을 설정한 모든 코드 영역은 한 번에 한 스레드만 실행이 가능합니다. 락은 스레드를 지연시키고 부하를 가중하기 때문에 필요한 critical section만을 감싸야 합니다.</p>
+<h2 id="올바른-종료코드는-구현하기-어렵습니다" style="position:relative;"><a href="#%EC%98%AC%EB%B0%94%EB%A5%B8-%EC%A2%85%EB%A3%8C%EC%BD%94%EB%93%9C%EB%8A%94-%EA%B5%AC%ED%98%84%ED%95%98%EA%B8%B0-%EC%96%B4%EB%A0%B5%EC%8A%B5%EB%8B%88%EB%8B%A4" aria-label="올바른 종료코드는 구현하기 어렵습니다 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>올바른 종료코드는 구현하기 어렵습니다</h2>
+<p>깔끔하게 종료하는 코드를 잘 짜기는 어렵습니다. 아래 두 케이스로 살펴봅시다.</p>
+<ol>
+<li>부모 스레드가 자식 스레드를 여럿 만들고 모두 끝나는 시그널을 대기한다고 가정합시다. 자식 스레드 하나가 데드락에 걸리면, 부모도 자식도 모두 영원히 대기하겠지요.</li>
+<li>부모 스레드가 자식 스레드에게 종료하라는 시그널을 전달했다고 가정합시다. 그런데 두 자식 스레드가 서로 생산자/소비자 관계였고 하필이면 생산자가 먼저 죽어서 소비자가 블록되어서 종료 시그널을 못 받는다면 영원히 대기하겠지요.</li>
+</ol>
+<p>그런고로 깔끔하게 종료하는 다중 스레드 코드는 공을들여 올바르게 구현해야 할 것입니다.</p>
+<p><strong>권장사항</strong>: 종료 코드를 개발 초기부터 잘 고민하고 동작하게 초기부터 구현하십시오. 이미 나온 좋은 알고리즘을 검토하여 사용하십시오.</p>
+<h2 id="스레드-코드-테스트하기" style="position:relative;"><a href="#%EC%8A%A4%EB%A0%88%EB%93%9C-%EC%BD%94%EB%93%9C-%ED%85%8C%EC%8A%A4%ED%8A%B8%ED%95%98%EA%B8%B0" aria-label="스레드 코드 테스트하기 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>스레드 코드 테스트하기</h2>
+<p>스레드가 하나라면 충분한 테스트로 위험을 낮출 수 있습니다. 하지만 스레드가 두개 이상이면 극도로 복잡해집니다.</p>
+<p><strong>권장사항</strong>: 문제를 노출하는 테스트 케이스를 작성하십시오. 프로그램 설저오가 시스템 설정, 부하를 바꾸어가며 자주 돌리십시오. 테스트가 실패하면 원인을 추적하십시오. ‘다시 돌려보니 잘 돈다’ 라는 이유로 넘어가지 마십시오.</p>
+<p>고려할 사항이 아주 많으므로 아래 구체적 지침을 살펴봅시다:</p>
+<ol>
+<li><a href="#%EC%A7%80%EC%B9%A8-1">말이 안 되는 실패는 잠정적인 스레드 문제로 취급하십시오</a></li>
+<li><a href="#%EC%A7%80%EC%B9%A8-2">다중 스레드를 고려하지 않은 순차 코드부터 제대로 돌게 만드십시오</a></li>
+<li><a href="#%EC%A7%80%EC%B9%A8-3">다중 스레드를 쓰는 코드 부분을 다양한 환경에 쉽게 끼워 넣을 수 있도록 스레드 코드를 구현하십시오</a></li>
+<li><a href="#%EC%A7%80%EC%B9%A8-4">다중 스레드를 쓰는 코드 부분을 상황에 맞춰 조정할 수 있게 작성하십시오</a></li>
+<li><a href="#%EC%A7%80%EC%B9%A8-5">프로세서(Processor) 수보다 많은 스레드를 돌려보십시오</a></li>
+<li><a href="#%EC%A7%80%EC%B9%A8-6">다른 플랫폼에서 돌려보십시오</a></li>
+<li><a href="#%EC%A7%80%EC%B9%A8-7">코드에 보조 코드(instrument)를 넣어 돌리십시오. 강제로 실패를 일으키게 해보십시오</a></li>
+</ol>
+<h3 id="지침-1" style="position:relative;"><a href="#%EC%A7%80%EC%B9%A8-1" aria-label="지침 1 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>지침 1</h3>
+<p>다중 스레드 코드는 진짜 말도 안 되는 오류를 일으킵니다.</p>
+<p>이런 일회성 문제를 꼭 캐치해두고, 잠정적인 스레드 문제로 취급하십시오. 이런 문제는 <em>필연적</em> 일테니까요.</p>
+<p><img src="https://media.tenor.com/QRTVgLglL6AAAAAd/thanos-avengers.gif" alt="I am... inevitable."></p>
+<p><strong>권장사항</strong>: 시스템 실패를 ‘일회성’으로 치부하지 마십시오.</p>
+<h3 id="지침-2" style="position:relative;"><a href="#%EC%A7%80%EC%B9%A8-2" aria-label="지침 2 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>지침 2</h3>
+<p>스레드 환경 밖에서부터 코드가 제대로 도는지 반드시 확인합시다. 문제가 아닌 것을 하나씩 없애는 것으로도 충분히 도움됩니다. 스레드가 호출하는 POJO 단위부터 테스트 코드로 검증합시다.</p>
+<p><strong>권장사항</strong>: 스레드 환경 밖의 버그와 스레드 환경 안의 버그를 동시에 디버깅하지 마십시오. 먼저 스레드 환경 밖에서 코드를 올바르게 테스트 하십시오.</p>
+<h3 id="지침-3" style="position:relative;"><a href="#%EC%A7%80%EC%B9%A8-3" aria-label="지침 3 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>지침 3</h3>
+<p>다중 스레드를 쓰는 코드를 다양한 설정으로 실행하기 쉽게 구현하십시오.</p>
+<ul>
+<li>한 스레드로 실행하거나, 여러 스레드로 실행하거나, 실행 중 스레드 수를 바꿔봅니다.</li>
+<li>스레드 코드를 실제 환경이나 테스트 환경에서 돌려봅니다.</li>
+<li>테스트 코드를 빨리, 천천히, 다양한 속도로 돌려봅니다.</li>
+<li>반복 테스트가 가능하도록 테스트 케이스를 작성합니다.</li>
+</ul>
+<p><strong>권장사항</strong>: 다양한 설정에서 실행할 목적으로 다른 환경에 쉽게 끼워넣을 수 있게 코드를 구현하십시오.</p>
+<h3 id="지침-4" style="position:relative;"><a href="#%EC%A7%80%EC%B9%A8-4" aria-label="지침 4 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>지침 4</h3>
+<p>적절한 스레드 갯수는 서비스 별로 모두 다릅니다. 그러므로 그 스레드 갯수를 조율하기 쉽게 코드를 작성하십시오. 프로그램이 도는 도중에 스레드 개수를 변경하는 방법도 고려해보십시오. 더 나아가 프로그램의 처리율/효율에 따라 스스로 스레드 개수를 조율하는 코드가 되면 이상적일 것입니다.</p>
+<h3 id="지침-5" style="position:relative;"><a href="#%EC%A7%80%EC%B9%A8-5" aria-label="지침 5 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>지침 5</h3>
+<p>시스템이 스레드를 swapping할 때도 문제가 일어날 수 있습니다. swapping을 일으키면 프로세서(processor) 수 보다 많은 스레드를 돌립니다. swapping이 잦을 수록 critical section을 빼먹은 코드나 데드락을 일으키는 코드를 찾기 쉬워집니다.</p>
+<h3 id="지침-6" style="position:relative;"><a href="#%EC%A7%80%EC%B9%A8-6" aria-label="지침 6 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>지침 6</h3>
+<p>다중 스레드 코드는 플랫폼에 따라 다르게 구현될 수 있습니다. 코드가 돌아갈 가능성이 있는 플랫폼 모두에서 테스트를 수행하는 것이 바람직합니다.</p>
+<p><strong>권장사항</strong>: 처음부터 그리고 자주 모든 목표 플랫폼에서 코드를 구동하십시오.</p>
+<h3 id="지침-7" style="position:relative;"><a href="#%EC%A7%80%EC%B9%A8-7" aria-label="지침 7 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>지침 7</h3>
+<p>스레드 코드는 진짜 어쩌다가 한 번 문제를 일으킵니다. 간단한 테스트로는 나오지도 않습니다. 이런 코드는 수많은 경로 중 아주 소수만 실패하기 때문입니다.</p>
+<p><img src="https://media.tenor.com/bh9qpfX5b8cAAAAd/movie-what-will-happen.gif" alt="내가 말 해주면 실현이 안 돼."></p>
+<p>이런 드문 오류를 자주 일으키려면, 코드 실행순서를 바꿔봅시다. 자바라면 <code class="language-text">Object.wait()</code>, <code class="language-text">Object.yield()</code>, <code class="language-text">Object.priority()</code> 등을 추가하여 코드를 다양한 순서로 실행해봅시다.</p>
+<p>(자바기준?) 각 메소드는 스레드가 실행되는 순서에 영향을 미칩니다. 따라서 버그가 드러날 가능성도 높아집니다. 자바라면, <a href="https://www.baeldung.com/java-testing-multithreaded" target="_blank" rel="nofollow noopener noreferrer">이런 게시글</a> 의 라이브러리들을 참고하시는 것도 하나의 방법일 겁니다.</p>
+<h2 id="정리" style="position:relative;"><a href="#%EC%A0%95%EB%A6%AC" aria-label="정리 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>정리</h2>
+<ul>
+<li>다중 스레드 코드는 짜기 힘듭니다! 진짜 왜 일어나는지 모르는 버그가 생길 수 있습니다.</li>
+<li>SRP를 준수해서 짭시다. 이 때 스레드를 아는 코드와 스레드를 몰라도 되는 코드를 분리해서, 최대한 작게 만듭시다.</li>
+<li>잠정적인 원인을 파악합시다. 동시성 오류나 경계 조건으로 인한 문제는 특히나 잡기 어려우니 주의합시다.</li>
+<li>무심코 쓰는 라이브러리와 동시성 처리를 위한 기본 알고리즘을 이해합시다.</li>
+<li>락은 필요한 부분에 작게 답시다. 필요하다면 객체 설계를 바꿀 필요가 있습니다.</li>
+<li>사소한 문제다 싶은 것들도 반드시 기억해두고 테스트해봅시다.</li>
+<li>보조 코드를 만들고 스레드 순서 까지 <em>흔들어서</em> 테스트를 최대한 많이 해보도록 고민해봅시다.</li>
+</ul>
+<p>아래 링크를 통해 추가내용을 살펴보시기를 권장드립니다:</p>
+<ul>
+<li><a href="/404">부록 A 동시성 II</a></li>
+<li><a href="/404">파이썬에서의 동시성 프로그래밍에 대하여(연재글)</a></li>
+</ul>
+<div class="footnotes">
+<hr>
+<ol>
+<li id="fn-1"><a href="https://www.amazon.com/Concurrent-Programming-Java%C2%99-Principles-Pattern/dp/0201310090" target="_blank" rel="nofollow noopener noreferrer">자바 병행 프로그래밍 디자인 원리와 패턴</a>의 저자입니다.  <a href="#fnref-1" class="footnote-backref">↩</a></li>
+<li id="fn-2">문득 <code class="language-text">asyncio</code> 의 이벤트 루프가 생각나서 이런 것도 검색해봤습니다. <a href="https://velog.io/@jihoson94/EventLoopModelInSpring" target="_blank" rel="nofollow noopener noreferrer">이 링크</a>를 읽어보십시오.  <a href="#fnref-2" class="footnote-backref">↩</a></li>
+<li id="fn-3"><a href="/404">이 부분</a>을 살펴보십시오. 요약하자면, (당시 자바 기준) <em>숫자를 더하고 리턴하는 코드</em> 자체는 바이트코드 8개를 씁니다. 이 때 여러 스레드가 이 명령을 뒤섞어서 실행하기만 해도 분기가 정말 많아집니다.  <a href="#fnref-3" class="footnote-backref">↩</a></li>
+<li id="fn-4">아래 링크들이 도움 되었습니다. <br /><a href="https://tourspace.tistory.com/54" target="_blank" rel="nofollow noopener noreferrer">Java의 동기화 Synchronized 개념 정리#1</a><br /><a href="https://tourspace.tistory.com/55" target="_blank" rel="nofollow noopener noreferrer">Java의 동기화 Synchronized 개념 정리#2</a>  <a href="#fnref-4" class="footnote-backref">↩</a></li>
+<li id="fn-5"><a href="https://stackoverflow.com/a/8863671" target="_blank" rel="nofollow noopener noreferrer">이 링크</a> 의 내용이 도움 되었습니다.  <a href="#fnref-5" class="footnote-backref">↩</a></li>
+<li id="fn-6">Tanenbaum의 Modern Operating Systems, Chapter 2 관련 장표가 상당히 도움되었습니다. <a href="http://www.ece.sunysb.edu/~yang/333slides-2010/MOS-3e-02-2010.pdf" target="_blank" rel="nofollow noopener noreferrer">참고링크</a>  <a href="#fnref-6" class="footnote-backref">↩</a></li>
+</ol>
+</div></div></div></div><div class="Post-module--footer--f8705"><div class="Meta-module--meta--dae0a"><p class="Meta-module--date--4d30d">Published<!-- --> <!-- -->Mar 7, 2023</p></div><div class="Tags-module--tags--18589"><ul class="Tags-module--list--82ae6"><li class="Tags-module--item--52015"><a class="Button-module--button--b1113" href="/tag/book-review/">book_review</a></li><li class="Tags-module--item--52015"><a class="Button-module--button--b1113" href="/tag/code-quality/">code_quality</a></li></ul></div><div class="Author-module--author--1c58d"><p class="Non scholæ sed vitæ discimus.">Non scholæ sed vitæ discimus.</p><p class="Author-module--bio--08950">his/him</p></div></div><div class="Post-module--comments--d3b99"><div></div></div></div></div></div><div id="gatsby-announcer" style="position:absolute;top:0;width:1px;height:1px;padding:0;overflow:hidden;clip:rect(0, 0, 0, 0);white-space:nowrap;border:0" aria-live="assertive" aria-atomic="true"></div></div><script id="gatsby-script-loader">/*<![CDATA[*/window.pagePath="/books/clean-code/2023-03-07-pt01";window.___webpackCompilationHash="436197414e9aee0d1aa0";/*]]>*/</script><script id="gatsby-chunk-mapping">/*<![CDATA[*/window.___chunkMapping={"polyfill":["/polyfill-6d1220f2d6731189f865.js"],"app":["/app-64591a30effdaeaa8329.js"],"component---cache-caches-gatsby-plugin-offline-app-shell-js":["/component---cache-caches-gatsby-plugin-offline-app-shell-js-0c915c7b1bdb5eac4fdf.js"],"component---src-templates-categories-template-categories-template-tsx":["/component---src-templates-categories-template-categories-template-tsx-e2d2add397e32e3517ca.js"],"component---src-templates-category-template-category-template-tsx":["/component---src-templates-category-template-category-template-tsx-078f2adfba160a34229f.js"],"component---src-templates-index-template-index-template-tsx":["/component---src-templates-index-template-index-template-tsx-83380c7954c9f6621026.js"],"component---src-templates-not-found-template-not-found-template-tsx":["/component---src-templates-not-found-template-not-found-template-tsx-56fe4d3b015459d56c99.js"],"component---src-templates-page-template-page-template-tsx":["/component---src-templates-page-template-page-template-tsx-c6c21d7369a9356db3a1.js"],"component---src-templates-post-template-post-template-tsx":["/component---src-templates-post-template-post-template-tsx-119cd0258cb38628d01f.js"],"component---src-templates-tag-template-tag-template-tsx":["/component---src-templates-tag-template-tag-template-tsx-8d0b3090e775aa3c4584.js"],"component---src-templates-tags-template-tags-template-tsx":["/component---src-templates-tags-template-tags-template-tsx-30027e87af7d042f3afb.js"]};/*]]>*/</script><script src="/polyfill-6d1220f2d6731189f865.js" nomodule=""></script><script src="/app-64591a30effdaeaa8329.js" async=""></script><script src="/framework-481a1b6416c14416b2fb.js" async=""></script><script src="/webpack-runtime-de5a94456c9c32f6cdb9.js" async=""></script></body></html>

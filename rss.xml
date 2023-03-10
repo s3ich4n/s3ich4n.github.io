@@ -1,4 +1,407 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[팔공산 창고]]></title><description><![CDATA[팔공산 창고]]></description><link>http://github.com/dylang/node-rss</link><generator>GatsbyJS</generator><lastBuildDate>Mon, 20 Feb 2023 15:17:31 GMT</lastBuildDate><item><title><![CDATA[2023년 과제형 코딩 테스트 후기 (2)]]></title><description><![CDATA[2월에 수행한 과제형 코딩 테스트에 대해 리뷰하는 글입니다. 이 글에서는 무엇이 모자랐고, 어떤 것을 집중해야할지 배운 내용에 대해 작성하였습니다.]]></description><link>https://blog.s3ich4n.me/retrospect/2023-02-20-assignment-pt02</link><guid isPermaLink="false">https://blog.s3ich4n.me/retrospect/2023-02-20-assignment-pt02</guid><pubDate>Mon, 20 Feb 2023 18:01:00 GMT</pubDate><content:encoded>&lt;h1 id=&quot;연재-안내&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%97%B0%EC%9E%AC-%EC%95%88%EB%82%B4&quot; aria-label=&quot;연재 안내 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;연재 안내&lt;/h1&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[팔공산 창고]]></title><description><![CDATA[팔공산 창고]]></description><link>http://github.com/dylang/node-rss</link><generator>GatsbyJS</generator><lastBuildDate>Fri, 10 Mar 2023 09:59:26 GMT</lastBuildDate><item><title><![CDATA[클린 코드 스터디 (13): 동시성(Concurrency)]]></title><description><![CDATA[2023년 1월부터 시작한 클린 코드 독파 스터디 후, 매 모임 전 준비하는 게시글을 공유합니다. 이 글은 13장, 동시성(concurrency)에 대해 알아봅니다.]]></description><link>https://blog.s3ich4n.me/books/clean-code/2023-03-07-pt01</link><guid isPermaLink="false">https://blog.s3ich4n.me/books/clean-code/2023-03-07-pt01</guid><pubDate>Tue, 07 Mar 2023 22:51:00 GMT</pubDate><content:encoded>&lt;h1 id=&quot;13-동시성concurrency&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#13-%EB%8F%99%EC%8B%9C%EC%84%B1concurrency&quot; aria-label=&quot;13 동시성concurrency permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;13. 동시성(Concurrency)&lt;/h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;객체는 처리의 추상화다. 스레드는 일정의 추상화다.&lt;/p&gt;
+&lt;p&gt;James. O. Coplien&lt;sup id=&quot;fnref-1&quot;&gt;&lt;a href=&quot;#fn-1&quot; class=&quot;footnote-ref&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;동시성과 깔끔한 코드는 양립하기 매우 힘듭니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;문제 발생 전까지 올바른 원인을 파악하기 매우 힘듭니다.&lt;/li&gt;
+&lt;li&gt;껍데기는 멀쩡하나 깊숙한 곳에 문제가 있는 다중 스레드 코드도 짜기 쉽습니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;이 챕터를 통해 아래 내용을 살펴보겠습니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;여러 스레드/프로세스를 왜 사용하는가?&lt;/li&gt;
+&lt;li&gt;무엇 때문에 동시성이 어려운가?&lt;/li&gt;
+&lt;li&gt;이런 어려움을 대처하고 어떻게 깨끗한 코드를 짤 것인가?&lt;/li&gt;
+&lt;li&gt;테스트 방법 및 구체적 지침&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&quot;일러두기&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%9D%BC%EB%9F%AC%EB%91%90%EA%B8%B0&quot; aria-label=&quot;일러두기 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;일러두기&lt;/h2&gt;
+&lt;p&gt;먼저, 이 아티클에서는 책에서 제시하는 내용을 간략히 살펴볼 예정입니다.저희 스터디에서는 후에 부록 A 동시성 II 를 함께 보면서 더 다뤄볼 예정입니다. 또한 뮤텍스, 세마포어 및 모니터를 각자 살펴보고 각자 자신이 선택한 언어에서 동시성 프로그래밍을 어떤 원칙으로 구현하였는지 살펴볼 예정입니다.&lt;/p&gt;
+&lt;h2 id=&quot;동시성이-필요한-이유&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EB%8F%99%EC%8B%9C%EC%84%B1%EC%9D%B4-%ED%95%84%EC%9A%94%ED%95%9C-%EC%9D%B4%EC%9C%A0&quot; aria-label=&quot;동시성이 필요한 이유 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;동시성이 필요한 이유?&lt;/h2&gt;
+&lt;p&gt;동시성은 결합(coupling)을 없애는 전략입니다. 이는 ‘무엇’과 ‘언제’를 분리하는 전략입니다. 단일 스레드 프로그램은 이 둘이 항상 밀접합니다. 이런 프로그램을 디버깅한다면 breakpoint를 잡고 시스템의 상태를 파악합니다.&lt;/p&gt;
+&lt;p&gt;동시성이 필요하다면 “무엇”과 “언제”를 분리하는 것이 좋습니다. 시스템 상에 큰 루프 하나가 아니라, 작은 협력 프로그램 여럿을 통해 결과를 내는 것을 생각하면 됩니다. 이렇게 만들어진 시스템은 전체 구조파악 및 문제 분리라는 관점에서 수월해집니다.&lt;/p&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;Servelt&lt;/code&gt;이 그 예시입니다. 초기 서블릿은 스레드 풀을 만들고 그 한계에 대해 요청/응답을 처리할 수 있었습니다. &lt;a href=&quot;https://www.oreilly.com/library/view/head-first-servlets/9780596516680/ch04s04.html&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;헤드퍼스트 게시글&lt;/a&gt;을 살펴보시면 이해가 빠를겁니다&lt;sup id=&quot;fnref-2&quot;&gt;&lt;a href=&quot;#fn-2&quot; class=&quot;footnote-ref&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
+&lt;p&gt;그렇지만 이런 구현을 문제없이 하기란 결코 쉽지 않습니다! 구조적 이점에 비해 구현 난이도가 어렵기 때문입니다. 그럼에도 불구하고, 한번에 여러 작업(사용자 요청이 되었건, 연산이 되었건…)을 처리할 수 있는 시스템은 성능 향상을 이끌어낼 수 있습니다.&lt;/p&gt;
+&lt;h3 id=&quot;미신과-오해&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EB%AF%B8%EC%8B%A0%EA%B3%BC-%EC%98%A4%ED%95%B4&quot; aria-label=&quot;미신과 오해 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;미신과 오해&lt;/h3&gt;
+&lt;p&gt;동시성은 어렵습니다. 오해하기 쉬운 것들이 몇가지 있습니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;동시성은 항상 성능을 올린다?
+&lt;ul&gt;
+&lt;li&gt;대기시간이 아주 길어 여러 스레드가 프로세서를 공유할 수 있거나&lt;/li&gt;
+&lt;li&gt;여러 프로세서가 동시에 처리할 독립적 계산이 “충분히” 많아야 성능이 올라갑니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;동시성을 구현해도 설계는 변하지 않는다?
+&lt;ul&gt;
+&lt;li&gt;“무엇”과 “언제”를 분리하는 것은 시스템 자체가 바뀌는 것을 의미합니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;웹, EJB 컨테이너 등을 쓰면 동시성을 몰라도 된다?
+&lt;ul&gt;
+&lt;li&gt;사용하는 프레임워크나 라이브러리의 근간이 어떻게 돌아가는지 알아야합니다. 그래야 동시 수정과 데드락을 어떻게 해결할지 생각할 수 있습니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;그렇지만 아래와 같이 동시성에 대한 타당한 생각을 할 수 있습니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;동시성은 다소 부하를 유발합니다.
+&lt;ul&gt;
+&lt;li&gt;성능 측면에서 부하가 걸립니다.&lt;/li&gt;
+&lt;li&gt;코드도 더 짜야합니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;동시성은 복잡합니다.&lt;/li&gt;
+&lt;li&gt;동시성 버그는 재현하기 어렵습니다. 그래서 이 버그들을 글리치로 오해할 수도 있습니다.&lt;/li&gt;
+&lt;li&gt;동시성을 구현하려면 설계전략을 다시 생각해봐야 합니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&quot;난관&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EB%82%9C%EA%B4%80&quot; aria-label=&quot;난관 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;난관&lt;/h2&gt;
+&lt;p&gt;왜 동시성을 구현하기 어려울까요?&lt;/p&gt;
+&lt;p&gt;자바 진영에서 두 스레드가 동시에 같은 변수를 다루는 케이스를 살펴봅시다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;java&quot;&gt;&lt;pre class=&quot;language-java&quot;&gt;&lt;code class=&quot;language-java&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;X&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;int&lt;/span&gt; listIdUsed&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+    &lt;span class=&quot;token keyword&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;getNextId&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;++&lt;/span&gt;lastIdUsed&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;두 스레드가 &lt;code class=&quot;language-text&quot;&gt;getNextId()&lt;/code&gt; 를 호출한다고 했을 때, 아래 세 경우가 발생합니다.
+264&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;스레드 1이 &lt;code class=&quot;language-text&quot;&gt;43&lt;/code&gt;을 받음. 다른 스레드는 &lt;code class=&quot;language-text&quot;&gt;44&lt;/code&gt;를 받음. &lt;code class=&quot;language-text&quot;&gt;lastIdUsed&lt;/code&gt;는 44가 됨&lt;/li&gt;
+&lt;li&gt;스레드 1이 &lt;code class=&quot;language-text&quot;&gt;44&lt;/code&gt;을 받음. 다른 스레드는 &lt;code class=&quot;language-text&quot;&gt;43&lt;/code&gt;를 받음. &lt;code class=&quot;language-text&quot;&gt;lastIdUsed&lt;/code&gt;는 44가 됨&lt;/li&gt;
+&lt;li&gt;스레드 1이 &lt;code class=&quot;language-text&quot;&gt;43&lt;/code&gt;을 받음. 다른 스레드는 &lt;code class=&quot;language-text&quot;&gt;43&lt;/code&gt;를 받음. &lt;code class=&quot;language-text&quot;&gt;lastIdUsed&lt;/code&gt;는 43이 됨&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;두 스레드가 자바 코드 하나를 읽는 “경로” 를 ”&lt;strong&gt;잘못&lt;/strong&gt;” 내어놓을 수 있습니다. 이 경로는 정말 많습니다. 이를 알기위해선 정확히 JIT 컴파일러가 바이트코드를 다루는 방식과 자바 메모리 모델이 atomic한 연산으로 판단하는 최소 단위를 알아야 합니다&lt;sup id=&quot;fnref-3&quot;&gt;&lt;a href=&quot;#fn-3&quot; class=&quot;footnote-ref&quot;&gt;3&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
+&lt;p&gt;잘못된 결과를 내어놓는 일부 경로로 인해 답이 달라지는 것이 문제이기 때문입니다. 그렇다면 이러한 문제를 회피하는 방안을 살펴봅시다.&lt;/p&gt;
+&lt;h2 id=&quot;동시성-방어-원칙&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EB%8F%99%EC%8B%9C%EC%84%B1-%EB%B0%A9%EC%96%B4-%EC%9B%90%EC%B9%99&quot; aria-label=&quot;동시성 방어 원칙 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;동시성 방어 원칙&lt;/h2&gt;
+&lt;h3 id=&quot;srp&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#srp&quot; aria-label=&quot;srp permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;SRP&lt;/h3&gt;
+&lt;p&gt;동시성을 다루는 코드는 최대한 작게 만듭시다! 아래 사항을 고려하여 제작하는 편이 좋습니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;동시성 코드는 독자적인 개발, 변경, 조율 주기가 있습니다.&lt;/li&gt;
+&lt;li&gt;잘못 구현한 동시성 코드는 어디로 튈지 모릅니다.&lt;/li&gt;
+&lt;li&gt;동시성 코드는 독자적 난관이 있습니다. 다른 코드를 짤 때와는 다르며, 훨씬 어렵습니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;권장사항&lt;/strong&gt;: 동시성 코드는 다른 코드와 분리합시다.&lt;/p&gt;
+&lt;h3 id=&quot;따름-정리corollary-자료-범위-제한&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EB%94%B0%EB%A6%84-%EC%A0%95%EB%A6%ACcorollary-%EC%9E%90%EB%A3%8C-%EB%B2%94%EC%9C%84-%EC%A0%9C%ED%95%9C&quot; aria-label=&quot;따름 정리corollary 자료 범위 제한 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;따름 정리(Corollary): 자료 범위 제한&lt;/h3&gt;
+&lt;p&gt;critical section을 보호할 필요가 있습니다. 예를들어 자바에서는 &lt;code class=&quot;language-text&quot;&gt;synchronized&lt;/code&gt; 라는 키워드가 있지요.&lt;sup id=&quot;fnref-4&quot;&gt;&lt;a href=&quot;#fn-4&quot; class=&quot;footnote-ref&quot;&gt;4&lt;/a&gt;&lt;/sup&gt;이런 critical section을 많이 줄이는 것도 필요합니다. 공유 자료를 수정하는 위치가 많아질 수록 다음 가능성도 커집니다:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;보호할 critical section을 빼먹을 수 있습니다. 이는 공유 자료를 수정하는 모든 코드가 망가지는 원인이 됩니다.&lt;/li&gt;
+&lt;li&gt;모든 critical section이 보호되었는지 확인하느라 노력과 수고를 기울이게 됩니다.&lt;/li&gt;
+&lt;li&gt;버그 찾기가 더 힘들어집니다…&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;권장사항&lt;/strong&gt;: 자료를 캡슐화하고 공유자료를 최대한 줄입시다.&lt;/p&gt;
+&lt;h3 id=&quot;corollary-자료-사본을-사용하기&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#corollary-%EC%9E%90%EB%A3%8C-%EC%82%AC%EB%B3%B8%EC%9D%84-%EC%82%AC%EC%9A%A9%ED%95%98%EA%B8%B0&quot; aria-label=&quot;corollary 자료 사본을 사용하기 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Corollary: 자료 사본을 사용하기&lt;/h3&gt;
+&lt;p&gt;가능한 객체 자체를 복사하여 읽기 전용으로 씁시다. 객체를 복사하는 시간과 부하가 걱정된다면 실측해서 비교해봅시다.&lt;/p&gt;
+&lt;h3 id=&quot;corollary-스레드는-독립적으로-구현합시다&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#corollary-%EC%8A%A4%EB%A0%88%EB%93%9C%EB%8A%94-%EB%8F%85%EB%A6%BD%EC%A0%81%EC%9C%BC%EB%A1%9C-%EA%B5%AC%ED%98%84%ED%95%A9%EC%8B%9C%EB%8B%A4&quot; aria-label=&quot;corollary 스레드는 독립적으로 구현합시다 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Corollary: 스레드는 독립적으로 구현합시다.&lt;/h3&gt;
+&lt;p&gt;각 스레드가 독자적인 시스템에서 동작하는 것 처럼 처리합시다.&lt;/p&gt;
+&lt;p&gt;권장사항: 프로그램을 독자적인 스레드로(가능하면 다른 프로세서에서) 구동해도 괜찮도록 자료를 독립적인 단위로 분할합시다.&lt;/p&gt;
+&lt;h2 id=&quot;라이브러리를-이해하십시오&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EB%9D%BC%EC%9D%B4%EB%B8%8C%EB%9F%AC%EB%A6%AC%EB%A5%BC-%EC%9D%B4%ED%95%B4%ED%95%98%EC%8B%AD%EC%8B%9C%EC%98%A4&quot; aria-label=&quot;라이브러리를 이해하십시오 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;라이브러리를 이해하십시오&lt;/h2&gt;
+&lt;p&gt;자바 5 등의 과거 얘기가 주로 나오지만, 핵심을 짚읍시다.&lt;/p&gt;
+&lt;h3 id=&quot;thread-safe-컬렉션-관련&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#thread-safe-%EC%BB%AC%EB%A0%89%EC%85%98-%EA%B4%80%EB%A0%A8&quot; aria-label=&quot;thread safe 컬렉션 관련 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Thread-safe 컬렉션 관련&lt;/h3&gt;
+&lt;p&gt;언어별로 스레드 간 공유해도 사용할 수 있는 컬렉션을 사용합시다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;권장사항&lt;/strong&gt;: 언어가 제공하는 클래스를 검토하십시오.&lt;/p&gt;
+&lt;h2 id=&quot;실행-모델을-이해하십시오&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%8B%A4%ED%96%89-%EB%AA%A8%EB%8D%B8%EC%9D%84-%EC%9D%B4%ED%95%B4%ED%95%98%EC%8B%AD%EC%8B%9C%EC%98%A4&quot; aria-label=&quot;실행 모델을 이해하십시오 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;실행 모델을 이해하십시오&lt;/h2&gt;
+&lt;p&gt;다중 스레드 애플리케이션을 분류하는 방식은 여러가지 입니다. 기본용어부터 이해해봅시다.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;용어&lt;/th&gt;
+&lt;th&gt;설명&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Bound Resource&lt;/td&gt;
+&lt;td&gt;다중 스레드 환경에서 사용하는 자원으로, 크기나 숫자가 제한적임.&lt;br /&gt;DB 연결, 길이가 일정한 읽기/쓰기 버퍼 등.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Mutual Exclusion&lt;/td&gt;
+&lt;td&gt;한 번에 한 스레드만 공유 자료나 공유 자원을 사용할 수 있는 경우.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Starvation&lt;/td&gt;
+&lt;td&gt;한 스레드나 여러 스레드가 영원히/오랫동안 자원을 기다리는 경우.&lt;br /&gt;항상 짧은 스레드에만 우선순위를 주면 긴 스레드는 굶어죽는다.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Deadlock&lt;/td&gt;
+&lt;td&gt;여러 스레드가 서로 끝나기를 기다리는 경우. 이러면 서로 기다리니까 진행이 안된다.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Livelock&lt;/td&gt;
+&lt;td&gt;락을 거는 단게에서 각 스레드가 서로를 방해하는 경우. &lt;em&gt;‘상대 스레드가 점유중이다’&lt;/em&gt; 라는 상황을 서로 바라보는 탓에 영원히/오랫동안 대기하는 경우를 의미한다.&lt;sup id=&quot;fnref-5&quot;&gt;&lt;a href=&quot;#fn-5&quot; class=&quot;footnote-ref&quot;&gt;5&lt;/a&gt;&lt;/sup&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;아래에는 다중 스레드 프로그래밍에서 사용하는 실행 모델을 살펴봅시다&lt;sup id=&quot;fnref-6&quot;&gt;&lt;a href=&quot;#fn-6&quot; class=&quot;footnote-ref&quot;&gt;6&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
+&lt;h3 id=&quot;생산자-소비자producer-consumer-문제&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%83%9D%EC%82%B0%EC%9E%90-%EC%86%8C%EB%B9%84%EC%9E%90producer-consumer-%EB%AC%B8%EC%A0%9C&quot; aria-label=&quot;생산자 소비자producer consumer 문제 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;생산자-소비자(Producer-Consumer) 문제&lt;/h3&gt;
+&lt;p&gt;생산자 스레드가 정보를 생성하여 버퍼나 큐에 넣고, 소비자 스레드가 이를 가져와 사용하며, 서로에게 정보 여부를 확인하는 시그널을 주고받는 것이 기본 가정입니다. 잘못하면 생산자, 소비자 모두 진행 가능하지만 동시에 &lt;strong&gt;서로에게서 시그널을 기다릴 가능성이 존재&lt;/strong&gt;합니다.&lt;/p&gt;
+&lt;p&gt;데드락을 어떻게 풀어나갈지 논의하는 문제입니다.&lt;/p&gt;
+&lt;p&gt;상세한 내용은 &lt;a href=&quot;https://en.wikipedia.org/wiki/Producer%E2%80%93consumer_problem&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;영문 위키백과 글&lt;/a&gt;을 참고하여 주시길 바랍니다.&lt;/p&gt;
+&lt;h3 id=&quot;읽기-쓰기readers-writers-문제&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%9D%BD%EA%B8%B0-%EC%93%B0%EA%B8%B0readers-writers-%EB%AC%B8%EC%A0%9C&quot; aria-label=&quot;읽기 쓰기readers writers 문제 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;읽기-쓰기(Readers-Writers) 문제&lt;/h3&gt;
+&lt;p&gt;읽기 스레드를 위한 주된 정보원으로 공유 자원을 사용하지만, 쓰기 스레드가 이 공유 자원을 이따금 갱신하는 것이 기본 가정입니다. &lt;strong&gt;처리율(throughput)이 높아지면 Starvation이 생겨&lt;/strong&gt; 오래된 정보가 쌓이지만, &lt;strong&gt;갱신을 허용하면 처리율에 영향을 미칩&lt;/strong&gt;니다.&lt;/p&gt;
+&lt;p&gt;쓰기 스레드와 읽기 스레드 양쪽의 균형을 잡는 방안에 대해 논의하는 문제입니다.&lt;/p&gt;
+&lt;p&gt;상세한 내용은 &lt;a href=&quot;https://en.wikipedia.org/wiki/Readers%E2%80%93writers_problem&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;영문 위키백과 글&lt;/a&gt;을 참고하여 주시길 바랍니다.&lt;/p&gt;
+&lt;h3 id=&quot;식사하는-철학자들dining-philosophers-문제&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%8B%9D%EC%82%AC%ED%95%98%EB%8A%94-%EC%B2%A0%ED%95%99%EC%9E%90%EB%93%A4dining-philosophers-%EB%AC%B8%EC%A0%9C&quot; aria-label=&quot;식사하는 철학자들dining philosophers 문제 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;식사하는 철학자들(Dining Philosophers) 문제&lt;/h3&gt;
+&lt;p&gt;이런 내용입니다. 그림과 함께 살펴보시죠.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;둥근 식탁에 철학자들이 둘러 앉아서 식사를 하려 합니다.&lt;/p&gt;
+&lt;p&gt;각 철학자 왼쪽에는 젓가락이 있고, 식탁 가운데는 큰 스파게티 접시가 있습니다.&lt;/p&gt;
+&lt;p&gt;이들은 배가 고프면 젓가락 두 개를 가지고 먹어야 합니다.&lt;/p&gt;
+&lt;p&gt;자신의 좌측 또는 우측 철학자가 젓가락을 쓰는 중이라면, 젓가락을 내려놓을 때 까지 기다려야 합니다.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;figure class=&quot;gatsby-resp-image-figure&quot; style=&quot;&quot;&gt;
+    &lt;span
+      class=&quot;gatsby-resp-image-wrapper&quot;
+      style=&quot;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 244px; &quot;
+    &gt;
+      &lt;a
+    class=&quot;gatsby-resp-image-link&quot;
+    href=&quot;/static/a8f4bb560aada3dd7d45cc9da0bc25c5/603fe/001.jpg&quot;
+    style=&quot;display: block&quot;
+    target=&quot;_blank&quot;
+    rel=&quot;noopener&quot;
+  &gt;
+    &lt;span
+    class=&quot;gatsby-resp-image-background-image&quot;
+    style=&quot;padding-bottom: 96.25000000000001%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/jpeg;base64,/9j/2wBDABALDA4MChAODQ4SERATGCgaGBYWGDEjJR0oOjM9PDkzODdASFxOQERXRTc4UG1RV19iZ2hnPk1xeXBkeFxlZ2P/2wBDARESEhgVGC8aGi9jQjhCY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2P/wgARCAATABQDASIAAhEBAxEB/8QAFwABAQEBAAAAAAAAAAAAAAAAAAQCBf/EABQBAQAAAAAAAAAAAAAAAAAAAAD/2gAMAwEAAhADEAAAAethgtSCyELwf//EAB4QAAIBAwUAAAAAAAAAAAAAAAECAAMEEhAREyEx/9oACAEBAAEFAqwJjMWVd8cXip2OaHy20//EABQRAQAAAAAAAAAAAAAAAAAAACD/2gAIAQMBAT8BH//EABQRAQAAAAAAAAAAAAAAAAAAACD/2gAIAQIBAT8BH//EABsQAAEEAwAAAAAAAAAAAAAAAAABEBEhAhIx/9oACAEBAAY/AksiRJ6LtZT5N//EAB4QAAICAgIDAAAAAAAAAAAAAAABESExcRBBUYGh/9oACAEBAAE/IWjqK8EWItMVEPPZileiasibKfg1utoyaM/Tj//aAAwDAQACAAMAAAAQIM88/8QAFBEBAAAAAAAAAAAAAAAAAAAAIP/aAAgBAwEBPxAf/8QAFBEBAAAAAAAAAAAAAAAAAAAAIP/aAAgBAgEBPxAf/8QAHxABAAIBAwUAAAAAAAAAAAAAAQARIRAxcUFhgaHB/9oACAEBAAE/EEhm5DWejHD0S2hZRzjkZahBZ7jsG0ehXmwwBRGgNa8T30V8f1p//9k=&apos;); background-size: cover; display: block;&quot;
+  &gt;&lt;/span&gt;
+  &lt;picture&gt;
+          &lt;source
+              srcset=&quot;/static/a8f4bb560aada3dd7d45cc9da0bc25c5/8ac56/001.webp 240w,
+/static/a8f4bb560aada3dd7d45cc9da0bc25c5/d4674/001.webp 244w&quot;
+              sizes=&quot;(max-width: 244px) 100vw, 244px&quot;
+              type=&quot;image/webp&quot;
+            /&gt;
+          &lt;source
+            srcset=&quot;/static/a8f4bb560aada3dd7d45cc9da0bc25c5/09b79/001.jpg 240w,
+/static/a8f4bb560aada3dd7d45cc9da0bc25c5/603fe/001.jpg 244w&quot;
+            sizes=&quot;(max-width: 244px) 100vw, 244px&quot;
+            type=&quot;image/jpeg&quot;
+          /&gt;
+          &lt;img
+            class=&quot;gatsby-resp-image-image&quot;
+            src=&quot;/static/a8f4bb560aada3dd7d45cc9da0bc25c5/603fe/001.jpg&quot;
+            alt=&quot;Dining Philosophers Problem&quot;
+            title=&quot;Dining Philosophers Problem&quot;
+            loading=&quot;lazy&quot;
+            decoding=&quot;async&quot;
+            style=&quot;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&quot;
+          /&gt;
+        &lt;/picture&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;
+    &lt;figcaption class=&quot;gatsby-resp-image-figcaption&quot;&gt;&lt;p&gt;Dining Philosophers Problem&lt;/p&gt;&lt;/figcaption&gt;
+  &lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;이 문제는 철학자를 스레드로, 포크를 리소스로 생각해보면 됩니다. 프로그램 내에서 여러 프로세스가 리소스를 얻기 위해 경쟁해야 합니다. 주의해서 설계하지 않으면 데드락, 라이브락, throughput 저하, 효율 저하가 생기지요.&lt;/p&gt;
+&lt;p&gt;상세한 내용은 &lt;a href=&quot;https://en.wikipedia.org/wiki/Dining_philosophers_problem&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;영문 위키백과 글&lt;/a&gt;을 참고하여 주시길 바랍니다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;권장사항&lt;/strong&gt;: 위에서 설명한 기본 알고리즘과 각 해법을 이해합시다.&lt;/p&gt;
+&lt;h2 id=&quot;동기화하는-메소드-사이에-존재하는-의존성을-이해합시다&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EB%8F%99%EA%B8%B0%ED%99%94%ED%95%98%EB%8A%94-%EB%A9%94%EC%86%8C%EB%93%9C-%EC%82%AC%EC%9D%B4%EC%97%90-%EC%A1%B4%EC%9E%AC%ED%95%98%EB%8A%94-%EC%9D%98%EC%A1%B4%EC%84%B1%EC%9D%84-%EC%9D%B4%ED%95%B4%ED%95%A9%EC%8B%9C%EB%8B%A4&quot; aria-label=&quot;동기화하는 메소드 사이에 존재하는 의존성을 이해합시다 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;동기화하는 메소드 사이에 존재하는 의존성을 이해합시다&lt;/h2&gt;
+&lt;p&gt;동기화하는 메소드 사이에 의존성이 존재하면 동시성 코드에 찾기 힘든 버그가 생깁니다. 자바는 개별 메소드를 보호하는 &lt;code class=&quot;language-text&quot;&gt;synchronized&lt;/code&gt; 라는 개념이 있습니다. 하지만 공유 클래스 하나에 동기화된 메소드가 여럿이라면 구현이 올바른지 체크해야 합니다. 이는 &lt;a href=&quot;&quot;&gt;부록 A 동시성 II의 “메소드 사이에서 존재하는 의존성을 조심하라”&lt;/a&gt; 를 참조해주십시오.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;권장사항&lt;/strong&gt;: 공유 객체 하나에는 메소드 하나만 사용합시다.&lt;/p&gt;
+&lt;p&gt;공유 객체 하나에 여러 메소드가 필요한 상황도 생깁니다. 그럴 떄는 아래 세가지 방법을 고려합시다&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;클라이언트에서 잠금
+&lt;ul&gt;
+&lt;li&gt;클라이언트에서 첫 번째 메소드를 호출하기 전 서버를 잠급니다.&lt;/li&gt;
+&lt;li&gt;마지막 메소드를 호출할 때 까지 잠금을 유지합니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;서버에서 잠금
+&lt;ul&gt;
+&lt;li&gt;서버에 아래 메소드를 구현합니다:&lt;/li&gt;
+&lt;li&gt;서버를 잠그고 모든 메소드를 호출한 후 잠금을 해제한다&lt;/li&gt;
+&lt;li&gt;클라이언트는 상기 메소드를 호출합니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;연결서버(Adapted Server)
+&lt;ul&gt;
+&lt;li&gt;잠금을 수행하는 중간단계를 생성합니다.&lt;/li&gt;
+&lt;li&gt;서버에서 잠금 방식과 유사하지만, 원래 서버를 변경하지 않습니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&quot;동기화하는-부분을-작게-만드십시오&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EB%8F%99%EA%B8%B0%ED%99%94%ED%95%98%EB%8A%94-%EB%B6%80%EB%B6%84%EC%9D%84-%EC%9E%91%EA%B2%8C-%EB%A7%8C%EB%93%9C%EC%8B%AD%EC%8B%9C%EC%98%A4&quot; aria-label=&quot;동기화하는 부분을 작게 만드십시오 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;동기화하는 부분을 작게 만드십시오&lt;/h2&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;synchronized&lt;/code&gt; 를 사용하여 락을 설정한 모든 코드 영역은 한 번에 한 스레드만 실행이 가능합니다. 락은 스레드를 지연시키고 부하를 가중하기 때문에 필요한 critical section만을 감싸야 합니다.&lt;/p&gt;
+&lt;h2 id=&quot;올바른-종료코드는-구현하기-어렵습니다&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%98%AC%EB%B0%94%EB%A5%B8-%EC%A2%85%EB%A3%8C%EC%BD%94%EB%93%9C%EB%8A%94-%EA%B5%AC%ED%98%84%ED%95%98%EA%B8%B0-%EC%96%B4%EB%A0%B5%EC%8A%B5%EB%8B%88%EB%8B%A4&quot; aria-label=&quot;올바른 종료코드는 구현하기 어렵습니다 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;올바른 종료코드는 구현하기 어렵습니다&lt;/h2&gt;
+&lt;p&gt;깔끔하게 종료하는 코드를 잘 짜기는 어렵습니다. 아래 두 케이스로 살펴봅시다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;부모 스레드가 자식 스레드를 여럿 만들고 모두 끝나는 시그널을 대기한다고 가정합시다. 자식 스레드 하나가 데드락에 걸리면, 부모도 자식도 모두 영원히 대기하겠지요.&lt;/li&gt;
+&lt;li&gt;부모 스레드가 자식 스레드에게 종료하라는 시그널을 전달했다고 가정합시다. 그런데 두 자식 스레드가 서로 생산자/소비자 관계였고 하필이면 생산자가 먼저 죽어서 소비자가 블록되어서 종료 시그널을 못 받는다면 영원히 대기하겠지요.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;그런고로 깔끔하게 종료하는 다중 스레드 코드는 공을들여 올바르게 구현해야 할 것입니다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;권장사항&lt;/strong&gt;: 종료 코드를 개발 초기부터 잘 고민하고 동작하게 초기부터 구현하십시오. 이미 나온 좋은 알고리즘을 검토하여 사용하십시오.&lt;/p&gt;
+&lt;h2 id=&quot;스레드-코드-테스트하기&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%8A%A4%EB%A0%88%EB%93%9C-%EC%BD%94%EB%93%9C-%ED%85%8C%EC%8A%A4%ED%8A%B8%ED%95%98%EA%B8%B0&quot; aria-label=&quot;스레드 코드 테스트하기 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;스레드 코드 테스트하기&lt;/h2&gt;
+&lt;p&gt;스레드가 하나라면 충분한 테스트로 위험을 낮출 수 있습니다. 하지만 스레드가 두개 이상이면 극도로 복잡해집니다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;권장사항&lt;/strong&gt;: 문제를 노출하는 테스트 케이스를 작성하십시오. 프로그램 설저오가 시스템 설정, 부하를 바꾸어가며 자주 돌리십시오. 테스트가 실패하면 원인을 추적하십시오. ‘다시 돌려보니 잘 돈다’ 라는 이유로 넘어가지 마십시오.&lt;/p&gt;
+&lt;p&gt;고려할 사항이 아주 많으므로 아래 구체적 지침을 살펴봅시다:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;a href=&quot;#%EC%A7%80%EC%B9%A8-1&quot;&gt;말이 안 되는 실패는 잠정적인 스레드 문제로 취급하십시오&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;#%EC%A7%80%EC%B9%A8-2&quot;&gt;다중 스레드를 고려하지 않은 순차 코드부터 제대로 돌게 만드십시오&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;#%EC%A7%80%EC%B9%A8-3&quot;&gt;다중 스레드를 쓰는 코드 부분을 다양한 환경에 쉽게 끼워 넣을 수 있도록 스레드 코드를 구현하십시오&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;#%EC%A7%80%EC%B9%A8-4&quot;&gt;다중 스레드를 쓰는 코드 부분을 상황에 맞춰 조정할 수 있게 작성하십시오&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;#%EC%A7%80%EC%B9%A8-5&quot;&gt;프로세서(Processor) 수보다 많은 스레드를 돌려보십시오&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;#%EC%A7%80%EC%B9%A8-6&quot;&gt;다른 플랫폼에서 돌려보십시오&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;#%EC%A7%80%EC%B9%A8-7&quot;&gt;코드에 보조 코드(instrument)를 넣어 돌리십시오. 강제로 실패를 일으키게 해보십시오&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&quot;지침-1&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%A7%80%EC%B9%A8-1&quot; aria-label=&quot;지침 1 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;지침 1&lt;/h3&gt;
+&lt;p&gt;다중 스레드 코드는 진짜 말도 안 되는 오류를 일으킵니다.&lt;/p&gt;
+&lt;p&gt;이런 일회성 문제를 꼭 캐치해두고, 잠정적인 스레드 문제로 취급하십시오. 이런 문제는 &lt;em&gt;필연적&lt;/em&gt; 일테니까요.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://media.tenor.com/QRTVgLglL6AAAAAd/thanos-avengers.gif&quot; alt=&quot;I am... inevitable.&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;권장사항&lt;/strong&gt;: 시스템 실패를 ‘일회성’으로 치부하지 마십시오.&lt;/p&gt;
+&lt;h3 id=&quot;지침-2&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%A7%80%EC%B9%A8-2&quot; aria-label=&quot;지침 2 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;지침 2&lt;/h3&gt;
+&lt;p&gt;스레드 환경 밖에서부터 코드가 제대로 도는지 반드시 확인합시다. 문제가 아닌 것을 하나씩 없애는 것으로도 충분히 도움됩니다. 스레드가 호출하는 POJO 단위부터 테스트 코드로 검증합시다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;권장사항&lt;/strong&gt;: 스레드 환경 밖의 버그와 스레드 환경 안의 버그를 동시에 디버깅하지 마십시오. 먼저 스레드 환경 밖에서 코드를 올바르게 테스트 하십시오.&lt;/p&gt;
+&lt;h3 id=&quot;지침-3&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%A7%80%EC%B9%A8-3&quot; aria-label=&quot;지침 3 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;지침 3&lt;/h3&gt;
+&lt;p&gt;다중 스레드를 쓰는 코드를 다양한 설정으로 실행하기 쉽게 구현하십시오.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;한 스레드로 실행하거나, 여러 스레드로 실행하거나, 실행 중 스레드 수를 바꿔봅니다.&lt;/li&gt;
+&lt;li&gt;스레드 코드를 실제 환경이나 테스트 환경에서 돌려봅니다.&lt;/li&gt;
+&lt;li&gt;테스트 코드를 빨리, 천천히, 다양한 속도로 돌려봅니다.&lt;/li&gt;
+&lt;li&gt;반복 테스트가 가능하도록 테스트 케이스를 작성합니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;권장사항&lt;/strong&gt;: 다양한 설정에서 실행할 목적으로 다른 환경에 쉽게 끼워넣을 수 있게 코드를 구현하십시오.&lt;/p&gt;
+&lt;h3 id=&quot;지침-4&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%A7%80%EC%B9%A8-4&quot; aria-label=&quot;지침 4 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;지침 4&lt;/h3&gt;
+&lt;p&gt;적절한 스레드 갯수는 서비스 별로 모두 다릅니다. 그러므로 그 스레드 갯수를 조율하기 쉽게 코드를 작성하십시오. 프로그램이 도는 도중에 스레드 개수를 변경하는 방법도 고려해보십시오. 더 나아가 프로그램의 처리율/효율에 따라 스스로 스레드 개수를 조율하는 코드가 되면 이상적일 것입니다.&lt;/p&gt;
+&lt;h3 id=&quot;지침-5&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%A7%80%EC%B9%A8-5&quot; aria-label=&quot;지침 5 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;지침 5&lt;/h3&gt;
+&lt;p&gt;시스템이 스레드를 swapping할 때도 문제가 일어날 수 있습니다. swapping을 일으키면 프로세서(processor) 수 보다 많은 스레드를 돌립니다. swapping이 잦을 수록 critical section을 빼먹은 코드나 데드락을 일으키는 코드를 찾기 쉬워집니다.&lt;/p&gt;
+&lt;h3 id=&quot;지침-6&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%A7%80%EC%B9%A8-6&quot; aria-label=&quot;지침 6 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;지침 6&lt;/h3&gt;
+&lt;p&gt;다중 스레드 코드는 플랫폼에 따라 다르게 구현될 수 있습니다. 코드가 돌아갈 가능성이 있는 플랫폼 모두에서 테스트를 수행하는 것이 바람직합니다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;권장사항&lt;/strong&gt;: 처음부터 그리고 자주 모든 목표 플랫폼에서 코드를 구동하십시오.&lt;/p&gt;
+&lt;h3 id=&quot;지침-7&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%A7%80%EC%B9%A8-7&quot; aria-label=&quot;지침 7 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;지침 7&lt;/h3&gt;
+&lt;p&gt;스레드 코드는 진짜 어쩌다가 한 번 문제를 일으킵니다. 간단한 테스트로는 나오지도 않습니다. 이런 코드는 수많은 경로 중 아주 소수만 실패하기 때문입니다.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://media.tenor.com/bh9qpfX5b8cAAAAd/movie-what-will-happen.gif&quot; alt=&quot;내가 말 해주면 실현이 안 돼.&quot;&gt;&lt;/p&gt;
+&lt;p&gt;이런 드문 오류를 자주 일으키려면, 코드 실행순서를 바꿔봅시다. 자바라면 &lt;code class=&quot;language-text&quot;&gt;Object.wait()&lt;/code&gt;, &lt;code class=&quot;language-text&quot;&gt;Object.yield()&lt;/code&gt;, &lt;code class=&quot;language-text&quot;&gt;Object.priority()&lt;/code&gt; 등을 추가하여 코드를 다양한 순서로 실행해봅시다.&lt;/p&gt;
+&lt;p&gt;(자바기준?) 각 메소드는 스레드가 실행되는 순서에 영향을 미칩니다. 따라서 버그가 드러날 가능성도 높아집니다. 자바라면, &lt;a href=&quot;https://www.baeldung.com/java-testing-multithreaded&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;이런 게시글&lt;/a&gt; 의 라이브러리들을 참고하시는 것도 하나의 방법일 겁니다.&lt;/p&gt;
+&lt;h2 id=&quot;정리&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%A0%95%EB%A6%AC&quot; aria-label=&quot;정리 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;정리&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;다중 스레드 코드는 짜기 힘듭니다! 진짜 왜 일어나는지 모르는 버그가 생길 수 있습니다.&lt;/li&gt;
+&lt;li&gt;SRP를 준수해서 짭시다. 이 때 스레드를 아는 코드와 스레드를 몰라도 되는 코드를 분리해서, 최대한 작게 만듭시다.&lt;/li&gt;
+&lt;li&gt;잠정적인 원인을 파악합시다. 동시성 오류나 경계 조건으로 인한 문제는 특히나 잡기 어려우니 주의합시다.&lt;/li&gt;
+&lt;li&gt;무심코 쓰는 라이브러리와 동시성 처리를 위한 기본 알고리즘을 이해합시다.&lt;/li&gt;
+&lt;li&gt;락은 필요한 부분에 작게 답시다. 필요하다면 객체 설계를 바꿀 필요가 있습니다.&lt;/li&gt;
+&lt;li&gt;사소한 문제다 싶은 것들도 반드시 기억해두고 테스트해봅시다.&lt;/li&gt;
+&lt;li&gt;보조 코드를 만들고 스레드 순서 까지 &lt;em&gt;흔들어서&lt;/em&gt; 테스트를 최대한 많이 해보도록 고민해봅시다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;아래 링크를 통해 추가내용을 살펴보시기를 권장드립니다:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;/404&quot;&gt;부록 A 동시성 II&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;/404&quot;&gt;파이썬에서의 동시성 프로그래밍에 대하여(연재글)&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&quot;footnotes&quot;&gt;
+&lt;hr&gt;
+&lt;ol&gt;
+&lt;li id=&quot;fn-1&quot;&gt;&lt;a href=&quot;https://www.amazon.com/Concurrent-Programming-Java%C2%99-Principles-Pattern/dp/0201310090&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;자바 병행 프로그래밍 디자인 원리와 패턴&lt;/a&gt;의 저자입니다.  &lt;a href=&quot;#fnref-1&quot; class=&quot;footnote-backref&quot;&gt;↩&lt;/a&gt;&lt;/li&gt;
+&lt;li id=&quot;fn-2&quot;&gt;문득 &lt;code class=&quot;language-text&quot;&gt;asyncio&lt;/code&gt; 의 이벤트 루프가 생각나서 이런 것도 검색해봤습니다. &lt;a href=&quot;https://velog.io/@jihoson94/EventLoopModelInSpring&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;이 링크&lt;/a&gt;를 읽어보십시오.  &lt;a href=&quot;#fnref-2&quot; class=&quot;footnote-backref&quot;&gt;↩&lt;/a&gt;&lt;/li&gt;
+&lt;li id=&quot;fn-3&quot;&gt;&lt;a href=&quot;/404&quot;&gt;이 부분&lt;/a&gt;을 살펴보십시오. 요약하자면, (당시 자바 기준) &lt;em&gt;숫자를 더하고 리턴하는 코드&lt;/em&gt; 자체는 바이트코드 8개를 씁니다. 이 때 여러 스레드가 이 명령을 뒤섞어서 실행하기만 해도 분기가 정말 많아집니다.  &lt;a href=&quot;#fnref-3&quot; class=&quot;footnote-backref&quot;&gt;↩&lt;/a&gt;&lt;/li&gt;
+&lt;li id=&quot;fn-4&quot;&gt;아래 링크들이 도움 되었습니다. &lt;br /&gt;&lt;a href=&quot;https://tourspace.tistory.com/54&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;Java의 동기화 Synchronized 개념 정리#1&lt;/a&gt;&lt;br /&gt;&lt;a href=&quot;https://tourspace.tistory.com/55&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;Java의 동기화 Synchronized 개념 정리#2&lt;/a&gt;  &lt;a href=&quot;#fnref-4&quot; class=&quot;footnote-backref&quot;&gt;↩&lt;/a&gt;&lt;/li&gt;
+&lt;li id=&quot;fn-5&quot;&gt;&lt;a href=&quot;https://stackoverflow.com/a/8863671&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;이 링크&lt;/a&gt; 의 내용이 도움 되었습니다.  &lt;a href=&quot;#fnref-5&quot; class=&quot;footnote-backref&quot;&gt;↩&lt;/a&gt;&lt;/li&gt;
+&lt;li id=&quot;fn-6&quot;&gt;Tanenbaum의 Modern Operating Systems, Chapter 2 관련 장표가 상당히 도움되었습니다. &lt;a href=&quot;http://www.ece.sunysb.edu/~yang/333slides-2010/MOS-3e-02-2010.pdf&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;참고링크&lt;/a&gt;  &lt;a href=&quot;#fnref-6&quot; class=&quot;footnote-backref&quot;&gt;↩&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;</content:encoded></item><item><title><![CDATA[클린 코드 스터디 (12): 창발성(Emergence)]]></title><description><![CDATA[2023년 1월부터 시작한 클린 코드 독파 스터디 후, 매 모임 전 준비하는 게시글을 공유합니다. 이 글은 12장, 창발성(Emergence)에 대해 알아봅니다.]]></description><link>https://blog.s3ich4n.me/books/clean-code/2023-02-24-pt01</link><guid isPermaLink="false">https://blog.s3ich4n.me/books/clean-code/2023-02-24-pt01</guid><pubDate>Fri, 24 Feb 2023 22:51:00 GMT</pubDate><content:encoded>&lt;h1 id=&quot;12-창발성emergence&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#12-%EC%B0%BD%EB%B0%9C%EC%84%B1emergence&quot; aria-label=&quot;12 창발성emergence permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;12. 창발성(Emergence)&lt;/h1&gt;
+&lt;p&gt;&lt;strong&gt;emergence&lt;/strong&gt; [ ih-&lt;strong&gt;mur&lt;/strong&gt;-ju&lt;em&gt;h&lt;/em&gt;ns ]&lt;/p&gt;
+&lt;p&gt;noun.&lt;/p&gt;
+&lt;ol start=&quot;3&quot;&gt;
+&lt;li&gt;&lt;em&gt;Evolution.&lt;/em&gt; the appearance of new properties or species in the course of development or evolution.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;p&gt;그렇다면, 코드를 어떻게 꽃피울지에 대한 접근방법을 알아봅시다. 어떻게 첫 발을 내딛어야 할까요?&lt;/p&gt;
+&lt;p&gt;&lt;figure class=&quot;gatsby-resp-image-figure&quot; style=&quot;&quot;&gt;
+    &lt;span
+      class=&quot;gatsby-resp-image-wrapper&quot;
+      style=&quot;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 960px; &quot;
+    &gt;
+      &lt;a
+    class=&quot;gatsby-resp-image-link&quot;
+    href=&quot;/static/3d9505f0b4060dbd2ce2964a777c7bce/aa991/001.jpg&quot;
+    style=&quot;display: block&quot;
+    target=&quot;_blank&quot;
+    rel=&quot;noopener&quot;
+  &gt;
+    &lt;span
+    class=&quot;gatsby-resp-image-background-image&quot;
+    style=&quot;padding-bottom: 98.33333333333334%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/jpeg;base64,/9j/2wBDABALDA4MChAODQ4SERATGCgaGBYWGDEjJR0oOjM9PDkzODdASFxOQERXRTc4UG1RV19iZ2hnPk1xeXBkeFxlZ2P/2wBDARESEhgVGC8aGi9jQjhCY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2P/wgARCAAUABQDASIAAhEBAxEB/8QAGAABAQEBAQAAAAAAAAAAAAAAAAIEAwX/xAAUAQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIQAxAAAAHxKvqY24RISD//xAAZEAACAwEAAAAAAAAAAAAAAAABAgAQEkL/2gAIAQEAAQUCVdQIStcwX//EABQRAQAAAAAAAAAAAAAAAAAAACD/2gAIAQMBAT8BH//EABQRAQAAAAAAAAAAAAAAAAAAACD/2gAIAQIBAT8BH//EABwQAAEDBQAAAAAAAAAAAAAAACAAAQIRMUFRkf/aAAgBAQAGPwK9E8tBnof/xAAdEAADAAICAwAAAAAAAAAAAAAAAREhMUFRYXGR/9oACAEBAAE/IaJHsYBTHPJH0xeH8FsnXY9kXQLEXkie0f/aAAwDAQACAAMAAAAQl8c+/8QAFBEBAAAAAAAAAAAAAAAAAAAAIP/aAAgBAwEBPxAf/8QAFhEAAwAAAAAAAAAAAAAAAAAAABAR/9oACAECAQE/ECv/xAAfEAEBAAMAAAcAAAAAAAAAAAABEQAhMUFRYXGh0fH/2gAIAQEAAT8QZYAW84NEMIUU3h48z8zL1SezHtgcNYj35cBJT1v7w4BrWKCGPcoUFevnn//Z&apos;); background-size: cover; display: block;&quot;
+  &gt;&lt;/span&gt;
+  &lt;picture&gt;
+          &lt;source
+              srcset=&quot;/static/3d9505f0b4060dbd2ce2964a777c7bce/8ac56/001.webp 240w,
+/static/3d9505f0b4060dbd2ce2964a777c7bce/d3be9/001.webp 480w,
+/static/3d9505f0b4060dbd2ce2964a777c7bce/e46b2/001.webp 960w,
+/static/3d9505f0b4060dbd2ce2964a777c7bce/f992d/001.webp 1440w,
+/static/3d9505f0b4060dbd2ce2964a777c7bce/62ac3/001.webp 1850w&quot;
+              sizes=&quot;(max-width: 960px) 100vw, 960px&quot;
+              type=&quot;image/webp&quot;
+            /&gt;
+          &lt;source
+            srcset=&quot;/static/3d9505f0b4060dbd2ce2964a777c7bce/09b79/001.jpg 240w,
+/static/3d9505f0b4060dbd2ce2964a777c7bce/7cc5e/001.jpg 480w,
+/static/3d9505f0b4060dbd2ce2964a777c7bce/6a068/001.jpg 960w,
+/static/3d9505f0b4060dbd2ce2964a777c7bce/644c5/001.jpg 1440w,
+/static/3d9505f0b4060dbd2ce2964a777c7bce/aa991/001.jpg 1850w&quot;
+            sizes=&quot;(max-width: 960px) 100vw, 960px&quot;
+            type=&quot;image/jpeg&quot;
+          /&gt;
+          &lt;img
+            class=&quot;gatsby-resp-image-image&quot;
+            src=&quot;/static/3d9505f0b4060dbd2ce2964a777c7bce/6a068/001.jpg&quot;
+            alt=&quot;&amp;quot;That&amp;#39;s one small step for man, one giant leap for mankind.&amp;quot;&quot;
+            title=&quot;&amp;quot;That&amp;#39;s one small step for man, one giant leap for mankind.&amp;quot;&quot;
+            loading=&quot;lazy&quot;
+            decoding=&quot;async&quot;
+            style=&quot;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&quot;
+          /&gt;
+        &lt;/picture&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;
+    &lt;figcaption class=&quot;gatsby-resp-image-figcaption&quot;&gt;&lt;p&gt;“That’s one small step for man, one giant leap for mankind.”&lt;/p&gt;&lt;/figcaption&gt;
+  &lt;/figure&gt;&lt;/p&gt;
+&lt;h2 id=&quot;창발적-설계로-깔끔한-코드를-구현합시다&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%B0%BD%EB%B0%9C%EC%A0%81-%EC%84%A4%EA%B3%84%EB%A1%9C-%EA%B9%94%EB%81%94%ED%95%9C-%EC%BD%94%EB%93%9C%EB%A5%BC-%EA%B5%AC%ED%98%84%ED%95%A9%EC%8B%9C%EB%8B%A4&quot; aria-label=&quot;창발적 설계로 깔끔한 코드를 구현합시다 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;창발적 설계로 깔끔한 코드를 구현합시다&lt;/h2&gt;
+&lt;p&gt;밥 아저씨와 켄트 백 등의 고수들은 아래 설계 규칙 4가지가 소프트웨어 설계 품질을 높여준다고 합니다.&lt;/p&gt;
+&lt;p&gt;특히 켄트 백은 아래 규칙을 따르면 설계는 ‘단순하다’ 라고 말합니다. 이 순서는 중요도 순입니다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;제 1규칙
+&lt;ol&gt;
+&lt;li&gt;&lt;a href=&quot;#%ED%85%8C%EC%8A%A4%ED%8A%B8_%EC%BD%94%EB%93%9C&quot;&gt;단순한 설계 규칙 1: 모든 테스트 코드를 실행하십시오&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;#%EB%A6%AC%ED%8C%A9%ED%86%A0%EB%A7%81&quot;&gt;단순한 설계 규칙 2~4: 리팩토링&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;#%EC%A4%91%EB%B3%B5_%EC%A0%9C%EA%B1%B0&quot;&gt;중복 제거&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;#%ED%91%9C%ED%98%84%ED%95%98%EA%B8%B0&quot;&gt;프로그래머의 의도를 표현&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;#%ED%81%B4%EB%9E%98%EC%8A%A4_%EB%B0%8F_%EB%A9%94%EC%86%8C%EB%93%9C%EC%9D%98_%EC%88%98%EB%A5%BC_%EC%B5%9C%EC%86%8C%ED%99%94&quot;&gt;클래스 및 메소드의 수를 최소화&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&quot;테스트-코드&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%ED%85%8C%EC%8A%A4%ED%8A%B8-%EC%BD%94%EB%93%9C&quot; aria-label=&quot;테스트 코드 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;테스트 코드&lt;/h2&gt;
+&lt;p&gt;최우선으로, 설계의도 대로 돌아가는 시스템을 내놓아야 합니다. 아무리 좋은 시스템을 문서로 설계한다 하더라도 돌아가는 최소한의 결과물이 없다면 노력에 대한 가치를 인정받기 힘듭니다.&lt;/p&gt;
+&lt;p&gt;테스트를 거쳐 모든 테스트 케이스를 항상 통과하는 시스템은 ‘테스트가 가능한 시스템’ 입니다. 테스트가 불가능하다면 검증도 불가능합니다.&lt;/p&gt;
+&lt;p&gt;테스트가 가능한 시스템을 만들려하면 설계품질 또한 높아집니다. 크기가 작고 단독 목적만을 수행하는 클래스가 나옵니다. SRP를 준수하는 클래스는 테스트하기 더욱 쉽습니다. 테스트 케이스가 많을 수록 더욱 쉽게 코드를 작성합니다. 이런 이유로 철저한 테스트가 가능한 시스템은 더 나은 설계의 초석이 됩니다.&lt;/p&gt;
+&lt;p&gt;결합도가 높으면 테스트 케이스를 작성하기 어렵습니다. 테스트 케이스를 많이 작성할 수록 DIP같은 원칙을 적용하고 DI, 인터페이스, 추상화 등의 도구를 통해 결합도를 낮춥니다. 이 것이 설계 품질을 올리는 길입니다.&lt;/p&gt;
+&lt;p&gt;테스트 케이스를 만들고 계속 돌리면, 낮은 결합도와 높은 응집도를 달성합니다. 따라서 &lt;strong&gt;테스트 케이스 작성은 설계 품질을 올리는 길&lt;/strong&gt; 입니다.&lt;/p&gt;
+&lt;h2 id=&quot;리팩토링&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EB%A6%AC%ED%8C%A9%ED%86%A0%EB%A7%81&quot; aria-label=&quot;리팩토링 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;리팩토링&lt;/h2&gt;
+&lt;p&gt;테스트코드가 있다면 코드와 클래스를 정리해도 됩니다. 점진적으로 코드를 좋게 만들어보고 다시 정리합니다. 테스트를 계속 돌리면서 기존 기능이 깨지지 않았는지 점검합니다. &lt;strong&gt;시스템이 깨질까 걱정하지 마십시오. 테스트코드가 있습니다.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;리팩토링에서는 설게 품질을 높이는 기법을 적용합니다. SOLID 원칙을 적용하고, 1장부터 11장까지 논의했던 사항을 모조리 적용합니다. 이 단계에서 중복을 제거하고, 프로그래머의 의도를 표현하고, 클래스나 메소드의 수를 최소한으로 줄이면 됩니다.&lt;/p&gt;
+&lt;h2 id=&quot;중복-제거&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%A4%91%EB%B3%B5-%EC%A0%9C%EA%B1%B0&quot; aria-label=&quot;중복 제거 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;중복 제거&lt;/h2&gt;
+&lt;p&gt;중복은 추가작업, 추가위험, 불필요한 복잡도의 원인입니다. 공통 코드를 새로운 메소드로 뽑아서 다른 클래스로 빼는 방법이나, &lt;a href=&quot;https://refactoring.guru/design-patterns/template-method&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;TEMPLATE METHOD 패턴&lt;/a&gt;을 사용하는 것이 방법입니다.&lt;/p&gt;
+&lt;h2 id=&quot;표현하기&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%ED%91%9C%ED%98%84%ED%95%98%EA%B8%B0&quot; aria-label=&quot;표현하기 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;표현하기&lt;/h2&gt;
+&lt;p&gt;일필휘지(一筆揮之)는 어렵습니다. 코드 작성 또한 하나의 글쓰기입니다. 그렇기 때문에 몇번이고 탈고를 거쳐야 좋은 코드가 완성됩니다.&lt;/p&gt;
+&lt;p&gt;좋은 코드를 작성하는 것은 나의 의도를 상대방이 읽을 수 있게 고치는 것을 의미합니다. 이런 코드는 결함을 일으킬 확률이 낮고 유지보수 비용이 적게 듭니다. 그렇다면 어떤 방안이 있는지 살펴봅시다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;좋은 이름을 선택합시다. 이름과 기능이 딴판인 클래스나 메소드를 작성하지 맙시다.&lt;/li&gt;
+&lt;li&gt;함수와 클래스의 크기를 가능한 줄입시다. 작은 코드는 읽기 쉽습니다&lt;sup id=&quot;fnref-1&quot;&gt;&lt;a href=&quot;#fn-1&quot; class=&quot;footnote-ref&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;.&lt;/li&gt;
+&lt;li&gt;표준 명칭을 사용합시다. 디자인 패턴을 사용했다면 클래스 이름에 패턴명을 넣어줍시다(E.g., &lt;code class=&quot;language-text&quot;&gt;VISITOR&lt;/code&gt;, &lt;code class=&quot;language-text&quot;&gt;COMMAND&lt;/code&gt;, etc.). 그러면 상대방이 훨씬 빠르게 이해할 수 있습니다.&lt;/li&gt;
+&lt;li&gt;테스트 케이스를 꼼꼼하게 작성합시다. 남들이 나의 코드를 읽을 때 사용하는 ‘예시’입니다. 잘 만든 테스트 케이스로 클래스의 기능을 표현할 수 있습니다.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;위의 4가지 방안을 지키기 위해 노력하는 것이 필요합니다. 동료와 나를 위한 길이니까요.&lt;/p&gt;
+&lt;h2 id=&quot;클래스-및-메소드의-수를-최소화&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%ED%81%B4%EB%9E%98%EC%8A%A4-%EB%B0%8F-%EB%A9%94%EC%86%8C%EB%93%9C%EC%9D%98-%EC%88%98%EB%A5%BC-%EC%B5%9C%EC%86%8C%ED%99%94&quot; aria-label=&quot;클래스 및 메소드의 수를 최소화 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;클래스 및 메소드의 수를 최소화&lt;/h2&gt;
+&lt;p&gt;상기 개념을 극단으로 사용하면 득보다 실이 많아집니다. 분명 좋은 개념이지만 도그마로 인식하면 안 됩니다. 실용적인 방식을 택하는 것이 유연하기 때문입니다.&lt;/p&gt;
+&lt;p&gt;무의미하고 독단적인 정책을 서로에게 강요하지 말고 논리로 설득합시다. 또한 우선순위가 더 높은 사항을 먼저 준수합시다.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://media4.giphy.com/media/O0AEyXviC1vtC/giphy.gif&quot; alt=&quot;테스트&quot;&gt;&lt;/p&gt;
+&lt;h2 id=&quot;결론&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EA%B2%B0%EB%A1%A0&quot; aria-label=&quot;결론 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;결론&lt;/h2&gt;
+&lt;p&gt;선대 프로그래머들이 남긴 경험의 정수를 꼭 흡수하여 이런 원칙을 단번에 활용할 수 있기를 바랍니다. 저 또한 그러고 싶습니다…&lt;/p&gt;
+&lt;div class=&quot;footnotes&quot;&gt;
+&lt;hr&gt;
+&lt;ol&gt;
+&lt;li id=&quot;fn-1&quot;&gt;더 나아가, 코드리뷰를 쉽게 하기 위해서 최소한의 구현을 빠르게 하고 리뷰받읍시다. &lt;a href=&quot;https://smartbear.com/learn/code-review/best-practices-for-peer-code-review/&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;긴 코드는 리뷰를 설렁설렁 하게 됩니다.&lt;/a&gt; &lt;br /&gt;아울러 &lt;a href=&quot;https://hugooodias.medium.com/the-anatomy-of-a-perfect-pull-request-567382bb6067&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;PR에 대한 이야기&lt;/a&gt;도 살펴보십시오.  &lt;a href=&quot;#fnref-1&quot; class=&quot;footnote-backref&quot;&gt;↩&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;</content:encoded></item><item><title><![CDATA[2023년 과제형 코딩 테스트 후기 (2)]]></title><description><![CDATA[2월에 수행한 과제형 코딩 테스트에 대해 리뷰하는 글입니다. 이 글에서는 무엇이 모자랐고, 어떤 것을 집중해야할지 배운 내용에 대해 작성하였습니다.]]></description><link>https://blog.s3ich4n.me/retrospect/2023-02-20-assignment-pt02</link><guid isPermaLink="false">https://blog.s3ich4n.me/retrospect/2023-02-20-assignment-pt02</guid><pubDate>Mon, 20 Feb 2023 18:01:00 GMT</pubDate><content:encoded>&lt;h1 id=&quot;연재-안내&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%97%B0%EC%9E%AC-%EC%95%88%EB%82%B4&quot; aria-label=&quot;연재 안내 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;연재 안내&lt;/h1&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&quot;/retrospect/2023-02-20-assignment-pt01&quot;&gt;2023년 과제형 코딩 테스트 후기 (1)&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;2023년 과제형 코딩 테스트 후기 (2)&lt;/li&gt;
@@ -359,6 +762,452 @@
 &lt;li id=&quot;fn-4&quot;&gt;늦게 회고하자면, &lt;a href=&quot;https://www.youtube.com/watch?v=F7EnW8dfetU&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;이 영상&lt;/a&gt; 을 함께 보았다면 더 좋았을 것입니다. 이벤트 스토밍을 통해 도메인 간의 유기적인 정보교환 뿐 아니라, 실제 업무를 수행하면서 나올 법한 행위를 수행할 수 있었음을 보여줄 수 있었을 것입니다.&lt;a href=&quot;#fnref-4&quot; class=&quot;footnote-backref&quot;&gt;↩&lt;/a&gt;&lt;/li&gt;
 &lt;li id=&quot;fn-5&quot;&gt;이 부분은 정확히 어떻게 설계할지 몰라서 다른 서비스들을 최대한 참고하였습니다. 도메인 객체가 이렇게 비대해지는 것을 어떻게 제어해야할지도 학습해야겠습니다.&lt;a href=&quot;#fnref-5&quot; class=&quot;footnote-backref&quot;&gt;↩&lt;/a&gt;&lt;/li&gt;
 &lt;/ol&gt;
+&lt;/div&gt;</content:encoded></item><item><title><![CDATA[클린 코드 스터디 (11): 시스템]]></title><description><![CDATA[2023년 1월부터 시작한 클린 코드 독파 스터디 후, 매 모임 전 준비하는 게시글을 공유합니다. 이 글은 11장, 시스템에 대해 알아봅니다.]]></description><link>https://blog.s3ich4n.me/books/clean-code/2023-02-17-pt01</link><guid isPermaLink="false">https://blog.s3ich4n.me/books/clean-code/2023-02-17-pt01</guid><pubDate>Fri, 17 Feb 2023 22:51:00 GMT</pubDate><content:encoded>&lt;h1 id=&quot;11-시스템&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#11-%EC%8B%9C%EC%8A%A4%ED%85%9C&quot; aria-label=&quot;11 시스템 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;11. 시스템&lt;/h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;복잡성은 죽음이다. 개발자에게서 생기를 앗아가며, 제품을 계획하고 제작하고 테스트하기 어렵게 만든다.&lt;/p&gt;
+&lt;p&gt;Ray Ozzie, Chief Software Architect, Microsoft Corporation.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;저는 이 챕터를 배우기 위해 기존 챕터들을 배워왔다고 생각합니다. 왜 그렇게 생각했는지 풀어보겠습니다.&lt;/p&gt;
+&lt;h2 id=&quot;도시를-세운다면&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EB%8F%84%EC%8B%9C%EB%A5%BC-%EC%84%B8%EC%9A%B4%EB%8B%A4%EB%A9%B4&quot; aria-label=&quot;도시를 세운다면 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;도시를 세운다면?&lt;/h2&gt;
+&lt;p&gt;도시는 한 사람이 모두 관리할 수 없습니다. 관리해야 하는 세부사항에 따라 관리자들을 두고 세부 작업을 나누었기 때문에 이와 같은 마법이 가능합니다. 다시 말해 도시가 &lt;em&gt;돌아가는&lt;/em&gt; 이유는 적절한 추상화와 모듈화 덕분이라고 할 수 있습니다.&lt;/p&gt;
+&lt;p&gt;앞서 살펴본 챕터 내용을 종합하여 추상화와 모듈화, 나아가 시스템 수준에서까지 이를 유지하는 방법을 논의해봅시다.&lt;/p&gt;
+&lt;h2 id=&quot;시스템-제작과-시스템-사용을-분리하라&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%8B%9C%EC%8A%A4%ED%85%9C-%EC%A0%9C%EC%9E%91%EA%B3%BC-%EC%8B%9C%EC%8A%A4%ED%85%9C-%EC%82%AC%EC%9A%A9%EC%9D%84-%EB%B6%84%EB%A6%AC%ED%95%98%EB%9D%BC&quot; aria-label=&quot;시스템 제작과 시스템 사용을 분리하라 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;시스템 제작과 시스템 사용을 분리하라&lt;/h2&gt;
+&lt;p&gt;제작(Construction), 사용(User)는 아주 다릅니다.&lt;/p&gt;
+&lt;p&gt;건물로 예를 들어봅시다. 공사중일 때의 외관과 내부는 온통 바쁜 현장의 모습일 것입니다. 완공된 뒤의 건물은 지어진 목적에 따라 이용되겠지요. 이처럼 소프트웨어 시스템 또한 아래와 같이 ‘제작’과 ‘사용’을 분리해야 합니다.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;소프트웨어 시스템은&lt;/p&gt;
+&lt;p&gt;애플리케이션 객체를 제작하고 의존성을 서로 ‘연결’ 하는 &lt;strong&gt;준비 과정&lt;/strong&gt; 과&lt;/p&gt;
+&lt;p&gt;준비 과정 후에 이어지는 &lt;strong&gt;런타임 로직&lt;/strong&gt; 을 분리해야 합니다.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;관심사concern&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EA%B4%80%EC%8B%AC%EC%82%ACconcern&quot; aria-label=&quot;관심사concern permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;관심사(concern)&lt;/h3&gt;
+&lt;p&gt;이번 챕터에서는 여러 &lt;strong&gt;관심사&lt;/strong&gt; 를 살펴볼 것입니다. 또한 &lt;strong&gt;관심사 분리&lt;/strong&gt; 와 같은 설계방안을 주요 설계 기법중 하나로 소개하고 있습니다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;em&gt;시작 단계&lt;/em&gt;는 애플리케이션이 풀어야 할 &lt;strong&gt;관심사&lt;/strong&gt; 중 하나 입니다.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;이를 이야기 하며 대다수의 애플리케이션이 시작단계라는 관심사를 분리하지 않음을 시사합니다. 준비 과정 코드와 런타임 로직을 &lt;em&gt;뒤섞는&lt;/em&gt; 케이스를 설명합니다. 우선 아래코드를 살펴봅시다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;java&quot;&gt;&lt;pre class=&quot;language-java&quot;&gt;&lt;code class=&quot;language-java&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;Service&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;getService&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;service &lt;span class=&quot;token operator&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+        service &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;MyServiceImpl&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; service&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;이런 기법은 Lazy Initialization, Lazy Evaluation 이라고 하며 아래와 같은 장단점이 있습니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;장점
+&lt;ul&gt;
+&lt;li&gt;필요하기 전까지 객체를 생성하지 않으므로, 불필요한 부하가 걸리지 않습니다.&lt;/li&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;null&lt;/code&gt; 포인터 반환이 없습니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;단점
+&lt;ul&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;getService&lt;/code&gt; 메소드는 &lt;code class=&quot;language-text&quot;&gt;MyServiceImpl&lt;/code&gt; 이란 구현체에 의존합니다
+&lt;ul&gt;
+&lt;li&gt;의존성 해결이 되지 않으면 컴파일이 안 됩니다.&lt;/li&gt;
+&lt;li&gt;이 객체가 &lt;strong&gt;모든 상황&lt;/strong&gt;에 적합할까요? 이런 설정을 자주 사용한다면 &lt;em&gt;중복이 심각&lt;/em&gt; 해지고 모&lt;em&gt;듈성이 떨어지기 쉽&lt;/em&gt; 습니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;테스트가 힘듭니다
+&lt;ul&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;MyServiceImpl&lt;/code&gt; 을 Mock object로 service 필드에 할당해야 합니다.&lt;/li&gt;
+&lt;li&gt;런타임 로직에서 준비과정 로직을 섞었기 때문에, &lt;code class=&quot;language-text&quot;&gt;service&lt;/code&gt; 변수를 호출하는 모든 실행경로를 테스트 해야합니다. → 책임이 둘이 되므로 이 메소드는 두가지 일을 하기 때문에 작게나마 SRP를 위배합니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;따라서, 적절한 시기에 사용하도록 하면서 의존성을 해소하기 위한 방안을 찾아야 합니다.&lt;/p&gt;
+&lt;h3 id=&quot;main-분리&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#main-%EB%B6%84%EB%A6%AC&quot; aria-label=&quot;main 분리 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;&lt;code class=&quot;language-text&quot;&gt;main&lt;/code&gt; 분리&lt;/h3&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;main&lt;/code&gt; 분리는 시스템 생성과 시스템 사용을 분리하는 기법 중 하나입니다. 예시와 아래 그림을 통해 살펴봅시다.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;생성 코드를 &lt;code class=&quot;language-text&quot;&gt;main&lt;/code&gt; 으로 몰고, 나머지 시스템은 별도 객체 생성 및 의존성 연결을 해두었다고 가정해봅시다.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;span
+      class=&quot;gatsby-resp-image-wrapper&quot;
+      style=&quot;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 849px; &quot;
+    &gt;
+      &lt;a
+    class=&quot;gatsby-resp-image-link&quot;
+    href=&quot;/static/c667bd99d14a07251b6678d7481e91c2/f96df/001.png&quot;
+    style=&quot;display: block&quot;
+    target=&quot;_blank&quot;
+    rel=&quot;noopener&quot;
+  &gt;
+    &lt;span
+    class=&quot;gatsby-resp-image-background-image&quot;
+    style=&quot;padding-bottom: 72.91666666666666%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAPCAYAAADkmO9VAAAACXBIWXMAAB2HAAAdhwGP5fFlAAACJUlEQVQ4y4VUa2vqQBDN//+sXyqCFEV7KypCio+K9MuFaiutxV5tfKX4Qo2a1DzcbHIuO9aUeq92wsnMJjNnJ3t2I/m+D8/z/gtfXL64f9nZfN+HhDNGZJ+ErNWB7+zwk0nj8Rj1eh2NRgMPDw/kxbjT6QjGPbFuwCnf7WPPQ7vdDmoOEOPZbAapVqshFAohGo0imUwiFoshHA4jm83CsW04nEN7U9D5lYEFwDJNpFIpxONxXF9fUyxwcXFBxFK320WhUEClUsHt7S35YrFIM3qcU1fO0wus9xGY0gO3bdzXaiiXy6hWq1QjfKlUwmAw+L6G/JMgMM8jx5qv4EoPdu4Gvut+S3GPxtJh4Xe7HSaTCc2y59qT+TsG9vQC5+43WLO1f8e/lLVt+7TKjLGAKFDasmCl8+DDd7h/3v5R9firJDHDarXCer2GUFx4gQ9dDz6X3T/C0w24A5WefRgG1WiaRjUiXi6X1K30/PyMy8tLUiyTyRCEgqViES7nMJcapssFXuUCLG0FhzHcyDKurq6Qy+UoX/h0Oo1WqwVJSB2JRJBIJIJtILaQLMtwGQP3PPRUFUqpAr41iTCfz9OkgkRA1Ij6ZrMJyTRNale0v1gsKBYwDOP7Yq03Qbjdbin3AJE/n89hWdb5o+c4DjabDZEb2y2WmgZd14nw5NELzusnDioLon6/D1VVMZ1OafEVRcFwOMRoNMJx3QHSqZ/CT3YgOO7wL1bpW+Sr2PTcAAAAAElFTkSuQmCC&apos;); background-size: cover; display: block;&quot;
+  &gt;&lt;/span&gt;
+  &lt;picture&gt;
+          &lt;source
+              srcset=&quot;/static/c667bd99d14a07251b6678d7481e91c2/8ac56/001.webp 240w,
+/static/c667bd99d14a07251b6678d7481e91c2/d3be9/001.webp 480w,
+/static/c667bd99d14a07251b6678d7481e91c2/51e4d/001.webp 849w&quot;
+              sizes=&quot;(max-width: 849px) 100vw, 849px&quot;
+              type=&quot;image/webp&quot;
+            /&gt;
+          &lt;source
+            srcset=&quot;/static/c667bd99d14a07251b6678d7481e91c2/8ff5a/001.png 240w,
+/static/c667bd99d14a07251b6678d7481e91c2/e85cb/001.png 480w,
+/static/c667bd99d14a07251b6678d7481e91c2/f96df/001.png 849w&quot;
+            sizes=&quot;(max-width: 849px) 100vw, 849px&quot;
+            type=&quot;image/png&quot;
+          /&gt;
+          &lt;img
+            class=&quot;gatsby-resp-image-image&quot;
+            src=&quot;/static/c667bd99d14a07251b6678d7481e91c2/f96df/001.png&quot;
+            alt=&quot;001&quot;
+            title=&quot;001&quot;
+            loading=&quot;lazy&quot;
+            decoding=&quot;async&quot;
+            style=&quot;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&quot;
+          /&gt;
+        &lt;/picture&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;이런 코드는 제어흐름을 따라가기 수월합니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;main&lt;/code&gt; 에서는 필요한 객체를 생성하고 애플리케이션에 전달합니다.&lt;/li&gt;
+&lt;li&gt;애플리케이션은 이를 사용합니다. 애플리케이션은 주는대로 잘 쓴다고 할 수 있겠지요.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;팩토리&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%ED%8C%A9%ED%86%A0%EB%A6%AC&quot; aria-label=&quot;팩토리 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;팩토리&lt;/h3&gt;
+&lt;p&gt;하지만 객체 생성시점을 애플리케이션이 결정해야할 때도 있습니다.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;주문 처리 시스템으로 예를 들어봅시다.&lt;/p&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;LineItem&lt;/code&gt; 이란 인스턴스를 사용하여 &lt;code class=&quot;language-text&quot;&gt;Order&lt;/code&gt;를 추가하는 로직이 있다고 가정해봅시다.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;초기화 단계에서 어떤 &lt;code class=&quot;language-text&quot;&gt;LineItem&lt;/code&gt; 구현체에 따라 &lt;code class=&quot;language-text&quot;&gt;Order&lt;/code&gt; 를 추가할지에 대한 로직은 &lt;a href=&quot;https://refactoring.guru/ko/design-patterns/abstract-factory&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;추상 팩토리 패턴&lt;/a&gt;이 어울립니다. 아래 도식을 살펴봅시다.&lt;/p&gt;
+&lt;p&gt;&lt;span
+      class=&quot;gatsby-resp-image-wrapper&quot;
+      style=&quot;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 960px; &quot;
+    &gt;
+      &lt;a
+    class=&quot;gatsby-resp-image-link&quot;
+    href=&quot;/static/a97cea6c1f68e9e424d57b35abbf5b3b/5eb75/002.png&quot;
+    style=&quot;display: block&quot;
+    target=&quot;_blank&quot;
+    rel=&quot;noopener&quot;
+  &gt;
+    &lt;span
+    class=&quot;gatsby-resp-image-background-image&quot;
+    style=&quot;padding-bottom: 60.83333333333334%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAMCAYAAABiDJ37AAAACXBIWXMAAB2HAAAdhwGP5fFlAAABwklEQVQoz41Sa4+aUBDl//8JNcZKfP+ATYzvxI378JmmqStCQV7WVkBQ4Gxm2uti1w+d5GS4ZO7MOXOPFMcxLpcLzuczZzpzUP6+QTZEnYCoTdOUQSH1ej3kcjnUajWUSiWUy2X4QYDj/ieUpxdolgnveITruqhUKlzXaDS4djKZcJMkST4arlYrtNtt9Pt9dLtdDAYDnOMYoePi8PUbjpstLmkK3/MwHA5BBDqdDuf1ev2ZoZBDErKRqD8QPz4jfl38uZQknKMoYogGIou4Nrzujoro4vMM4egRiWV/DMlIC4LgpqmAdDgcYFkWVFWFYRiwXYdoIJm8AqqO6NdvGKYJQ9ehKAp0XYfneXz5dDp9bkj7KBQKqNfrkGWZl628vWFHQ55e0Ht4wBdZ5odotVrI5/OYzWZXliQ/y17SNA3z+RzL5RLT6ZSz7/sIwxCRaUHXNB5EA5vNJorFIhaLxY2V7u4wG+zJv16jNZimif1+z7Btm5mR3PF4jNFoxM6gTK8uEU2iKygL0JkeivZF38REgP47jsO+rFarVw/TAOneS/1vEFNajwApupH8r7dIIsnY7XbYbrfYbDYgV9zzn9jhO6hGhBzRuJY3AAAAAElFTkSuQmCC&apos;); background-size: cover; display: block;&quot;
+  &gt;&lt;/span&gt;
+  &lt;picture&gt;
+          &lt;source
+              srcset=&quot;/static/a97cea6c1f68e9e424d57b35abbf5b3b/8ac56/002.webp 240w,
+/static/a97cea6c1f68e9e424d57b35abbf5b3b/d3be9/002.webp 480w,
+/static/a97cea6c1f68e9e424d57b35abbf5b3b/e46b2/002.webp 960w,
+/static/a97cea6c1f68e9e424d57b35abbf5b3b/f992d/002.webp 1440w,
+/static/a97cea6c1f68e9e424d57b35abbf5b3b/882b9/002.webp 1920w,
+/static/a97cea6c1f68e9e424d57b35abbf5b3b/295d4/002.webp 2247w&quot;
+              sizes=&quot;(max-width: 960px) 100vw, 960px&quot;
+              type=&quot;image/webp&quot;
+            /&gt;
+          &lt;source
+            srcset=&quot;/static/a97cea6c1f68e9e424d57b35abbf5b3b/8ff5a/002.png 240w,
+/static/a97cea6c1f68e9e424d57b35abbf5b3b/e85cb/002.png 480w,
+/static/a97cea6c1f68e9e424d57b35abbf5b3b/d9199/002.png 960w,
+/static/a97cea6c1f68e9e424d57b35abbf5b3b/07a9c/002.png 1440w,
+/static/a97cea6c1f68e9e424d57b35abbf5b3b/29114/002.png 1920w,
+/static/a97cea6c1f68e9e424d57b35abbf5b3b/5eb75/002.png 2247w&quot;
+            sizes=&quot;(max-width: 960px) 100vw, 960px&quot;
+            type=&quot;image/png&quot;
+          /&gt;
+          &lt;img
+            class=&quot;gatsby-resp-image-image&quot;
+            src=&quot;/static/a97cea6c1f68e9e424d57b35abbf5b3b/d9199/002.png&quot;
+            alt=&quot;002&quot;
+            title=&quot;002&quot;
+            loading=&quot;lazy&quot;
+            decoding=&quot;async&quot;
+            style=&quot;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&quot;
+          /&gt;
+        &lt;/picture&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;의존성은 &lt;code class=&quot;language-text&quot;&gt;OrderProcessing&lt;/code&gt; 애플리케이션으로 향합니다.&lt;/li&gt;
+&lt;li&gt;필요에 따라 어떤 팩토리를 사용할지 인터페이스를 통해 알려 줄 뿐입니다.&lt;/li&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;MakeLineItem()&lt;/code&gt;을 통해 &lt;code class=&quot;language-text&quot;&gt;OrderProcessing&lt;/code&gt; 객체가 어떻게 만들어지는지는 관심을 두지 않습니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;의존성-주입&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%9D%98%EC%A1%B4%EC%84%B1-%EC%A3%BC%EC%9E%85&quot; aria-label=&quot;의존성 주입 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;의존성 주입&lt;/h3&gt;
+&lt;p&gt;의존성 주입(Dependency Injection)은 사용과 제작을 분리하는 강력한 메커니즘 중 하나입니다. 제어 역전(Inversion of Control, IoC) 기법을 의존성 관리에 적용한 메커니즘을 의미합니다. 제어 역전에서는 한 객체가 맡은 보조책임을 새 객체에게 전가합니다. 새 객체는 전달받은 책임만을 맡으므로 SRP를 지킵니다.&lt;/p&gt;
+&lt;p&gt;초기화 지연을 통한 장점도 얻을 수 있습니다. 대다수의 DI 컨테이너는 필요하면 팩토리를 호출하거나 프록시를 생성합니다.&lt;/p&gt;
+&lt;p&gt;파이썬에서는 이를 사용하는 &lt;a href=&quot;https://python-dependency-injector.ets-labs.org/&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;아주 걸출한 라이브러리&lt;/a&gt;가 있습니다. 예시를 한번 살펴봅시다. 주석의 번호와 아래 번호를 쫓아가며 읽어 주십시오.&lt;/p&gt;
+&lt;h3 id=&quot;의존성-주입-예시-1-의존성-주입의-에시&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%9D%98%EC%A1%B4%EC%84%B1-%EC%A3%BC%EC%9E%85-%EC%98%88%EC%8B%9C-1-%EC%9D%98%EC%A1%B4%EC%84%B1-%EC%A3%BC%EC%9E%85%EC%9D%98-%EC%97%90%EC%8B%9C&quot; aria-label=&quot;의존성 주입 예시 1 의존성 주입의 에시 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;의존성 주입 예시 1. 의존성 주입의 에시&lt;/h3&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;python&quot;&gt;&lt;pre class=&quot;language-python&quot;&gt;&lt;code class=&quot;language-python&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;from&lt;/span&gt; dependency_injector &lt;span class=&quot;token keyword&quot;&gt;import&lt;/span&gt; containers&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; providers
+&lt;span class=&quot;token keyword&quot;&gt;from&lt;/span&gt; dependency_injector&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;wiring &lt;span class=&quot;token keyword&quot;&gt;import&lt;/span&gt; Provide&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; inject
+
+
+&lt;span class=&quot;token comment&quot;&gt;# 1.&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;Container&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;containers&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;DeclarativeContainer&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+
+    config &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; providers&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;Configuration&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+
+    api_client &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; providers&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;Singleton&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;
+        ApiClient&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+        api_key&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;config&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;api_key&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+        timeout&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;config&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;timeout&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+
+    service &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; providers&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;Factory&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;
+        Service&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+        api_client&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;api_client&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+
+
+&lt;span class=&quot;token comment&quot;&gt;# 2.&lt;/span&gt;
+&lt;span class=&quot;token decorator annotation punctuation&quot;&gt;@inject&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;service&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; Service &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; Provide&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;Container&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;service&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token boolean&quot;&gt;None&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;
+
+
+&lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; __name__ &lt;span class=&quot;token operator&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;__main__&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    container &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; Container&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+    container&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;config&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;api_key&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;from_env&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&quot;API_KEY&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; required&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token boolean&quot;&gt;True&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+    container&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;config&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;timeout&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;from_env&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&quot;TIMEOUT&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; as_&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token builtin&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; default&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+    container&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;wire&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;modules&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;__name__&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;	&lt;span class=&quot;token comment&quot;&gt;# 3.&lt;/span&gt;
+
+    main&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;  &lt;span class=&quot;token comment&quot;&gt;# 4. &amp;lt;-- 의존성이 자동으로 주입되었습니다.&lt;/span&gt;
+
+    &lt;span class=&quot;token keyword&quot;&gt;with&lt;/span&gt; container&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;api_client&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;override&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;mock&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;Mock&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+        main&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;  &lt;span class=&quot;token comment&quot;&gt;# 5. &amp;lt;-- 오버라이드한 의존성이 자동으로 주입되었습니다.&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;Container&lt;/code&gt; 안에, 설정(Configuration), 싱글톤(Singleton), 팩토리(Factory) 형식으로 주입할 요소들을 준비해둡니다.&lt;/li&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;main()&lt;/code&gt; 위에, &lt;code class=&quot;language-text&quot;&gt;@inject&lt;/code&gt; 데코레이터를 달아서 이를 주입하도록 설정합니다.&lt;/li&gt;
+&lt;li&gt;어떤 모듈에 의존성을 주입할지 결정합니다. 해당 구문을 통해 &lt;strong&gt;wiring을 해주어야 의존성이 주입&lt;/strong&gt; 됨에 유의합니다.&lt;/li&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;3.&lt;/code&gt; 구문을 통해, 함수 실행과 동시에 의존성을 주입합니다.&lt;/li&gt;
+&lt;li&gt;테스트 할 때도, mock 객체를 위와같이 주입해주면 얼마든지 변경 가능합니다.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&quot;의존성-주입-예시-2-fastapi-환경변수-로드&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%9D%98%EC%A1%B4%EC%84%B1-%EC%A3%BC%EC%9E%85-%EC%98%88%EC%8B%9C-2-fastapi-%ED%99%98%EA%B2%BD%EB%B3%80%EC%88%98-%EB%A1%9C%EB%93%9C&quot; aria-label=&quot;의존성 주입 예시 2 fastapi 환경변수 로드 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;의존성 주입 예시 2. FastAPI 환경변수 로드&lt;/h3&gt;
+&lt;p&gt;이어서 &lt;code class=&quot;language-text&quot;&gt;FastAPI&lt;/code&gt; 앱 구동시 환경변수 로드에 대한 부분을 의존성 주입으로 해제한 예시를 살펴봅시다.&lt;/p&gt;
+&lt;p&gt;먼저, 설정값은 &lt;code class=&quot;language-text&quot;&gt;Pydantic&lt;/code&gt;으로 뺐습니다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;python&quot;&gt;&lt;pre class=&quot;language-python&quot;&gt;&lt;code class=&quot;language-python&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;# settings.py 에서...&lt;/span&gt;
+
+&lt;span class=&quot;token keyword&quot;&gt;from&lt;/span&gt; pydantic &lt;span class=&quot;token keyword&quot;&gt;import&lt;/span&gt; BaseSettings
+
+&lt;span class=&quot;token keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;ServerDescriptionSettings&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;BaseSettings&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;
+
+
+&lt;span class=&quot;token keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;DataSettings&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;BaseSettings&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;
+
+
+&lt;span class=&quot;token keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;Settings&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;BaseSettings&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    DEBUG&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token builtin&quot;&gt;bool&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; Field&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;env&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&quot;DEBUG&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; default&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token boolean&quot;&gt;True&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+
+    desc&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; ServerDescriptionSettings &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; ServerDescriptionSettings&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+    data&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; DataSettings &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; DataSettings&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+
+    &lt;span class=&quot;token keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;Config&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+        case_sensitive &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token boolean&quot;&gt;True&lt;/span&gt;
+
+
+settings &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; Settings&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;main.py&lt;/code&gt; 에서 컨테이너 객체 생성 후, &lt;code class=&quot;language-text&quot;&gt;FastAPI&lt;/code&gt; 의 컨테이너 값에 의존성을 주입하는 코드입니다&lt;sup id=&quot;fnref-1&quot;&gt;&lt;a href=&quot;#fn-1&quot; class=&quot;footnote-ref&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;python&quot;&gt;&lt;pre class=&quot;language-python&quot;&gt;&lt;code class=&quot;language-python&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;# main.py 에서...&lt;/span&gt;
+
+&lt;span class=&quot;token keyword&quot;&gt;from&lt;/span&gt; config&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;apis &lt;span class=&quot;token keyword&quot;&gt;import&lt;/span&gt; Settings
+
+container &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; Container&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+container&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;config&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;from_pydantic&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;Settings&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;  &lt;span class=&quot;token comment&quot;&gt;# 상기 환경변수를 로드해옴&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# 로드해온 환경변수를 사용&lt;/span&gt;
+app &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; FastAPI&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;
+    description&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;container&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;config&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;desc&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;REST_SERVICE_DESCRIPTION&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+    openapi_url&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;container&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;config&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;desc&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;OPENAPI_URL&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+    title&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;container&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;config&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;desc&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;REST_SERVICE_NAME&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+    version&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;container&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;config&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;desc&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;REST_SERVICE_VERSION&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+app&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;container &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; container	&lt;span class=&quot;token comment&quot;&gt;# FastAPI의 방식대로 DI 컨테이너를 전달&lt;/span&gt;
+
+&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2 id=&quot;확장&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%ED%99%95%EC%9E%A5&quot; aria-label=&quot;확장 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;확장&lt;/h2&gt;
+&lt;p&gt;하나의 거대한 도시가 완성되기까진 많은 과정이 있었을 것입니다. 아마도 처음은 작은 군락에서 시작했겠지요. 군락이 마을로, 나아가 도시로 성장하는 과정이 있었을 것입니다. 그 과정 동안 &lt;strong&gt;이상적인&lt;/strong&gt; 발전이 이루어졌을까요? 그렇지 않았을 것입니다. 현대적인 계획도시라 하더라도 미처 예상치 못한 확장이 있게 마련입니다.&lt;/p&gt;
+&lt;p&gt;이 챕터는 &lt;em&gt;‘처음부터 올바른 시스템’&lt;/em&gt; 을 만들 수는 없음을 시사합니다. 이를 위한 두 가지 방안을 제시합니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;코드 레벨 에서의 관점입니다. 오늘 맞추어 개발하고, 내일 맞추어 개발하되 이를 작게 점진적으로 개발하는 것이 필요하다고 말합니다. 그를 위해 깨끗한 코드를 지향하며 TDD, 리팩토링을 수행하는 것으로 확장 가능하게 합니다.&lt;/li&gt;
+&lt;li&gt;시스템 레벨에서는 &lt;strong&gt;관심사의 분리&lt;/strong&gt; 를 통해 소프트웨어 아키텍처를 점진적으로 발전하는 것을 말합니다. 아이러니하게도 수명이 소프트웨어 시스템은 &lt;em&gt;수명이 짧기&lt;/em&gt; 때문에 점진적으로 발전할 수 있습니다. 예시를 살펴봅시다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;EJB1&lt;/code&gt;, &lt;code class=&quot;language-text&quot;&gt;EJB2&lt;/code&gt; 아키텍처는 어떤 부분에서 관심사 분리가 어려운지를 보여줍니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;EJB2&lt;/code&gt; 로컬 인터페이스와 &lt;code class=&quot;language-text&quot;&gt;EJB2&lt;/code&gt; 엔티티 빈 을 살펴보면 &lt;code class=&quot;language-text&quot;&gt;EJB2&lt;/code&gt; 컨테이너에 &lt;strong&gt;강하게&lt;/strong&gt; 결합되어 있음을 시사합니다.&lt;/li&gt;
+&lt;li&gt;이런 식이라면 테스트도 어렵고 &lt;code class=&quot;language-text&quot;&gt;EJB2&lt;/code&gt; 가 아니라면 재사용하기 어려운 코드가 되었습니다.&lt;/li&gt;
+&lt;li&gt;그런 의미로 데이터를 주고받을 때 DTO를 사용하여 주고받을 수 밖에 없었습니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;횡단cross-cutting-관심사&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%ED%9A%A1%EB%8B%A8cross-cutting-%EA%B4%80%EC%8B%AC%EC%82%AC&quot; aria-label=&quot;횡단cross cutting 관심사 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;횡단(cross-cutting) 관심사&lt;/h3&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;EJB2&lt;/code&gt; 아키텍처는 &lt;em&gt;일부 영역&lt;/em&gt; 에서 관심사를 잘 분리하였습니다. 예를 들어 트랜잭션, 보안, 영속적 동작(persistence behaviors) 등을 소스코드가 아닌 &lt;a href=&quot;https://en.wikipedia.org/wiki/Deployment_descriptor&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;DD&lt;/a&gt;(Deployment descriptor, &lt;code class=&quot;language-text&quot;&gt;web.xml&lt;/code&gt; 같은 파일)로 분리하였습니다.&lt;/p&gt;
+&lt;p&gt;영속성같은 &lt;strong&gt;관심사&lt;/strong&gt; 는 애플리케이션 각각의 경계를 넘나들기도 합니다. 따라서 모든 객체가 전반적으로 동일한 방식으로 가리키게 만들어야 합니다. 특정 RDBMS를 사용하거나, 테이블, row에 대한 명명관례, 트랜잭션에 대한 의미를 일관적으로 정의하는 식을 의미하지요.&lt;/p&gt;
+&lt;p&gt;그렇지만 현실적으로 이런 코드들은 온갖 객체로 흩어지기 쉽습니다(중복되거나, 달라지거나 하는 식으로요). 이런 이유로 인해 &lt;strong&gt;횡단 관심사&lt;/strong&gt; 라는 용어가 등장하였습니다. 영속성 프레임워크, 도메인 논리 또한 모듈화하겠다는 것이지요.&lt;/p&gt;
+&lt;p&gt;AOP(Aspect-Oriented Programming)이란 말은 횡단 관심사에 대해 모듈성을 확보하는 방법론을 의미합니다. AOP에서 관점(aspect)은 “특정 관심사를 지원하려면 시스템에서 특정 지점들이 동작하는 방식을 일관성있게 바꿔야 한다” 라고 합니다. 이러한 명시는 간결한 선언이나 프로그래밍 메커니즘으로 수행합니다.&lt;/p&gt;
+&lt;p&gt;영속성을 예로 들자면, 영속적으로 저장할 객체와 속성을 선언하고, 영속성 책임을 프레임워크에게 위임합니다. 그러면 AOP 프레임워크는 대상 코드에 영향을 미치지 않는 상태로&lt;sup id=&quot;fnref-2&quot;&gt;&lt;a href=&quot;#fn-2&quot; class=&quot;footnote-ref&quot;&gt;2&lt;/a&gt;&lt;/sup&gt; 동작 방식을 변경합니다. 자바에서의 케이스를 살펴봅시다.&lt;/p&gt;
+&lt;h2 id=&quot;자바-프록시&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%9E%90%EB%B0%94-%ED%94%84%EB%A1%9D%EC%8B%9C&quot; aria-label=&quot;자바 프록시 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;자바 프록시&lt;/h2&gt;
+&lt;p&gt;책에 의하면 단순한 상황에 적합합니다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;proxy 메커니즘
+&lt;ol&gt;
+&lt;li&gt;먼저 추상화 객체, 구현체 객체 그리고 프록시 객체를 만듭니다.&lt;/li&gt;
+&lt;li&gt;실행 메소드를 직접 호출하는 것을 피하여 호출합니다.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;JDK가 제공하는 Dynamic proxy&lt;sup id=&quot;fnref-3&quot;&gt;&lt;a href=&quot;#fn-3&quot; class=&quot;footnote-ref&quot;&gt;3&lt;/a&gt;&lt;/sup&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;java.lang.reflect.Proxy&lt;/code&gt; 를 사용합니다.&lt;/li&gt;
+&lt;li&gt;지정된 인터페이스에 대한 프록시 클래스의 인스턴스를 반환합니다.
+이 인스턴스는 메서드 호출을 지정된 &lt;code class=&quot;language-text&quot;&gt;InvocationHandler&lt;/code&gt; 로 디스패치하는 값을 의미합니다.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&quot;순수-자바-aop-프레임워크&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%88%9C%EC%88%98-%EC%9E%90%EB%B0%94-aop-%ED%94%84%EB%A0%88%EC%9E%84%EC%9B%8C%ED%81%AC&quot; aria-label=&quot;순수 자바 aop 프레임워크 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;순수 자바 AOP 프레임워크&lt;/h2&gt;
+&lt;p&gt;Spring AOP 등이 내부적으로 프록시를 사용합니다&lt;sup id=&quot;fnref-4&quot;&gt;&lt;a href=&quot;#fn-4&quot; class=&quot;footnote-ref&quot;&gt;4&lt;/a&gt;&lt;/sup&gt;. 스프링은 비즈니스 논리를 POJO&lt;sup id=&quot;fnref-5&quot;&gt;&lt;a href=&quot;#fn-5&quot; class=&quot;footnote-ref&quot;&gt;5&lt;/a&gt;&lt;/sup&gt;로 구현합니다. POJO는 도메인에 초점을 맞춥니다. POJO는 이름값을 합니다. 엔터프라이즈 프레임워크 뿐 아니라 다른 도메인에도 의존하지 않습니다. 따라서 테스트가 수월합니다. 그렇기 때문에 사용자 스토리를 올바르게 구현하기 쉬우며, 코드를 보수하고 개선하기 편리합니다.&lt;/p&gt;
+&lt;p&gt;프로그래머는 설정파일, API를 사용하여 애플리케이션 기반 구조를 구현합니다. 이 때 스프링의 관점을 명시하고, 프레임워크는 사용자 모르게 프록시, 바이트코드 라이브러리를 통해 구현합니다. 이런 선언들이 요청에 따라 주요 객체를 생성하고 연결하는 등 DI 컨테이너의 구체적 동작을 제어합니다.&lt;/p&gt;
+&lt;p&gt;스프링 v2.5의 &lt;code class=&quot;language-text&quot;&gt;app.xml&lt;/code&gt; 예시를 살펴봅시다. 이건 읽어볼 필요가 충분히 있다고 생각합니다. 각 &lt;code class=&quot;language-text&quot;&gt;bean&lt;/code&gt; 객체는 마치 마트료시카&lt;sup id=&quot;fnref-6&quot;&gt;&lt;a href=&quot;#fn-6&quot; class=&quot;footnote-ref&quot;&gt;6&lt;/a&gt;&lt;/sup&gt; 같습니다. 데이터소스-DAO-논리객체 순으로 감싸져있습니다(프록시 되었습니다).&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;xml&quot;&gt;&lt;pre class=&quot;language-xml&quot;&gt;&lt;code class=&quot;language-xml&quot;&gt;&lt;span class=&quot;token tag&quot;&gt;&lt;span class=&quot;token tag&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;&amp;lt;&lt;/span&gt;beans&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;&gt;&lt;/span&gt;&lt;/span&gt;
+    ...
+    &lt;span class=&quot;token tag&quot;&gt;&lt;span class=&quot;token tag&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;&amp;lt;&lt;/span&gt;bean&lt;/span&gt; &lt;span class=&quot;token attr-name&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;token attr-value&quot;&gt;&lt;span class=&quot;token punctuation attr-equals&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;&quot;&lt;/span&gt;appDataSource&lt;span class=&quot;token punctuation&quot;&gt;&quot;&lt;/span&gt;&lt;/span&gt;
+    &lt;span class=&quot;token attr-name&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;token attr-value&quot;&gt;&lt;span class=&quot;token punctuation attr-equals&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;&quot;&lt;/span&gt;org.apache.commons.dbcp.BasicDataSource&lt;span class=&quot;token punctuation&quot;&gt;&quot;&lt;/span&gt;&lt;/span&gt;
+    &lt;span class=&quot;token attr-name&quot;&gt;destroy-method&lt;/span&gt;&lt;span class=&quot;token attr-value&quot;&gt;&lt;span class=&quot;token punctuation attr-equals&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;&quot;&lt;/span&gt;close&lt;span class=&quot;token punctuation&quot;&gt;&quot;&lt;/span&gt;&lt;/span&gt;
+    &lt;span class=&quot;token attr-name&quot;&gt;&lt;span class=&quot;token namespace&quot;&gt;p:&lt;/span&gt;driverClassName&lt;/span&gt;&lt;span class=&quot;token attr-value&quot;&gt;&lt;span class=&quot;token punctuation attr-equals&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;&quot;&lt;/span&gt;com.mysql.jdbc.Driver&lt;span class=&quot;token punctuation&quot;&gt;&quot;&lt;/span&gt;&lt;/span&gt;
+    &lt;span class=&quot;token attr-name&quot;&gt;&lt;span class=&quot;token namespace&quot;&gt;p:&lt;/span&gt;url&lt;/span&gt;&lt;span class=&quot;token attr-value&quot;&gt;&lt;span class=&quot;token punctuation attr-equals&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;&quot;&lt;/span&gt;jdbc:mysql://localhost:3306/mydb&lt;span class=&quot;token punctuation&quot;&gt;&quot;&lt;/span&gt;&lt;/span&gt;
+    &lt;span class=&quot;token attr-name&quot;&gt;&lt;span class=&quot;token namespace&quot;&gt;p:&lt;/span&gt;username&lt;/span&gt;&lt;span class=&quot;token attr-value&quot;&gt;&lt;span class=&quot;token punctuation attr-equals&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;&quot;&lt;/span&gt;me&lt;span class=&quot;token punctuation&quot;&gt;&quot;&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;/&gt;&lt;/span&gt;&lt;/span&gt;
+
+    &lt;span class=&quot;token tag&quot;&gt;&lt;span class=&quot;token tag&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;&amp;lt;&lt;/span&gt;bean&lt;/span&gt; &lt;span class=&quot;token attr-name&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;token attr-value&quot;&gt;&lt;span class=&quot;token punctuation attr-equals&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;&quot;&lt;/span&gt;bankDataAccessObject&lt;span class=&quot;token punctuation&quot;&gt;&quot;&lt;/span&gt;&lt;/span&gt;
+    &lt;span class=&quot;token attr-name&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;token attr-value&quot;&gt;&lt;span class=&quot;token punctuation attr-equals&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;&quot;&lt;/span&gt;com.example.banking.persistence.BankDataAccessObject&lt;span class=&quot;token punctuation&quot;&gt;&quot;&lt;/span&gt;&lt;/span&gt;
+    &lt;span class=&quot;token attr-name&quot;&gt;&lt;span class=&quot;token namespace&quot;&gt;p:&lt;/span&gt;dataSource-ref&lt;/span&gt;&lt;span class=&quot;token attr-value&quot;&gt;&lt;span class=&quot;token punctuation attr-equals&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;&quot;&lt;/span&gt;appDataSource&lt;span class=&quot;token punctuation&quot;&gt;&quot;&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;/&gt;&lt;/span&gt;&lt;/span&gt;
+
+    &lt;span class=&quot;token tag&quot;&gt;&lt;span class=&quot;token tag&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;&amp;lt;&lt;/span&gt;bean&lt;/span&gt; &lt;span class=&quot;token attr-name&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;token attr-value&quot;&gt;&lt;span class=&quot;token punctuation attr-equals&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;&quot;&lt;/span&gt;bank&lt;span class=&quot;token punctuation&quot;&gt;&quot;&lt;/span&gt;&lt;/span&gt;
+    &lt;span class=&quot;token attr-name&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;token attr-value&quot;&gt;&lt;span class=&quot;token punctuation attr-equals&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;&quot;&lt;/span&gt;com.example.banking.model.Bank&lt;span class=&quot;token punctuation&quot;&gt;&quot;&lt;/span&gt;&lt;/span&gt;
+    &lt;span class=&quot;token attr-name&quot;&gt;&lt;span class=&quot;token namespace&quot;&gt;p:&lt;/span&gt;dataAccessObject-ref&lt;/span&gt;&lt;span class=&quot;token attr-value&quot;&gt;&lt;span class=&quot;token punctuation attr-equals&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;&quot;&lt;/span&gt;bankDataAccessObject&lt;span class=&quot;token punctuation&quot;&gt;&quot;&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;/&gt;&lt;/span&gt;&lt;/span&gt;
+    ...
+&lt;span class=&quot;token tag&quot;&gt;&lt;span class=&quot;token tag&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;&amp;lt;/&lt;/span&gt;beans&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;center&gt;&lt;i&gt;구체화된 데이터 소스부터, DAO, 객체까지 참조하네요.&lt;/i&gt;&lt;/center&gt;
+&lt;p&gt;클라이언트가 &lt;code class=&quot;language-text&quot;&gt;Bank&lt;/code&gt; 객체에서 &lt;code class=&quot;language-text&quot;&gt;getAccounts()&lt;/code&gt; 를 호출한다고 생각하지만, 내부에는 Bank POJO의 동작을 확장한 &lt;a href=&quot;https://refactoring.guru/design-patterns/decorator&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;DECORATOR&lt;/a&gt; 객체 집합의 외곽과 통신합니다. 필요하다면 트랜잭션이나 캐싱에도 이런 &lt;a href=&quot;https://refactoring.guru/design-patterns/decorator&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;DECORATOR&lt;/a&gt;가 얼마든지 붙을 수 있습니다. 만약 애플리케이션이 DI 컨테이너에게 (XML에 명시된) 시스템 내 최상위 객체를 요청하려면 아래와같이 사용합니다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;java&quot;&gt;&lt;pre class=&quot;language-java&quot;&gt;&lt;code class=&quot;language-java&quot;&gt;&lt;span class=&quot;token class-name&quot;&gt;XmlBeanFactory&lt;/span&gt; bf &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;XmlBeanFactory&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token keyword&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;ClassPathResource&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&quot;app.xml&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;getClass&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;token class-name&quot;&gt;Bank&lt;/span&gt; bank &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token class-name&quot;&gt;Bank&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; bf&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;getBean&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&quot;bank&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;책에서 봤던 &lt;code class=&quot;language-text&quot;&gt;EJB2&lt;/code&gt; 형식의 스프링 관련 자바코드가 없어졌습니다. 이제 애플리케이션은 &lt;strong&gt;스프링과 분리&lt;/strong&gt; 되었습니다. 이를 통해 결합도 문제가 사라졌습니다.&lt;/p&gt;
+&lt;h3 id=&quot;어노테이션&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%96%B4%EB%85%B8%ED%85%8C%EC%9D%B4%EC%85%98&quot; aria-label=&quot;어노테이션 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;어노테이션!&lt;/h3&gt;
+&lt;p&gt;관심사와 역할을 함께 분리하는 자바의 어노테이션을 살펴봅시다&lt;sup id=&quot;fnref-7&quot;&gt;&lt;a href=&quot;#fn-7&quot; class=&quot;footnote-ref&quot;&gt;7&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;도메인 객체별로 그에 맞는 저장방식을 사용 (bad)&lt;/li&gt;
+&lt;li&gt;특정 인터페이스를 상속한 도메인 객체들을 일관된 방법으로 사용 (good)
+&lt;ol&gt;
+&lt;li&gt;데이터 저장을 위해 추가적인 상속이 필요&lt;/li&gt;
+&lt;li&gt;기존 객체와 속성충돌을 고려해야함&lt;/li&gt;
+&lt;li&gt;(결과) 비즈니스 로직에 오롯이 집중하기 어려움&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;@Annotation&lt;/code&gt;을 이용 (better)
+&lt;ol&gt;
+&lt;li&gt;타겟이 어떤 기능을 하는지, 어떤 속성을 가지는지 한번에 지정&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;EJB3&lt;/code&gt; 이 등장할 때는 &lt;code class=&quot;language-text&quot;&gt;app.xml&lt;/code&gt; 과 자바 5의 Annotation 을 사용하여 횡단 관심사를 선언적으로 지원하는 스프링 모델을 따르게 되었습니다. 책의 예시를 살펴봅시다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;java&quot;&gt;&lt;pre class=&quot;language-java&quot;&gt;&lt;code class=&quot;language-java&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;package&lt;/span&gt; &lt;span class=&quot;token namespace&quot;&gt;com&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;example&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;banking&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;model&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;token import&quot;&gt;&lt;span class=&quot;token namespace&quot;&gt;javax&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;persistence&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;*&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;token import&quot;&gt;&lt;span class=&quot;token namespace&quot;&gt;java&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;util&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token class-name&quot;&gt;ArrayList&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;token import&quot;&gt;&lt;span class=&quot;token namespace&quot;&gt;java&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;util&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token class-name&quot;&gt;Collection&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;token annotation punctuation&quot;&gt;@Entity&lt;/span&gt;
+&lt;span class=&quot;token annotation punctuation&quot;&gt;@Table&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;name &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;BANKS&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;Bank&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;implements&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;&lt;span class=&quot;token namespace&quot;&gt;java&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;io&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;/span&gt;Serializable&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;token annotation punctuation&quot;&gt;@Id&lt;/span&gt; &lt;span class=&quot;token annotation punctuation&quot;&gt;@GeneratedValue&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;strategy&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token class-name&quot;&gt;GenerationType&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token constant&quot;&gt;AUTO&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;int&lt;/span&gt; id&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+    &lt;span class=&quot;token annotation punctuation&quot;&gt;@Embeddable&lt;/span&gt; &lt;span class=&quot;token comment&quot;&gt;// Bank의 DB row에 인라인으로 포함된 객체&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;Address&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;token keyword&quot;&gt;protected&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;String&lt;/span&gt; streetAddr1&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;token keyword&quot;&gt;protected&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;String&lt;/span&gt; streetAddr2&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;token keyword&quot;&gt;protected&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;String&lt;/span&gt; city&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;token keyword&quot;&gt;protected&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;String&lt;/span&gt; state&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;token keyword&quot;&gt;protected&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;String&lt;/span&gt; zipCode&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;token annotation punctuation&quot;&gt;@Embedded&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;Address&lt;/span&gt; address&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+    &lt;span class=&quot;token annotation punctuation&quot;&gt;@OneToMany&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;
+        cascade &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;CascadeType&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token constant&quot;&gt;ALL&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+        fetch &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;FetchType&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token constant&quot;&gt;EAGER&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+        mappedBy &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;bank&quot;&lt;/span&gt;
+    &lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;Collection&lt;/span&gt;&lt;span class=&quot;token generics&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;token class-name&quot;&gt;Account&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;&gt;&lt;/span&gt;&lt;/span&gt; accounts &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;ArrayList&lt;/span&gt;&lt;span class=&quot;token generics&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;token class-name&quot;&gt;Account&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+    &lt;span class=&quot;token keyword&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;getId&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; id&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;token keyword&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;setId&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token keyword&quot;&gt;int&lt;/span&gt; id&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;token keyword&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;id &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; id&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;token keyword&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;addAccount&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token class-name&quot;&gt;Account&lt;/span&gt; account&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+        account&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;setBank&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token keyword&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+        accounts&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;add&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;account&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;token keyword&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;Collection&lt;/span&gt;&lt;span class=&quot;token generics&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;token class-name&quot;&gt;Account&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;&gt;&lt;/span&gt;&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;getAccounts&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; accounts&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;token keyword&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;setAccounts&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token class-name&quot;&gt;Collection&lt;/span&gt;&lt;span class=&quot;token generics&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;token class-name&quot;&gt;Account&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;&gt;&lt;/span&gt;&lt;/span&gt; accounts&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;token keyword&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;accounts &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; accounts
+    &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;center&gt; &lt;i&gt;스프링 코드를 들여다 볼 때의 그 수많은 그 코드들이 이런 배경을 통해 등장한 것 이었군요!&lt;/i&gt; &lt;/center&gt;
+&lt;h2 id=&quot;aspectj-관점&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#aspectj-%EA%B4%80%EC%A0%90&quot; aria-label=&quot;aspectj 관점 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;AspectJ 관점&lt;/h2&gt;
+&lt;p&gt;관심사를 관점으로 분리하는 가장 강력한 도구는 AspectJ 언어입니다. 보다 쉬운 설명은 &lt;a href=&quot;https://logical-code.tistory.com/118&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;이 게시글&lt;/a&gt;을 참고해 주십시오.&lt;/p&gt;
+&lt;h2 id=&quot;테스트-주도-시스템-아키텍처-구축&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%ED%85%8C%EC%8A%A4%ED%8A%B8-%EC%A3%BC%EB%8F%84-%EC%8B%9C%EC%8A%A4%ED%85%9C-%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98-%EA%B5%AC%EC%B6%95&quot; aria-label=&quot;테스트 주도 시스템 아키텍처 구축 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;테스트 주도 시스템 아키텍처 구축&lt;/h2&gt;
+&lt;p&gt;관점 혹은 그 유사한 개념으로 관심사를 분리할 수 있다면 테스트 주도 아키텍처 구축 또한 가능해집니다. 그때그때 새 기술을 채택하여 단순한 아키텍처를 보다 복잡한 아키텍처로 변경할 수 있습니다. &lt;strong&gt;앞으로 벌어질 모든 사항을 설계하는(BDUF, Big Design Up Front)&lt;/strong&gt; 식의 접근은 변경을 쉽사리 수용하기 어렵게 합니다.&lt;/p&gt;
+&lt;p&gt;소프트웨어는 그런 의미로 건물 건축보다는 정원 관리에 보다 가깝다&lt;sup id=&quot;fnref-8&quot;&gt;&lt;a href=&quot;#fn-8&quot; class=&quot;footnote-ref&quot;&gt;8&lt;/a&gt;&lt;/sup&gt; 라고 합니다. 관점을 효과적으로 분리한다면 극적인 변화 또한 경제적으로 가능함을 의미합니다. ‘아주 단순하고’ 괜찮은 아키텍처로 결과물을 빠르게 출시한 후 기반 구조를 천천히 추가해도 괜찮다는 것을 의미합니다.&lt;/p&gt;
+&lt;p&gt;그렇지만, ‘무계획’으로 뛰어들면 안됩니다. 프로젝트는 일반적인 범위, 목표, 일정 및 결과로 내어놓을 시스템의 일반적 구조 또한 생각해야 합니다. 하지만 변하는 환경에 대처하여 진로를 변경할 능력 또한 갖추고 유지해야 합니다.&lt;/p&gt;
+&lt;p&gt;저자는 현재까지의 이야기를 이렇게 요약하였습니다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;blockquote&gt;
+&lt;p&gt;최선의 시스템 구조는 각기 POJO(또는 다른) 객체로 구현되는 모듈화된 관심사 영역(도메인)으로 구성된다.&lt;/p&gt;
+&lt;p&gt;이렇게 서로 다른 영역은 해당 영역 코드에 최소한의 영향을 미치는 관점이나 유사한 도구를 사용해 통합한다.&lt;/p&gt;
+&lt;p&gt;이런 구조 역시 코드와 마찬가지로 테스트 주도 기법을 적용할 수 있다.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;의사-결정을-최적화-하십시오&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%9D%98%EC%82%AC-%EA%B2%B0%EC%A0%95%EC%9D%84-%EC%B5%9C%EC%A0%81%ED%99%94-%ED%95%98%EC%8B%AD%EC%8B%9C%EC%98%A4&quot; aria-label=&quot;의사 결정을 최적화 하십시오 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;의사 결정을 최적화 하십시오&lt;/h2&gt;
+&lt;p&gt;모듈을 나누고 관심사를 분리하면 세세한 부분까지 관리/결정을 내릴 수 있습니다. 큰 시스템은 한 사람이 모든 결정을 내리기 힘듭니다. 그런 의미로 담당자에게 책임을 위임하는 것이 중요합니다.&lt;/p&gt;
+&lt;p&gt;때로는 최후의 최후까지 &lt;strong&gt;결정을 미루어서&lt;/strong&gt; 최대한 정보를 모아 최선의 선택을 하는 것이 필요합니다. 이는 시스템을 &lt;strong&gt;너무 일찍 결정하지 말라&lt;/strong&gt;는 것을 시사합니다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;blockquote&gt;
+&lt;p&gt;관심사를 모듈로 분리한 POJO 시스템은 기민함을 제공한다.&lt;/p&gt;
+&lt;p&gt;이런 기민함 덕택에 최신 정보에 기반해 최선의 시점에 최적의 결정을 내리기가 쉬워진다.&lt;/p&gt;
+&lt;p&gt;또한 결정의 복잡성도 줄어든다.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;명백한-가치가-있을-때-표준을-현명하게-사용하십시오&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EB%AA%85%EB%B0%B1%ED%95%9C-%EA%B0%80%EC%B9%98%EA%B0%80-%EC%9E%88%EC%9D%84-%EB%95%8C-%ED%91%9C%EC%A4%80%EC%9D%84-%ED%98%84%EB%AA%85%ED%95%98%EA%B2%8C-%EC%82%AC%EC%9A%A9%ED%95%98%EC%8B%AD%EC%8B%9C%EC%98%A4&quot; aria-label=&quot;명백한 가치가 있을 때 표준을 현명하게 사용하십시오 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;명백한 가치가 있을 때 표준을 현명하게 사용하십시오&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;“도메인에 맞는 기술을 선택하라.”&lt;/strong&gt; 한마디로 정리할 수 있겠습니다. 도메인을 추구하면 고객 가치를 추구하게 됩니다. 고객에게 소프트웨어를 제공하는 것이 프로그래머의 제 1원칙이니까요.&lt;/p&gt;
+&lt;hr&gt;
+&lt;blockquote&gt;
+&lt;p&gt;표준을 사용하면 아이디어와 컴포넌트를 재사용하기 쉽고, 비슷한 경험을 할 사람을 구하기 쉬우며, 좋은 아이디어를 캡슐화하기 쉽고, 컴포넌트를 엮기 쉽다.&lt;/p&gt;
+&lt;p&gt;하지만 표준을 만드는 시간이 너무 오래 걸려 업계가 기다리지 못한다.&lt;/p&gt;
+&lt;p&gt;어떤 표준은 원래 표준을 제정한 목적을 잊어버리기도 한다.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;시스템은-도메인-특화-언어가-필요합니다&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%8B%9C%EC%8A%A4%ED%85%9C%EC%9D%80-%EB%8F%84%EB%A9%94%EC%9D%B8-%ED%8A%B9%ED%99%94-%EC%96%B8%EC%96%B4%EA%B0%80-%ED%95%84%EC%9A%94%ED%95%A9%EB%8B%88%EB%8B%A4&quot; aria-label=&quot;시스템은 도메인 특화 언어가 필요합니다 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;시스템은 도메인 특화 언어가 필요합니다&lt;/h2&gt;
+&lt;p&gt;도메인 특화 언어(이하 DSL, Domain Specific Language)와 유비쿼터스 언어를 이야기합니다.&lt;/p&gt;
+&lt;p&gt;도메인을 만드는 사람 모두가 읽을 수 있는 언어와 공통적으로 사용하는 단어, 어휘를 통해 &lt;strong&gt;의사소통의 간극을 줄이는&lt;/strong&gt; 것이 이 둘의 핵심입니다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;blockquote&gt;
+&lt;p&gt;DSL을 사용하면 고차원 정책에서 저차원 세부사항에 이르기까지 모든 추상화 수준과 모든 도메인을 POJO로 표현할 수 있다.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;결론&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EA%B2%B0%EB%A1%A0&quot; aria-label=&quot;결론 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;결론&lt;/h2&gt;
+&lt;p&gt;시스템 또한 깨끗해야 합니다. 깨끗하지 못한 아키텍처는 도메인 논리를 흐리며 기민성을 떨어뜨립니다. 도메인 논리가 흐려지면 제품 품질이 떨어집니다. 버그가 숨어들기 쉬워지고, 스토리를 구현하기 어려워집니다. 기민성이 떨어지면 생산성이 낮아져 TDD가 제공하는 장점이 사라집니다.&lt;/p&gt;
+&lt;p&gt;모든 추상화 단계에서 의도는 명확히 표현되어야 합니다. 그러려면 POJO를 작성하고, 관점 혹은 관점과 유사한 메커니즘을 사용해 각 구현 관심사를 분리해야 합니다&lt;sup id=&quot;fnref-9&quot;&gt;&lt;a href=&quot;#fn-9&quot; class=&quot;footnote-ref&quot;&gt;9&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
+&lt;p&gt;무엇보다도, 시스템을 설계하든 개별 모듈을 설계하든 &lt;strong&gt;&lt;em&gt;실제로 돌아가는 가장 단순한 수단&lt;/em&gt;&lt;/strong&gt; 을 사용해야 합니다.&lt;/p&gt;
+&lt;div class=&quot;footnotes&quot;&gt;
+&lt;hr&gt;
+&lt;ol&gt;
+&lt;li id=&quot;fn-1&quot;&gt;&lt;a href=&quot;https://python-dependency-injector.ets-labs.org/examples/fastapi.html#application-factory&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;해당 예시&lt;/a&gt; 를 로직에 맞게 푼 코드입니다. &lt;code class=&quot;language-text&quot;&gt;@inject&lt;/code&gt; 를 통해 의존성을 주입하는 코드는 예시를 살펴보시기를 강력히 권장드립니다. 또한 해당 게시글들이 매우 도움되었습니다. &lt;br /&gt;&lt;a href=&quot;https://blog.neonkid.xyz/279&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;[FastAPI] 11. Dependency Injector를 이용한 의존성 관리&lt;/a&gt;&lt;br /&gt;&lt;a href=&quot;https://www.humphreyahn.dev/blog/dependency-injector&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;파이썬 애플리케이션 의존성 주입 - dependency injector&lt;/a&gt;  &lt;a href=&quot;#fnref-1&quot; class=&quot;footnote-backref&quot;&gt;↩&lt;/a&gt;&lt;/li&gt;
+&lt;li id=&quot;fn-2&quot;&gt;대상 소스코드를 수작업으로 편집할 필요가 없다는 뜻을 의미합니다. 예시코드나 개념을 보면 이해가 되실 것입니다.  &lt;a href=&quot;#fnref-2&quot; class=&quot;footnote-backref&quot;&gt;↩&lt;/a&gt;&lt;/li&gt;
+&lt;li id=&quot;fn-3&quot;&gt;&lt;a href=&quot;https://taes-k.github.io/2021/05/15/dynamic-proxy-reflection/&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;해당 게시글&lt;/a&gt;이 도움되었습니다.&lt;a href=&quot;#fnref-3&quot; class=&quot;footnote-backref&quot;&gt;↩&lt;/a&gt;&lt;/li&gt;
+&lt;li id=&quot;fn-4&quot;&gt;보다 쉽고 상세한 설명은 &lt;a href=&quot;https://taes-k.github.io/2021/02/07/spring-aop-proxy/&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;해당 게시글&lt;/a&gt;을 참고하십시오.  &lt;a href=&quot;#fnref-4&quot; class=&quot;footnote-backref&quot;&gt;↩&lt;/a&gt;&lt;/li&gt;
+&lt;li id=&quot;fn-5&quot;&gt;Plain Old Java Object 를 의미합니다. &lt;em&gt;어떤 프레임워크와 라이브러리에 속하지 않는&lt;/em&gt; 쌩 자바 객체를 의미합니다. 다른 언어에서 이 용어를 본다면 &lt;em&gt;어떤 프레임워크와 라이브러리에 속하지 않는&lt;/em&gt; 객체를 의미한다고 이해하면 되지 않을까 하고 생각합니다.  &lt;a href=&quot;#fnref-5&quot; class=&quot;footnote-backref&quot;&gt;↩&lt;/a&gt;&lt;/li&gt;
+&lt;li id=&quot;fn-6&quot;&gt;Матрёшка. 인형 속에 인형이 있고, 그 속에 인형이 계속 있는 러시아 인형을 의미합니다. &lt;a href=&quot;https://ko.wikipedia.org/wiki/%EB%A7%88%ED%8A%B8%EB%A3%8C%EC%8B%9C%EC%B9%B4&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;출처&lt;/a&gt;  &lt;a href=&quot;#fnref-6&quot; class=&quot;footnote-backref&quot;&gt;↩&lt;/a&gt;&lt;/li&gt;
+&lt;li id=&quot;fn-7&quot;&gt;어노테이션을 이해하는데 &lt;a href=&quot;https://www.nextree.co.kr/p5864/&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;해당 게시글&lt;/a&gt;이 큰 도움이 되었습니다.  &lt;a href=&quot;#fnref-7&quot; class=&quot;footnote-backref&quot;&gt;↩&lt;/a&gt;&lt;/li&gt;
+&lt;li id=&quot;fn-8&quot;&gt;보다 상세한 내용에 대해서는 &lt;a href=&quot;https://technical-leader.tistory.com/45&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;해당 게시글&lt;/a&gt;을 참고하십시오.  &lt;a href=&quot;#fnref-8&quot; class=&quot;footnote-backref&quot;&gt;↩&lt;/a&gt;&lt;/li&gt;
+&lt;li id=&quot;fn-9&quot;&gt;이런 식의 접근은 DDD(Domain-driven Development)와 직접적으로 맞닿아 있습니다.  &lt;a href=&quot;#fnref-9&quot; class=&quot;footnote-backref&quot;&gt;↩&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
 &lt;/div&gt;</content:encoded></item><item><title><![CDATA[클린 코드 스터디 (10): 클래스]]></title><description><![CDATA[2023년 1월부터 시작한 클린 코드 독파 스터디 후, 매 모임 전 준비하는 게시글을 공유합니다. 이 글은 10장, 클래스에 대해 살펴봅니다.]]></description><link>https://blog.s3ich4n.me/books/clean-code/2023-02-10-pt10</link><guid isPermaLink="false">https://blog.s3ich4n.me/books/clean-code/2023-02-10-pt10</guid><pubDate>Fri, 10 Feb 2023 22:55:00 GMT</pubDate><content:encoded>&lt;h1 id=&quot;10-클래스&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#10-%ED%81%B4%EB%9E%98%EC%8A%A4&quot; aria-label=&quot;10 클래스 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;10. 클래스&lt;/h1&gt;
 &lt;p&gt;클래스에 대해 살펴봅시다.&lt;/p&gt;
 &lt;h2 id=&quot;클래스-체계&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%ED%81%B4%EB%9E%98%EC%8A%A4-%EC%B2%B4%EA%B3%84&quot; aria-label=&quot;클래스 체계 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;클래스 체계&lt;/h2&gt;
@@ -455,7 +1304,7 @@
 &lt;li&gt;가독성&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;테스트 코드 또한 명료하고, 단순하고, 표현력이 좋은 코드여야 합니다.&lt;/p&gt;
-&lt;p&gt;AAA(Arrange-Assert-Act) 형식[1]으로 테스트코드를 세 부분으로 나누는 것이 권장됩니다. 정말 필요한 것들만 명료하게 제공합니다. 잡다하고 세세한 코드는 숨깁니다.&lt;/p&gt;
+&lt;p&gt;AAA(Arrange-Assert-Act) 형식&lt;sup id=&quot;fnref-1&quot;&gt;&lt;a href=&quot;#fn-1&quot; class=&quot;footnote-ref&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;으로 테스트코드를 세 부분으로 나누는 것이 권장됩니다. 정말 필요한 것들만 명료하게 제공합니다. 잡다하고 세세한 코드는 숨깁니다.&lt;/p&gt;
 &lt;h3 id=&quot;dsl에-특화된-테스트-언어&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#dsl%EC%97%90-%ED%8A%B9%ED%99%94%EB%90%9C-%ED%85%8C%EC%8A%A4%ED%8A%B8-%EC%96%B8%EC%96%B4&quot; aria-label=&quot;dsl에 특화된 테스트 언어 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;DSL에 특화된 테스트 언어&lt;/h3&gt;
 &lt;p&gt;도메인을 표현하기 위해 감싼 나만의 함수와 유틸리티로 로직을 바로 테스트하면 테스트가 정말 간결해지겠지요. 이런 API는 테스트 코드를 위한 특수한 API가 되지요.&lt;/p&gt;
 &lt;h3 id=&quot;이중-표준&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%9D%B4%EC%A4%91-%ED%91%9C%EC%A4%80&quot; aria-label=&quot;이중 표준 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;이중 표준&lt;/h3&gt;
@@ -477,11 +1326,12 @@
 &lt;/ul&gt;
 &lt;h2 id=&quot;결론&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EA%B2%B0%EB%A1%A0&quot; aria-label=&quot;결론 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;결론&lt;/h2&gt;
 &lt;p&gt;테스트 코드는 중요합니다. 실제 코드만큼이나 중요하니, 이를 잘 관리해야합니다. 깨끗하게 관리하기 위해 가독성과 테스트 코드의 표준을 둡시다. 그리고 도메인을 잘 표현하는 별도 로직을 작성해서 짧고 핵심만 말하는 코드를 짜봅시다.&lt;/p&gt;
+&lt;div class=&quot;footnotes&quot;&gt;
 &lt;hr&gt;
-&lt;p&gt;References&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;[1]: 저자의 FitNesse 프로젝트에선 BUILD-OPERATE-CHECK 패턴이라고 부릅니다. 이렇게 부르는 이유는, 저자의 프로젝트에선 빌드하고 작동시킨 후 체크하기 때문이지요.&lt;/li&gt;
-&lt;/ul&gt;</content:encoded></item><item><title><![CDATA[클린 코드 스터디 (8): 경계]]></title><description><![CDATA[2023년 1월부터 시작한 클린 코드 독파 스터디 후, 매 모임 전 준비하는 게시글을 공유합니다. 이 글은 8장, 경계에 대해 설명합니다.]]></description><link>https://blog.s3ich4n.me/books/clean-code/2023-02-03-pt08</link><guid isPermaLink="false">https://blog.s3ich4n.me/books/clean-code/2023-02-03-pt08</guid><pubDate>Fri, 03 Feb 2023 22:53:00 GMT</pubDate><content:encoded>&lt;h1 id=&quot;8-경계&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#8-%EA%B2%BD%EA%B3%84&quot; aria-label=&quot;8 경계 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;8. 경계&lt;/h1&gt;
+&lt;ol&gt;
+&lt;li id=&quot;fn-1&quot;&gt;저자의 &lt;code class=&quot;language-text&quot;&gt;FitNesse&lt;/code&gt; 프로젝트에선 BUILD-OPERATE-CHECK 패턴이라고 부릅니다. 이렇게 부르는 이유는, 저자의 프로젝트에선 빌드하고 작동시킨 후 체크하기 때문이지요.&lt;a href=&quot;#fnref-1&quot; class=&quot;footnote-backref&quot;&gt;↩&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;</content:encoded></item><item><title><![CDATA[클린 코드 스터디 (8): 경계]]></title><description><![CDATA[2023년 1월부터 시작한 클린 코드 독파 스터디 후, 매 모임 전 준비하는 게시글을 공유합니다. 이 글은 8장, 경계에 대해 설명합니다.]]></description><link>https://blog.s3ich4n.me/books/clean-code/2023-02-03-pt08</link><guid isPermaLink="false">https://blog.s3ich4n.me/books/clean-code/2023-02-03-pt08</guid><pubDate>Fri, 03 Feb 2023 22:53:00 GMT</pubDate><content:encoded>&lt;h1 id=&quot;8-경계&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#8-%EA%B2%BD%EA%B3%84&quot; aria-label=&quot;8 경계 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;8. 경계&lt;/h1&gt;
 &lt;p&gt;업무를 하게 된다면 패키지를 구매하거나 오픈소스를 이용하여 개발하곤 합니다. 회사가 크다면 사내 다른 팀이 제공하는 컴포넌트를 사용하지요. 외부 코드를 자신의 조직 코드에 잘 통합해야 합니다. 그 경계를 잘 구별하는 방안에 대해 살펴봅시다.&lt;/p&gt;
 &lt;h2 id=&quot;외부-코드-사용하기&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%99%B8%EB%B6%80-%EC%BD%94%EB%93%9C-%EC%82%AC%EC%9A%A9%ED%95%98%EA%B8%B0&quot; aria-label=&quot;외부 코드 사용하기 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;외부 코드 사용하기&lt;/h2&gt;
 &lt;p&gt;인터페이스를 제공하는 측은 적용성을 최대한으로 구성합니다. 쓰는 사람은 자신에게 맞는 기능이 있길 바라지요. 그렇기 때문에, 원치 않은 기능을 사용할 수도 있게 됩니다.&lt;/p&gt;
@@ -489,7 +1339,7 @@
 &lt;h2 id=&quot;경계-살피고-익히기&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EA%B2%BD%EA%B3%84-%EC%82%B4%ED%94%BC%EA%B3%A0-%EC%9D%B5%ED%9E%88%EA%B8%B0&quot; aria-label=&quot;경계 살피고 익히기 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;경계 살피고 익히기&lt;/h2&gt;
 &lt;p&gt;외부 라이브러리를 가져오면 빠르게 기능개발을 할 수 있지요. 만약 이 패키지를 사용하고 싶으면 어디서 어떻게 시작하는게 좋을까요?&lt;/p&gt;
 &lt;p&gt;타 라이브러리를 가져왔지만 쓰기 힘든 경우를 생각해봅시다. 배우고, 제대로 쓰고 있는지도 파악해야하고, 내 버그인지 라이브러리의 버그인지 쫓아갈 때도 있습니다.&lt;/p&gt;
-&lt;p&gt;이러한 기능에 대해 빠르게 익히는 방안을 책에선 ‘학습 테스트’[1] 라는 용어로 소개합니다. 마찬가지로 TDD로 작업합니다.&lt;/p&gt;
+&lt;p&gt;이러한 기능에 대해 빠르게 익히는 방안을 책에선 ‘학습 테스트’&lt;sup id=&quot;fnref-1&quot;&gt;&lt;a href=&quot;#fn-1&quot; class=&quot;footnote-ref&quot;&gt;1&lt;/a&gt;&lt;/sup&gt; 라는 용어로 소개합니다. 마찬가지로 TDD로 작업합니다.&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;제대로 도는 방법을 캐치합니다.&lt;/li&gt;
 &lt;li&gt;제대로 쓰는 방법을 캐치합니다(구글 검색, 문서 확인, 로직 확인, 테스트).&lt;/li&gt;
@@ -508,11 +1358,12 @@
 &lt;h2 id=&quot;깨끗한-경계&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EA%B9%A8%EB%81%97%ED%95%9C-%EA%B2%BD%EA%B3%84&quot; aria-label=&quot;깨끗한 경계 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;깨끗한 경계&lt;/h2&gt;
 &lt;p&gt;통제할 수 없는 코드를 사용할 때는 변경에 많은 비용이 들지 않도록 합시다.&lt;/p&gt;
 &lt;p&gt;이를 위한 방법은 경계에 위치한 코드를 말끔히 분리하는 것입니다. 외부 코드에 휘둘리지 않도록 외부 라이브러리를 직접 호출하지 않고, 간접적으로 작성해봅시다.&lt;/p&gt;
+&lt;div class=&quot;footnotes&quot;&gt;
 &lt;hr&gt;
-&lt;p&gt;References&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;[1]: 테스트 주도 개발의 222-237쪽을 참고하십시오.&lt;/li&gt;
-&lt;/ul&gt;</content:encoded></item><item><title><![CDATA[클린 코드 스터디 (7): 오류 처리]]></title><description><![CDATA[2023년 1월부터 시작한 클린 코드 독파 스터디 후, 매 모임 전 준비하는 게시글을 공유합니다. 이 글은 7장, 오류 처리에 대해 설명합니다.]]></description><link>https://blog.s3ich4n.me/books/clean-code/2023-02-03-pt07</link><guid isPermaLink="false">https://blog.s3ich4n.me/books/clean-code/2023-02-03-pt07</guid><pubDate>Fri, 03 Feb 2023 22:51:00 GMT</pubDate><content:encoded>&lt;h1 id=&quot;7-오류-처리&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#7-%EC%98%A4%EB%A5%98-%EC%B2%98%EB%A6%AC&quot; aria-label=&quot;7 오류 처리 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;7. 오류 처리&lt;/h1&gt;
+&lt;ol&gt;
+&lt;li id=&quot;fn-1&quot;&gt;&lt;a href=&quot;http://www.yes24.com/Product/Goods/12246033&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;테스트 주도 개발&lt;/a&gt;의 222-237쪽을 참고하십시오.&lt;a href=&quot;#fnref-1&quot; class=&quot;footnote-backref&quot;&gt;↩&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;</content:encoded></item><item><title><![CDATA[클린 코드 스터디 (7): 오류 처리]]></title><description><![CDATA[2023년 1월부터 시작한 클린 코드 독파 스터디 후, 매 모임 전 준비하는 게시글을 공유합니다. 이 글은 7장, 오류 처리에 대해 설명합니다.]]></description><link>https://blog.s3ich4n.me/books/clean-code/2023-02-03-pt07</link><guid isPermaLink="false">https://blog.s3ich4n.me/books/clean-code/2023-02-03-pt07</guid><pubDate>Fri, 03 Feb 2023 22:51:00 GMT</pubDate><content:encoded>&lt;h1 id=&quot;7-오류-처리&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#7-%EC%98%A4%EB%A5%98-%EC%B2%98%EB%A6%AC&quot; aria-label=&quot;7 오류 처리 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;7. 오류 처리&lt;/h1&gt;
 &lt;p&gt;프로그래머라면 예기치 않은 상황에 대비하기 위해 대비해야할 책임이 있습니다. 이는 깨끗한 코드와 오류 처리가 연관있다는 말입니다. 따라서 오류를 체계적으로 잘 정리할 필요가 있겠습니다.&lt;/p&gt;
 &lt;h2 id=&quot;오류-코드보단-예외를-사용하자&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%98%A4%EB%A5%98-%EC%BD%94%EB%93%9C%EB%B3%B4%EB%8B%A8-%EC%98%88%EC%99%B8%EB%A5%BC-%EC%82%AC%EC%9A%A9%ED%95%98%EC%9E%90&quot; aria-label=&quot;오류 코드보단 예외를 사용하자 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;오류 코드보단 예외를 사용하자&lt;/h2&gt;
 &lt;p&gt;옛날 프로그래밍 언어에는 예외를 제공하지 않아서 에러코드로 처리했다고 합니다. 문제가 발생하면 에러코드도 함께 확인했어야 했죠. 하지만, 이제는 다릅니다. 로직과 오류처리 코드를 분리할 수 있습니다.&lt;/p&gt;
@@ -540,7 +1391,7 @@
 &lt;li&gt;특정 라이브러리에 발목잡히지 않습니다.&lt;/li&gt;
 &lt;/ol&gt;
 &lt;h2 id=&quot;정상-흐름을-정의하라&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%A0%95%EC%83%81-%ED%9D%90%EB%A6%84%EC%9D%84-%EC%A0%95%EC%9D%98%ED%95%98%EB%9D%BC&quot; aria-label=&quot;정상 흐름을 정의하라 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;정상 흐름을 정의하라&lt;/h2&gt;
-&lt;p&gt;상기 이야기대로 코드를 짜더라도, 로직 중단이 적합하지 않을 때가 있습니다. 이럴 땐 리팩토링에 나오는 SPECIAL CASE PATTERN이 적합합니다[1].&lt;/p&gt;
+&lt;p&gt;상기 이야기대로 코드를 짜더라도, 로직 중단이 적합하지 않을 때가 있습니다. 이럴 땐 리팩토링에 나오는 SPECIAL CASE PATTERN이 적합합니다&lt;sup id=&quot;fnref-1&quot;&gt;&lt;a href=&quot;#fn-1&quot; class=&quot;footnote-ref&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;일단 원하는 로직을 풀어둡시다.&lt;/li&gt;
 &lt;li&gt;특수사례를 클래스 혹은 객체 안에서 해소하게 묶고 결과를 리턴하게 만듭니다.&lt;/li&gt;
@@ -556,11 +1407,12 @@
 &lt;p&gt;아예 &lt;code class=&quot;language-text&quot;&gt;null&lt;/code&gt;을 못받도록 하는 것이 합리적이라고 합니다.&lt;/p&gt;
 &lt;h2 id=&quot;결론&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EA%B2%B0%EB%A1%A0&quot; aria-label=&quot;결론 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;결론&lt;/h2&gt;
 &lt;p&gt;읽기 좋은 코드 뿐 아니라 안정성 있는 코드 또한 고려해야합니다. 오류처리를 프로그램 논리와 분리하여 관심사를 각각 분리하고 이를 통해 로직(에러든 본디 로직이든)에 집중할 수 있도록 합시다.&lt;/p&gt;
+&lt;div class=&quot;footnotes&quot;&gt;
 &lt;hr&gt;
-&lt;p&gt;References&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;[1]: 상세한 내용은 리팩토링 개정 2판의 ‘10.5 - 특이 케이스 추가하기’ 를 참고하십시오.&lt;/li&gt;
-&lt;/ul&gt;</content:encoded></item><item><title><![CDATA[클린 코드 스터디 (6): 객체와 자료구조]]></title><description><![CDATA[2023년 1월부터 시작한 클린 코드 독파 스터디 후, 매 모임 전 준비하는 게시글을 공유합니다. 이 글은 6장, 객체와 자료 구조에 대해 설명합니다.]]></description><link>https://blog.s3ich4n.me/books/clean-code/2023-01-27-pt06</link><guid isPermaLink="false">https://blog.s3ich4n.me/books/clean-code/2023-01-27-pt06</guid><pubDate>Fri, 27 Jan 2023 23:11:00 GMT</pubDate><content:encoded>&lt;h1 id=&quot;6-객체와-자료-구조&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#6-%EA%B0%9D%EC%B2%B4%EC%99%80-%EC%9E%90%EB%A3%8C-%EA%B5%AC%EC%A1%B0&quot; aria-label=&quot;6 객체와 자료 구조 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;6. 객체와 자료 구조&lt;/h1&gt;
+&lt;ol&gt;
+&lt;li id=&quot;fn-1&quot;&gt;상세한 내용은 리팩토링 개정 2판의 ‘10.5 - 특이 케이스 추가하기’ 를 참고하십시오.&lt;a href=&quot;#fnref-1&quot; class=&quot;footnote-backref&quot;&gt;↩&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;</content:encoded></item><item><title><![CDATA[클린 코드 스터디 (6): 객체와 자료구조]]></title><description><![CDATA[2023년 1월부터 시작한 클린 코드 독파 스터디 후, 매 모임 전 준비하는 게시글을 공유합니다. 이 글은 6장, 객체와 자료 구조에 대해 설명합니다.]]></description><link>https://blog.s3ich4n.me/books/clean-code/2023-01-27-pt06</link><guid isPermaLink="false">https://blog.s3ich4n.me/books/clean-code/2023-01-27-pt06</guid><pubDate>Fri, 27 Jan 2023 23:11:00 GMT</pubDate><content:encoded>&lt;h1 id=&quot;6-객체와-자료-구조&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#6-%EA%B0%9D%EC%B2%B4%EC%99%80-%EC%9E%90%EB%A3%8C-%EA%B5%AC%EC%A1%B0&quot; aria-label=&quot;6 객체와 자료 구조 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;6. 객체와 자료 구조&lt;/h1&gt;
 &lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;private&lt;/code&gt; 값으로 쓰기로 한 변수에 대해 &lt;code class=&quot;language-text&quot;&gt;public&lt;/code&gt; 하게 마구잡이로 접근하는 것은, 캡슐화를 무색하게 만듭니다.&lt;/p&gt;
 &lt;h2 id=&quot;자료-추상화&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%9E%90%EB%A3%8C-%EC%B6%94%EC%83%81%ED%99%94&quot; aria-label=&quot;자료 추상화 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;자료 추상화&lt;/h2&gt;
 &lt;h3 id=&quot;본문-내용&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EB%B3%B8%EB%AC%B8-%EB%82%B4%EC%9A%A9&quot; aria-label=&quot;본문 내용 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;본문 내용&lt;/h3&gt;
@@ -649,7 +1501,7 @@
     &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
 &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;만일 둘레를 구하는 등, &lt;strong&gt;새로운 기능&lt;/strong&gt;을 추가하거나 &lt;strong&gt;새로운 도형&lt;/strong&gt;을 추가하려면 Geometry에 속한 클래스를 &lt;strong&gt;모두&lt;/strong&gt; 고쳐야합니다.&lt;/p&gt;
-&lt;p&gt;반면 객체지향적 접근법이라면 새 함수를 추가하고 싶을 때 도형 클래스 전부를 고쳐야합니다[1].&lt;/p&gt;
+&lt;p&gt;반면 객체지향적 접근법이라면 새 함수를 추가하고 싶을 때 도형 클래스 전부를 고쳐야합니다&lt;sup id=&quot;fnref-1&quot;&gt;&lt;a href=&quot;#fn-1&quot; class=&quot;footnote-ref&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
 &lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;java&quot;&gt;&lt;pre class=&quot;language-java&quot;&gt;&lt;code class=&quot;language-java&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;Square&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;implements&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;Shape&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
     &lt;span class=&quot;token keyword&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;Point&lt;/span&gt; topLeft&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
     &lt;span class=&quot;token keyword&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;double&lt;/span&gt; side&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
@@ -731,11 +1583,15 @@
 &lt;p&gt;객체는 동작을 공개하고 자료를 숨깁니다. 그래서 기존 동작을 변경하지 않으면서 새 객체 타입을 추가하기 쉽습니다. 하지만 기존 객체에 새 동작을 추가하기는 어렵습니다.&lt;/p&gt;
 &lt;p&gt;자료 구조는 별 동작 없이 자료를 노출합니다. 그래서 기존 자료 구조에서 새 동작을 추가하기는 쉽습니다. 하지만 기존 함수에 새 자료 구조를 추가하기는 어렵습니다.&lt;/p&gt;
 &lt;p&gt;따라서 어떤 시스템을 구현할 때, 새로운 자료 타입을 추가하는 유연성이 필요하다면 객체가 더 적합합니다. 그렇지만 새로운 동작을 추가하는 유연성이 필요하면 자료구조와 절차적 코드가 더 적합합니다.&lt;/p&gt;
-&lt;hr&gt;
-&lt;p&gt;References&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;[1]: &lt;a href=&quot;https://en.wikipedia.org/wiki/Visitor_pattern&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;VISITOR 패턴&lt;/a&gt;을 활용하여 풀어낼 수도 있지만, 이런 기법 또한 내부 구조가 VISITOR에 열리게됩니다. 캡슐화 위반이지요. 그리고 상기 살펴본 절차적 프로그램에서 볼 수 있는 구조가 반환됩니다.&lt;/li&gt;
-&lt;/ul&gt;</content:encoded></item><item><title><![CDATA[클린 코드 스터디 (5): 형식 맞추기]]></title><description><![CDATA[2023년 1월부터 시작한 클린 코드 독파 스터디 후, 매 모임 전 준비하는 게시글을 공유합니다. 이 글은 5장, 형식 맞추기에 대해 살펴봅니다.]]></description><link>https://blog.s3ich4n.me/books/clean-code/2023-01-27-pt05</link><guid isPermaLink="false">https://blog.s3ich4n.me/books/clean-code/2023-01-27-pt05</guid><pubDate>Fri, 27 Jan 2023 22:51:00 GMT</pubDate><content:encoded>&lt;h1 id=&quot;5-형식-맞추기&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#5-%ED%98%95%EC%8B%9D-%EB%A7%9E%EC%B6%94%EA%B8%B0&quot; aria-label=&quot;5 형식 맞추기 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;5. 형식 맞추기&lt;/h1&gt;
+&lt;li&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&quot;footnotes&quot;&gt;
+&lt;hr&gt;
+&lt;ol&gt;
+&lt;li id=&quot;fn-1&quot;&gt;&lt;a href=&quot;https://en.wikipedia.org/wiki/Visitor_pattern&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;VISITOR 패턴&lt;/a&gt;을 활용하여 풀어낼 수도 있지만, 이런 기법 또한 내부 구조가 VISITOR에 열리게됩니다. 캡슐화 위반이지요. 그리고 상기 살펴본 절차적 프로그램에서 볼 수 있는 구조가 반환됩니다.  &lt;a href=&quot;#fnref-1&quot; class=&quot;footnote-backref&quot;&gt;↩&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;</content:encoded></item><item><title><![CDATA[클린 코드 스터디 (5): 형식 맞추기]]></title><description><![CDATA[2023년 1월부터 시작한 클린 코드 독파 스터디 후, 매 모임 전 준비하는 게시글을 공유합니다. 이 글은 5장, 형식 맞추기에 대해 살펴봅니다.]]></description><link>https://blog.s3ich4n.me/books/clean-code/2023-01-27-pt05</link><guid isPermaLink="false">https://blog.s3ich4n.me/books/clean-code/2023-01-27-pt05</guid><pubDate>Fri, 27 Jan 2023 22:51:00 GMT</pubDate><content:encoded>&lt;h1 id=&quot;5-형식-맞추기&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#5-%ED%98%95%EC%8B%9D-%EB%A7%9E%EC%B6%94%EA%B8%B0&quot; aria-label=&quot;5 형식 맞추기 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;5. 형식 맞추기&lt;/h1&gt;
 &lt;p&gt;프로그래머라면 누구든지 코드는 깔끔하고, 일관적이고, 꼼꼼하기를 바랄겁니다. 포맷을 맞추고 따르면 능률은 자연스레 올라갑니다. 필요하다면 도구를 도입하고, 규칙을 맞출 필요가 있습니다.&lt;/p&gt;
 &lt;h2 id=&quot;형식을-맞추는-목적&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%ED%98%95%EC%8B%9D%EC%9D%84-%EB%A7%9E%EC%B6%94%EB%8A%94-%EB%AA%A9%EC%A0%81&quot; aria-label=&quot;형식을 맞추는 목적 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;형식을 맞추는 목적&lt;/h2&gt;
 &lt;p&gt;&lt;a href=&quot;https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=114392104&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;코드 컴플리트&lt;/a&gt; 에서는, &lt;a href=&quot;https://andymatuschak.org/prompts/Chase1973.pdf&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;Perception in Chess&lt;/a&gt; 라는 논문에 나오는 실험을 소개합니다. 다양한 레벨(초급, 중급, 마스터)의 체스 선수에게 여러 방향에서 말의 위치를 기억하게 하는 시험이었습니다. 말이 무작위로 움직인다면 초보자들도 쉽게 기억하지만, 말의 위치가 실제 게임에서 일어날 법한 논리적 순서(일관성, 패턴)을 지킨다면 체스 마스터가 압도적인 능률을 보였습니다.&lt;/p&gt;
@@ -1291,7 +2147,7 @@ httpd&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;serve_forever
 &lt;p&gt;파이썬에서는 Javadocs 같이 문서를 자동으로 생성해주는 도구로 Sphinx라거나 각종 도구가 많습니다. 그렇지만 이런 것들도 관리대상이 되기 때문에 여러모로 주의가 필요합니다…&lt;/p&gt;
 &lt;h2 id=&quot;나쁜-주석&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EB%82%98%EC%81%9C-%EC%A3%BC%EC%84%9D&quot; aria-label=&quot;나쁜 주석 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;나쁜 주석&lt;/h2&gt;
 &lt;p&gt;나쁜 주석에 대해 일부 동의하나, 현실적으로 작성할 수 밖에 없는 주석은 분명 있습니다. 이에대한 근본적인 이유를 먼저 설명드리고자 합니다.&lt;/p&gt;
-&lt;p&gt;이 게시글을 보는 대부분의 사람은 한국인일 것입니다. 절대다수의 한국인에게 영어는 &lt;strong&gt;제 2 외국어&lt;/strong&gt;입니다. &lt;strong&gt;모국어&lt;/strong&gt;로 풀어진 설명은 외국어로 된 맥락이해의 속도차이가 날 수 밖에 없습니다[1].&lt;/p&gt;
+&lt;p&gt;이 게시글을 보는 대부분의 사람은 한국인일 것입니다. 절대다수의 한국인에게 영어는 &lt;strong&gt;제 2 외국어&lt;/strong&gt;입니다. &lt;strong&gt;모국어&lt;/strong&gt;로 풀어진 설명은 외국어로 된 맥락이해의 속도차이가 날 수 밖에 없습니다[^1].&lt;/p&gt;
 &lt;p&gt;불필요한 습관은 진실로 지양해야 합니다. 하지만 저는 제 생각과 다른 부분에 더 집중하여 기술하겠습니다.&lt;/p&gt;
 &lt;h3 id=&quot;주절거리는-주석&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%A3%BC%EC%A0%88%EA%B1%B0%EB%A6%AC%EB%8A%94-%EC%A3%BC%EC%84%9D&quot; aria-label=&quot;주절거리는 주석 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;주절거리는 주석&lt;/h3&gt;
 &lt;p&gt;이른바 ‘설명이 덜 된 주석’입니다. 주석을 쓴 당사자는 무슨 뜻인지 알고 표현했는데, 알고봤더니 컨텍스트가 더 필요한 주석이지요. 다른 사람은 이를 이해하기 위해 다른 모듈을 뒤적여야합니다. 그러므로 이런 주석은 주의가 필요하죠.&lt;/p&gt;
@@ -1324,11 +2180,7 @@ httpd&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;serve_forever
 &lt;p&gt;로직과 크게 관련없는 정보는 지양합시다. REST API를 설계하며 REST에 대한 논문링크를 단다거나, 이를 정리해서 올리거나 할 필요는 없지요.&lt;/p&gt;
 &lt;h3 id=&quot;모호한-관계&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EB%AA%A8%ED%98%B8%ED%95%9C-%EA%B4%80%EA%B3%84&quot; aria-label=&quot;모호한 관계 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;모호한 관계&lt;/h3&gt;
 &lt;p&gt;주석과 코드는 서로 말하는 바가 같아야 합니다. 그렇지 않으면 주석이 잘못 말하고있는지, 코드가 잘못 말하고 있는지 판단할 수가 없습니다.&lt;/p&gt;
-&lt;hr&gt;
-&lt;p&gt;References&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;[1] : &lt;a href=&quot;https://www.cambridge.org/core/books/reading-in-a-second-language/D322203A13028A46CD1975578EFDA52C&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;모국어와 외국어 읽기에 대한 연구&lt;/a&gt;에 의하면, ’&lt;em&gt;기술적으로 글을 잘 읽기 위해서는 빠르고도 자동적인 단어 인지와 이해력을 높이기 위한 절과 구조의 빠른 인지를 필요로 한다.&lt;/em&gt;’ 라는 주장입니다. 또한, 아래 논문들은 &lt;em&gt;다른 언어&lt;/em&gt;로 된 글 읽기는 질적으로 다른 지각과 과정 전략을 포함한다고 주장하는 연구입니다. &lt;a href=&quot;https://eric.ed.gov/?id=ED386947&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;참고 1&lt;/a&gt; , &lt;a href=&quot;https://www.jstor.org/stable/329674&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;참고 2&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content:encoded></item><item><title><![CDATA[클린 코드 스터디 (3): 함수]]></title><description><![CDATA[2023년 1월부터 시작한 클린 코드 독파 스터디 후, 매 모임 전 준비하는 게시글을 공유합니다. 이 글은 3장, 함수에 대해 설명합니다.]]></description><link>https://blog.s3ich4n.me/books/clean-code/2023-01-13-pt03</link><guid isPermaLink="false">https://blog.s3ich4n.me/books/clean-code/2023-01-13-pt03</guid><pubDate>Fri, 13 Jan 2023 22:51:00 GMT</pubDate><content:encoded>&lt;h1 id=&quot;3-함수&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#3-%ED%95%A8%EC%88%98&quot; aria-label=&quot;3 함수 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;3. 함수&lt;/h1&gt;
+&lt;p&gt;[^1] : &lt;a href=&quot;https://www.cambridge.org/core/books/reading-in-a-second-language/D322203A13028A46CD1975578EFDA52C&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;모국어와 외국어 읽기에 대한 연구&lt;/a&gt;에 의하면, ’&lt;em&gt;기술적으로 글을 잘 읽기 위해서는 빠르고도 자동적인 단어 인지와 이해력을 높이기 위한 절과 구조의 빠른 인지를 필요로 한다.&lt;/em&gt;’ 라는 주장입니다. &lt;br /&gt;또한, 아래 논문들은 &lt;em&gt;다른 언어&lt;/em&gt;로 된 글 읽기는 질적으로 다른 지각과 과정 전략을 포함한다고 주장하는 연구입니다. &lt;a href=&quot;https://eric.ed.gov/?id=ED386947&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;참고 1&lt;/a&gt; , &lt;a href=&quot;https://www.jstor.org/stable/329674&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;참고 2&lt;/a&gt;  &lt;/p&gt;</content:encoded></item><item><title><![CDATA[클린 코드 스터디 (3): 함수]]></title><description><![CDATA[2023년 1월부터 시작한 클린 코드 독파 스터디 후, 매 모임 전 준비하는 게시글을 공유합니다. 이 글은 3장, 함수에 대해 설명합니다.]]></description><link>https://blog.s3ich4n.me/books/clean-code/2023-01-13-pt03</link><guid isPermaLink="false">https://blog.s3ich4n.me/books/clean-code/2023-01-13-pt03</guid><pubDate>Fri, 13 Jan 2023 22:51:00 GMT</pubDate><content:encoded>&lt;h1 id=&quot;3-함수&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#3-%ED%95%A8%EC%88%98&quot; aria-label=&quot;3 함수 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;3. 함수&lt;/h1&gt;
 &lt;p&gt;프로그래밍 초창기에는 시스템을 루틴-서브루틴으로 나눴습니다. 포트란 시절에는 시스템을 프로그램, 하위 프로그램, 함수로 나눴습니다. 요즘에는 함수라는 개념만 주로 사용되지요. 이는 프로그래밍의 기본적인 단위로서 수십년간 자리잡았다는 반증이기도 합니다. 그렇다면 좋은 함수를 만들려면 어떻게 해야할지 살펴봅시다.&lt;/p&gt;
 &lt;p&gt;예시코드를 보니 뭔가 긴~코드가 있습니다. 로직도 있고 depth(이하 ‘깊이’로 지칭)도 뒤죽박죽입니다. 나왔다 들어갔다 하면 까먹을 것 같습니다. 플래그도 자칫 잘못하다간 잘못 분기될 수도 있어보입니다. 추상화 레벨도 뒤죽박죽이고 코드도 길고 &lt;code class=&quot;language-text&quot;&gt;if&lt;/code&gt; 문도 요상하고 함수호출도 별로네요.&lt;/p&gt;
 &lt;p&gt;보통 아래와 같이 손대면 로직이 간결해집니다:&lt;/p&gt;
@@ -1431,8 +2283,10 @@ httpd&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;serve_forever
 &lt;/ol&gt;
 &lt;p&gt;이러면 위의 규칙을 최대한 준수하며 함수를 만들 수 있습니다. 습관이 되면, 처음부터 ‘어떻게 잘 짜면 되더라’ 도 할 수 있겠지요. &lt;strong&gt;처음부터 완벽하게&lt;/strong&gt; 될 수는 없으니, 계속해서 연습합시다.&lt;/p&gt;
 &lt;h2 id=&quot;결론&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EA%B2%B0%EB%A1%A0&quot; aria-label=&quot;결론 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;결론&lt;/h2&gt;
-&lt;p&gt;‘요구사항 문서로 도출되는 명사와 동사를 클래스와 함수 후보로 고려하자’ 같은 소리를 하는게 절대 아닙니다 ㅋㅋ&lt;/p&gt;
-&lt;p&gt;시스템을 구현할 프로그램으로 보지 않고 풀어나갈 이야기로 여겨서, 이를 도메인에 특화된 언어로 풀어나간다고 할 수 있겠습니다.&lt;/p&gt;</content:encoded></item><item><title><![CDATA[클린 코드 스터디 (2): 의미있는 코드]]></title><description><![CDATA[2023년 1월부터 시작한 클린 코드 독파 스터디 후, 매 모임 전 준비하는 게시글을 공유합니다. 이 글은 2장, 의미있는 코드에 대해 설명합니다.]]></description><link>https://blog.s3ich4n.me/books/clean-code/2023-01-06-pt01</link><guid isPermaLink="false">https://blog.s3ich4n.me/books/clean-code/2023-01-06-pt01</guid><pubDate>Fri, 06 Jan 2023 22:59:00 GMT</pubDate><content:encoded>&lt;h1 id=&quot;2-의미있는-코드&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#2-%EC%9D%98%EB%AF%B8%EC%9E%88%EB%8A%94-%EC%BD%94%EB%93%9C&quot; aria-label=&quot;2 의미있는 코드 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;2. 의미있는 코드&lt;/h1&gt;
+&lt;p&gt;‘요구사항 문서로 도출되는 명사와 동사를 클래스와 함수 후보로 고려하자’ 같은 소리를 하는게 절대 아닙니다!!!&lt;/p&gt;
+&lt;p&gt;시스템을 구현할 프로그램으로 보지 않고 풀어나갈 이야기로 여겨서, 이를 도메인에 특화된 언어로 풀어나간다고 할 수 있겠습니다.&lt;/p&gt;
+&lt;h2 id=&quot;찐막&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%B0%90%EB%A7%89&quot; aria-label=&quot;찐막 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;찐막&lt;/h2&gt;
+&lt;p&gt;향로님의 &lt;a href=&quot;https://jojoldu.tistory.com/697?category=1140722&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;좋은 함수 만들기&lt;/a&gt; 시리즈도 함께 읽어보십시오.&lt;/p&gt;</content:encoded></item><item><title><![CDATA[클린 코드 스터디 (2): 의미있는 코드]]></title><description><![CDATA[2023년 1월부터 시작한 클린 코드 독파 스터디 후, 매 모임 전 준비하는 게시글을 공유합니다. 이 글은 2장, 의미있는 코드에 대해 설명합니다.]]></description><link>https://blog.s3ich4n.me/books/clean-code/2023-01-06-pt01</link><guid isPermaLink="false">https://blog.s3ich4n.me/books/clean-code/2023-01-06-pt01</guid><pubDate>Fri, 06 Jan 2023 22:59:00 GMT</pubDate><content:encoded>&lt;h1 id=&quot;2-의미있는-코드&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#2-%EC%9D%98%EB%AF%B8%EC%9E%88%EB%8A%94-%EC%BD%94%EB%93%9C&quot; aria-label=&quot;2 의미있는 코드 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;2. 의미있는 코드&lt;/h1&gt;
 &lt;p&gt;의미있는 코드 이름을 붙입시다. 소프트웨어 세상 만사에 다 쓰이는게 이름이잖아요. 그러면 잘 지어봅시다.&lt;/p&gt;
 &lt;h2 id=&quot;의도가-분명한-코드&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%9D%98%EB%8F%84%EA%B0%80-%EB%B6%84%EB%AA%85%ED%95%9C-%EC%BD%94%EB%93%9C&quot; aria-label=&quot;의도가 분명한 코드 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;의도가 분명한 코드&lt;/h2&gt;
 &lt;p&gt;변수, 메소드, 에서 의미가 드러나도록 생각해봅시다. 코드 맥락에 따라, 필요한 내용이 담겨있도록 하는 이름을 유도해봅시다.&lt;/p&gt;
@@ -1586,7 +2440,7 @@ Exception                                 Traceback &lt;span class=&quot;token p
 &lt;li&gt;하나의 코드는 하나의 작동을 한다&lt;/li&gt;
 &lt;/ol&gt;
 &lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;https://zetawiki.com/wiki/%EA%B7%B8%EB%9E%98%EB%94%94_%EB%B6%80%EC%B9%98&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;Grady Booch&lt;/a&gt; (Object Oriented Analysis and Design with Application](&lt;a href=&quot;https://product.kyobobook.co.kr/detail/S000006439884)%5B1%5D%EC%9D%98&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;https://product.kyobobook.co.kr/detail/S000006439884)[1]의&lt;/a&gt; 저자)
+&lt;li&gt;&lt;a href=&quot;https://zetawiki.com/wiki/%EA%B7%B8%EB%9E%98%EB%94%94_%EB%B6%80%EC%B9%98&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;Grady Booch&lt;/a&gt; (Object Oriented Analysis and Design with Application](&lt;a href=&quot;https://product.kyobobook.co.kr/detail/S000006439884)%5B%5E1%5D%EC%9D%98&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;https://product.kyobobook.co.kr/detail/S000006439884)[^1]의&lt;/a&gt; 저자)
 &lt;ol&gt;
 &lt;li&gt;단순하고 직접적이다.&lt;/li&gt;
 &lt;li&gt;잘 쓴 문장처럼 읽힌다.&lt;/li&gt;
@@ -1604,7 +2458,7 @@ Exception                                 Traceback &lt;span class=&quot;token p
 &lt;li&gt;어떤 면에서는 문학적이다. 모든 정보를 코드로 풀 수 없기 때문이다. → 사람이 읽기 쉬운 코드라는 뜻&lt;/li&gt;
 &lt;/ol&gt;
 &lt;/li&gt;
-&lt;li&gt;Michale Feathers (&lt;a href=&quot;https://www.amazon.com/Working-Effectively-Legacy-Michael-Feathers/dp/0131177052&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;Working Effectively with Legacy Code&lt;/a&gt;[2] 의 저자)
+&lt;li&gt;Michale Feathers (&lt;a href=&quot;https://www.amazon.com/Working-Effectively-Legacy-Michael-Feathers/dp/0131177052&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;Working Effectively with Legacy Code&lt;/a&gt;&lt;sup id=&quot;fnref-2&quot;&gt;&lt;a href=&quot;#fn-2&quot; class=&quot;footnote-ref&quot;&gt;2&lt;/a&gt;&lt;/sup&gt; 의 저자)
 &lt;ol&gt;
 &lt;li&gt;손댈 곳이 없어보이는 코드를 짜자&lt;/li&gt;
 &lt;li&gt;주의깊게 보이는 코드&lt;/li&gt;
@@ -1657,9 +2511,12 @@ Exception                                 Traceback &lt;span class=&quot;token p
 &lt;blockquote&gt;
 &lt;p&gt;Hopefully I can convince you that you don’t really need clean code, you need &lt;code class=&quot;language-text&quot;&gt;_____&lt;/code&gt; code. It’s up to you to fill in that blank with words that describe what your project requires.&lt;/p&gt;
 &lt;/blockquote&gt;
+&lt;div class=&quot;footnotes&quot;&gt;
 &lt;hr&gt;
-&lt;p&gt;[1]: &lt;a href=&quot;https://soniacomp.medium.com/%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5%EC%A0%81-%EB%B6%84%EC%84%9D%EA%B3%BC-%EB%94%94%EC%9E%90%EC%9D%B8-object-oriented-analysis-and-design-%EC%86%8C%EA%B0%9C-part-1-%EB%B2%88%EC%97%AD-67ff58fd26c9&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;이 링크&lt;/a&gt;를 참고하십시오. UML을 만든 사람 중 하나이며, 객체간의 메시지 교환, 책임, 협업과 같은 요소가 있어서 객체지향의 사실과 오해, 오브젝트에서도 언급이 되었을 것입니다.&lt;/p&gt;
-&lt;p&gt;[2]: 이 링크를 참조하십시오.&lt;/p&gt;</content:encoded></item><item><title><![CDATA[Gatsby 블로그 이미지에 캡션을 추가하는 방법 (w/ gatsby-remark-images)]]></title><description><![CDATA[Gatsby 블로그 이미지에 캡션을 추가하는 방법에 대해 빠르게 설명드립니다.]]></description><link>https://blog.s3ich4n.me/tips/2023-01-04-gatsby-add-image-captions</link><guid isPermaLink="false">https://blog.s3ich4n.me/tips/2023-01-04-gatsby-add-image-captions</guid><pubDate>Wed, 04 Jan 2023 16:35:00 GMT</pubDate><content:encoded>&lt;p&gt;이 글은 &lt;code class=&quot;language-text&quot;&gt;gatsby-remark-images&lt;/code&gt; 를 사용하시는 분들 중, 그림에 캡션을 달고싶은 분들을 위한 글입니다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li id=&quot;fn-2&quot;&gt;이 링크를 참조하십시오.  &lt;a href=&quot;#fnref-2&quot; class=&quot;footnote-backref&quot;&gt;↩&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;</content:encoded></item><item><title><![CDATA[Gatsby 블로그 이미지에 캡션을 추가하는 방법 (w/ gatsby-remark-images)]]></title><description><![CDATA[Gatsby 블로그 이미지에 캡션을 추가하는 방법에 대해 빠르게 설명드립니다.]]></description><link>https://blog.s3ich4n.me/tips/2023-01-04-gatsby-add-image-captions</link><guid isPermaLink="false">https://blog.s3ich4n.me/tips/2023-01-04-gatsby-add-image-captions</guid><pubDate>Wed, 04 Jan 2023 16:35:00 GMT</pubDate><content:encoded>&lt;p&gt;이 글은 &lt;code class=&quot;language-text&quot;&gt;gatsby-remark-images&lt;/code&gt; 를 사용하시는 분들 중, 그림에 캡션을 달고싶은 분들을 위한 글입니다.&lt;/p&gt;
 &lt;h1 id=&quot;tldr&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#tldr&quot; aria-label=&quot;tldr permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;TL;DR&lt;/h1&gt;
 &lt;ol&gt;
 &lt;li&gt;&lt;a href=&quot;https://www.gatsbyjs.com/plugins/gatsby-remark-images/&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;gatsby-remark-images&lt;/a&gt; 의 &lt;code class=&quot;language-text&quot;&gt;showCaptions&lt;/code&gt; 설정값으로 캡션을 사용할 수 있습니다.&lt;/li&gt;

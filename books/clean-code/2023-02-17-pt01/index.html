@@ -1,0 +1,527 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="ie=edge"/><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/><meta name="generator" content="Gatsby 4.25.4"/><meta name="description" content="2023년 1월부터 시작한 클린 코드 독파 스터디 후, 매 모임 전 준비하는 게시글을 공유합니다. 이 글은 11장, 시스템에 대해 알아봅니다." data-gatsby-head="true"/><meta name="twitter:card" content="summary_large_image" data-gatsby-head="true"/><meta name="twitter:title" content="클린 코드 스터디 (11): 시스템 - 팔공산 창고" data-gatsby-head="true"/><meta name="twitter:description" content="2023년 1월부터 시작한 클린 코드 독파 스터디 후, 매 모임 전 준비하는 게시글을 공유합니다. 이 글은 11장, 시스템에 대해 알아봅니다." data-gatsby-head="true"/><meta name="og:title" content="클린 코드 스터디 (11): 시스템 - 팔공산 창고" data-gatsby-head="true"/><meta name="og:type" content="website" data-gatsby-head="true"/><meta name="og:description" content="2023년 1월부터 시작한 클린 코드 독파 스터디 후, 매 모임 전 준비하는 게시글을 공유합니다. 이 글은 11장, 시스템에 대해 알아봅니다." data-gatsby-head="true"/><meta name="image" content="https://blog.s3ich4n.me[object Object]" data-gatsby-head="true"/><meta name="og:image" content="https://blog.s3ich4n.me[object Object]" data-gatsby-head="true"/><meta name="twitter:image" content="https://blog.s3ich4n.me[object Object]" data-gatsby-head="true"/><meta name="theme-color" content="hsl(31, 92%, 62%)"/><style data-href="/styles.1fbe3e33e3d898c35e17.css" data-identity="gatsby-global-css">:after,:before,:root{--color-white:#fff;--color-primary:#5c92ff;--color-secondary:#f7a145;--color-prism-background:#eaeaeb;--color-typographic-base-font:#242933;--color-typographic-link-p-font:#5c92ff;--color-typographic-link-s-font:#f7a145;--color-page-border:#eaeaeb;--color-page-background:#fff;--color-sidebar-border:#eaeaeb;--color-sidebar-border-fade:#fff;--color-contacts-border:#eaeaeb;--color-button-border:#eaeaeb;--color-button-color:#242933;--color-theme-switcher:#3f485a;--color-theme-switcher-hover:#5c92ff}.dark :after,.dark :before,:root.dark{--color-white:#fff;--color-primary:#5c92ff;--color-secondary:#f7a145;--color-prism-background:#191d24;--color-typographic-base-font:#fff;--color-typographic-link-p-font:#5c92ff;--color-typographic-link-s-font:#f7a145;--color-page-border:#3f485a;--color-page-background:#242933;--color-sidebar-border:#3f485a;--color-sidebar-border-fade:#242933;--color-contacts-border:#3f485a;--color-button-border:#3f485a;--color-button-color:#fff;--color-theme-switcher:#eaeaeb;--color-theme-switcher-hover:#5c92ff}html{font-size:100}body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;background:var(--color-page-background);color:var(--color-typographic-base-font);font-size:16px;line-height:1.625;margin:0 0 0 calc(100vw - 100%);text-rendering:optimizelegibility}body,h1,h2,h3,h4,h5,h6{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif}h1,h2,h3,h4,h5,h6{font-weight:600}h1{font-size:40px;line-height:52px;margin-bottom:26px;margin-top:104px}h2{font-size:27px;line-height:39px}h2,h3{margin-bottom:13px;margin-top:52px}h3{font-size:22px;line-height:26px}h4{font-size:19.2px;margin-top:39px}h4,h5{line-height:26px;margin-bottom:13px}h5,h6{font-size:16px;margin-top:65px}h6{line-height:26px;margin-bottom:13px}img{max-width:100%}hr,img{border:0;display:block}hr{background-image:linear-gradient(180deg,transparent 1px,transparent 11px,#242933 0,#242933 15px,transparent 0,transparent 26px);background-size:100% 26px;color:var(--color-typographic-base-font);height:26px;margin:52px auto;width:100px}a{color:var(--color-typographic-link-p-font);text-decoration:none}a:active,a:focus,a:hover{color:var(--color-typographic-link-s-font)}b,strong{font-weight:600}ul{list-style:square;margin-bottom:26px}ul li{margin-bottom:10px;padding:0 5px}p{line-height:26px;margin-bottom:26px}blockquote{font-style:italic;padding:0;text-align:center}figure{display:block;height:auto;width:100%}figcaption{color:var(--color-typographic-base-font);font-size:14px;font-style:italic;line-height:19.5px;margin-bottom:0;margin-top:6.5px;text-align:center}@media screen and (min-width:685px){figure.float-left,figure.float-right{max-width:310px;padding:0 26px}.float-right{float:right}.float-left{float:left}}code[class*=language-],pre[class*=language-]{word-wrap:normal;color:#657b83;font-family:Consolas,Monaco,Andale Mono,Ubuntu Mono,monospace;font-size:1em;-webkit-hyphens:none;hyphens:none;line-height:1.5;-o-tab-size:4;tab-size:4;text-align:left;white-space:pre;word-break:normal;word-spacing:normal}pre[class*=language-]{border-radius:.3em;margin:.5em 0;overflow:auto;padding:1em}:not(pre)>code[class*=language-],pre[class*=language-]{background-color:var(--color-prism-background)}:not(pre)>code[class*=language-]{border-radius:.3em;padding:.1em}code[class*=language-] ::selection,code[class*=language-]::selection,pre[class*=language-] ::selection,pre[class*=language-]::selection{background:#073642}.token.cdata,.token.comment,.token.doctype,.token.prolog{color:#93a1a1}.token.punctuation{color:#586e75}.namespace{opacity:.7}.token.boolean,.token.constant,.token.deleted,.token.number,.token.property,.token.symbol,.token.tag{color:#268bd2}.token.attr-name,.token.builtin,.token.char,.token.inserted,.token.selector,.token.string,.token.url{color:#2aa198}.token.entity{background:#eee8d5;color:#657b83;cursor:help}.token.atrule,.token.attr-value,.token.keyword{color:#859900}.token.class-name,.token.function{color:#b58900}.token.important,.token.regex,.token.variable{color:#cb4b16}.token.bold,.token.important{font-weight:700}.token.italic{font-style:italic}.Feed-module--feed--a6204 .Feed-module--item--c7a63{margin-bottom:32.5px}.Feed-module--feed--a6204 .Feed-module--item--c7a63:last-child{margin-bottom:13px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f{font-size:27px;line-height:39px;margin-bottom:13px;margin-top:0}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f .Feed-module--link--6123b{color:var(--color-typographic-base-font)}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f .Feed-module--link--6123b:focus,.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f .Feed-module--link--6123b:hover{border-bottom:1px solid #242933;color:var(--color-typographic-base-font)}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--description--57348{font-size:16px;line-height:26px;margin-bottom:19.5px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--time--72864{color:var(--color-typographic-base-font);font-size:14px;font-weight:600;text-transform:uppercase}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--divider--81a18{margin:0 13px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--category--59f58 .Feed-module--link--6123b{color:var(--color-secondary);font-size:14px;font-weight:600;text-transform:uppercase}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--category--59f58 .Feed-module--link--6123b:focus,.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--category--59f58 .Feed-module--link--6123b:hover{color:#5c92ff}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--more--51a4e{color:var(--color-primary);font-size:16px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--more--51a4e:focus,.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--more--51a4e:hover{border-bottom:1px solid #5c92ff;color:var(--color-primary)}.Layout-module--layout--2c933{margin-left:auto;margin-right:auto;max-width:1070px}.Layout-module--layout--2c933:before{content:"";display:table}.Layout-module--layout--2c933:after{clear:both;content:"";display:table}.Page-module--page--24e03{margin-bottom:52px}.Page-module--page--24e03 .Page-module--inner--4b31d{padding:26px 19.5px 0}.Page-module--page--24e03 .Page-module--title--90338{font-size:40px;font-weight:600;line-height:52px;margin-bottom:37.7px;margin-top:0}.Page-module--page--24e03 .Page-module--body--561c4{font-size:16px;line-height:26px;margin:0 0 26px}@media screen and (min-width:685px){.Page-module--page--24e03{width:calc(58.275% - 12.5px)}.Page-module--page--24e03:nth-child(1n){clear:none;float:left;margin-right:30px}.Page-module--page--24e03:last-child{margin-right:0}.Page-module--page--24e03:nth-child(12n){float:right;margin-right:0}.Page-module--page--24e03:nth-child(12n+1){clear:both}.Page-module--page--24e03 .Page-module--inner--4b31d{padding:32.5px 19.5px 0}}@media screen and (min-width:960px){.Page-module--page--24e03{width:calc(66.6% - 10px)}.Page-module--page--24e03:nth-child(1n){clear:none;float:left;margin-right:30px}.Page-module--page--24e03:last-child{margin-right:0}.Page-module--page--24e03:nth-child(3n){float:right;margin-right:0}.Page-module--page--24e03:nth-child(3n+1){clear:both}.Page-module--page--24e03 .Page-module--inner--4b31d{padding:39px 26px 0}}.Pagination-module--pagination--d61cb{display:flex;margin-top:52px}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b{text-align:left;width:50%}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d{color:var(--color-secondary);font-size:26px;font-weight:700}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d:focus,.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d:hover{color:var(--color-primary)}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d.Pagination-module--disable--7e105{color:#3f485a;pointer-events:none}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8{text-align:right;width:50%}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff{color:var(--color-secondary);font-size:26px;font-weight:700}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff:focus,.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff:hover{color:var(--color-primary)}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff.Pagination-module--disable--7e105{color:#3f485a;pointer-events:none}.Button-module--button--b1113{border:1px solid var(--color-button-border);border-radius:20px;color:var(--color-button-color);display:inline-block;font-size:16px;font-weight:400;height:40px;line-height:40px;margin-left:auto;margin-right:auto;padding:0 26px;text-align:center;text-decoration:none}.Button-module--button--b1113:focus,.Button-module--button--b1113:hover{color:#5c92ff}.ThemeSwitcher-module--themeSwitcher--8a77f{--color:var(--color-theme-switcher)}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--button--7cb7b{align-items:center;background:transparent;border:0;cursor:pointer;display:flex;justify-content:center;outline:0}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--button--7cb7b svg{stroke:var(--color);pointer-events:none;transition:stroke .4s}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--button--7cb7b:hover{--color:var(--color-theme-switcher-hover)}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--moon--10537{stroke-dasharray:0 1px;opacity:0;transition:stroke-dasharray .2s ease-in,opacity .4s ease-in}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--sun--2163a{stroke-dasharray:1px 1px;opacity:1;transition:stroke-dasharray .2s ease-in,opacity .4s ease-in}.ThemeSwitcher-module--themeSwitcher--8a77f.ThemeSwitcher-module--dark--6db0c .ThemeSwitcher-module--moon--10537{stroke-dasharray:1px 1px;opacity:1}.ThemeSwitcher-module--themeSwitcher--8a77f.ThemeSwitcher-module--dark--6db0c .ThemeSwitcher-module--sun--2163a{stroke-dasharray:0 1px;opacity:0}.Author-module--author--cbd31 .Author-module--photo--9787b{background-clip:padding-box;border-radius:50%;display:inline-block;height:75px;margin-bottom:0;width:75px}.Author-module--author--cbd31 .Author-module--photo--9787b img{border-radius:50%}.Author-module--author--cbd31 .Author-module--title--cf7e5{font-size:18px;font-weight:600;line-height:29.25px;margin:0}.Author-module--author--cbd31 .Author-module--title--cf7e5 .Author-module--link--09c17,.Author-module--author--cbd31 .Author-module--title--cf7e5 .Author-module--link--09c17:focus,.Author-module--author--cbd31 .Author-module--title--cf7e5 .Author-module--link--09c17:hover{color:var(--color-typographic-base-font)}.Author-module--author--cbd31 .Author-module--bio--8168d,.Author-module--author--cbd31 .Author-module--subtitle--86ec5{color:#7f8ba4;line-height:26px;margin-bottom:26px}.Author-module--author--cbd31 .Author-module--titleContainer--4f576{align-items:center;display:flex;justify-content:space-between;margin:13px 0}.Categories-module--categories--f3389{color:#7f8ba4;font-size:14px}.Icon-module--icon--1d7da{fill:currentcolor;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;speak:none;stroke:currentcolor;stroke-width:0;display:inline-block;font-style:normal;font-variant:normal;font-weight:400;height:1em;line-height:1em;text-align:center;text-transform:none;width:1em}.Contacts-module--contacts--09178{margin-bottom:26px}.Contacts-module--contacts--09178 .Contacts-module--list--9670b{display:flex;flex-flow:row wrap;flex-grow:0;flex-shrink:0;list-style:none;margin:13px 0;max-width:165px;padding:0}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0{align-content:center;align-items:center;border:1px solid var(--color-contacts-border);border-radius:50%;display:flex;height:40px;justify-content:center;line-height:40px;margin:6.5px;padding:0;text-align:center;width:40px}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0:nth-child(3n+1){margin-left:0}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0 .Contacts-module--link--de1e0{border:0;color:var(--color-typographic-base-font);display:flex}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0 .Contacts-module--link--de1e0:focus,.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0 .Contacts-module--link--de1e0:hover{color:var(--color-typographic-link-p-font)}.Copyright-module--copyright--2c602{color:#7f8ba4;font-size:14px}.Menu-module--menu--113a9{margin-bottom:26px}.Menu-module--menu--113a9 .Menu-module--list--e1ae3{list-style:none;margin:0;padding:0}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679{margin:13px 0;padding:0}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02{border:0;color:var(--color-typographic-base-font);font-size:16px;font-weight:400}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02:focus,.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02:hover{border-bottom:1px solid #5c92ff;color:#5c92ff}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02.Menu-module--active--6cb74{border-bottom:1px solid var(--color-typographic-base-font);color:var(--color-typographic-base-font)}.Tags-module--tags--28a57{color:#7f8ba4;font-size:14px}.Sidebar-module--sidebar--1bfa1{width:100%}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0{padding:26px 19.5px 0;position:relative}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0:after{background:var(--color-sidebar-border);background:linear-gradient(to bottom,var(--color-sidebar-border) 0,var(--color-sidebar-border) 48%,var(--color-sidebar-border-fade) 100%)}@media screen and (min-width:685px){.Sidebar-module--sidebar--1bfa1{width:calc(41.625% - 17.5px)}.Sidebar-module--sidebar--1bfa1:nth-child(1n){clear:none;float:left;margin-right:30px}.Sidebar-module--sidebar--1bfa1:last-child{margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(12n){float:right;margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(12n+1){clear:both}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0{padding:32.5px 19.5px 0}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0:after{bottom:0;content:"";height:540px;position:absolute;right:-10px;top:30px;width:1px}}@media screen and (min-width:960px){.Sidebar-module--sidebar--1bfa1{width:calc(33.3% - 20px)}.Sidebar-module--sidebar--1bfa1:nth-child(1n){clear:none;float:left;margin-right:30px}.Sidebar-module--sidebar--1bfa1:last-child{margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(3n){float:right;margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(3n+1){clear:both}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0{padding:39px}}.Author-module--author--1c58d{border-top:1px solid var(--color-page-border);line-height:26px;margin-bottom:52px;margin-top:26px;max-width:920px;padding-top:26px}.Author-module--author--1c58d .Author-module--bio--08950 .Author-module--twitter--90647{display:block;text-decoration:underline}.Author-module--author--1c58d .Author-module--bio--08950 .Author-module--twitter--90647:focus,.Author-module--author--1c58d .Author-module--bio--08950 .Author-module--twitter--90647:hover{color:var(--color-typographic-link-s-font)}@media screen and (min-width:685px){.Author-module--author--1c58d{margin-left:auto;margin-right:auto}}.Content-module--content--80d58{margin:0 auto;max-width:1070px;padding:0 13px}.Content-module--content--80d58 .Content-module--title--09504{font-size:32px;font-weight:600;line-height:42.9px;margin:26px auto 0;max-width:920px;text-align:center}.Content-module--content--80d58 .Content-module--body--726c2 figure{margin-bottom:26px}.Content-module--content--80d58 .Content-module--body--726c2 figure blockquote{font-style:italic;margin-top:0;padding:26px 0;text-align:center}.Content-module--content--80d58 .Content-module--body--726c2 figure blockquote p{font-size:26.9072px;line-height:39px;margin-bottom:26px;margin-top:0;max-width:920px}.Content-module--content--80d58 .Content-module--body--726c2 a{text-decoration:underline}.Content-module--content--80d58 .Content-module--body--726c2 *{margin-left:auto;margin-right:auto;max-width:920px}.Content-module--content--80d58 .Content-module--body--726c2 h2>a{visibility:hidden}.Content-module--content--80d58 .Content-module--body--726c2 h2>a>svg{fill:var(--color-typographic-base-font)}.Content-module--content--80d58 .Content-module--body--726c2 img{max-width:100%}@media screen and (min-width:960px){.Content-module--content--80d58{padding:0}.Content-module--content--80d58 .Content-module--title--09504{font-size:48px;line-height:58.5px;margin-bottom:39px;margin-top:58.5px}.Content-module--content--80d58 .Content-module--body--726c2,.Content-module--content--80d58 .Content-module--body--726c2 p{font-size:18px;line-height:29.25px;margin-bottom:29.25px}.Content-module--content--80d58 .Content-module--body--726c2 h2>a{padding-right:13px;visibility:unset}}.Meta-module--meta--dae0a .Meta-module--date--4d30d{font-style:italic}.Tags-module--tags--18589{margin-bottom:13px}.Tags-module--tags--18589 .Tags-module--list--82ae6{list-style:none;padding:0}.Tags-module--tags--18589 .Tags-module--list--82ae6 .Tags-module--item--52015{display:inline-block;margin:6.5px 0}@media screen and (min-width:685px){.Tags-module--tags--18589 .Tags-module--list--82ae6 .Tags-module--item--52015:first-child{margin-left:0;padding-left:0}}.Post-module--post--3a994 .Post-module--content--3c6e5{margin:0 auto}.Post-module--post--3a994 .Post-module--comments--d3b99,.Post-module--post--3a994 .Post-module--footer--f8705{margin:0 auto;max-width:920px;padding:0 13px}.Post-module--post--3a994 .Post-module--buttons--2972d{align-items:center;display:flex;justify-content:center;margin:26px 0 0;text-align:center}.Post-module--post--3a994 .Post-module--buttons--2972d .Post-module--buttonArticles--d793a{margin:0 13px 0 0}@media screen and (min-width:960px){.Post-module--post--3a994 .Post-module--comments--d3b99,.Post-module--post--3a994 .Post-module--footer--f8705{padding:0}.Post-module--post--3a994 .Post-module--buttons--2972d{left:30px;margin:0 13px 0 0;max-width:none;position:fixed;top:30px}}</style><title data-gatsby-head="true">클린 코드 스터디 (11): 시스템 - 팔공산 창고</title><link rel="alternate" type="application/rss+xml" title="팔공산 창고" href="/rss.xml"/><style type="text/css">
+    .anchor.before {
+      position: absolute;
+      top: 0;
+      left: 0;
+      transform: translateX(-100%);
+      padding-right: 4px;
+    }
+    .anchor.after {
+      display: inline-block;
+      padding-left: 4px;
+    }
+    h1 .anchor svg,
+    h2 .anchor svg,
+    h3 .anchor svg,
+    h4 .anchor svg,
+    h5 .anchor svg,
+    h6 .anchor svg {
+      visibility: hidden;
+    }
+    h1:hover .anchor svg,
+    h2:hover .anchor svg,
+    h3:hover .anchor svg,
+    h4:hover .anchor svg,
+    h5:hover .anchor svg,
+    h6:hover .anchor svg,
+    h1 .anchor:focus svg,
+    h2 .anchor:focus svg,
+    h3 .anchor:focus svg,
+    h4 .anchor:focus svg,
+    h5 .anchor:focus svg,
+    h6 .anchor:focus svg {
+      visibility: visible;
+    }
+  </style><script>
+    document.addEventListener("DOMContentLoaded", function(event) {
+      var hash = window.decodeURI(location.hash.replace('#', ''))
+      if (hash !== '') {
+        var element = document.getElementById(hash)
+        if (element) {
+          var scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+          var clientTop = document.documentElement.clientTop || document.body.clientTop || 0
+          var offset = element.getBoundingClientRect().top + scrollTop - clientTop
+          // Wait for the browser to finish rendering before scrolling.
+          setTimeout((function() {
+            window.scrollTo(0, offset - 0)
+          }), 0)
+        }
+      }
+    })
+  </script><link rel="preconnect" href="https://www.googletagmanager.com"/><link rel="dns-prefetch" href="https://www.googletagmanager.com"/><script async="" src="https://www.googletagmanager.com/gtag/js?id="></script><script>
+      
+      
+      if(true) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){window.dataLayer && window.dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', '', {"send_page_view":false});
+      }
+      </script><link rel="sitemap" type="application/xml" href="/sitemap/sitemap-index.xml"/><link rel="icon" href="/favicon-32x32.png?v=4c2c993a06ee0fd0ee953020b09128a9" type="image/png"/><link rel="manifest" href="/manifest.webmanifest" crossorigin="anonymous"/><link rel="apple-touch-icon" sizes="48x48" href="/icons/icon-48x48.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="72x72" href="/icons/icon-72x72.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="96x96" href="/icons/icon-96x96.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="144x144" href="/icons/icon-144x144.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192x192.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="256x256" href="/icons/icon-256x256.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="384x384" href="/icons/icon-384x384.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="512x512" href="/icons/icon-512x512.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><style>.gatsby-image-wrapper{position:relative;overflow:hidden}.gatsby-image-wrapper picture.object-fit-polyfill{position:static!important}.gatsby-image-wrapper img{bottom:0;height:100%;left:0;margin:0;max-width:none;padding:0;position:absolute;right:0;top:0;width:100%;object-fit:cover}.gatsby-image-wrapper [data-main-image]{opacity:0;transform:translateZ(0);transition:opacity .25s linear;will-change:opacity}.gatsby-image-wrapper-constrained{display:inline-block;vertical-align:top}</style><noscript><style>.gatsby-image-wrapper noscript [data-main-image]{opacity:1!important}.gatsby-image-wrapper [data-placeholder-image]{opacity:0!important}</style></noscript><script type="module">const e="undefined"!=typeof HTMLImageElement&&"loading"in HTMLImageElement.prototype;e&&document.body.addEventListener("load",(function(e){const t=e.target;if(void 0===t.dataset.mainImage)return;if(void 0===t.dataset.gatsbyImageSsr)return;let a=null,n=t;for(;null===a&&n;)void 0!==n.parentNode.dataset.gatsbyImageWrapper&&(a=n.parentNode),n=n.parentNode;const o=a.querySelector("[data-placeholder-image]"),r=new Image;r.src=t.currentSrc,r.decode().catch((()=>{})).then((()=>{t.style.opacity=1,o&&(o.style.opacity=0,o.style.transition="opacity 500ms linear")}))}),!0);</script></head><body><script>
+          void function() {
+            var cachedMode;
+
+            try {
+              var preferredTheme = JSON.parse(localStorage.getItem('diesel:theme-atom'));
+
+              if (preferredTheme && preferredTheme.mode) {
+                cachedMode = preferredTheme.mode;
+              }
+            } catch (err) { }
+
+            function setTheme(newTheme) {
+              document.documentElement.className = newTheme;
+            }
+
+            var darkQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+            setTheme(cachedMode || (darkQuery.matches ? 'dark' : 'light'));
+          }()
+        </script><div id="___gatsby"><div style="outline:none" tabindex="-1" id="gatsby-focus-wrapper"><div class="Layout-module--layout--2c933"><div class="Post-module--post--3a994"><div class="Post-module--buttons--2972d"><a class="Button-module--button--b1113 Post-module--buttonArticles--d793a" href="/">All Articles</a></div><div class="Post-module--content--3c6e5"><div class="Content-module--content--80d58"><h1 class="Content-module--title--09504">클린 코드 스터디 (11): 시스템</h1><div class="Content-module--body--726c2"><h1 id="11-시스템" style="position:relative;"><a href="#11-%EC%8B%9C%EC%8A%A4%ED%85%9C" aria-label="11 시스템 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>11. 시스템</h1>
+<blockquote>
+<p>복잡성은 죽음이다. 개발자에게서 생기를 앗아가며, 제품을 계획하고 제작하고 테스트하기 어렵게 만든다.</p>
+<p>Ray Ozzie, Chief Software Architect, Microsoft Corporation.</p>
+</blockquote>
+<p>저는 이 챕터를 배우기 위해 기존 챕터들을 배워왔다고 생각합니다. 왜 그렇게 생각했는지 풀어보겠습니다.</p>
+<h2 id="도시를-세운다면" style="position:relative;"><a href="#%EB%8F%84%EC%8B%9C%EB%A5%BC-%EC%84%B8%EC%9A%B4%EB%8B%A4%EB%A9%B4" aria-label="도시를 세운다면 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>도시를 세운다면?</h2>
+<p>도시는 한 사람이 모두 관리할 수 없습니다. 관리해야 하는 세부사항에 따라 관리자들을 두고 세부 작업을 나누었기 때문에 이와 같은 마법이 가능합니다. 다시 말해 도시가 <em>돌아가는</em> 이유는 적절한 추상화와 모듈화 덕분이라고 할 수 있습니다.</p>
+<p>앞서 살펴본 챕터 내용을 종합하여 추상화와 모듈화, 나아가 시스템 수준에서까지 이를 유지하는 방법을 논의해봅시다.</p>
+<h2 id="시스템-제작과-시스템-사용을-분리하라" style="position:relative;"><a href="#%EC%8B%9C%EC%8A%A4%ED%85%9C-%EC%A0%9C%EC%9E%91%EA%B3%BC-%EC%8B%9C%EC%8A%A4%ED%85%9C-%EC%82%AC%EC%9A%A9%EC%9D%84-%EB%B6%84%EB%A6%AC%ED%95%98%EB%9D%BC" aria-label="시스템 제작과 시스템 사용을 분리하라 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>시스템 제작과 시스템 사용을 분리하라</h2>
+<p>제작(Construction), 사용(User)는 아주 다릅니다.</p>
+<p>건물로 예를 들어봅시다. 공사중일 때의 외관과 내부는 온통 바쁜 현장의 모습일 것입니다. 완공된 뒤의 건물은 지어진 목적에 따라 이용되겠지요. 이처럼 소프트웨어 시스템 또한 아래와 같이 ‘제작’과 ‘사용’을 분리해야 합니다.</p>
+<blockquote>
+<p>소프트웨어 시스템은</p>
+<p>애플리케이션 객체를 제작하고 의존성을 서로 ‘연결’ 하는 <strong>준비 과정</strong> 과</p>
+<p>준비 과정 후에 이어지는 <strong>런타임 로직</strong> 을 분리해야 합니다.</p>
+</blockquote>
+<h3 id="관심사concern" style="position:relative;"><a href="#%EA%B4%80%EC%8B%AC%EC%82%ACconcern" aria-label="관심사concern permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>관심사(concern)</h3>
+<p>이번 챕터에서는 여러 <strong>관심사</strong> 를 살펴볼 것입니다. 또한 <strong>관심사 분리</strong> 와 같은 설계방안을 주요 설계 기법중 하나로 소개하고 있습니다.</p>
+<ol>
+<li><em>시작 단계</em>는 애플리케이션이 풀어야 할 <strong>관심사</strong> 중 하나 입니다.</li>
+</ol>
+<p>이를 이야기 하며 대다수의 애플리케이션이 시작단계라는 관심사를 분리하지 않음을 시사합니다. 준비 과정 코드와 런타임 로직을 <em>뒤섞는</em> 케이스를 설명합니다. 우선 아래코드를 살펴봅시다.</p>
+<div class="gatsby-highlight" data-language="java"><pre class="language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token class-name">Service</span> <span class="token function">getService</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>service <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span>
+        service <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">MyServiceImpl</span><span class="token punctuation">(</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> service<span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre></div>
+<p>이런 기법은 Lazy Initialization, Lazy Evaluation 이라고 하며 아래와 같은 장단점이 있습니다.</p>
+<ul>
+<li>장점
+<ul>
+<li>필요하기 전까지 객체를 생성하지 않으므로, 불필요한 부하가 걸리지 않습니다.</li>
+<li><code class="language-text">null</code> 포인터 반환이 없습니다.</li>
+</ul>
+</li>
+<li>단점
+<ul>
+<li><code class="language-text">getService</code> 메소드는 <code class="language-text">MyServiceImpl</code> 이란 구현체에 의존합니다
+<ul>
+<li>의존성 해결이 되지 않으면 컴파일이 안 됩니다.</li>
+<li>이 객체가 <strong>모든 상황</strong>에 적합할까요? 이런 설정을 자주 사용한다면 <em>중복이 심각</em> 해지고 모<em>듈성이 떨어지기 쉽</em> 습니다.</li>
+</ul>
+</li>
+<li>테스트가 힘듭니다
+<ul>
+<li><code class="language-text">MyServiceImpl</code> 을 Mock object로 service 필드에 할당해야 합니다.</li>
+<li>런타임 로직에서 준비과정 로직을 섞었기 때문에, <code class="language-text">service</code> 변수를 호출하는 모든 실행경로를 테스트 해야합니다. → 책임이 둘이 되므로 이 메소드는 두가지 일을 하기 때문에 작게나마 SRP를 위배합니다.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>따라서, 적절한 시기에 사용하도록 하면서 의존성을 해소하기 위한 방안을 찾아야 합니다.</p>
+<h3 id="main-분리" style="position:relative;"><a href="#main-%EB%B6%84%EB%A6%AC" aria-label="main 분리 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code class="language-text">main</code> 분리</h3>
+<p><code class="language-text">main</code> 분리는 시스템 생성과 시스템 사용을 분리하는 기법 중 하나입니다. 예시와 아래 그림을 통해 살펴봅시다.</p>
+<blockquote>
+<p>생성 코드를 <code class="language-text">main</code> 으로 몰고, 나머지 시스템은 별도 객체 생성 및 의존성 연결을 해두었다고 가정해봅시다.</p>
+</blockquote>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 849px; "
+    >
+      <a
+    class="gatsby-resp-image-link"
+    href="/static/c667bd99d14a07251b6678d7481e91c2/f96df/001.png"
+    style="display: block"
+    target="_blank"
+    rel="noopener"
+  >
+    <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 72.91666666666666%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAPCAYAAADkmO9VAAAACXBIWXMAAB2HAAAdhwGP5fFlAAACJUlEQVQ4y4VUa2vqQBDN//+sXyqCFEV7KypCio+K9MuFaiutxV5tfKX4Qo2a1DzcbHIuO9aUeq92wsnMJjNnJ3t2I/m+D8/z/gtfXL64f9nZfN+HhDNGZJ+ErNWB7+zwk0nj8Rj1eh2NRgMPDw/kxbjT6QjGPbFuwCnf7WPPQ7vdDmoOEOPZbAapVqshFAohGo0imUwiFoshHA4jm83CsW04nEN7U9D5lYEFwDJNpFIpxONxXF9fUyxwcXFBxFK320WhUEClUsHt7S35YrFIM3qcU1fO0wus9xGY0gO3bdzXaiiXy6hWq1QjfKlUwmAw+L6G/JMgMM8jx5qv4EoPdu4Gvut+S3GPxtJh4Xe7HSaTCc2y59qT+TsG9vQC5+43WLO1f8e/lLVt+7TKjLGAKFDasmCl8+DDd7h/3v5R9firJDHDarXCer2GUFx4gQ9dDz6X3T/C0w24A5WefRgG1WiaRjUiXi6X1K30/PyMy8tLUiyTyRCEgqViES7nMJcapssFXuUCLG0FhzHcyDKurq6Qy+UoX/h0Oo1WqwVJSB2JRJBIJIJtILaQLMtwGQP3PPRUFUqpAr41iTCfz9OkgkRA1Ij6ZrMJyTRNale0v1gsKBYwDOP7Yq03Qbjdbin3AJE/n89hWdb5o+c4DjabDZEb2y2WmgZd14nw5NELzusnDioLon6/D1VVMZ1OafEVRcFwOMRoNMJx3QHSqZ/CT3YgOO7wL1bpW+Sr2PTcAAAAAElFTkSuQmCC'); background-size: cover; display: block;"
+  ></span>
+  <picture>
+          <source
+              srcset="/static/c667bd99d14a07251b6678d7481e91c2/8ac56/001.webp 240w,
+/static/c667bd99d14a07251b6678d7481e91c2/d3be9/001.webp 480w,
+/static/c667bd99d14a07251b6678d7481e91c2/51e4d/001.webp 849w"
+              sizes="(max-width: 849px) 100vw, 849px"
+              type="image/webp"
+            />
+          <source
+            srcset="/static/c667bd99d14a07251b6678d7481e91c2/8ff5a/001.png 240w,
+/static/c667bd99d14a07251b6678d7481e91c2/e85cb/001.png 480w,
+/static/c667bd99d14a07251b6678d7481e91c2/f96df/001.png 849w"
+            sizes="(max-width: 849px) 100vw, 849px"
+            type="image/png"
+          />
+          <img
+            class="gatsby-resp-image-image"
+            src="/static/c667bd99d14a07251b6678d7481e91c2/f96df/001.png"
+            alt="001"
+            title="001"
+            loading="lazy"
+            decoding="async"
+            style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+          />
+        </picture>
+  </a>
+    </span></p>
+<p>이런 코드는 제어흐름을 따라가기 수월합니다.</p>
+<ul>
+<li><code class="language-text">main</code> 에서는 필요한 객체를 생성하고 애플리케이션에 전달합니다.</li>
+<li>애플리케이션은 이를 사용합니다. 애플리케이션은 주는대로 잘 쓴다고 할 수 있겠지요.</li>
+</ul>
+<h3 id="팩토리" style="position:relative;"><a href="#%ED%8C%A9%ED%86%A0%EB%A6%AC" aria-label="팩토리 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>팩토리</h3>
+<p>하지만 객체 생성시점을 애플리케이션이 결정해야할 때도 있습니다.</p>
+<blockquote>
+<p>주문 처리 시스템으로 예를 들어봅시다.</p>
+<p><code class="language-text">LineItem</code> 이란 인스턴스를 사용하여 <code class="language-text">Order</code>를 추가하는 로직이 있다고 가정해봅시다.</p>
+</blockquote>
+<p>초기화 단계에서 어떤 <code class="language-text">LineItem</code> 구현체에 따라 <code class="language-text">Order</code> 를 추가할지에 대한 로직은 <a href="https://refactoring.guru/ko/design-patterns/abstract-factory" target="_blank" rel="nofollow noopener noreferrer">추상 팩토리 패턴</a>이 어울립니다. 아래 도식을 살펴봅시다.</p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 960px; "
+    >
+      <a
+    class="gatsby-resp-image-link"
+    href="/static/a97cea6c1f68e9e424d57b35abbf5b3b/5eb75/002.png"
+    style="display: block"
+    target="_blank"
+    rel="noopener"
+  >
+    <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 60.83333333333334%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAMCAYAAABiDJ37AAAACXBIWXMAAB2HAAAdhwGP5fFlAAABwklEQVQoz41Sa4+aUBDl//8JNcZKfP+ATYzvxI378JmmqStCQV7WVkBQ4Gxm2uti1w+d5GS4ZO7MOXOPFMcxLpcLzuczZzpzUP6+QTZEnYCoTdOUQSH1ej3kcjnUajWUSiWUy2X4QYDj/ieUpxdolgnveITruqhUKlzXaDS4djKZcJMkST4arlYrtNtt9Pt9dLtdDAYDnOMYoePi8PUbjpstLmkK3/MwHA5BBDqdDuf1ev2ZoZBDErKRqD8QPz4jfl38uZQknKMoYogGIou4Nrzujoro4vMM4egRiWV/DMlIC4LgpqmAdDgcYFkWVFWFYRiwXYdoIJm8AqqO6NdvGKYJQ9ehKAp0XYfneXz5dDp9bkj7KBQKqNfrkGWZl628vWFHQ55e0Ht4wBdZ5odotVrI5/OYzWZXliQ/y17SNA3z+RzL5RLT6ZSz7/sIwxCRaUHXNB5EA5vNJorFIhaLxY2V7u4wG+zJv16jNZimif1+z7Btm5mR3PF4jNFoxM6gTK8uEU2iKygL0JkeivZF38REgP47jsO+rFarVw/TAOneS/1vEFNajwApupH8r7dIIsnY7XbYbrfYbDYgV9zzn9jhO6hGhBzRuJY3AAAAAElFTkSuQmCC'); background-size: cover; display: block;"
+  ></span>
+  <picture>
+          <source
+              srcset="/static/a97cea6c1f68e9e424d57b35abbf5b3b/8ac56/002.webp 240w,
+/static/a97cea6c1f68e9e424d57b35abbf5b3b/d3be9/002.webp 480w,
+/static/a97cea6c1f68e9e424d57b35abbf5b3b/e46b2/002.webp 960w,
+/static/a97cea6c1f68e9e424d57b35abbf5b3b/f992d/002.webp 1440w,
+/static/a97cea6c1f68e9e424d57b35abbf5b3b/882b9/002.webp 1920w,
+/static/a97cea6c1f68e9e424d57b35abbf5b3b/295d4/002.webp 2247w"
+              sizes="(max-width: 960px) 100vw, 960px"
+              type="image/webp"
+            />
+          <source
+            srcset="/static/a97cea6c1f68e9e424d57b35abbf5b3b/8ff5a/002.png 240w,
+/static/a97cea6c1f68e9e424d57b35abbf5b3b/e85cb/002.png 480w,
+/static/a97cea6c1f68e9e424d57b35abbf5b3b/d9199/002.png 960w,
+/static/a97cea6c1f68e9e424d57b35abbf5b3b/07a9c/002.png 1440w,
+/static/a97cea6c1f68e9e424d57b35abbf5b3b/29114/002.png 1920w,
+/static/a97cea6c1f68e9e424d57b35abbf5b3b/5eb75/002.png 2247w"
+            sizes="(max-width: 960px) 100vw, 960px"
+            type="image/png"
+          />
+          <img
+            class="gatsby-resp-image-image"
+            src="/static/a97cea6c1f68e9e424d57b35abbf5b3b/d9199/002.png"
+            alt="002"
+            title="002"
+            loading="lazy"
+            decoding="async"
+            style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+          />
+        </picture>
+  </a>
+    </span></p>
+<ul>
+<li>의존성은 <code class="language-text">OrderProcessing</code> 애플리케이션으로 향합니다.</li>
+<li>필요에 따라 어떤 팩토리를 사용할지 인터페이스를 통해 알려 줄 뿐입니다.</li>
+<li><code class="language-text">MakeLineItem()</code>을 통해 <code class="language-text">OrderProcessing</code> 객체가 어떻게 만들어지는지는 관심을 두지 않습니다.</li>
+</ul>
+<h3 id="의존성-주입" style="position:relative;"><a href="#%EC%9D%98%EC%A1%B4%EC%84%B1-%EC%A3%BC%EC%9E%85" aria-label="의존성 주입 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>의존성 주입</h3>
+<p>의존성 주입(Dependency Injection)은 사용과 제작을 분리하는 강력한 메커니즘 중 하나입니다. 제어 역전(Inversion of Control, IoC) 기법을 의존성 관리에 적용한 메커니즘을 의미합니다. 제어 역전에서는 한 객체가 맡은 보조책임을 새 객체에게 전가합니다. 새 객체는 전달받은 책임만을 맡으므로 SRP를 지킵니다.</p>
+<p>초기화 지연을 통한 장점도 얻을 수 있습니다. 대다수의 DI 컨테이너는 필요하면 팩토리를 호출하거나 프록시를 생성합니다.</p>
+<p>파이썬에서는 이를 사용하는 <a href="https://python-dependency-injector.ets-labs.org/" target="_blank" rel="nofollow noopener noreferrer">아주 걸출한 라이브러리</a>가 있습니다. 예시를 한번 살펴봅시다. 주석의 번호와 아래 번호를 쫓아가며 읽어 주십시오.</p>
+<h3 id="의존성-주입-예시-1-의존성-주입의-에시" style="position:relative;"><a href="#%EC%9D%98%EC%A1%B4%EC%84%B1-%EC%A3%BC%EC%9E%85-%EC%98%88%EC%8B%9C-1-%EC%9D%98%EC%A1%B4%EC%84%B1-%EC%A3%BC%EC%9E%85%EC%9D%98-%EC%97%90%EC%8B%9C" aria-label="의존성 주입 예시 1 의존성 주입의 에시 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>의존성 주입 예시 1. 의존성 주입의 에시</h3>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token keyword">from</span> dependency_injector <span class="token keyword">import</span> containers<span class="token punctuation">,</span> providers
+<span class="token keyword">from</span> dependency_injector<span class="token punctuation">.</span>wiring <span class="token keyword">import</span> Provide<span class="token punctuation">,</span> inject
+
+
+<span class="token comment"># 1.</span>
+<span class="token keyword">class</span> <span class="token class-name">Container</span><span class="token punctuation">(</span>containers<span class="token punctuation">.</span>DeclarativeContainer<span class="token punctuation">)</span><span class="token punctuation">:</span>
+
+    config <span class="token operator">=</span> providers<span class="token punctuation">.</span>Configuration<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+    api_client <span class="token operator">=</span> providers<span class="token punctuation">.</span>Singleton<span class="token punctuation">(</span>
+        ApiClient<span class="token punctuation">,</span>
+        api_key<span class="token operator">=</span>config<span class="token punctuation">.</span>api_key<span class="token punctuation">,</span>
+        timeout<span class="token operator">=</span>config<span class="token punctuation">.</span>timeout<span class="token punctuation">,</span>
+    <span class="token punctuation">)</span>
+
+    service <span class="token operator">=</span> providers<span class="token punctuation">.</span>Factory<span class="token punctuation">(</span>
+        Service<span class="token punctuation">,</span>
+        api_client<span class="token operator">=</span>api_client<span class="token punctuation">,</span>
+    <span class="token punctuation">)</span>
+
+
+<span class="token comment"># 2.</span>
+<span class="token decorator annotation punctuation">@inject</span>
+<span class="token keyword">def</span> <span class="token function">main</span><span class="token punctuation">(</span>service<span class="token punctuation">:</span> Service <span class="token operator">=</span> Provide<span class="token punctuation">[</span>Container<span class="token punctuation">.</span>service<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> <span class="token boolean">None</span><span class="token punctuation">:</span>
+    <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+
+<span class="token keyword">if</span> __name__ <span class="token operator">==</span> <span class="token string">"__main__"</span><span class="token punctuation">:</span>
+    container <span class="token operator">=</span> Container<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    container<span class="token punctuation">.</span>config<span class="token punctuation">.</span>api_key<span class="token punctuation">.</span>from_env<span class="token punctuation">(</span><span class="token string">"API_KEY"</span><span class="token punctuation">,</span> required<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">)</span>
+    container<span class="token punctuation">.</span>config<span class="token punctuation">.</span>timeout<span class="token punctuation">.</span>from_env<span class="token punctuation">(</span><span class="token string">"TIMEOUT"</span><span class="token punctuation">,</span> as_<span class="token operator">=</span><span class="token builtin">int</span><span class="token punctuation">,</span> default<span class="token operator">=</span><span class="token number">5</span><span class="token punctuation">)</span>
+    container<span class="token punctuation">.</span>wire<span class="token punctuation">(</span>modules<span class="token operator">=</span><span class="token punctuation">[</span>__name__<span class="token punctuation">]</span><span class="token punctuation">)</span>	<span class="token comment"># 3.</span>
+
+    main<span class="token punctuation">(</span><span class="token punctuation">)</span>  <span class="token comment"># 4. &lt;-- 의존성이 자동으로 주입되었습니다.</span>
+
+    <span class="token keyword">with</span> container<span class="token punctuation">.</span>api_client<span class="token punctuation">.</span>override<span class="token punctuation">(</span>mock<span class="token punctuation">.</span>Mock<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        main<span class="token punctuation">(</span><span class="token punctuation">)</span>  <span class="token comment"># 5. &lt;-- 오버라이드한 의존성이 자동으로 주입되었습니다.</span></code></pre></div>
+<ol>
+<li><code class="language-text">Container</code> 안에, 설정(Configuration), 싱글톤(Singleton), 팩토리(Factory) 형식으로 주입할 요소들을 준비해둡니다.</li>
+<li><code class="language-text">main()</code> 위에, <code class="language-text">@inject</code> 데코레이터를 달아서 이를 주입하도록 설정합니다.</li>
+<li>어떤 모듈에 의존성을 주입할지 결정합니다. 해당 구문을 통해 <strong>wiring을 해주어야 의존성이 주입</strong> 됨에 유의합니다.</li>
+<li><code class="language-text">3.</code> 구문을 통해, 함수 실행과 동시에 의존성을 주입합니다.</li>
+<li>테스트 할 때도, mock 객체를 위와같이 주입해주면 얼마든지 변경 가능합니다.</li>
+</ol>
+<h3 id="의존성-주입-예시-2-fastapi-환경변수-로드" style="position:relative;"><a href="#%EC%9D%98%EC%A1%B4%EC%84%B1-%EC%A3%BC%EC%9E%85-%EC%98%88%EC%8B%9C-2-fastapi-%ED%99%98%EA%B2%BD%EB%B3%80%EC%88%98-%EB%A1%9C%EB%93%9C" aria-label="의존성 주입 예시 2 fastapi 환경변수 로드 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>의존성 주입 예시 2. FastAPI 환경변수 로드</h3>
+<p>이어서 <code class="language-text">FastAPI</code> 앱 구동시 환경변수 로드에 대한 부분을 의존성 주입으로 해제한 예시를 살펴봅시다.</p>
+<p>먼저, 설정값은 <code class="language-text">Pydantic</code>으로 뺐습니다.</p>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token comment"># settings.py 에서...</span>
+
+<span class="token keyword">from</span> pydantic <span class="token keyword">import</span> BaseSettings
+
+<span class="token keyword">class</span> <span class="token class-name">ServerDescriptionSettings</span><span class="token punctuation">(</span>BaseSettings<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+
+<span class="token keyword">class</span> <span class="token class-name">DataSettings</span><span class="token punctuation">(</span>BaseSettings<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+
+<span class="token keyword">class</span> <span class="token class-name">Settings</span><span class="token punctuation">(</span>BaseSettings<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    DEBUG<span class="token punctuation">:</span> <span class="token builtin">bool</span> <span class="token operator">=</span> Field<span class="token punctuation">(</span>env<span class="token operator">=</span><span class="token string">"DEBUG"</span><span class="token punctuation">,</span> default<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">)</span>
+
+    desc<span class="token punctuation">:</span> ServerDescriptionSettings <span class="token operator">=</span> ServerDescriptionSettings<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    data<span class="token punctuation">:</span> DataSettings <span class="token operator">=</span> DataSettings<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+    <span class="token keyword">class</span> <span class="token class-name">Config</span><span class="token punctuation">:</span>
+        case_sensitive <span class="token operator">=</span> <span class="token boolean">True</span>
+
+
+settings <span class="token operator">=</span> Settings<span class="token punctuation">(</span><span class="token punctuation">)</span></code></pre></div>
+<p><code class="language-text">main.py</code> 에서 컨테이너 객체 생성 후, <code class="language-text">FastAPI</code> 의 컨테이너 값에 의존성을 주입하는 코드입니다<sup id="fnref-1"><a href="#fn-1" class="footnote-ref">1</a></sup>.</p>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token comment"># main.py 에서...</span>
+
+<span class="token keyword">from</span> config<span class="token punctuation">.</span>apis <span class="token keyword">import</span> Settings
+
+container <span class="token operator">=</span> Container<span class="token punctuation">(</span><span class="token punctuation">)</span>
+container<span class="token punctuation">.</span>config<span class="token punctuation">.</span>from_pydantic<span class="token punctuation">(</span>Settings<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>  <span class="token comment"># 상기 환경변수를 로드해옴</span>
+
+<span class="token comment"># 로드해온 환경변수를 사용</span>
+app <span class="token operator">=</span> FastAPI<span class="token punctuation">(</span>
+    description<span class="token operator">=</span>container<span class="token punctuation">.</span>config<span class="token punctuation">.</span>desc<span class="token punctuation">.</span>REST_SERVICE_DESCRIPTION<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    openapi_url<span class="token operator">=</span>container<span class="token punctuation">.</span>config<span class="token punctuation">.</span>desc<span class="token punctuation">.</span>OPENAPI_URL<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    title<span class="token operator">=</span>container<span class="token punctuation">.</span>config<span class="token punctuation">.</span>desc<span class="token punctuation">.</span>REST_SERVICE_NAME<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    version<span class="token operator">=</span>container<span class="token punctuation">.</span>config<span class="token punctuation">.</span>desc<span class="token punctuation">.</span>REST_SERVICE_VERSION<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+<span class="token punctuation">)</span>
+app<span class="token punctuation">.</span>container <span class="token operator">=</span> container	<span class="token comment"># FastAPI의 방식대로 DI 컨테이너를 전달</span>
+
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span></code></pre></div>
+<h2 id="확장" style="position:relative;"><a href="#%ED%99%95%EC%9E%A5" aria-label="확장 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>확장</h2>
+<p>하나의 거대한 도시가 완성되기까진 많은 과정이 있었을 것입니다. 아마도 처음은 작은 군락에서 시작했겠지요. 군락이 마을로, 나아가 도시로 성장하는 과정이 있었을 것입니다. 그 과정 동안 <strong>이상적인</strong> 발전이 이루어졌을까요? 그렇지 않았을 것입니다. 현대적인 계획도시라 하더라도 미처 예상치 못한 확장이 있게 마련입니다.</p>
+<p>이 챕터는 <em>‘처음부터 올바른 시스템’</em> 을 만들 수는 없음을 시사합니다. 이를 위한 두 가지 방안을 제시합니다.</p>
+<ul>
+<li>코드 레벨 에서의 관점입니다. 오늘 맞추어 개발하고, 내일 맞추어 개발하되 이를 작게 점진적으로 개발하는 것이 필요하다고 말합니다. 그를 위해 깨끗한 코드를 지향하며 TDD, 리팩토링을 수행하는 것으로 확장 가능하게 합니다.</li>
+<li>시스템 레벨에서는 <strong>관심사의 분리</strong> 를 통해 소프트웨어 아키텍처를 점진적으로 발전하는 것을 말합니다. 아이러니하게도 수명이 소프트웨어 시스템은 <em>수명이 짧기</em> 때문에 점진적으로 발전할 수 있습니다. 예시를 살펴봅시다.</li>
+</ul>
+<p><code class="language-text">EJB1</code>, <code class="language-text">EJB2</code> 아키텍처는 어떤 부분에서 관심사 분리가 어려운지를 보여줍니다.</p>
+<ul>
+<li><code class="language-text">EJB2</code> 로컬 인터페이스와 <code class="language-text">EJB2</code> 엔티티 빈 을 살펴보면 <code class="language-text">EJB2</code> 컨테이너에 <strong>강하게</strong> 결합되어 있음을 시사합니다.</li>
+<li>이런 식이라면 테스트도 어렵고 <code class="language-text">EJB2</code> 가 아니라면 재사용하기 어려운 코드가 되었습니다.</li>
+<li>그런 의미로 데이터를 주고받을 때 DTO를 사용하여 주고받을 수 밖에 없었습니다.</li>
+</ul>
+<h3 id="횡단cross-cutting-관심사" style="position:relative;"><a href="#%ED%9A%A1%EB%8B%A8cross-cutting-%EA%B4%80%EC%8B%AC%EC%82%AC" aria-label="횡단cross cutting 관심사 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>횡단(cross-cutting) 관심사</h3>
+<p><code class="language-text">EJB2</code> 아키텍처는 <em>일부 영역</em> 에서 관심사를 잘 분리하였습니다. 예를 들어 트랜잭션, 보안, 영속적 동작(persistence behaviors) 등을 소스코드가 아닌 <a href="https://en.wikipedia.org/wiki/Deployment_descriptor" target="_blank" rel="nofollow noopener noreferrer">DD</a>(Deployment descriptor, <code class="language-text">web.xml</code> 같은 파일)로 분리하였습니다.</p>
+<p>영속성같은 <strong>관심사</strong> 는 애플리케이션 각각의 경계를 넘나들기도 합니다. 따라서 모든 객체가 전반적으로 동일한 방식으로 가리키게 만들어야 합니다. 특정 RDBMS를 사용하거나, 테이블, row에 대한 명명관례, 트랜잭션에 대한 의미를 일관적으로 정의하는 식을 의미하지요.</p>
+<p>그렇지만 현실적으로 이런 코드들은 온갖 객체로 흩어지기 쉽습니다(중복되거나, 달라지거나 하는 식으로요). 이런 이유로 인해 <strong>횡단 관심사</strong> 라는 용어가 등장하였습니다. 영속성 프레임워크, 도메인 논리 또한 모듈화하겠다는 것이지요.</p>
+<p>AOP(Aspect-Oriented Programming)이란 말은 횡단 관심사에 대해 모듈성을 확보하는 방법론을 의미합니다. AOP에서 관점(aspect)은 “특정 관심사를 지원하려면 시스템에서 특정 지점들이 동작하는 방식을 일관성있게 바꿔야 한다” 라고 합니다. 이러한 명시는 간결한 선언이나 프로그래밍 메커니즘으로 수행합니다.</p>
+<p>영속성을 예로 들자면, 영속적으로 저장할 객체와 속성을 선언하고, 영속성 책임을 프레임워크에게 위임합니다. 그러면 AOP 프레임워크는 대상 코드에 영향을 미치지 않는 상태로<sup id="fnref-2"><a href="#fn-2" class="footnote-ref">2</a></sup> 동작 방식을 변경합니다. 자바에서의 케이스를 살펴봅시다.</p>
+<h2 id="자바-프록시" style="position:relative;"><a href="#%EC%9E%90%EB%B0%94-%ED%94%84%EB%A1%9D%EC%8B%9C" aria-label="자바 프록시 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>자바 프록시</h2>
+<p>책에 의하면 단순한 상황에 적합합니다.</p>
+<ol>
+<li>proxy 메커니즘
+<ol>
+<li>먼저 추상화 객체, 구현체 객체 그리고 프록시 객체를 만듭니다.</li>
+<li>실행 메소드를 직접 호출하는 것을 피하여 호출합니다.</li>
+</ol>
+</li>
+<li>JDK가 제공하는 Dynamic proxy<sup id="fnref-3"><a href="#fn-3" class="footnote-ref">3</a></sup>
+<ol>
+<li><code class="language-text">java.lang.reflect.Proxy</code> 를 사용합니다.</li>
+<li>지정된 인터페이스에 대한 프록시 클래스의 인스턴스를 반환합니다.
+이 인스턴스는 메서드 호출을 지정된 <code class="language-text">InvocationHandler</code> 로 디스패치하는 값을 의미합니다.</li>
+</ol>
+</li>
+</ol>
+<h2 id="순수-자바-aop-프레임워크" style="position:relative;"><a href="#%EC%88%9C%EC%88%98-%EC%9E%90%EB%B0%94-aop-%ED%94%84%EB%A0%88%EC%9E%84%EC%9B%8C%ED%81%AC" aria-label="순수 자바 aop 프레임워크 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>순수 자바 AOP 프레임워크</h2>
+<p>Spring AOP 등이 내부적으로 프록시를 사용합니다<sup id="fnref-4"><a href="#fn-4" class="footnote-ref">4</a></sup>. 스프링은 비즈니스 논리를 POJO<sup id="fnref-5"><a href="#fn-5" class="footnote-ref">5</a></sup>로 구현합니다. POJO는 도메인에 초점을 맞춥니다. POJO는 이름값을 합니다. 엔터프라이즈 프레임워크 뿐 아니라 다른 도메인에도 의존하지 않습니다. 따라서 테스트가 수월합니다. 그렇기 때문에 사용자 스토리를 올바르게 구현하기 쉬우며, 코드를 보수하고 개선하기 편리합니다.</p>
+<p>프로그래머는 설정파일, API를 사용하여 애플리케이션 기반 구조를 구현합니다. 이 때 스프링의 관점을 명시하고, 프레임워크는 사용자 모르게 프록시, 바이트코드 라이브러리를 통해 구현합니다. 이런 선언들이 요청에 따라 주요 객체를 생성하고 연결하는 등 DI 컨테이너의 구체적 동작을 제어합니다.</p>
+<p>스프링 v2.5의 <code class="language-text">app.xml</code> 예시를 살펴봅시다. 이건 읽어볼 필요가 충분히 있다고 생각합니다. 각 <code class="language-text">bean</code> 객체는 마치 마트료시카<sup id="fnref-6"><a href="#fn-6" class="footnote-ref">6</a></sup> 같습니다. 데이터소스-DAO-논리객체 순으로 감싸져있습니다(프록시 되었습니다).</p>
+<div class="gatsby-highlight" data-language="xml"><pre class="language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>beans</span><span class="token punctuation">></span></span>
+    ...
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>bean</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>appDataSource<span class="token punctuation">"</span></span>
+    <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>org.apache.commons.dbcp.BasicDataSource<span class="token punctuation">"</span></span>
+    <span class="token attr-name">destroy-method</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>close<span class="token punctuation">"</span></span>
+    <span class="token attr-name"><span class="token namespace">p:</span>driverClassName</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>com.mysql.jdbc.Driver<span class="token punctuation">"</span></span>
+    <span class="token attr-name"><span class="token namespace">p:</span>url</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>jdbc:mysql://localhost:3306/mydb<span class="token punctuation">"</span></span>
+    <span class="token attr-name"><span class="token namespace">p:</span>username</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>me<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>bean</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>bankDataAccessObject<span class="token punctuation">"</span></span>
+    <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>com.example.banking.persistence.BankDataAccessObject<span class="token punctuation">"</span></span>
+    <span class="token attr-name"><span class="token namespace">p:</span>dataSource-ref</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>appDataSource<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>bean</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>bank<span class="token punctuation">"</span></span>
+    <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>com.example.banking.model.Bank<span class="token punctuation">"</span></span>
+    <span class="token attr-name"><span class="token namespace">p:</span>dataAccessObject-ref</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>bankDataAccessObject<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+    ...
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>beans</span><span class="token punctuation">></span></span></code></pre></div>
+<center><i>구체화된 데이터 소스부터, DAO, 객체까지 참조하네요.</i></center>
+<p>클라이언트가 <code class="language-text">Bank</code> 객체에서 <code class="language-text">getAccounts()</code> 를 호출한다고 생각하지만, 내부에는 Bank POJO의 동작을 확장한 <a href="https://refactoring.guru/design-patterns/decorator" target="_blank" rel="nofollow noopener noreferrer">DECORATOR</a> 객체 집합의 외곽과 통신합니다. 필요하다면 트랜잭션이나 캐싱에도 이런 <a href="https://refactoring.guru/design-patterns/decorator" target="_blank" rel="nofollow noopener noreferrer">DECORATOR</a>가 얼마든지 붙을 수 있습니다. 만약 애플리케이션이 DI 컨테이너에게 (XML에 명시된) 시스템 내 최상위 객체를 요청하려면 아래와같이 사용합니다.</p>
+<div class="gatsby-highlight" data-language="java"><pre class="language-java"><code class="language-java"><span class="token class-name">XmlBeanFactory</span> bf <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">XmlBeanFactory</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">ClassPathResource</span><span class="token punctuation">(</span><span class="token string">"app.xml"</span><span class="token punctuation">,</span> <span class="token function">getClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token class-name">Bank</span> bank <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token class-name">Bank</span><span class="token punctuation">)</span> bf<span class="token punctuation">.</span><span class="token function">getBean</span><span class="token punctuation">(</span><span class="token string">"bank"</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre></div>
+<p>책에서 봤던 <code class="language-text">EJB2</code> 형식의 스프링 관련 자바코드가 없어졌습니다. 이제 애플리케이션은 <strong>스프링과 분리</strong> 되었습니다. 이를 통해 결합도 문제가 사라졌습니다.</p>
+<h3 id="어노테이션" style="position:relative;"><a href="#%EC%96%B4%EB%85%B8%ED%85%8C%EC%9D%B4%EC%85%98" aria-label="어노테이션 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>어노테이션!</h3>
+<p>관심사와 역할을 함께 분리하는 자바의 어노테이션을 살펴봅시다<sup id="fnref-7"><a href="#fn-7" class="footnote-ref">7</a></sup>.</p>
+<ol>
+<li>도메인 객체별로 그에 맞는 저장방식을 사용 (bad)</li>
+<li>특정 인터페이스를 상속한 도메인 객체들을 일관된 방법으로 사용 (good)
+<ol>
+<li>데이터 저장을 위해 추가적인 상속이 필요</li>
+<li>기존 객체와 속성충돌을 고려해야함</li>
+<li>(결과) 비즈니스 로직에 오롯이 집중하기 어려움</li>
+</ol>
+</li>
+<li><code class="language-text">@Annotation</code>을 이용 (better)
+<ol>
+<li>타겟이 어떤 기능을 하는지, 어떤 속성을 가지는지 한번에 지정</li>
+</ol>
+</li>
+</ol>
+<p><code class="language-text">EJB3</code> 이 등장할 때는 <code class="language-text">app.xml</code> 과 자바 5의 Annotation 을 사용하여 횡단 관심사를 선언적으로 지원하는 스프링 모델을 따르게 되었습니다. 책의 예시를 살펴봅시다.</p>
+<div class="gatsby-highlight" data-language="java"><pre class="language-java"><code class="language-java"><span class="token keyword">package</span> <span class="token namespace">com<span class="token punctuation">.</span>example<span class="token punctuation">.</span>banking<span class="token punctuation">.</span>model</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token import"><span class="token namespace">javax<span class="token punctuation">.</span>persistence<span class="token punctuation">.</span></span><span class="token operator">*</span></span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token import"><span class="token namespace">java<span class="token punctuation">.</span>util<span class="token punctuation">.</span></span><span class="token class-name">ArrayList</span></span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token import"><span class="token namespace">java<span class="token punctuation">.</span>util<span class="token punctuation">.</span></span><span class="token class-name">Collection</span></span><span class="token punctuation">;</span>
+
+<span class="token annotation punctuation">@Entity</span>
+<span class="token annotation punctuation">@Table</span><span class="token punctuation">(</span>name <span class="token operator">=</span> <span class="token string">"BANKS"</span><span class="token punctuation">)</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Bank</span> <span class="token keyword">implements</span> <span class="token class-name"><span class="token namespace">java<span class="token punctuation">.</span>io<span class="token punctuation">.</span></span>Serializable</span> <span class="token punctuation">{</span>
+    <span class="token annotation punctuation">@Id</span> <span class="token annotation punctuation">@GeneratedValue</span><span class="token punctuation">(</span>strategy<span class="token operator">=</span><span class="token class-name">GenerationType</span><span class="token punctuation">.</span><span class="token constant">AUTO</span><span class="token punctuation">)</span>
+    <span class="token keyword">private</span> <span class="token keyword">int</span> id<span class="token punctuation">;</span>
+
+    <span class="token annotation punctuation">@Embeddable</span> <span class="token comment">// Bank의 DB row에 인라인으로 포함된 객체</span>
+    <span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Address</span><span class="token punctuation">{</span>
+        <span class="token keyword">protected</span> <span class="token class-name">String</span> streetAddr1<span class="token punctuation">;</span>
+        <span class="token keyword">protected</span> <span class="token class-name">String</span> streetAddr2<span class="token punctuation">;</span>
+        <span class="token keyword">protected</span> <span class="token class-name">String</span> city<span class="token punctuation">;</span>
+        <span class="token keyword">protected</span> <span class="token class-name">String</span> state<span class="token punctuation">;</span>
+        <span class="token keyword">protected</span> <span class="token class-name">String</span> zipCode<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token annotation punctuation">@Embedded</span>
+    <span class="token keyword">private</span> <span class="token class-name">Address</span> address<span class="token punctuation">;</span>
+
+    <span class="token annotation punctuation">@OneToMany</span><span class="token punctuation">(</span>
+        cascade <span class="token operator">=</span> <span class="token class-name">CascadeType</span><span class="token punctuation">.</span><span class="token constant">ALL</span><span class="token punctuation">,</span>
+        fetch <span class="token operator">=</span> <span class="token class-name">FetchType</span><span class="token punctuation">.</span><span class="token constant">EAGER</span><span class="token punctuation">,</span>
+        mappedBy <span class="token operator">=</span> <span class="token string">"bank"</span>
+    <span class="token punctuation">)</span>
+    <span class="token keyword">private</span> <span class="token class-name">Collection</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Account</span><span class="token punctuation">></span></span> accounts <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Account</span><span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">int</span> <span class="token function">getId</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> id<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">setId</span><span class="token punctuation">(</span><span class="token keyword">int</span> id<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>id <span class="token operator">=</span> id<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">addAccount</span><span class="token punctuation">(</span><span class="token class-name">Account</span> account<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        account<span class="token punctuation">.</span><span class="token function">setBank</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        accounts<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>account<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token class-name">Collection</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Account</span><span class="token punctuation">></span></span> <span class="token function">getAccounts</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> accounts<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">setAccounts</span><span class="token punctuation">(</span><span class="token class-name">Collection</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Account</span><span class="token punctuation">></span></span> accounts<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>accounts <span class="token operator">=</span> accounts
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre></div>
+<center> <i>스프링 코드를 들여다 볼 때의 그 수많은 그 코드들이 이런 배경을 통해 등장한 것 이었군요!</i> </center>
+<h2 id="aspectj-관점" style="position:relative;"><a href="#aspectj-%EA%B4%80%EC%A0%90" aria-label="aspectj 관점 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>AspectJ 관점</h2>
+<p>관심사를 관점으로 분리하는 가장 강력한 도구는 AspectJ 언어입니다. 보다 쉬운 설명은 <a href="https://logical-code.tistory.com/118" target="_blank" rel="nofollow noopener noreferrer">이 게시글</a>을 참고해 주십시오.</p>
+<h2 id="테스트-주도-시스템-아키텍처-구축" style="position:relative;"><a href="#%ED%85%8C%EC%8A%A4%ED%8A%B8-%EC%A3%BC%EB%8F%84-%EC%8B%9C%EC%8A%A4%ED%85%9C-%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98-%EA%B5%AC%EC%B6%95" aria-label="테스트 주도 시스템 아키텍처 구축 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>테스트 주도 시스템 아키텍처 구축</h2>
+<p>관점 혹은 그 유사한 개념으로 관심사를 분리할 수 있다면 테스트 주도 아키텍처 구축 또한 가능해집니다. 그때그때 새 기술을 채택하여 단순한 아키텍처를 보다 복잡한 아키텍처로 변경할 수 있습니다. <strong>앞으로 벌어질 모든 사항을 설계하는(BDUF, Big Design Up Front)</strong> 식의 접근은 변경을 쉽사리 수용하기 어렵게 합니다.</p>
+<p>소프트웨어는 그런 의미로 건물 건축보다는 정원 관리에 보다 가깝다<sup id="fnref-8"><a href="#fn-8" class="footnote-ref">8</a></sup> 라고 합니다. 관점을 효과적으로 분리한다면 극적인 변화 또한 경제적으로 가능함을 의미합니다. ‘아주 단순하고’ 괜찮은 아키텍처로 결과물을 빠르게 출시한 후 기반 구조를 천천히 추가해도 괜찮다는 것을 의미합니다.</p>
+<p>그렇지만, ‘무계획’으로 뛰어들면 안됩니다. 프로젝트는 일반적인 범위, 목표, 일정 및 결과로 내어놓을 시스템의 일반적 구조 또한 생각해야 합니다. 하지만 변하는 환경에 대처하여 진로를 변경할 능력 또한 갖추고 유지해야 합니다.</p>
+<p>저자는 현재까지의 이야기를 이렇게 요약하였습니다.</p>
+<hr>
+<blockquote>
+<p>최선의 시스템 구조는 각기 POJO(또는 다른) 객체로 구현되는 모듈화된 관심사 영역(도메인)으로 구성된다.</p>
+<p>이렇게 서로 다른 영역은 해당 영역 코드에 최소한의 영향을 미치는 관점이나 유사한 도구를 사용해 통합한다.</p>
+<p>이런 구조 역시 코드와 마찬가지로 테스트 주도 기법을 적용할 수 있다.</p>
+</blockquote>
+<h2 id="의사-결정을-최적화-하십시오" style="position:relative;"><a href="#%EC%9D%98%EC%82%AC-%EA%B2%B0%EC%A0%95%EC%9D%84-%EC%B5%9C%EC%A0%81%ED%99%94-%ED%95%98%EC%8B%AD%EC%8B%9C%EC%98%A4" aria-label="의사 결정을 최적화 하십시오 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>의사 결정을 최적화 하십시오</h2>
+<p>모듈을 나누고 관심사를 분리하면 세세한 부분까지 관리/결정을 내릴 수 있습니다. 큰 시스템은 한 사람이 모든 결정을 내리기 힘듭니다. 그런 의미로 담당자에게 책임을 위임하는 것이 중요합니다.</p>
+<p>때로는 최후의 최후까지 <strong>결정을 미루어서</strong> 최대한 정보를 모아 최선의 선택을 하는 것이 필요합니다. 이는 시스템을 <strong>너무 일찍 결정하지 말라</strong>는 것을 시사합니다.</p>
+<hr>
+<blockquote>
+<p>관심사를 모듈로 분리한 POJO 시스템은 기민함을 제공한다.</p>
+<p>이런 기민함 덕택에 최신 정보에 기반해 최선의 시점에 최적의 결정을 내리기가 쉬워진다.</p>
+<p>또한 결정의 복잡성도 줄어든다.</p>
+</blockquote>
+<h2 id="명백한-가치가-있을-때-표준을-현명하게-사용하십시오" style="position:relative;"><a href="#%EB%AA%85%EB%B0%B1%ED%95%9C-%EA%B0%80%EC%B9%98%EA%B0%80-%EC%9E%88%EC%9D%84-%EB%95%8C-%ED%91%9C%EC%A4%80%EC%9D%84-%ED%98%84%EB%AA%85%ED%95%98%EA%B2%8C-%EC%82%AC%EC%9A%A9%ED%95%98%EC%8B%AD%EC%8B%9C%EC%98%A4" aria-label="명백한 가치가 있을 때 표준을 현명하게 사용하십시오 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>명백한 가치가 있을 때 표준을 현명하게 사용하십시오</h2>
+<p><strong>“도메인에 맞는 기술을 선택하라.”</strong> 한마디로 정리할 수 있겠습니다. 도메인을 추구하면 고객 가치를 추구하게 됩니다. 고객에게 소프트웨어를 제공하는 것이 프로그래머의 제 1원칙이니까요.</p>
+<hr>
+<blockquote>
+<p>표준을 사용하면 아이디어와 컴포넌트를 재사용하기 쉽고, 비슷한 경험을 할 사람을 구하기 쉬우며, 좋은 아이디어를 캡슐화하기 쉽고, 컴포넌트를 엮기 쉽다.</p>
+<p>하지만 표준을 만드는 시간이 너무 오래 걸려 업계가 기다리지 못한다.</p>
+<p>어떤 표준은 원래 표준을 제정한 목적을 잊어버리기도 한다.</p>
+</blockquote>
+<h2 id="시스템은-도메인-특화-언어가-필요합니다" style="position:relative;"><a href="#%EC%8B%9C%EC%8A%A4%ED%85%9C%EC%9D%80-%EB%8F%84%EB%A9%94%EC%9D%B8-%ED%8A%B9%ED%99%94-%EC%96%B8%EC%96%B4%EA%B0%80-%ED%95%84%EC%9A%94%ED%95%A9%EB%8B%88%EB%8B%A4" aria-label="시스템은 도메인 특화 언어가 필요합니다 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>시스템은 도메인 특화 언어가 필요합니다</h2>
+<p>도메인 특화 언어(이하 DSL, Domain Specific Language)와 유비쿼터스 언어를 이야기합니다.</p>
+<p>도메인을 만드는 사람 모두가 읽을 수 있는 언어와 공통적으로 사용하는 단어, 어휘를 통해 <strong>의사소통의 간극을 줄이는</strong> 것이 이 둘의 핵심입니다.</p>
+<hr>
+<blockquote>
+<p>DSL을 사용하면 고차원 정책에서 저차원 세부사항에 이르기까지 모든 추상화 수준과 모든 도메인을 POJO로 표현할 수 있다.</p>
+</blockquote>
+<h2 id="결론" style="position:relative;"><a href="#%EA%B2%B0%EB%A1%A0" aria-label="결론 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>결론</h2>
+<p>시스템 또한 깨끗해야 합니다. 깨끗하지 못한 아키텍처는 도메인 논리를 흐리며 기민성을 떨어뜨립니다. 도메인 논리가 흐려지면 제품 품질이 떨어집니다. 버그가 숨어들기 쉬워지고, 스토리를 구현하기 어려워집니다. 기민성이 떨어지면 생산성이 낮아져 TDD가 제공하는 장점이 사라집니다.</p>
+<p>모든 추상화 단계에서 의도는 명확히 표현되어야 합니다. 그러려면 POJO를 작성하고, 관점 혹은 관점과 유사한 메커니즘을 사용해 각 구현 관심사를 분리해야 합니다<sup id="fnref-9"><a href="#fn-9" class="footnote-ref">9</a></sup>.</p>
+<p>무엇보다도, 시스템을 설계하든 개별 모듈을 설계하든 <strong><em>실제로 돌아가는 가장 단순한 수단</em></strong> 을 사용해야 합니다.</p>
+<div class="footnotes">
+<hr>
+<ol>
+<li id="fn-1"><a href="https://python-dependency-injector.ets-labs.org/examples/fastapi.html#application-factory" target="_blank" rel="nofollow noopener noreferrer">해당 예시</a> 를 로직에 맞게 푼 코드입니다. <code class="language-text">@inject</code> 를 통해 의존성을 주입하는 코드는 예시를 살펴보시기를 강력히 권장드립니다. 또한 해당 게시글들이 매우 도움되었습니다. <br /><a href="https://blog.neonkid.xyz/279" target="_blank" rel="nofollow noopener noreferrer">[FastAPI] 11. Dependency Injector를 이용한 의존성 관리</a><br /><a href="https://www.humphreyahn.dev/blog/dependency-injector" target="_blank" rel="nofollow noopener noreferrer">파이썬 애플리케이션 의존성 주입 - dependency injector</a>  <a href="#fnref-1" class="footnote-backref">↩</a></li>
+<li id="fn-2">대상 소스코드를 수작업으로 편집할 필요가 없다는 뜻을 의미합니다. 예시코드나 개념을 보면 이해가 되실 것입니다.  <a href="#fnref-2" class="footnote-backref">↩</a></li>
+<li id="fn-3"><a href="https://taes-k.github.io/2021/05/15/dynamic-proxy-reflection/" target="_blank" rel="nofollow noopener noreferrer">해당 게시글</a>이 도움되었습니다.<a href="#fnref-3" class="footnote-backref">↩</a></li>
+<li id="fn-4">보다 쉽고 상세한 설명은 <a href="https://taes-k.github.io/2021/02/07/spring-aop-proxy/" target="_blank" rel="nofollow noopener noreferrer">해당 게시글</a>을 참고하십시오.  <a href="#fnref-4" class="footnote-backref">↩</a></li>
+<li id="fn-5">Plain Old Java Object 를 의미합니다. <em>어떤 프레임워크와 라이브러리에 속하지 않는</em> 쌩 자바 객체를 의미합니다. 다른 언어에서 이 용어를 본다면 <em>어떤 프레임워크와 라이브러리에 속하지 않는</em> 객체를 의미한다고 이해하면 되지 않을까 하고 생각합니다.  <a href="#fnref-5" class="footnote-backref">↩</a></li>
+<li id="fn-6">Матрёшка. 인형 속에 인형이 있고, 그 속에 인형이 계속 있는 러시아 인형을 의미합니다. <a href="https://ko.wikipedia.org/wiki/%EB%A7%88%ED%8A%B8%EB%A3%8C%EC%8B%9C%EC%B9%B4" target="_blank" rel="nofollow noopener noreferrer">출처</a>  <a href="#fnref-6" class="footnote-backref">↩</a></li>
+<li id="fn-7">어노테이션을 이해하는데 <a href="https://www.nextree.co.kr/p5864/" target="_blank" rel="nofollow noopener noreferrer">해당 게시글</a>이 큰 도움이 되었습니다.  <a href="#fnref-7" class="footnote-backref">↩</a></li>
+<li id="fn-8">보다 상세한 내용에 대해서는 <a href="https://technical-leader.tistory.com/45" target="_blank" rel="nofollow noopener noreferrer">해당 게시글</a>을 참고하십시오.  <a href="#fnref-8" class="footnote-backref">↩</a></li>
+<li id="fn-9">이런 식의 접근은 DDD(Domain-driven Development)와 직접적으로 맞닿아 있습니다.  <a href="#fnref-9" class="footnote-backref">↩</a></li>
+</ol>
+</div></div></div></div><div class="Post-module--footer--f8705"><div class="Meta-module--meta--dae0a"><p class="Meta-module--date--4d30d">Published<!-- --> <!-- -->Feb 17, 2023</p></div><div class="Tags-module--tags--18589"><ul class="Tags-module--list--82ae6"><li class="Tags-module--item--52015"><a class="Button-module--button--b1113" href="/tag/book-review/">book_review</a></li><li class="Tags-module--item--52015"><a class="Button-module--button--b1113" href="/tag/code-quality/">code_quality</a></li></ul></div><div class="Author-module--author--1c58d"><p class="Non scholæ sed vitæ discimus.">Non scholæ sed vitæ discimus.</p><p class="Author-module--bio--08950">his/him</p></div></div><div class="Post-module--comments--d3b99"><div></div></div></div></div></div><div id="gatsby-announcer" style="position:absolute;top:0;width:1px;height:1px;padding:0;overflow:hidden;clip:rect(0, 0, 0, 0);white-space:nowrap;border:0" aria-live="assertive" aria-atomic="true"></div></div><script id="gatsby-script-loader">/*<![CDATA[*/window.pagePath="/books/clean-code/2023-02-17-pt01";window.___webpackCompilationHash="436197414e9aee0d1aa0";/*]]>*/</script><script id="gatsby-chunk-mapping">/*<![CDATA[*/window.___chunkMapping={"polyfill":["/polyfill-6d1220f2d6731189f865.js"],"app":["/app-64591a30effdaeaa8329.js"],"component---cache-caches-gatsby-plugin-offline-app-shell-js":["/component---cache-caches-gatsby-plugin-offline-app-shell-js-0c915c7b1bdb5eac4fdf.js"],"component---src-templates-categories-template-categories-template-tsx":["/component---src-templates-categories-template-categories-template-tsx-e2d2add397e32e3517ca.js"],"component---src-templates-category-template-category-template-tsx":["/component---src-templates-category-template-category-template-tsx-078f2adfba160a34229f.js"],"component---src-templates-index-template-index-template-tsx":["/component---src-templates-index-template-index-template-tsx-83380c7954c9f6621026.js"],"component---src-templates-not-found-template-not-found-template-tsx":["/component---src-templates-not-found-template-not-found-template-tsx-56fe4d3b015459d56c99.js"],"component---src-templates-page-template-page-template-tsx":["/component---src-templates-page-template-page-template-tsx-c6c21d7369a9356db3a1.js"],"component---src-templates-post-template-post-template-tsx":["/component---src-templates-post-template-post-template-tsx-119cd0258cb38628d01f.js"],"component---src-templates-tag-template-tag-template-tsx":["/component---src-templates-tag-template-tag-template-tsx-8d0b3090e775aa3c4584.js"],"component---src-templates-tags-template-tags-template-tsx":["/component---src-templates-tags-template-tags-template-tsx-30027e87af7d042f3afb.js"]};/*]]>*/</script><script src="/polyfill-6d1220f2d6731189f865.js" nomodule=""></script><script src="/app-64591a30effdaeaa8329.js" async=""></script><script src="/framework-481a1b6416c14416b2fb.js" async=""></script><script src="/webpack-runtime-de5a94456c9c32f6cdb9.js" async=""></script></body></html>
