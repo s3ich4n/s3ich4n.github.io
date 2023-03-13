@@ -1,0 +1,280 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="ie=edge"/><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/><meta name="generator" content="Gatsby 4.25.4"/><meta name="description" content="PEP 333을 보고, 자바 진영의 서블릿과 웹 프레임워크의 금자탑인 스프링 프레임워크 까지 함께 알아보게 되었습니다." data-gatsby-head="true"/><meta name="twitter:card" content="summary_large_image" data-gatsby-head="true"/><meta name="twitter:title" content="서블릿부터 스프링 프레임워크까지 - 팔공산 창고" data-gatsby-head="true"/><meta name="twitter:description" content="PEP 333을 보고, 자바 진영의 서블릿과 웹 프레임워크의 금자탑인 스프링 프레임워크 까지 함께 알아보게 되었습니다." data-gatsby-head="true"/><meta name="og:title" content="서블릿부터 스프링 프레임워크까지 - 팔공산 창고" data-gatsby-head="true"/><meta name="og:type" content="website" data-gatsby-head="true"/><meta name="og:description" content="PEP 333을 보고, 자바 진영의 서블릿과 웹 프레임워크의 금자탑인 스프링 프레임워크 까지 함께 알아보게 되었습니다." data-gatsby-head="true"/><meta name="image" content="https://blog.s3ich4n.me[object Object]" data-gatsby-head="true"/><meta name="og:image" content="https://blog.s3ich4n.me[object Object]" data-gatsby-head="true"/><meta name="twitter:image" content="https://blog.s3ich4n.me[object Object]" data-gatsby-head="true"/><meta name="theme-color" content="hsl(31, 92%, 62%)"/><style data-href="/styles.1fbe3e33e3d898c35e17.css" data-identity="gatsby-global-css">:after,:before,:root{--color-white:#fff;--color-primary:#5c92ff;--color-secondary:#f7a145;--color-prism-background:#eaeaeb;--color-typographic-base-font:#242933;--color-typographic-link-p-font:#5c92ff;--color-typographic-link-s-font:#f7a145;--color-page-border:#eaeaeb;--color-page-background:#fff;--color-sidebar-border:#eaeaeb;--color-sidebar-border-fade:#fff;--color-contacts-border:#eaeaeb;--color-button-border:#eaeaeb;--color-button-color:#242933;--color-theme-switcher:#3f485a;--color-theme-switcher-hover:#5c92ff}.dark :after,.dark :before,:root.dark{--color-white:#fff;--color-primary:#5c92ff;--color-secondary:#f7a145;--color-prism-background:#191d24;--color-typographic-base-font:#fff;--color-typographic-link-p-font:#5c92ff;--color-typographic-link-s-font:#f7a145;--color-page-border:#3f485a;--color-page-background:#242933;--color-sidebar-border:#3f485a;--color-sidebar-border-fade:#242933;--color-contacts-border:#3f485a;--color-button-border:#3f485a;--color-button-color:#fff;--color-theme-switcher:#eaeaeb;--color-theme-switcher-hover:#5c92ff}html{font-size:100}body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;background:var(--color-page-background);color:var(--color-typographic-base-font);font-size:16px;line-height:1.625;margin:0 0 0 calc(100vw - 100%);text-rendering:optimizelegibility}body,h1,h2,h3,h4,h5,h6{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif}h1,h2,h3,h4,h5,h6{font-weight:600}h1{font-size:40px;line-height:52px;margin-bottom:26px;margin-top:104px}h2{font-size:27px;line-height:39px}h2,h3{margin-bottom:13px;margin-top:52px}h3{font-size:22px;line-height:26px}h4{font-size:19.2px;margin-top:39px}h4,h5{line-height:26px;margin-bottom:13px}h5,h6{font-size:16px;margin-top:65px}h6{line-height:26px;margin-bottom:13px}img{max-width:100%}hr,img{border:0;display:block}hr{background-image:linear-gradient(180deg,transparent 1px,transparent 11px,#242933 0,#242933 15px,transparent 0,transparent 26px);background-size:100% 26px;color:var(--color-typographic-base-font);height:26px;margin:52px auto;width:100px}a{color:var(--color-typographic-link-p-font);text-decoration:none}a:active,a:focus,a:hover{color:var(--color-typographic-link-s-font)}b,strong{font-weight:600}ul{list-style:square;margin-bottom:26px}ul li{margin-bottom:10px;padding:0 5px}p{line-height:26px;margin-bottom:26px}blockquote{font-style:italic;padding:0;text-align:center}figure{display:block;height:auto;width:100%}figcaption{color:var(--color-typographic-base-font);font-size:14px;font-style:italic;line-height:19.5px;margin-bottom:0;margin-top:6.5px;text-align:center}@media screen and (min-width:685px){figure.float-left,figure.float-right{max-width:310px;padding:0 26px}.float-right{float:right}.float-left{float:left}}code[class*=language-],pre[class*=language-]{word-wrap:normal;color:#657b83;font-family:Consolas,Monaco,Andale Mono,Ubuntu Mono,monospace;font-size:1em;-webkit-hyphens:none;hyphens:none;line-height:1.5;-o-tab-size:4;tab-size:4;text-align:left;white-space:pre;word-break:normal;word-spacing:normal}pre[class*=language-]{border-radius:.3em;margin:.5em 0;overflow:auto;padding:1em}:not(pre)>code[class*=language-],pre[class*=language-]{background-color:var(--color-prism-background)}:not(pre)>code[class*=language-]{border-radius:.3em;padding:.1em}code[class*=language-] ::selection,code[class*=language-]::selection,pre[class*=language-] ::selection,pre[class*=language-]::selection{background:#073642}.token.cdata,.token.comment,.token.doctype,.token.prolog{color:#93a1a1}.token.punctuation{color:#586e75}.namespace{opacity:.7}.token.boolean,.token.constant,.token.deleted,.token.number,.token.property,.token.symbol,.token.tag{color:#268bd2}.token.attr-name,.token.builtin,.token.char,.token.inserted,.token.selector,.token.string,.token.url{color:#2aa198}.token.entity{background:#eee8d5;color:#657b83;cursor:help}.token.atrule,.token.attr-value,.token.keyword{color:#859900}.token.class-name,.token.function{color:#b58900}.token.important,.token.regex,.token.variable{color:#cb4b16}.token.bold,.token.important{font-weight:700}.token.italic{font-style:italic}.Feed-module--feed--a6204 .Feed-module--item--c7a63{margin-bottom:32.5px}.Feed-module--feed--a6204 .Feed-module--item--c7a63:last-child{margin-bottom:13px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f{font-size:27px;line-height:39px;margin-bottom:13px;margin-top:0}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f .Feed-module--link--6123b{color:var(--color-typographic-base-font)}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f .Feed-module--link--6123b:focus,.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f .Feed-module--link--6123b:hover{border-bottom:1px solid #242933;color:var(--color-typographic-base-font)}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--description--57348{font-size:16px;line-height:26px;margin-bottom:19.5px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--time--72864{color:var(--color-typographic-base-font);font-size:14px;font-weight:600;text-transform:uppercase}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--divider--81a18{margin:0 13px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--category--59f58 .Feed-module--link--6123b{color:var(--color-secondary);font-size:14px;font-weight:600;text-transform:uppercase}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--category--59f58 .Feed-module--link--6123b:focus,.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--category--59f58 .Feed-module--link--6123b:hover{color:#5c92ff}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--more--51a4e{color:var(--color-primary);font-size:16px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--more--51a4e:focus,.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--more--51a4e:hover{border-bottom:1px solid #5c92ff;color:var(--color-primary)}.Layout-module--layout--2c933{margin-left:auto;margin-right:auto;max-width:1070px}.Layout-module--layout--2c933:before{content:"";display:table}.Layout-module--layout--2c933:after{clear:both;content:"";display:table}.Page-module--page--24e03{margin-bottom:52px}.Page-module--page--24e03 .Page-module--inner--4b31d{padding:26px 19.5px 0}.Page-module--page--24e03 .Page-module--title--90338{font-size:40px;font-weight:600;line-height:52px;margin-bottom:37.7px;margin-top:0}.Page-module--page--24e03 .Page-module--body--561c4{font-size:16px;line-height:26px;margin:0 0 26px}@media screen and (min-width:685px){.Page-module--page--24e03{width:calc(58.275% - 12.5px)}.Page-module--page--24e03:nth-child(1n){clear:none;float:left;margin-right:30px}.Page-module--page--24e03:last-child{margin-right:0}.Page-module--page--24e03:nth-child(12n){float:right;margin-right:0}.Page-module--page--24e03:nth-child(12n+1){clear:both}.Page-module--page--24e03 .Page-module--inner--4b31d{padding:32.5px 19.5px 0}}@media screen and (min-width:960px){.Page-module--page--24e03{width:calc(66.6% - 10px)}.Page-module--page--24e03:nth-child(1n){clear:none;float:left;margin-right:30px}.Page-module--page--24e03:last-child{margin-right:0}.Page-module--page--24e03:nth-child(3n){float:right;margin-right:0}.Page-module--page--24e03:nth-child(3n+1){clear:both}.Page-module--page--24e03 .Page-module--inner--4b31d{padding:39px 26px 0}}.Pagination-module--pagination--d61cb{display:flex;margin-top:52px}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b{text-align:left;width:50%}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d{color:var(--color-secondary);font-size:26px;font-weight:700}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d:focus,.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d:hover{color:var(--color-primary)}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d.Pagination-module--disable--7e105{color:#3f485a;pointer-events:none}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8{text-align:right;width:50%}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff{color:var(--color-secondary);font-size:26px;font-weight:700}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff:focus,.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff:hover{color:var(--color-primary)}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff.Pagination-module--disable--7e105{color:#3f485a;pointer-events:none}.Button-module--button--b1113{border:1px solid var(--color-button-border);border-radius:20px;color:var(--color-button-color);display:inline-block;font-size:16px;font-weight:400;height:40px;line-height:40px;margin-left:auto;margin-right:auto;padding:0 26px;text-align:center;text-decoration:none}.Button-module--button--b1113:focus,.Button-module--button--b1113:hover{color:#5c92ff}.ThemeSwitcher-module--themeSwitcher--8a77f{--color:var(--color-theme-switcher)}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--button--7cb7b{align-items:center;background:transparent;border:0;cursor:pointer;display:flex;justify-content:center;outline:0}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--button--7cb7b svg{stroke:var(--color);pointer-events:none;transition:stroke .4s}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--button--7cb7b:hover{--color:var(--color-theme-switcher-hover)}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--moon--10537{stroke-dasharray:0 1px;opacity:0;transition:stroke-dasharray .2s ease-in,opacity .4s ease-in}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--sun--2163a{stroke-dasharray:1px 1px;opacity:1;transition:stroke-dasharray .2s ease-in,opacity .4s ease-in}.ThemeSwitcher-module--themeSwitcher--8a77f.ThemeSwitcher-module--dark--6db0c .ThemeSwitcher-module--moon--10537{stroke-dasharray:1px 1px;opacity:1}.ThemeSwitcher-module--themeSwitcher--8a77f.ThemeSwitcher-module--dark--6db0c .ThemeSwitcher-module--sun--2163a{stroke-dasharray:0 1px;opacity:0}.Author-module--author--cbd31 .Author-module--photo--9787b{background-clip:padding-box;border-radius:50%;display:inline-block;height:75px;margin-bottom:0;width:75px}.Author-module--author--cbd31 .Author-module--photo--9787b img{border-radius:50%}.Author-module--author--cbd31 .Author-module--title--cf7e5{font-size:18px;font-weight:600;line-height:29.25px;margin:0}.Author-module--author--cbd31 .Author-module--title--cf7e5 .Author-module--link--09c17,.Author-module--author--cbd31 .Author-module--title--cf7e5 .Author-module--link--09c17:focus,.Author-module--author--cbd31 .Author-module--title--cf7e5 .Author-module--link--09c17:hover{color:var(--color-typographic-base-font)}.Author-module--author--cbd31 .Author-module--bio--8168d,.Author-module--author--cbd31 .Author-module--subtitle--86ec5{color:#7f8ba4;line-height:26px;margin-bottom:26px}.Author-module--author--cbd31 .Author-module--titleContainer--4f576{align-items:center;display:flex;justify-content:space-between;margin:13px 0}.Categories-module--categories--f3389{color:#7f8ba4;font-size:14px}.Icon-module--icon--1d7da{fill:currentcolor;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;speak:none;stroke:currentcolor;stroke-width:0;display:inline-block;font-style:normal;font-variant:normal;font-weight:400;height:1em;line-height:1em;text-align:center;text-transform:none;width:1em}.Contacts-module--contacts--09178{margin-bottom:26px}.Contacts-module--contacts--09178 .Contacts-module--list--9670b{display:flex;flex-flow:row wrap;flex-grow:0;flex-shrink:0;list-style:none;margin:13px 0;max-width:165px;padding:0}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0{align-content:center;align-items:center;border:1px solid var(--color-contacts-border);border-radius:50%;display:flex;height:40px;justify-content:center;line-height:40px;margin:6.5px;padding:0;text-align:center;width:40px}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0:nth-child(3n+1){margin-left:0}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0 .Contacts-module--link--de1e0{border:0;color:var(--color-typographic-base-font);display:flex}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0 .Contacts-module--link--de1e0:focus,.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0 .Contacts-module--link--de1e0:hover{color:var(--color-typographic-link-p-font)}.Copyright-module--copyright--2c602{color:#7f8ba4;font-size:14px}.Menu-module--menu--113a9{margin-bottom:26px}.Menu-module--menu--113a9 .Menu-module--list--e1ae3{list-style:none;margin:0;padding:0}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679{margin:13px 0;padding:0}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02{border:0;color:var(--color-typographic-base-font);font-size:16px;font-weight:400}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02:focus,.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02:hover{border-bottom:1px solid #5c92ff;color:#5c92ff}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02.Menu-module--active--6cb74{border-bottom:1px solid var(--color-typographic-base-font);color:var(--color-typographic-base-font)}.Tags-module--tags--28a57{color:#7f8ba4;font-size:14px}.Sidebar-module--sidebar--1bfa1{width:100%}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0{padding:26px 19.5px 0;position:relative}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0:after{background:var(--color-sidebar-border);background:linear-gradient(to bottom,var(--color-sidebar-border) 0,var(--color-sidebar-border) 48%,var(--color-sidebar-border-fade) 100%)}@media screen and (min-width:685px){.Sidebar-module--sidebar--1bfa1{width:calc(41.625% - 17.5px)}.Sidebar-module--sidebar--1bfa1:nth-child(1n){clear:none;float:left;margin-right:30px}.Sidebar-module--sidebar--1bfa1:last-child{margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(12n){float:right;margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(12n+1){clear:both}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0{padding:32.5px 19.5px 0}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0:after{bottom:0;content:"";height:540px;position:absolute;right:-10px;top:30px;width:1px}}@media screen and (min-width:960px){.Sidebar-module--sidebar--1bfa1{width:calc(33.3% - 20px)}.Sidebar-module--sidebar--1bfa1:nth-child(1n){clear:none;float:left;margin-right:30px}.Sidebar-module--sidebar--1bfa1:last-child{margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(3n){float:right;margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(3n+1){clear:both}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0{padding:39px}}.Author-module--author--1c58d{border-top:1px solid var(--color-page-border);line-height:26px;margin-bottom:52px;margin-top:26px;max-width:920px;padding-top:26px}.Author-module--author--1c58d .Author-module--bio--08950 .Author-module--twitter--90647{display:block;text-decoration:underline}.Author-module--author--1c58d .Author-module--bio--08950 .Author-module--twitter--90647:focus,.Author-module--author--1c58d .Author-module--bio--08950 .Author-module--twitter--90647:hover{color:var(--color-typographic-link-s-font)}@media screen and (min-width:685px){.Author-module--author--1c58d{margin-left:auto;margin-right:auto}}.Content-module--content--80d58{margin:0 auto;max-width:1070px;padding:0 13px}.Content-module--content--80d58 .Content-module--title--09504{font-size:32px;font-weight:600;line-height:42.9px;margin:26px auto 0;max-width:920px;text-align:center}.Content-module--content--80d58 .Content-module--body--726c2 figure{margin-bottom:26px}.Content-module--content--80d58 .Content-module--body--726c2 figure blockquote{font-style:italic;margin-top:0;padding:26px 0;text-align:center}.Content-module--content--80d58 .Content-module--body--726c2 figure blockquote p{font-size:26.9072px;line-height:39px;margin-bottom:26px;margin-top:0;max-width:920px}.Content-module--content--80d58 .Content-module--body--726c2 a{text-decoration:underline}.Content-module--content--80d58 .Content-module--body--726c2 *{margin-left:auto;margin-right:auto;max-width:920px}.Content-module--content--80d58 .Content-module--body--726c2 h2>a{visibility:hidden}.Content-module--content--80d58 .Content-module--body--726c2 h2>a>svg{fill:var(--color-typographic-base-font)}.Content-module--content--80d58 .Content-module--body--726c2 img{max-width:100%}@media screen and (min-width:960px){.Content-module--content--80d58{padding:0}.Content-module--content--80d58 .Content-module--title--09504{font-size:48px;line-height:58.5px;margin-bottom:39px;margin-top:58.5px}.Content-module--content--80d58 .Content-module--body--726c2,.Content-module--content--80d58 .Content-module--body--726c2 p{font-size:18px;line-height:29.25px;margin-bottom:29.25px}.Content-module--content--80d58 .Content-module--body--726c2 h2>a{padding-right:13px;visibility:unset}}.Meta-module--meta--dae0a .Meta-module--date--4d30d{font-style:italic}.Tags-module--tags--18589{margin-bottom:13px}.Tags-module--tags--18589 .Tags-module--list--82ae6{list-style:none;padding:0}.Tags-module--tags--18589 .Tags-module--list--82ae6 .Tags-module--item--52015{display:inline-block;margin:6.5px 0}@media screen and (min-width:685px){.Tags-module--tags--18589 .Tags-module--list--82ae6 .Tags-module--item--52015:first-child{margin-left:0;padding-left:0}}.Post-module--post--3a994 .Post-module--content--3c6e5{margin:0 auto}.Post-module--post--3a994 .Post-module--comments--d3b99,.Post-module--post--3a994 .Post-module--footer--f8705{margin:0 auto;max-width:920px;padding:0 13px}.Post-module--post--3a994 .Post-module--buttons--2972d{align-items:center;display:flex;justify-content:center;margin:26px 0 0;text-align:center}.Post-module--post--3a994 .Post-module--buttons--2972d .Post-module--buttonArticles--d793a{margin:0 13px 0 0}@media screen and (min-width:960px){.Post-module--post--3a994 .Post-module--comments--d3b99,.Post-module--post--3a994 .Post-module--footer--f8705{padding:0}.Post-module--post--3a994 .Post-module--buttons--2972d{left:30px;margin:0 13px 0 0;max-width:none;position:fixed;top:30px}}</style><title data-gatsby-head="true">서블릿부터 스프링 프레임워크까지 - 팔공산 창고</title><link rel="alternate" type="application/rss+xml" title="팔공산 창고" href="/rss.xml"/><style type="text/css">
+    .anchor.before {
+      position: absolute;
+      top: 0;
+      left: 0;
+      transform: translateX(-100%);
+      padding-right: 4px;
+    }
+    .anchor.after {
+      display: inline-block;
+      padding-left: 4px;
+    }
+    h1 .anchor svg,
+    h2 .anchor svg,
+    h3 .anchor svg,
+    h4 .anchor svg,
+    h5 .anchor svg,
+    h6 .anchor svg {
+      visibility: hidden;
+    }
+    h1:hover .anchor svg,
+    h2:hover .anchor svg,
+    h3:hover .anchor svg,
+    h4:hover .anchor svg,
+    h5:hover .anchor svg,
+    h6:hover .anchor svg,
+    h1 .anchor:focus svg,
+    h2 .anchor:focus svg,
+    h3 .anchor:focus svg,
+    h4 .anchor:focus svg,
+    h5 .anchor:focus svg,
+    h6 .anchor:focus svg {
+      visibility: visible;
+    }
+  </style><script>
+    document.addEventListener("DOMContentLoaded", function(event) {
+      var hash = window.decodeURI(location.hash.replace('#', ''))
+      if (hash !== '') {
+        var element = document.getElementById(hash)
+        if (element) {
+          var scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+          var clientTop = document.documentElement.clientTop || document.body.clientTop || 0
+          var offset = element.getBoundingClientRect().top + scrollTop - clientTop
+          // Wait for the browser to finish rendering before scrolling.
+          setTimeout((function() {
+            window.scrollTo(0, offset - 0)
+          }), 0)
+        }
+      }
+    })
+  </script><link rel="preconnect" href="https://www.googletagmanager.com"/><link rel="dns-prefetch" href="https://www.googletagmanager.com"/><script async="" src="https://www.googletagmanager.com/gtag/js?id="></script><script>
+      
+      
+      if(true) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){window.dataLayer && window.dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', '', {"send_page_view":false});
+      }
+      </script><link rel="sitemap" type="application/xml" href="/sitemap/sitemap-index.xml"/><link rel="icon" href="/favicon-32x32.png?v=4c2c993a06ee0fd0ee953020b09128a9" type="image/png"/><link rel="manifest" href="/manifest.webmanifest" crossorigin="anonymous"/><link rel="apple-touch-icon" sizes="48x48" href="/icons/icon-48x48.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="72x72" href="/icons/icon-72x72.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="96x96" href="/icons/icon-96x96.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="144x144" href="/icons/icon-144x144.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192x192.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="256x256" href="/icons/icon-256x256.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="384x384" href="/icons/icon-384x384.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="512x512" href="/icons/icon-512x512.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><style>.gatsby-image-wrapper{position:relative;overflow:hidden}.gatsby-image-wrapper picture.object-fit-polyfill{position:static!important}.gatsby-image-wrapper img{bottom:0;height:100%;left:0;margin:0;max-width:none;padding:0;position:absolute;right:0;top:0;width:100%;object-fit:cover}.gatsby-image-wrapper [data-main-image]{opacity:0;transform:translateZ(0);transition:opacity .25s linear;will-change:opacity}.gatsby-image-wrapper-constrained{display:inline-block;vertical-align:top}</style><noscript><style>.gatsby-image-wrapper noscript [data-main-image]{opacity:1!important}.gatsby-image-wrapper [data-placeholder-image]{opacity:0!important}</style></noscript><script type="module">const e="undefined"!=typeof HTMLImageElement&&"loading"in HTMLImageElement.prototype;e&&document.body.addEventListener("load",(function(e){const t=e.target;if(void 0===t.dataset.mainImage)return;if(void 0===t.dataset.gatsbyImageSsr)return;let a=null,n=t;for(;null===a&&n;)void 0!==n.parentNode.dataset.gatsbyImageWrapper&&(a=n.parentNode),n=n.parentNode;const o=a.querySelector("[data-placeholder-image]"),r=new Image;r.src=t.currentSrc,r.decode().catch((()=>{})).then((()=>{t.style.opacity=1,o&&(o.style.opacity=0,o.style.transition="opacity 500ms linear")}))}),!0);</script></head><body><script>
+          void function() {
+            var cachedMode;
+
+            try {
+              var preferredTheme = JSON.parse(localStorage.getItem('diesel:theme-atom'));
+
+              if (preferredTheme && preferredTheme.mode) {
+                cachedMode = preferredTheme.mode;
+              }
+            } catch (err) { }
+
+            function setTheme(newTheme) {
+              document.documentElement.className = newTheme;
+            }
+
+            var darkQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+            setTheme(cachedMode || (darkQuery.matches ? 'dark' : 'light'));
+          }()
+        </script><div id="___gatsby"><div style="outline:none" tabindex="-1" id="gatsby-focus-wrapper"><div class="Layout-module--layout--2c933"><div class="Post-module--post--3a994"><div class="Post-module--buttons--2972d"><a class="Button-module--button--b1113 Post-module--buttonArticles--d793a" href="/">All Articles</a></div><div class="Post-module--content--3c6e5"><div class="Content-module--content--80d58"><h1 class="Content-module--title--09504">서블릿부터 스프링 프레임워크까지</h1><div class="Content-module--body--726c2"><p>Servlet? JSP? JavaBeans? 평소 헷갈렸던 개념들을 쭉 나열하고 하나씩 이해해 보았습니다. 나아가 이를 통해 스프링 프레임워크가 얼마나 큰 개념들을 함께 내포하고 있는지도 간략히 살펴보았습니다.</p>
+<p>자바 웹 애플리케이션을 이해하기 위한 개념들에 대해 알아봅시다.</p>
+<h1 id="서블릿" style="position:relative;"><a href="#%EC%84%9C%EB%B8%94%EB%A6%BF" aria-label="서블릿 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>서블릿?</h1>
+<p>Java Servlet은 Java를 이용하여 웹 어플리케이션을 작성할 수 있는 인터페이스(API)를 제공합니다. Java Servlet API를 이용하면 웹 클라이언트의 요청과 응답을 처리하고, 데이터베이스 연결, 파일 업로드, 보안 인증 등 다양한 웹 개발에 필요한 기능을 구현할 수 있습니다.</p>
+<p><code class="language-text">javax.servlet</code>, <code class="language-text">javax.servlet.http</code> 패키지안에 서블릿 작성을 위한 인터페이스와 클래스가 있습니다. 아래의 “서블릿 구성요소”에서 후술합니다. 특히 <code class="language-text">HttpServlet</code> 클래스는 HTTP 관련 서비스를 처리하기 위해 <code class="language-text">doGet</code> 및 <code class="language-text">doPost</code>와 같은 메서드를 제공합니다.</p>
+<p>JSP는 Java Servlet 기술을 확장하여, HTML 문서 안에 Java 코드를 삽입할 수 있도록 해줍니다. 이렇게 함으로써, 웹 개발자는 더욱 쉽게 동적인 웹 페이지를 생성하고, 데이터베이스와의 상호작용 등을 수행할 수 있습니다.</p>
+<p>Spring Framework는 Java Servlet API를 기반으로 하며, 의존성 주입, AOP(Aspect-Oriented Programming), MVC(Model-View-Controller) 패턴, 데이터 액세스, 보안 등 다양한 기능을 제공합니다. Spring Framework를 사용하면 Java 기반의 웹 어플리케이션을 더욱 빠르고 효율적으로 개발할 수 있습니다.</p>
+<p>따라서, JSP와 Spring Framework는 Java Servlet을 기반으로 하고 있으며, 이를 이용하여 웹 개발을 보다 쉽게하고, 효율적으로 할 수 있도록 도와줍니다.</p>
+<h2 id="서블릿-구성요소" style="position:relative;"><a href="#%EC%84%9C%EB%B8%94%EB%A6%BF-%EA%B5%AC%EC%84%B1%EC%9A%94%EC%86%8C" aria-label="서블릿 구성요소 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>서블릿 구성요소</h2>
+<p>서블릿의 기본 구성 요소는 다음과 같습니다. 논의하면서 주로 HTTP 서블릿에 대해 이야기할 것입니다.</p>
+<ol>
+<li>Servlet Interface: 서블릿 인터페이스는 <code class="language-text">javax.servlet</code> 패키지에 정의되어 있으며, 서블릿 클래스가 구현해야 하는 메서드를 정의합니다. 서블릿 클래스는 반드시 이 인터페이스를 구현해야 합니다.</li>
+<li>Servlet Container: 서블릿 컨테이너는 웹 어플리케이션 서버의 일부로, <a href="https://docs.oracle.com/javaee/5/tutorial/doc/bnafi.html" target="_blank" rel="nofollow noopener noreferrer">서블릿의 생명 주기(lifecycle)</a>를 관리하고 HTTP 요청 및 응답을 처리합니다. Tomcat, Jetty, GlassFish 등의 서버가 서블릿 컨테이너의 역할을 수행합니다.
+<ol>
+<li>생명주기를 간략히 설명하면 아래와 같습니다.
+<ol>
+<li>서블릿의 인스턴스가 존재하지 않는 경우 웹 컨테이너는…
+<ol>
+<li>서블릿 클래스를 로드합니다.</li>
+<li>서블릿 클래스의 인스턴스를 만듭니다.</li>
+<li><code class="language-text">init</code> 메소드를 호출하여 서블릿 인스턴스를 초기화합니다. 초기화는 서블릿 초기화에서 다룹니다.</li>
+</ol>
+</li>
+<li>요청 및 응답 개체를 전달하여 서비스 메서드를 호출합니다. 서비스 메서드는 서비스 메서드 작성에서 설명합니다.</li>
+<li>컨테이너가 서블릿을 제거해야 하는 경우 서블릿의 <code class="language-text">destroy</code> 메소드를 호출하여 서블릿을 종료합니다. 종료는 서블릿 종료에서 설명합니다.</li>
+</ol>
+</li>
+<li>톰캣이 상기 내용을 토대로 구현되어있겠죠.</li>
+</ol>
+</li>
+<li>Servlet Request: 클라이언트로부터 전송된 HTTP 요청을 나타냅니다. <code class="language-text">ServletRequest</code> 인터페이스는 HTTP 요청에 대한 다양한 메타데이터(메서드, URI, 헤더, 쿠키 등)를 포함합니다.
+<ol>
+<li><a href="https://docs.oracle.com/javaee/5/tutorial/doc/bnafv.html#bnafw" target="_blank" rel="nofollow noopener noreferrer">해당 대목</a>을 중점으로 살펴보시면 이해하기 쉽습니다.</li>
+</ol>
+</li>
+<li>Servlet Response: 클라이언트로 전송할 HTTP 응답을 나타냅니다. <code class="language-text">ServletResponse</code> 인터페이스는 HTTP 응답에 대한 다양한 메타데이터(상태 코드, 헤더 등)를 포함합니다.
+<ol>
+<li><a href="https://docs.oracle.com/javaee/5/tutorial/doc/bnafv.html#bnafz" target="_blank" rel="nofollow noopener noreferrer">해당 대목</a>을 중점으로 살펴보시면 이해하기 쉽습니다.</li>
+</ol>
+</li>
+<li>Servlet Config: 서블릿 설정 정보를 나타냅니다. <code class="language-text">ServletConfig</code> 인터페이스는 서블릿 초기화 파라미터와 서블릿 이름을 포함합니다.</li>
+<li>Servlet Context: 웹 어플리케이션의 전역 정보를 나타냅니다. <code class="language-text">ServletContext</code> 인터페이스는 웹 어플리케이션의 루트 디렉토리 경로, 서블릿 컨텍스트 초기화 파라미터 등의 정보를 포함합니다.
+<ol>
+<li>서블릿 컨텍스트는 <a href="https://docs.oracle.com/javaee/5/tutorial/doc/bnagl.html" target="_blank" rel="nofollow noopener noreferrer">이 링크</a>를 참조하십시오.</li>
+</ol>
+</li>
+</ol>
+<blockquote>
+<p>참고: 그 외에 세션 유지 및 Finalize 관련 요소에 대한 설명은 생략합니다.</p>
+</blockquote>
+<p>이러한 서블릿의 기본 구성 요소를 활용하여 웹 어플리케이션을 구현할 수 있습니다. 서블릿은 또한 자바 EE(Java Enterprise Edition) 표준 기술의 일부이며, 다양한 웹 개발 프레임워크와 라이브러리를 포함하여 대규모 웹 어플리케이션을 개발하는 데 필수적인 기술입니다.</p>
+<h1 id="jsp" style="position:relative;"><a href="#jsp" aria-label="jsp permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>JSP?</h1>
+<p>JavaServer Pages (JSP)는 서블릿 기술을 확장하여 웹 어플리케이션 개발을 보다 쉽게 할 수 있도록 해주는 기술입니다. JSP는 HTML 코드와 자바 코드를 혼합하여 웹 페이지를 생성할 수 있도록 합니다.</p>
+<h2 id="jsp-구성요소" style="position:relative;"><a href="#jsp-%EA%B5%AC%EC%84%B1%EC%9A%94%EC%86%8C" aria-label="jsp 구성요소 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>JSP 구성요소</h2>
+<p>JSP의 핵심 요소는 다음과 같습니다.</p>
+<ol>
+<li><code class="language-text">Scriptlets</code>: <code class="language-text">&lt;% %></code> 태그 내에 자바 코드를 작성하는 것으로, JSP 페이지를 생성하는 데 필요한 로직을 처리할 수 있습니다.</li>
+<li>Declarations: <code class="language-text">&lt;%! %></code> 태그 내에 전역 변수 및 메서드를 선언하는 것으로, JSP 페이지 내에서 재사용 가능한 코드를 작성할 수 있습니다.</li>
+<li>Directives: <code class="language-text">&lt;%@ %></code> 태그 내에 JSP 페이지의 속성을 설정하는 것으로, import 문, 에러 페이지 지정, 캐시 설정 등을 할 수 있습니다.</li>
+<li>Expressions: <code class="language-text">&lt;%= %></code> 태그 내에 자바 표현식을 작성하는 것으로, JSP 페이지에서 계산된 값을 출력할 수 있습니다.</li>
+<li>Actions: <code class="language-text">jsp:*</code> 태그로 표시되며, JSP 컨테이너에서 실행되는 특수 태그로, JavaBean 객체의 값을 출력하거나, 페이지 이동 및 조건 분기 등의 로직을 처리할 수 있습니다.</li>
+</ol>
+<h2 id="jsp-대신" style="position:relative;"><a href="#jsp-%EB%8C%80%EC%8B%A0" aria-label="jsp 대신 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>JSP 대신..?</h2>
+<p>AFAIK, 요즘은 JSP를 쓰기보단 아래 조합들이 더 쓰인다고 하더군요.</p>
+<ol>
+<li>
+<p>Spring Boot + Thymeleaf</p>
+<ul>
+<li>Spring Boot는 웹 어플리케이션을 빠르게 개발할 수 있게 해주는 프레임워크이며, Thymeleaf는 템플릿 엔진 중 하나입니다. Spring Boot에서 Thymeleaf를 사용하면 서블릿을 이용하여 웹 어플리케이션을 개발할 수 있습니다. Thymeleaf는 JSP보다 유연한 문법을 제공하며, 자바 코드를 사용하지 않아도 HTML과 연동하기 쉽습니다.</li>
+</ul>
+</li>
+<li>
+<p>Spring Boot + Freemarker</p>
+<ul>
+<li>Spring Boot에서 Freemarker를 사용하면 서블릿을 이용하여 웹 어플리케이션을 개발할 수 있습니다. Freemarker는 Thymeleaf와 유사한 템플릿 엔진으로, JSP보다 유연한 문법을 제공합니다. 또한, 자바 코드를 사용하지 않아도 HTML과 연동하기 쉽습니다.</li>
+</ul>
+</li>
+<li>
+<p>Spring Boot + Mustache</p>
+<ul>
+<li>Spring Boot에서 Mustache를 사용하면 서블릿을 이용하여 웹 어플리케이션을 개발할 수 있습니다. Mustache는 JSP나 Thymeleaf보다 문법이 단순하며, 자바 코드를 사용하지 않아도 HTML과 연동하기 쉽습니다. 또한, Mustache는 서버와 클라이언트 간의 데이터 교환을 쉽게 할 수 있도록 지원합니다.</li>
+</ul>
+</li>
+</ol>
+<h1 id="java-beans" style="position:relative;"><a href="#java-beans" aria-label="java beans permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Java Beans?</h1>
+<p>JavaBeans 구성 요소는 쉽게 재사용하고 응용 프로그램으로 함께 구성할 수 있는 Java 클래스입니다. 특정 디자인 규칙을 따르는 모든 Java 클래스는 JavaBeans 구성 요소입니다.</p>
+<p>JavaBeans 클래스는 다음과 같은 규칙을 따릅니다.</p>
+<ol>
+<li>클래스는 파라미터가 없는 생성자를 제공해야 합니다.</li>
+<li>클래스의 속성은 private으로 선언되어야 하며, getter/setter 메서드를 제공해야 합니다.</li>
+<li>getter/setter 메서드는 public으로 선언되어야 하며, 메서드 이름은 get/set으로 시작해야 합니다.</li>
+<li>속성 이름은 get/set 메서드 이름에서 get/set 접두사를 제외한 나머지 부분이 됩니다. 예를 들어, <code class="language-text">getName()/setName()</code> 메서드가 있다면 속성 이름은 name이 됩니다.</li>
+<li>클래스는 <code class="language-text">Serializable</code> 인터페이스를 구현해야 합니다.</li>
+</ol>
+<p>JavaBeans는 재사용성이 높은 컴포넌트를 개발할 때 유용합니다. 예를 들어, 데이터베이스에서 데이터를 가져와 웹 페이지에 표시하는데 사용될 수 있는 데이터 모델 클래스를 개발할 때 JavaBeans 규약을 따르면, 이를 JSP나 서블릿과 쉽게 연동할 수 있습니다.</p>
+<blockquote>
+<p>주 - 웹 응용 프로그램에서 사용할 때 MVC 아키텍처는 종종 모델-2 아키텍처라고 합니다. 프레젠테이션과 비즈니스 로직을 혼합하는 4장, Java Servlet 기술에서 논의된 서점의 예는 모델-1 아키텍처로 알려진 것을 따릅니다. Model-2 아키텍처는 웹 애플리케이션 설계에 권장되는 접근 방식입니다.</p>
+<p><a href="https://docs.oracle.com/javaee/5/tutorial/doc/bnahb.html" target="_blank" rel="nofollow noopener noreferrer">출처</a></p>
+</blockquote>
+<h1 id="java-beans와-spring-framework의-관계" style="position:relative;"><a href="#java-beans%EC%99%80-spring-framework%EC%9D%98-%EA%B4%80%EA%B3%84" aria-label="java beans와 spring framework의 관계 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Java Beans와 Spring Framework의 관계</h1>
+<p>Spring Framework에서는 JavaBeans를 매우 활발하게 사용합니다. Spring Framework에서는 자바 객체를 컨테이너에서 관리하기 위해 JavaBeans 규약을 따르는 POJO(Plain Old Java Object) 클래스를 사용합니다.</p>
+<p>Spring Framework에서는 POJO 클래스를 컨테이너에 등록하고, 필요한 객체를 DI(Dependency Injection)를 통해 주입하여 사용합니다. DI는 객체 간의 의존성을 줄이기 위해 사용되며, 객체를 생성하고 관리하는 작업을 프레임워크가 대신 처리합니다.</p>
+<p>Spring Framework에서는 POJO 클래스가 JavaBeans 규약을 따르면, 컨테이너에서 해당 클래스의 객체를 생성하고 DI를 적용할 수 있습니다. 따라서, Spring Framework에서는 POJO 클래스의 멤버 변수를 private으로 선언하고, getter/setter 메서드를 제공하여 JavaBeans 규약을 따르도록 작성합니다.</p>
+<p>예를 들어, 다음은 Spring Framework에서 사용할 수 있는 간단한 POJO 클래스입니다.</p>
+<div class="gatsby-highlight" data-language="java"><pre class="language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">User</span> <span class="token punctuation">{</span>
+    <span class="token keyword">private</span> <span class="token class-name">String</span> name<span class="token punctuation">;</span>
+    <span class="token keyword">private</span> <span class="token keyword">int</span> age<span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token class-name">User</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token class-name">String</span> <span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> name<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">setName</span><span class="token punctuation">(</span><span class="token class-name">String</span> name<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>name <span class="token operator">=</span> name<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">int</span> <span class="token function">getAge</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> age<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">setAge</span><span class="token punctuation">(</span><span class="token keyword">int</span> age<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>age <span class="token operator">=</span> age<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div>
+<p>위의 코드에서는 JavaBeans 규약을 따르기 위해 속성을 private으로 선언하고, getter/setter 메서드를 제공합니다.</p>
+<p>Spring Framework에서는 이 POJO 클래스를 다음과 같이 등록하고 DI를 적용할 수 있습니다.</p>
+<div class="gatsby-highlight" data-language="java"><pre class="language-java"><code class="language-java"><span class="token annotation punctuation">@Configuration</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">AppConfig</span> <span class="token punctuation">{</span>
+    <span class="token annotation punctuation">@Bean</span>
+    <span class="token keyword">public</span> <span class="token class-name">User</span> <span class="token function">user</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token class-name">User</span> user <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">User</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        user<span class="token punctuation">.</span><span class="token function">setName</span><span class="token punctuation">(</span><span class="token string">"John"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        user<span class="token punctuation">.</span><span class="token function">setAge</span><span class="token punctuation">(</span><span class="token number">30</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> user<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token annotation punctuation">@Service</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">UserService</span> <span class="token punctuation">{</span>
+    <span class="token annotation punctuation">@Autowired</span>
+    <span class="token keyword">private</span> <span class="token class-name">User</span> user<span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">printUser</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>user<span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">", "</span> <span class="token operator">+</span> user<span class="token punctuation">.</span><span class="token function">getAge</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div>
+<p>위의 코드에서는 <code class="language-text">AppConfig</code> 클래스에서 User 객체를 Bean으로 등록하고, <code class="language-text">UserService</code> 클래스에서 <code class="language-text">Autowired</code> 어노테이션을 사용하여 User 객체를 DI 받습니다. 이렇게 등록된 User 객체는 <code class="language-text">UserService</code> 클래스에서 사용되어 출력됩니다.</p>
+<p>따라서, Spring Framework에서는 JavaBeans 규약을 따르는 POJO 클래스를 사용하여 객체를 생성하고 DI를 적용하므로, 객체 간의 의존성을 줄이고 코드의 재사용성을 높일 수 있습니다.</p>
+<h1 id="spring-framework의-핵심-요소" style="position:relative;"><a href="#spring-framework%EC%9D%98-%ED%95%B5%EC%8B%AC-%EC%9A%94%EC%86%8C" aria-label="spring framework의 핵심 요소 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Spring Framework의 핵심 요소?</h1>
+<p>사실상 스프링 프레임워크를 간략하게 이해하기 위해 여기까지 왔습니다.</p>
+<p>그래서, 스프링 프레임워크의 런타임으로 정말 핵심적인 컴포넌트들을 소개하면 아래 요소들이 나오는 것이었습니다.</p>
+<ul>
+<li>Spring Core container
+<ul>
+<li>스프링 프레임워크의 기본</li>
+<li>스프링 DI의 근간</li>
+</ul>
+</li>
+<li>AOP
+<ul>
+<li>AOP 지원. 이는 추후 다른 게시글로 소개하겠습니다.</li>
+</ul>
+</li>
+<li>데이터 접근/통합 레이어
+<ul>
+<li>ORM, DAO 등이 속합니다</li>
+</ul>
+</li>
+<li>웹 레이어
+<ul>
+<li>HTTP 뿐 아니라 웹소켓 등이 속합니다</li>
+</ul>
+</li>
+<li>테스팅 레이어
+<ul>
+<li><a href="https://docs.spring.io/spring-framework/docs/current/reference/html/testing.html" target="_blank" rel="nofollow noopener noreferrer">해당 링크</a>를 참고하여 주십시오.</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://docs.spring.io/spring-framework/docs/4.3.x/spring-framework-reference/html/images/spring-overview.png" alt="도식은 이렇습니다."></p>
+<h1 id="마무리" style="position:relative;"><a href="#%EB%A7%88%EB%AC%B4%EB%A6%AC" aria-label="마무리 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>마무리</h1>
+<p>이상으로 헷갈렸던 개념들을 모두 정리할 수 있었습니다. 글을 한번 되짚어봅시다.</p>
+<ol>
+<li>Servlet은 웹 앱을 작성하기 위한 기본 뼈대입니다.</li>
+<li>JSP는 HTML 코드와 자바 코드를 혼합하여 웹 페이지를 생성하는 기술입니다. 하지만 확장성이나 코드의 유연함에서 좀 아쉬운 면이 있지요.</li>
+<li>JavaBeans는 재사용성을 중시하고 데이터를 자바스럽게 표현하는 기술입니다. 그 나름의 프로토콜을 가지고 있으며, 이는 Spring Framework에도 활발하게 쓰입니다.</li>
+<li>Spring Framework가 얼마나 많은 연구들의 총집이자 금자탑인지 알게되었습니다.</li>
+</ol>
+<p>긴 글 읽어주셔서 감사합니다.</p>
+<hr>
+<p>참고문서</p>
+<ul>
+<li><a href="https://docs.oracle.com/javaee/5/tutorial/doc/docinfo.html" target="_blank" rel="nofollow noopener noreferrer">Java EE 5 튜토리얼</a> (사실 이 속에 정답이 거의 들어있었습니다!)</li>
+<li><a href="https://johngrib.github.io/wiki/spring-bean-config-configuration/" target="_blank" rel="nofollow noopener noreferrer">Configuration annotation을 통한 Spring Bean 설정</a></li>
+<li><a href="https://www.digitalocean.com/community/tutorials/spring-configuration-annotation" target="_blank" rel="nofollow noopener noreferrer">Spring <code class="language-text">@Configuration</code> Annotation</a></li>
+</ul></div></div></div><div class="Post-module--footer--f8705"><div class="Meta-module--meta--dae0a"><p class="Meta-module--date--4d30d">Published<!-- --> <!-- -->Mar 13, 2023</p></div><div class="Tags-module--tags--18589"><ul class="Tags-module--list--82ae6"><li class="Tags-module--item--52015"><a class="Button-module--button--b1113" href="/tag/web/">web</a></li><li class="Tags-module--item--52015"><a class="Button-module--button--b1113" href="/tag/backend/">backend</a></li><li class="Tags-module--item--52015"><a class="Button-module--button--b1113" href="/tag/java/">java</a></li></ul></div><div class="Author-module--author--1c58d"><p class="Non scholæ sed vitæ discimus.">Non scholæ sed vitæ discimus.</p><p class="Author-module--bio--08950">his/him</p></div></div><div class="Post-module--comments--d3b99"><div></div></div></div></div></div><div id="gatsby-announcer" style="position:absolute;top:0;width:1px;height:1px;padding:0;overflow:hidden;clip:rect(0, 0, 0, 0);white-space:nowrap;border:0" aria-live="assertive" aria-atomic="true"></div></div><script id="gatsby-script-loader">/*<![CDATA[*/window.pagePath="/devlog/docker/2023-03-13-from-servlet-to-spring";window.___webpackCompilationHash="bba4c902d88cf9b90a9f";/*]]>*/</script><script id="gatsby-chunk-mapping">/*<![CDATA[*/window.___chunkMapping={"polyfill":["/polyfill-f62bad8394354d750871.js"],"app":["/app-f24f8b1debb1ae098a3a.js"],"component---cache-caches-gatsby-plugin-offline-app-shell-js":["/component---cache-caches-gatsby-plugin-offline-app-shell-js-0c915c7b1bdb5eac4fdf.js"],"component---src-templates-categories-template-categories-template-tsx":["/component---src-templates-categories-template-categories-template-tsx-e2d2add397e32e3517ca.js"],"component---src-templates-category-template-category-template-tsx":["/component---src-templates-category-template-category-template-tsx-078f2adfba160a34229f.js"],"component---src-templates-index-template-index-template-tsx":["/component---src-templates-index-template-index-template-tsx-83380c7954c9f6621026.js"],"component---src-templates-not-found-template-not-found-template-tsx":["/component---src-templates-not-found-template-not-found-template-tsx-56fe4d3b015459d56c99.js"],"component---src-templates-page-template-page-template-tsx":["/component---src-templates-page-template-page-template-tsx-c6c21d7369a9356db3a1.js"],"component---src-templates-post-template-post-template-tsx":["/component---src-templates-post-template-post-template-tsx-119cd0258cb38628d01f.js"],"component---src-templates-tag-template-tag-template-tsx":["/component---src-templates-tag-template-tag-template-tsx-8d0b3090e775aa3c4584.js"],"component---src-templates-tags-template-tags-template-tsx":["/component---src-templates-tags-template-tags-template-tsx-30027e87af7d042f3afb.js"]};/*]]>*/</script><script src="/polyfill-f62bad8394354d750871.js" nomodule=""></script><script src="/app-f24f8b1debb1ae098a3a.js" async=""></script><script src="/framework-481a1b6416c14416b2fb.js" async=""></script><script src="/webpack-runtime-de5a94456c9c32f6cdb9.js" async=""></script></body></html>
