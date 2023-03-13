@@ -57,7 +57,7 @@ Spring Framework는 Java Servlet API를 기반으로 하며, 의존성 주입, A
 
 # JSP?
 
-JavaServer Pages (JSP)는. 서블릿 기술을 확장하여 웹 어플리케이션 개발을 보다 쉽게 할 수 있도록 해주는 기술입니다. JSP는 HTML 코드와 자바 코드를 혼합하여 웹 페이지를 생성할 수 있도록 합니다.
+JavaServer Pages (JSP)는 서블릿 기술을 확장하여 웹 어플리케이션 개발을 보다 쉽게 할 수 있도록 해주는 기술입니다. JSP는 HTML 코드와 자바 코드를 혼합하여 웹 페이지를 생성할 수 있도록 합니다.
 
 ## JSP 구성요소
 
