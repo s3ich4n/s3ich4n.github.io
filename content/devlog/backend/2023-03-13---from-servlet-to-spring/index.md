@@ -1,9 +1,9 @@
 ---
 title: "서블릿부터 스프링 프레임워크까지"
-date: "2021-09-18T19:00:00.000Z"
+date: "2023-03-13T23:00:00.000Z"
 template: "post"
 draft: false
-slug: "/devlog/docker/2021-09-18-how-to-make-docker-image-securely"
+slug: "/devlog/docker/2023-03-13-from-servlet-to-spring"
 category: "devlog"
 tags:
   - "web"
