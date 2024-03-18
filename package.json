@@ -79,7 +79,8 @@
     "gatsby-transformer-sharp": "^4.25.0",
     "prismjs": "^1.29.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "sharp": "^0.33.2"
   },
   "devDependencies": {
     "@alxshelepenok/eslint-config": "^1.0.126",
