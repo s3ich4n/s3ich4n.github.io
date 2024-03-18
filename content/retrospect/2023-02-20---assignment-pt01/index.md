@@ -43,7 +43,7 @@ socialImage: { "publicURL": "./media/under_construction.jpg" }
 
 저는 과제에 필요한 도메인을 설계하고, 이를 그림으로 묶었습니다. 이후 설계방법에 대한 방향성을 잡고, 클린 아키텍처와 Hexagonal Architecture(aka. Ports and Adapters Architecture, 이하 헥사고널 아키텍처) 를 참고하였습니다. 그 키워드를 토대로 프로젝트를 구성하였습니다. [^3]
 
-![이제야 어렴풋이 이해가 가는 육각형입니다]()
+![이제야 어렴풋이 이해가 가는 육각형입니다](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*aD3zDFzcF5Y2_27dvU213Q.png)
 
 본 과제를 수행하며 참고한 프로젝트 5개를 소개드리고자 합니다. 모두 파이썬으로 구성되어 있습니다. 추후 DDD 및 클린아키텍처, 나아가 헥사고널 아키텍처를 연재하며 해당 프로젝트를 다시 살펴보도록 하겠습니다.
 
