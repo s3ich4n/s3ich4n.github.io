@@ -3,8 +3,8 @@ title: "파이썬으로 살펴보는 아키텍처 패턴 (2)"
 date: "2023-04-13T20:44:23.000Z"
 template: "post"
 draft: false
-slug: "/devlog/docker/2023-04-13-cosmicpython-pt01-ch02"
-category: "devlog"
+slug: "/books/docker/2023-04-13-pt01-ch02"
+category: "books"
 tags:
   - "ddd"
   - "books"
