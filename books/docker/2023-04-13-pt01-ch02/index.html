@@ -1,0 +1,392 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="ie=edge"/><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/><meta name="generator" content="Gatsby 4.25.4"/><meta name="description" content="파이썬으로 살펴보는 아키텍처 패턴을 읽고 이해한 내용을 작성합니다. 챕터 2, 저장소 패턴에 대한 내용입니다." data-gatsby-head="true"/><meta name="twitter:card" content="summary_large_image" data-gatsby-head="true"/><meta name="twitter:title" content="파이썬으로 살펴보는 아키텍처 패턴 (2) - 팔공산 창고" data-gatsby-head="true"/><meta name="twitter:description" content="파이썬으로 살펴보는 아키텍처 패턴을 읽고 이해한 내용을 작성합니다. 챕터 2, 저장소 패턴에 대한 내용입니다." data-gatsby-head="true"/><meta name="og:title" content="파이썬으로 살펴보는 아키텍처 패턴 (2) - 팔공산 창고" data-gatsby-head="true"/><meta name="og:type" content="website" data-gatsby-head="true"/><meta name="og:description" content="파이썬으로 살펴보는 아키텍처 패턴을 읽고 이해한 내용을 작성합니다. 챕터 2, 저장소 패턴에 대한 내용입니다." data-gatsby-head="true"/><meta name="image" content="https://blog.s3ich4n.me[object Object]" data-gatsby-head="true"/><meta name="og:image" content="https://blog.s3ich4n.me[object Object]" data-gatsby-head="true"/><meta name="twitter:image" content="https://blog.s3ich4n.me[object Object]" data-gatsby-head="true"/><meta name="theme-color" content="hsl(31, 92%, 62%)"/><style data-href="/styles.1fbe3e33e3d898c35e17.css" data-identity="gatsby-global-css">:after,:before,:root{--color-white:#fff;--color-primary:#5c92ff;--color-secondary:#f7a145;--color-prism-background:#eaeaeb;--color-typographic-base-font:#242933;--color-typographic-link-p-font:#5c92ff;--color-typographic-link-s-font:#f7a145;--color-page-border:#eaeaeb;--color-page-background:#fff;--color-sidebar-border:#eaeaeb;--color-sidebar-border-fade:#fff;--color-contacts-border:#eaeaeb;--color-button-border:#eaeaeb;--color-button-color:#242933;--color-theme-switcher:#3f485a;--color-theme-switcher-hover:#5c92ff}.dark :after,.dark :before,:root.dark{--color-white:#fff;--color-primary:#5c92ff;--color-secondary:#f7a145;--color-prism-background:#191d24;--color-typographic-base-font:#fff;--color-typographic-link-p-font:#5c92ff;--color-typographic-link-s-font:#f7a145;--color-page-border:#3f485a;--color-page-background:#242933;--color-sidebar-border:#3f485a;--color-sidebar-border-fade:#242933;--color-contacts-border:#3f485a;--color-button-border:#3f485a;--color-button-color:#fff;--color-theme-switcher:#eaeaeb;--color-theme-switcher-hover:#5c92ff}html{font-size:100}body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;background:var(--color-page-background);color:var(--color-typographic-base-font);font-size:16px;line-height:1.625;margin:0 0 0 calc(100vw - 100%);text-rendering:optimizelegibility}body,h1,h2,h3,h4,h5,h6{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif}h1,h2,h3,h4,h5,h6{font-weight:600}h1{font-size:40px;line-height:52px;margin-bottom:26px;margin-top:104px}h2{font-size:27px;line-height:39px}h2,h3{margin-bottom:13px;margin-top:52px}h3{font-size:22px;line-height:26px}h4{font-size:19.2px;margin-top:39px}h4,h5{line-height:26px;margin-bottom:13px}h5,h6{font-size:16px;margin-top:65px}h6{line-height:26px;margin-bottom:13px}img{max-width:100%}hr,img{border:0;display:block}hr{background-image:linear-gradient(180deg,transparent 1px,transparent 11px,#242933 0,#242933 15px,transparent 0,transparent 26px);background-size:100% 26px;color:var(--color-typographic-base-font);height:26px;margin:52px auto;width:100px}a{color:var(--color-typographic-link-p-font);text-decoration:none}a:active,a:focus,a:hover{color:var(--color-typographic-link-s-font)}b,strong{font-weight:600}ul{list-style:square;margin-bottom:26px}ul li{margin-bottom:10px;padding:0 5px}p{line-height:26px;margin-bottom:26px}blockquote{font-style:italic;padding:0;text-align:center}figure{display:block;height:auto;width:100%}figcaption{color:var(--color-typographic-base-font);font-size:14px;font-style:italic;line-height:19.5px;margin-bottom:0;margin-top:6.5px;text-align:center}@media screen and (min-width:685px){figure.float-left,figure.float-right{max-width:310px;padding:0 26px}.float-right{float:right}.float-left{float:left}}code[class*=language-],pre[class*=language-]{word-wrap:normal;color:#657b83;font-family:Consolas,Monaco,Andale Mono,Ubuntu Mono,monospace;font-size:1em;-webkit-hyphens:none;hyphens:none;line-height:1.5;-o-tab-size:4;tab-size:4;text-align:left;white-space:pre;word-break:normal;word-spacing:normal}pre[class*=language-]{border-radius:.3em;margin:.5em 0;overflow:auto;padding:1em}:not(pre)>code[class*=language-],pre[class*=language-]{background-color:var(--color-prism-background)}:not(pre)>code[class*=language-]{border-radius:.3em;padding:.1em}code[class*=language-] ::selection,code[class*=language-]::selection,pre[class*=language-] ::selection,pre[class*=language-]::selection{background:#073642}.token.cdata,.token.comment,.token.doctype,.token.prolog{color:#93a1a1}.token.punctuation{color:#586e75}.namespace{opacity:.7}.token.boolean,.token.constant,.token.deleted,.token.number,.token.property,.token.symbol,.token.tag{color:#268bd2}.token.attr-name,.token.builtin,.token.char,.token.inserted,.token.selector,.token.string,.token.url{color:#2aa198}.token.entity{background:#eee8d5;color:#657b83;cursor:help}.token.atrule,.token.attr-value,.token.keyword{color:#859900}.token.class-name,.token.function{color:#b58900}.token.important,.token.regex,.token.variable{color:#cb4b16}.token.bold,.token.important{font-weight:700}.token.italic{font-style:italic}.Feed-module--feed--a6204 .Feed-module--item--c7a63{margin-bottom:32.5px}.Feed-module--feed--a6204 .Feed-module--item--c7a63:last-child{margin-bottom:13px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f{font-size:27px;line-height:39px;margin-bottom:13px;margin-top:0}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f .Feed-module--link--6123b{color:var(--color-typographic-base-font)}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f .Feed-module--link--6123b:focus,.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f .Feed-module--link--6123b:hover{border-bottom:1px solid #242933;color:var(--color-typographic-base-font)}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--description--57348{font-size:16px;line-height:26px;margin-bottom:19.5px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--time--72864{color:var(--color-typographic-base-font);font-size:14px;font-weight:600;text-transform:uppercase}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--divider--81a18{margin:0 13px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--category--59f58 .Feed-module--link--6123b{color:var(--color-secondary);font-size:14px;font-weight:600;text-transform:uppercase}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--category--59f58 .Feed-module--link--6123b:focus,.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--category--59f58 .Feed-module--link--6123b:hover{color:#5c92ff}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--more--51a4e{color:var(--color-primary);font-size:16px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--more--51a4e:focus,.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--more--51a4e:hover{border-bottom:1px solid #5c92ff;color:var(--color-primary)}.Layout-module--layout--2c933{margin-left:auto;margin-right:auto;max-width:1070px}.Layout-module--layout--2c933:before{content:"";display:table}.Layout-module--layout--2c933:after{clear:both;content:"";display:table}.Page-module--page--24e03{margin-bottom:52px}.Page-module--page--24e03 .Page-module--inner--4b31d{padding:26px 19.5px 0}.Page-module--page--24e03 .Page-module--title--90338{font-size:40px;font-weight:600;line-height:52px;margin-bottom:37.7px;margin-top:0}.Page-module--page--24e03 .Page-module--body--561c4{font-size:16px;line-height:26px;margin:0 0 26px}@media screen and (min-width:685px){.Page-module--page--24e03{width:calc(58.275% - 12.5px)}.Page-module--page--24e03:nth-child(1n){clear:none;float:left;margin-right:30px}.Page-module--page--24e03:last-child{margin-right:0}.Page-module--page--24e03:nth-child(12n){float:right;margin-right:0}.Page-module--page--24e03:nth-child(12n+1){clear:both}.Page-module--page--24e03 .Page-module--inner--4b31d{padding:32.5px 19.5px 0}}@media screen and (min-width:960px){.Page-module--page--24e03{width:calc(66.6% - 10px)}.Page-module--page--24e03:nth-child(1n){clear:none;float:left;margin-right:30px}.Page-module--page--24e03:last-child{margin-right:0}.Page-module--page--24e03:nth-child(3n){float:right;margin-right:0}.Page-module--page--24e03:nth-child(3n+1){clear:both}.Page-module--page--24e03 .Page-module--inner--4b31d{padding:39px 26px 0}}.Pagination-module--pagination--d61cb{display:flex;margin-top:52px}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b{text-align:left;width:50%}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d{color:var(--color-secondary);font-size:26px;font-weight:700}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d:focus,.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d:hover{color:var(--color-primary)}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d.Pagination-module--disable--7e105{color:#3f485a;pointer-events:none}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8{text-align:right;width:50%}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff{color:var(--color-secondary);font-size:26px;font-weight:700}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff:focus,.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff:hover{color:var(--color-primary)}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff.Pagination-module--disable--7e105{color:#3f485a;pointer-events:none}.Button-module--button--b1113{border:1px solid var(--color-button-border);border-radius:20px;color:var(--color-button-color);display:inline-block;font-size:16px;font-weight:400;height:40px;line-height:40px;margin-left:auto;margin-right:auto;padding:0 26px;text-align:center;text-decoration:none}.Button-module--button--b1113:focus,.Button-module--button--b1113:hover{color:#5c92ff}.ThemeSwitcher-module--themeSwitcher--8a77f{--color:var(--color-theme-switcher)}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--button--7cb7b{align-items:center;background:transparent;border:0;cursor:pointer;display:flex;justify-content:center;outline:0}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--button--7cb7b svg{stroke:var(--color);pointer-events:none;transition:stroke .4s}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--button--7cb7b:hover{--color:var(--color-theme-switcher-hover)}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--moon--10537{stroke-dasharray:0 1px;opacity:0;transition:stroke-dasharray .2s ease-in,opacity .4s ease-in}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--sun--2163a{stroke-dasharray:1px 1px;opacity:1;transition:stroke-dasharray .2s ease-in,opacity .4s ease-in}.ThemeSwitcher-module--themeSwitcher--8a77f.ThemeSwitcher-module--dark--6db0c .ThemeSwitcher-module--moon--10537{stroke-dasharray:1px 1px;opacity:1}.ThemeSwitcher-module--themeSwitcher--8a77f.ThemeSwitcher-module--dark--6db0c .ThemeSwitcher-module--sun--2163a{stroke-dasharray:0 1px;opacity:0}.Author-module--author--cbd31 .Author-module--photo--9787b{background-clip:padding-box;border-radius:50%;display:inline-block;height:75px;margin-bottom:0;width:75px}.Author-module--author--cbd31 .Author-module--photo--9787b img{border-radius:50%}.Author-module--author--cbd31 .Author-module--title--cf7e5{font-size:18px;font-weight:600;line-height:29.25px;margin:0}.Author-module--author--cbd31 .Author-module--title--cf7e5 .Author-module--link--09c17,.Author-module--author--cbd31 .Author-module--title--cf7e5 .Author-module--link--09c17:focus,.Author-module--author--cbd31 .Author-module--title--cf7e5 .Author-module--link--09c17:hover{color:var(--color-typographic-base-font)}.Author-module--author--cbd31 .Author-module--bio--8168d,.Author-module--author--cbd31 .Author-module--subtitle--86ec5{color:#7f8ba4;line-height:26px;margin-bottom:26px}.Author-module--author--cbd31 .Author-module--titleContainer--4f576{align-items:center;display:flex;justify-content:space-between;margin:13px 0}.Categories-module--categories--f3389{color:#7f8ba4;font-size:14px}.Icon-module--icon--1d7da{fill:currentcolor;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;speak:none;stroke:currentcolor;stroke-width:0;display:inline-block;font-style:normal;font-variant:normal;font-weight:400;height:1em;line-height:1em;text-align:center;text-transform:none;width:1em}.Contacts-module--contacts--09178{margin-bottom:26px}.Contacts-module--contacts--09178 .Contacts-module--list--9670b{display:flex;flex-flow:row wrap;flex-grow:0;flex-shrink:0;list-style:none;margin:13px 0;max-width:165px;padding:0}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0{align-content:center;align-items:center;border:1px solid var(--color-contacts-border);border-radius:50%;display:flex;height:40px;justify-content:center;line-height:40px;margin:6.5px;padding:0;text-align:center;width:40px}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0:nth-child(3n+1){margin-left:0}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0 .Contacts-module--link--de1e0{border:0;color:var(--color-typographic-base-font);display:flex}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0 .Contacts-module--link--de1e0:focus,.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0 .Contacts-module--link--de1e0:hover{color:var(--color-typographic-link-p-font)}.Copyright-module--copyright--2c602{color:#7f8ba4;font-size:14px}.Menu-module--menu--113a9{margin-bottom:26px}.Menu-module--menu--113a9 .Menu-module--list--e1ae3{list-style:none;margin:0;padding:0}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679{margin:13px 0;padding:0}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02{border:0;color:var(--color-typographic-base-font);font-size:16px;font-weight:400}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02:focus,.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02:hover{border-bottom:1px solid #5c92ff;color:#5c92ff}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02.Menu-module--active--6cb74{border-bottom:1px solid var(--color-typographic-base-font);color:var(--color-typographic-base-font)}.Tags-module--tags--28a57{color:#7f8ba4;font-size:14px}.Sidebar-module--sidebar--1bfa1{width:100%}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0{padding:26px 19.5px 0;position:relative}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0:after{background:var(--color-sidebar-border);background:linear-gradient(to bottom,var(--color-sidebar-border) 0,var(--color-sidebar-border) 48%,var(--color-sidebar-border-fade) 100%)}@media screen and (min-width:685px){.Sidebar-module--sidebar--1bfa1{width:calc(41.625% - 17.5px)}.Sidebar-module--sidebar--1bfa1:nth-child(1n){clear:none;float:left;margin-right:30px}.Sidebar-module--sidebar--1bfa1:last-child{margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(12n){float:right;margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(12n+1){clear:both}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0{padding:32.5px 19.5px 0}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0:after{bottom:0;content:"";height:540px;position:absolute;right:-10px;top:30px;width:1px}}@media screen and (min-width:960px){.Sidebar-module--sidebar--1bfa1{width:calc(33.3% - 20px)}.Sidebar-module--sidebar--1bfa1:nth-child(1n){clear:none;float:left;margin-right:30px}.Sidebar-module--sidebar--1bfa1:last-child{margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(3n){float:right;margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(3n+1){clear:both}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0{padding:39px}}.Author-module--author--1c58d{border-top:1px solid var(--color-page-border);line-height:26px;margin-bottom:52px;margin-top:26px;max-width:920px;padding-top:26px}.Author-module--author--1c58d .Author-module--bio--08950 .Author-module--twitter--90647{display:block;text-decoration:underline}.Author-module--author--1c58d .Author-module--bio--08950 .Author-module--twitter--90647:focus,.Author-module--author--1c58d .Author-module--bio--08950 .Author-module--twitter--90647:hover{color:var(--color-typographic-link-s-font)}@media screen and (min-width:685px){.Author-module--author--1c58d{margin-left:auto;margin-right:auto}}.Content-module--content--80d58{margin:0 auto;max-width:1070px;padding:0 13px}.Content-module--content--80d58 .Content-module--title--09504{font-size:32px;font-weight:600;line-height:42.9px;margin:26px auto 0;max-width:920px;text-align:center}.Content-module--content--80d58 .Content-module--body--726c2 figure{margin-bottom:26px}.Content-module--content--80d58 .Content-module--body--726c2 figure blockquote{font-style:italic;margin-top:0;padding:26px 0;text-align:center}.Content-module--content--80d58 .Content-module--body--726c2 figure blockquote p{font-size:26.9072px;line-height:39px;margin-bottom:26px;margin-top:0;max-width:920px}.Content-module--content--80d58 .Content-module--body--726c2 a{text-decoration:underline}.Content-module--content--80d58 .Content-module--body--726c2 *{margin-left:auto;margin-right:auto;max-width:920px}.Content-module--content--80d58 .Content-module--body--726c2 h2>a{visibility:hidden}.Content-module--content--80d58 .Content-module--body--726c2 h2>a>svg{fill:var(--color-typographic-base-font)}.Content-module--content--80d58 .Content-module--body--726c2 img{max-width:100%}@media screen and (min-width:960px){.Content-module--content--80d58{padding:0}.Content-module--content--80d58 .Content-module--title--09504{font-size:48px;line-height:58.5px;margin-bottom:39px;margin-top:58.5px}.Content-module--content--80d58 .Content-module--body--726c2,.Content-module--content--80d58 .Content-module--body--726c2 p{font-size:18px;line-height:29.25px;margin-bottom:29.25px}.Content-module--content--80d58 .Content-module--body--726c2 h2>a{padding-right:13px;visibility:unset}}.Meta-module--meta--dae0a .Meta-module--date--4d30d{font-style:italic}.Tags-module--tags--18589{margin-bottom:13px}.Tags-module--tags--18589 .Tags-module--list--82ae6{list-style:none;padding:0}.Tags-module--tags--18589 .Tags-module--list--82ae6 .Tags-module--item--52015{display:inline-block;margin:6.5px 0}@media screen and (min-width:685px){.Tags-module--tags--18589 .Tags-module--list--82ae6 .Tags-module--item--52015:first-child{margin-left:0;padding-left:0}}.Post-module--post--3a994 .Post-module--content--3c6e5{margin:0 auto}.Post-module--post--3a994 .Post-module--comments--d3b99,.Post-module--post--3a994 .Post-module--footer--f8705{margin:0 auto;max-width:920px;padding:0 13px}.Post-module--post--3a994 .Post-module--buttons--2972d{align-items:center;display:flex;justify-content:center;margin:26px 0 0;text-align:center}.Post-module--post--3a994 .Post-module--buttons--2972d .Post-module--buttonArticles--d793a{margin:0 13px 0 0}@media screen and (min-width:960px){.Post-module--post--3a994 .Post-module--comments--d3b99,.Post-module--post--3a994 .Post-module--footer--f8705{padding:0}.Post-module--post--3a994 .Post-module--buttons--2972d{left:30px;margin:0 13px 0 0;max-width:none;position:fixed;top:30px}}</style><title data-gatsby-head="true">파이썬으로 살펴보는 아키텍처 패턴 (2) - 팔공산 창고</title><link rel="alternate" type="application/rss+xml" title="팔공산 창고" href="/rss.xml"/><style type="text/css">
+    .anchor.before {
+      position: absolute;
+      top: 0;
+      left: 0;
+      transform: translateX(-100%);
+      padding-right: 4px;
+    }
+    .anchor.after {
+      display: inline-block;
+      padding-left: 4px;
+    }
+    h1 .anchor svg,
+    h2 .anchor svg,
+    h3 .anchor svg,
+    h4 .anchor svg,
+    h5 .anchor svg,
+    h6 .anchor svg {
+      visibility: hidden;
+    }
+    h1:hover .anchor svg,
+    h2:hover .anchor svg,
+    h3:hover .anchor svg,
+    h4:hover .anchor svg,
+    h5:hover .anchor svg,
+    h6:hover .anchor svg,
+    h1 .anchor:focus svg,
+    h2 .anchor:focus svg,
+    h3 .anchor:focus svg,
+    h4 .anchor:focus svg,
+    h5 .anchor:focus svg,
+    h6 .anchor:focus svg {
+      visibility: visible;
+    }
+  </style><script>
+    document.addEventListener("DOMContentLoaded", function(event) {
+      var hash = window.decodeURI(location.hash.replace('#', ''))
+      if (hash !== '') {
+        var element = document.getElementById(hash)
+        if (element) {
+          var scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+          var clientTop = document.documentElement.clientTop || document.body.clientTop || 0
+          var offset = element.getBoundingClientRect().top + scrollTop - clientTop
+          // Wait for the browser to finish rendering before scrolling.
+          setTimeout((function() {
+            window.scrollTo(0, offset - 0)
+          }), 0)
+        }
+      }
+    })
+  </script><link rel="preconnect" href="https://www.googletagmanager.com"/><link rel="dns-prefetch" href="https://www.googletagmanager.com"/><script async="" src="https://www.googletagmanager.com/gtag/js?id="></script><script>
+      
+      
+      if(true) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){window.dataLayer && window.dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', '', {"send_page_view":false});
+      }
+      </script><link rel="sitemap" type="application/xml" href="/sitemap/sitemap-index.xml"/><link rel="icon" href="/favicon-32x32.png?v=4c2c993a06ee0fd0ee953020b09128a9" type="image/png"/><link rel="manifest" href="/manifest.webmanifest" crossorigin="anonymous"/><link rel="apple-touch-icon" sizes="48x48" href="/icons/icon-48x48.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="72x72" href="/icons/icon-72x72.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="96x96" href="/icons/icon-96x96.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="144x144" href="/icons/icon-144x144.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192x192.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="256x256" href="/icons/icon-256x256.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="384x384" href="/icons/icon-384x384.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="512x512" href="/icons/icon-512x512.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><style>.gatsby-image-wrapper{position:relative;overflow:hidden}.gatsby-image-wrapper picture.object-fit-polyfill{position:static!important}.gatsby-image-wrapper img{bottom:0;height:100%;left:0;margin:0;max-width:none;padding:0;position:absolute;right:0;top:0;width:100%;object-fit:cover}.gatsby-image-wrapper [data-main-image]{opacity:0;transform:translateZ(0);transition:opacity .25s linear;will-change:opacity}.gatsby-image-wrapper-constrained{display:inline-block;vertical-align:top}</style><noscript><style>.gatsby-image-wrapper noscript [data-main-image]{opacity:1!important}.gatsby-image-wrapper [data-placeholder-image]{opacity:0!important}</style></noscript><script type="module">const e="undefined"!=typeof HTMLImageElement&&"loading"in HTMLImageElement.prototype;e&&document.body.addEventListener("load",(function(e){const t=e.target;if(void 0===t.dataset.mainImage)return;if(void 0===t.dataset.gatsbyImageSsr)return;let a=null,n=t;for(;null===a&&n;)void 0!==n.parentNode.dataset.gatsbyImageWrapper&&(a=n.parentNode),n=n.parentNode;const o=a.querySelector("[data-placeholder-image]"),r=new Image;r.src=t.currentSrc,r.decode().catch((()=>{})).then((()=>{t.style.opacity=1,o&&(o.style.opacity=0,o.style.transition="opacity 500ms linear")}))}),!0);</script></head><body><script>
+          void function() {
+            var cachedMode;
+
+            try {
+              var preferredTheme = JSON.parse(localStorage.getItem('diesel:theme-atom'));
+
+              if (preferredTheme && preferredTheme.mode) {
+                cachedMode = preferredTheme.mode;
+              }
+            } catch (err) { }
+
+            function setTheme(newTheme) {
+              document.documentElement.className = newTheme;
+            }
+
+            var darkQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+            setTheme(cachedMode || (darkQuery.matches ? 'dark' : 'light'));
+          }()
+        </script><div id="___gatsby"><div style="outline:none" tabindex="-1" id="gatsby-focus-wrapper"><div class="Layout-module--layout--2c933"><div class="Post-module--post--3a994"><div class="Post-module--buttons--2972d"><a class="Button-module--button--b1113 Post-module--buttonArticles--d793a" href="/">All Articles</a></div><div class="Post-module--content--3c6e5"><div class="Content-module--content--80d58"><h1 class="Content-module--title--09504">파이썬으로 살펴보는 아키텍처 패턴 (2)</h1><div class="Content-module--body--726c2"><p>이 내용은 “파이썬으로 살펴보는 아키텍처 패턴” 을 읽고 작성한 내용입니다. 블로그 게시글과, 작성한 코드를 함께 보시면 더욱 좋습니다.</p>
+<p>2장은 해당 코드를 살펴봐주세요. <a href="https://github.com/s3ich4n/cosmicpython-study/tree/main/pt1/ch02" target="_blank" rel="nofollow noopener noreferrer">코드 링크</a></p>
+<h1 id="2장" style="position:relative;"><a href="#2%EC%9E%A5" aria-label="2장 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>2장</h1>
+<p>Repository Pattern: 데이터 저장소를 추상화</p>
+<p>이득</p>
+<ul>
+<li>모델 계층과 데이터 계층을 분리할 수 있다</li>
+<li>데이터베이스의 복잡성을 감춰서 시스템을 테스트하기 좋게 만든다</li>
+</ul>
+<h1 id="21-도메인-모델-영속화" style="position:relative;"><a href="#21-%EB%8F%84%EB%A9%94%EC%9D%B8-%EB%AA%A8%EB%8D%B8-%EC%98%81%EC%86%8D%ED%99%94" aria-label="21 도메인 모델 영속화 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>2.1. 도메인 모델 영속화</h1>
+<p>애자일하게 개발할 땐 뭐가 필요하냐? MVP가 빨리 나와야된다. 책에선 e2e 테스트부터 바로 들어간 후 웹 프레임워크에 기능을 넣고 외부로부터 내부 방향으로 테스트를 한다고 한다.</p>
+<p>어쨌거나 영속적 저장소가 필요한건 사실이다.</p>
+<h1 id="22-pseudo-code로-뭐-필요한지-보자" style="position:relative;"><a href="#22-pseudo-code%EB%A1%9C-%EB%AD%90-%ED%95%84%EC%9A%94%ED%95%9C%EC%A7%80-%EB%B3%B4%EC%9E%90" aria-label="22 pseudo code로 뭐 필요한지 보자 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>2.2. pseudo-code로 뭐 필요한지 보자</h1>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token keyword">from</span> fastapi <span class="token keyword">import</span> FastAPI
+
+<span class="token keyword">from</span> model <span class="token keyword">import</span> OrderLine<span class="token punctuation">,</span> allocate
+
+app <span class="token operator">=</span> FastAPI<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+<span class="token decorator annotation punctuation">@app<span class="token punctuation">.</span>post</span><span class="token punctuation">(</span>
+    <span class="token string">"/allocate"</span><span class="token punctuation">,</span>
+    status_code<span class="token operator">=</span><span class="token number">201</span><span class="token punctuation">,</span>
+<span class="token punctuation">)</span>
+<span class="token keyword">def</span> <span class="token function">allocate_endpoint</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token comment"># line = OrderLine(request.params, ...)</span>
+    <span class="token comment">#</span>
+    <span class="token comment"># batches = ...</span>
+    <span class="token comment">#</span>
+    <span class="token comment"># allocate(line, batches)</span>
+    <span class="token keyword">return</span> <span class="token punctuation">{</span><span class="token punctuation">}</span></code></pre></div>
+<p>대충 이런 코드가 필요하다…</p>
+<h1 id="23-데이터-접근에-dip-적용하기" style="position:relative;"><a href="#23-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A0%91%EA%B7%BC%EC%97%90-dip-%EC%A0%81%EC%9A%A9%ED%95%98%EA%B8%B0" aria-label="23 데이터 접근에 dip 적용하기 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>2.3. 데이터 접근에 DIP 적용하기</h1>
+<p>계층을 분리하는게 핵심이다!</p>
+<p>그리고 도메인 모델은 <strong>의존성을 단 하나도 두지 않도록</strong> 한다. 사실 <code class="language-text">pydantic</code> 을 쓰는 것도 편해서 그런거지 가능하면 dataclassse를 쓰는 형태로 갖고가는게 맞는 것 같다…</p>
+<p>의존성이 비즈니스 로직 즉, 도메인 모델로 들어오도록 하는 방법으로 가도록 한다.</p>
+<p><figure class="gatsby-resp-image-figure" style="">
+    <span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 960px; "
+    >
+      <a
+    class="gatsby-resp-image-link"
+    href="/static/0910fd71995de03f54fbe806d2b8ca76/58354/001.png"
+    style="display: block"
+    target="_blank"
+    rel="noopener"
+  >
+    <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 48.33333333333333%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAKCAYAAAC0VX7mAAAACXBIWXMAAB2HAAAdhwGP5fFlAAABnElEQVQoz52Sy0tbQRSH7z+ka1/YjUioC9GlC6sVWtJIVIxGlC5aUISq0AQ1O5eFko1QEIzSa2M0ehNNLpg0qdFCNOkj6SMPlTzuV+7kFl2V2AMfnDMz5ze/OYyU/FpA53M6z3kqL/KLbwVK5Qp6aJrGfUJqs8j0PvfTP6vweD5A9/Q+neNeEhc5caBa1YRovUgmm1eIPZqr0ffygJ6ZPeH2vxzmiyW9iy0lxRvPmS5B4apUEzJu5Y4Dff9fSObFIJOrKk9eBRiaV7CthBlzhhhxhJhYCTPlUhlfDmN3qdhXVayvjxkxsBqMOkM8XQiiRL8jNQx4aLXItFp2aBveocn8nmazLDBN+Oiy79Fp2+XhpE/U+nqTQYvR1/JMpnFwmw3/JdJhJMNRLEvwo0HsFiWaMbjNj+JZ1NMfnCZ/ixE53VESlzmO41l+5m+QuGdc35RxuD/hWk/wYu0E23JI5Etv40TOfyFVqhr1UK5UheBZKkf7sMwD6wcxho4xr3iyzjtfsn6Hf79P8bqMR0kLNg9rbAW+sOFPkc4U+QMoLrZNPfIhugAAAABJRU5ErkJggg=='); background-size: cover; display: block;"
+  ></span>
+  <picture>
+          <source
+              srcset="/static/0910fd71995de03f54fbe806d2b8ca76/8ac56/001.webp 240w,
+/static/0910fd71995de03f54fbe806d2b8ca76/d3be9/001.webp 480w,
+/static/0910fd71995de03f54fbe806d2b8ca76/e46b2/001.webp 960w,
+/static/0910fd71995de03f54fbe806d2b8ca76/29105/001.webp 1396w"
+              sizes="(max-width: 960px) 100vw, 960px"
+              type="image/webp"
+            />
+          <source
+            srcset="/static/0910fd71995de03f54fbe806d2b8ca76/8ff5a/001.png 240w,
+/static/0910fd71995de03f54fbe806d2b8ca76/e85cb/001.png 480w,
+/static/0910fd71995de03f54fbe806d2b8ca76/d9199/001.png 960w,
+/static/0910fd71995de03f54fbe806d2b8ca76/58354/001.png 1396w"
+            sizes="(max-width: 960px) 100vw, 960px"
+            type="image/png"
+          />
+          <img
+            class="gatsby-resp-image-image"
+            src="/static/0910fd71995de03f54fbe806d2b8ca76/d9199/001.png"
+            alt="Untitled"
+            title="Untitled"
+            loading="lazy"
+            decoding="async"
+            style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+          />
+        </picture>
+  </a>
+    </span>
+    <figcaption class="gatsby-resp-image-figcaption"><p>Untitled</p></figcaption>
+  </figure></p>
+<p>다시말해, 높은 계층의 도메인이 하부 구조(표현계층이든 DB든)에 의존하면 안 된다 라는 것이다.</p>
+<h1 id="24-책에서의-모델을-db로-바꾸려면" style="position:relative;"><a href="#24-%EC%B1%85%EC%97%90%EC%84%9C%EC%9D%98-%EB%AA%A8%EB%8D%B8%EC%9D%84-db%EB%A1%9C-%EB%B0%94%EA%BE%B8%EB%A0%A4%EB%A9%B4" aria-label="24 책에서의 모델을 db로 바꾸려면 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>2.4 책에서의 모델을 DB로 바꾸려면?</h1>
+<p>“할당” 이라는 개념은 <code class="language-text">OrderLine</code> 과 <code class="language-text">Batch</code> 를 연결하는 개념이다. 이걸 DB화 해보자.</p>
+<h2 id="241-일반적인-orm-orm에-의존하는-모델" style="position:relative;"><a href="#241-%EC%9D%BC%EB%B0%98%EC%A0%81%EC%9D%B8-orm-orm%EC%97%90-%EC%9D%98%EC%A1%B4%ED%95%98%EB%8A%94-%EB%AA%A8%EB%8D%B8" aria-label="241 일반적인 orm orm에 의존하는 모델 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>2.4.1 일반적인 ORM: ORM에 의존하는 모델</h2>
+<p>모델 객체를 SQL문으로 매핑해주는 프레임워크를 ORM(Object Relational Mapping)이라 한다. 객체-도메인 모델-데이터베이스 를 이어주는 역할을 하기 때문이다.</p>
+<p>ORM은 영속성 무지(Persistence Ignorance)가 가장 중요한 역할을 한다. 데이터를 어떻게 쌓고 어떻게 영속화 하는지는 관심없도록 한다.</p>
+<p>Declarative 형식으로 짜면 모델이 ORM에 의존하게 된다고 한다.</p>
+<p>이걸 뒤집으려면 스키마를 따로 짜고, 스키마와 도메인 모델을 상호 변환하는 매퍼를 정의할 필요가 있다. 이걸 SQLAlchemy에선 imperative mapping(혹은 classical mapping) 이라고 한다. <a href="https://docs.sqlalchemy.org/en/20/orm/mapping_styles.html#imperative-mapping" target="_blank" rel="nofollow noopener noreferrer">참고링크</a></p>
+<blockquote>
+<p>참고사항</p>
+</blockquote>
+<p>SQLAlchemy 2.0 들어서선 Imperative mapping 방법이 좀 바뀌었다. <a href="https://docs.sqlalchemy.org/en/20/orm/mapping_styles.html#imperative-mapping" target="_blank" rel="nofollow noopener noreferrer">해당링크 참고</a>
+<code class="language-text">relationship</code> 기재의 경우 <code class="language-text">properties</code> 라는 kwargs로 넣어주면 된다</p>
+<blockquote>
+</blockquote>
+<h2 id="242-의존성-역전-모델에-의존하는-orm으로-만들기" style="position:relative;"><a href="#242-%EC%9D%98%EC%A1%B4%EC%84%B1-%EC%97%AD%EC%A0%84-%EB%AA%A8%EB%8D%B8%EC%97%90-%EC%9D%98%EC%A1%B4%ED%95%98%EB%8A%94-orm%EC%9C%BC%EB%A1%9C-%EB%A7%8C%EB%93%A4%EA%B8%B0" aria-label="242 의존성 역전 모델에 의존하는 orm으로 만들기 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>2.4.2 의존성 역전: 모델에 의존하는 ORM으로 만들기</h2>
+<p>요는 명시적 매퍼를 정의해서 내가 만든 코드로 테이블을 의존시키는 것이다.</p>
+<p>진짜 핵심은 <strong>“도메인”이 다른 하부 구조에 의존하게 않도록</strong> 만드는 것이다.</p>
+<p>도메인 모델을 잘 가져가는 것이 객체지향 패러다임을 계속해서 가져갈 수 있도록 하는 힘이다.</p>
+<h1 id="25-저장소-패턴-소개" style="position:relative;"><a href="#25-%EC%A0%80%EC%9E%A5%EC%86%8C-%ED%8C%A8%ED%84%B4-%EC%86%8C%EA%B0%9C" aria-label="25 저장소 패턴 소개 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>2.5 저장소 패턴 소개</h1>
+<p>저장소 패턴(Repository pattern)은 영속적 저장소를 추상화한 것이다.</p>
+<p>컴퓨팅 환경에서는 저장공간이 유한하기 때문에 어딘가에 데이터를 넣고 조회하는 것이 너무나 당연하다. 그리고 설령 모든 객체가 메모리 안에 있을 수 있다 하더라도 나중에 다시 찾을 수 있도록 어딘가에 보관해야한다.</p>
+<h2 id="251-추상화한-저장소" style="position:relative;"><a href="#251-%EC%B6%94%EC%83%81%ED%99%94%ED%95%9C-%EC%A0%80%EC%9E%A5%EC%86%8C" aria-label="251 추상화한 저장소 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>2.5.1 추상화한 저장소</h2>
+<ul>
+<li><code class="language-text">add()</code>: 원소를 저장소에 저장한다.</li>
+<li><code class="language-text">get()</code>: 원소를 저장소에서 가져온다.</li>
+</ul>
+<p>도메인과 서비스 계층에서 데이터에 접근할 떄는 <strong>저 함수들만을 사용</strong>하도록 하면 결합을 끊을 수 있다. 이 때 가상 저장소는 <code class="language-text">ABC</code>로 만들면 된다.</p>
+<p>ABC 대신 덕 타이핑, <a href="https://peps.python.org/pep-0544/" target="_blank" rel="nofollow noopener noreferrer">PEP 544(프로토콜)</a> 도 방안이다.</p>
+<p>덕 타이핑은 add(thing), get(id) 메소드를 제공하는 <strong>어떠한 객체</strong>든 다 덕 타이핑을 할 수도 있다.</p>
+<p>파이썬 3.8 들어서는 PEP 544를 통해 필요한 값만 골라서 처리할 수 있는 프로토콜이 더 낫다고 생각한다. 자세한 사항은 Fluent Python 11장을 참고하자. <a href="https://junstar92.tistory.com/356" target="_blank" rel="nofollow noopener noreferrer">관련 링크1</a>, <a href="https://blog.doosikbae.com/entry/Fluent-Python-Chapter-11-%EC%9D%B8%ED%84%B0%ED%8E%98%EC%9D%B4%EC%8A%A4-%ED%94%84%EB%A1%9C%ED%86%A0%EC%BD%9C%EC%97%90%EC%84%9C-ABC%EA%B9%8C%EC%A7%80" target="_blank" rel="nofollow noopener noreferrer">관련 링크2</a></p>
+<h2 id="252-트레이드오프" style="position:relative;"><a href="#252-%ED%8A%B8%EB%A0%88%EC%9D%B4%EB%93%9C%EC%98%A4%ED%94%84" aria-label="252 트레이드오프 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>2.5.2 트레이드오프?</h2>
+<p>으레 사람들이 이런 말을 한다. 이걸로 얻는 이득과 손해가 뭐지?</p>
+<p>지역적으로는 좀더 복잡해지고 지속적으로 유지보수를 해야하지만, 전체적으로는 점차적으로 나아지는 길이다.</p>
+<p>DDD를 한번 시작했다면 돌이키기 힘들다. 하지만 각각의 계층을 보다 유지보수 하기 쉬워진다.</p>
+<p>저장소 패턴이 추가되면 어떤 그림이 되는지 살펴보자</p>
+<p><figure class="gatsby-resp-image-figure" style="">
+    <span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 794px; "
+    >
+      <a
+    class="gatsby-resp-image-link"
+    href="/static/995f7dcb14b4c7f20ac72c39b320e977/7de01/002.png"
+    style="display: block"
+    target="_blank"
+    rel="noopener"
+  >
+    <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 87.91666666666667%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAASCAYAAABb0P4QAAAACXBIWXMAAB2HAAAdhwGP5fFlAAACc0lEQVQ4y52U/U9SURjH+Ytqq361reYy7WUrtTfYKpdZLSodolOUGNS0WGsrfqGVP7S2Ns201rJkghcvcO9FIkBrNlci8iqS2UBM7redgzKwzGt3e+6559yzzznf8zzfI4OERxRF8pYyFTLreBQvbEG8ZGbRZw2izxZErzWIAdK3BcH64gXoVkGBdV0CdtePoEI1hpM3OZzQclAYBFSoWOyqH0HjAy/dXS63FuJfIlcEPHuLw846C/bfYHBc40R1hwvVHU7su85gx3kLrt33QOpDoDL3p3lYhCicgQRM/VNo6Hai1zoD1p+AxR3F55lFfA0voc3sg+aRH+0bovNxAE0PvfgwlczvsHgFMtj11IfpuZ/IZHNY+LGCdDaHIS6MvUoGNVoecoMbB1QsarU8DrU4INcLtP+aDf0JdAXiMPR4kVrKlkjxT6dwWueCQs/j3G0B8qJWYeDpUTHeWB7o9MfxaiyEYSEC8+AXqE1uPLd8wzAfoauSo1j5tYpEKkMjnkqXtInvGcQW0ljOruaBl4xums2yq6Oo6eSohEo1S/t7LlrRcNctuQZpUgpAJYODzSwtm6oWB8qUa0DjOEQxRydvWjbFdchPJjDkCsMiRPCej+CykaeSbZ4o3rrCIP/XJ6+3/3TKxoE7zyaQXFzexH7YPlD3xIdYMv1fMAq0f4xjgAnhjWOOZlvf46OS33ER9I/OgptIlHh5S+CFbgGVzSyOtDpwTOPCGb2A8iY7yhvtONzqgMqU97Io9Qyv3PPgaFvew6d0PGq1HHVAlZqlZdRu9hfKRhKQXE9EKskokU2CfBO7DdpD4CfntydZ+gUrLSm/Adh2AefyQf/GAAAAAElFTkSuQmCC'); background-size: cover; display: block;"
+  ></span>
+  <picture>
+          <source
+              srcset="/static/995f7dcb14b4c7f20ac72c39b320e977/8ac56/002.webp 240w,
+/static/995f7dcb14b4c7f20ac72c39b320e977/d3be9/002.webp 480w,
+/static/995f7dcb14b4c7f20ac72c39b320e977/ae710/002.webp 794w"
+              sizes="(max-width: 794px) 100vw, 794px"
+              type="image/webp"
+            />
+          <source
+            srcset="/static/995f7dcb14b4c7f20ac72c39b320e977/8ff5a/002.png 240w,
+/static/995f7dcb14b4c7f20ac72c39b320e977/e85cb/002.png 480w,
+/static/995f7dcb14b4c7f20ac72c39b320e977/7de01/002.png 794w"
+            sizes="(max-width: 794px) 100vw, 794px"
+            type="image/png"
+          />
+          <img
+            class="gatsby-resp-image-image"
+            src="/static/995f7dcb14b4c7f20ac72c39b320e977/7de01/002.png"
+            alt="Untitled"
+            title="Untitled"
+            loading="lazy"
+            decoding="async"
+            style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+          />
+        </picture>
+  </a>
+    </span>
+    <figcaption class="gatsby-resp-image-figcaption"><p>Untitled</p></figcaption>
+  </figure></p>
+<p>만들거면 테스트부터 만들어보자.</p>
+<h1 id="26-테스트에-사용하는-가짜-저장소를-쉽게-만드는-방법" style="position:relative;"><a href="#26-%ED%85%8C%EC%8A%A4%ED%8A%B8%EC%97%90-%EC%82%AC%EC%9A%A9%ED%95%98%EB%8A%94-%EA%B0%80%EC%A7%9C-%EC%A0%80%EC%9E%A5%EC%86%8C%EB%A5%BC-%EC%89%BD%EA%B2%8C-%EB%A7%8C%EB%93%9C%EB%8A%94-%EB%B0%A9%EB%B2%95" aria-label="26 테스트에 사용하는 가짜 저장소를 쉽게 만드는 방법 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>2.6 테스트에 사용하는 가짜 저장소를 쉽게 만드는 방법</h1>
+<p>파이썬 원형을 만들고 테스트할 때 저걸로 대신 쓰면 된다.</p>
+<h1 id="27-파이썬에서의-포트-어댑터" style="position:relative;"><a href="#27-%ED%8C%8C%EC%9D%B4%EC%8D%AC%EC%97%90%EC%84%9C%EC%9D%98-%ED%8F%AC%ED%8A%B8-%EC%96%B4%EB%8C%91%ED%84%B0" aria-label="27 파이썬에서의 포트 어댑터 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>2.7 파이썬에서의 포트, 어댑터?</h1>
+<p>포트와 어댑터는 객체지향에서 나온 단어다. 이 책에선 아래와같이 쓰인다</p>
+<ul>
+<li>포트
+<ul>
+<li>애플리케이션과 추상화하려는 대상 사이의 인터페이스</li>
+<li>추상 기반 클래스를 쓴다</li>
+<li><code class="language-text">AbstractRepository</code></li>
+</ul>
+</li>
+<li>어댑터
+<ul>
+<li>이 인터페이스나 추상화가 뒤에있는 구현이라는 정의를 채택함</li>
+<li><code class="language-text">SqlAlchemyRepository</code>, <code class="language-text">FakeRepository</code></li>
+</ul>
+</li>
+</ul>
+<h1 id="28-pros-and-cons" style="position:relative;"><a href="#28-pros-and-cons" aria-label="28 pros and cons permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>2.8 pros and cons</h1>
+<table>
+<thead>
+<tr>
+<th>장점</th>
+<th>단점</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>영속적 저장소와 도메인 모델 사이의 인터페이스를 간단히 유지할 수 있다</td>
+<td>ORM이 어느정도 (모델과 저장소의) 결합을 완화시켜준다. (ORM을 쓰면) 외래키를 바꾸기는 어렵지만, 필요할 때 MySQL과 Postgres를 서로 바꾸기 쉽다</td>
+</tr>
+<tr>
+<td>모델과 인프라 사이의 사항을 완전히 분리한다 → 단위 테스트에 대한 가짜 저장소 생성이 쉽고 저장소 해법을 변경하기도 쉽다</td>
+<td>ORM 매핑을 수동으로 하려면 작업과 코드가 더 필요하다</td>
+</tr>
+<tr>
+<td>영속성 고려 전 도메인 모델을 작성하면 비즈니스 문제에 집중하기 쉽다. 접근 방식을 극적으로 바꾸고 싶을 때 외래키나 마이그레이션 등에 대해 고려하지 않고 모델이 이를 반영할 수 있다.</td>
+<td>간접 계층을 추가하면 유지보수 비용이 증가함을 의미한다.</td>
+</tr>
+<tr>
+<td>객체를 테이블에 매핑하는 과정을 원하는 대로 제어할 수 있어서 스키마를 단순히 할 수 있다</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>단순 CRUD만 가질거면 도메인 모델이나 저장소를 안써도 된다. 도메인이 복잡할 수록 인프라에 대해 신경쓰지 않을 정도로 투자하면 모델이나 코드를 보다 쉽게 변경할 수 있다. 그게 최고의 장점이다.</p>
+<h1 id="정리하기" style="position:relative;"><a href="#%EC%A0%95%EB%A6%AC%ED%95%98%EA%B8%B0" aria-label="정리하기 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>정리하기</h1>
+<ul>
+<li>ORM에 의존성 역전을 적용하자. ORM은 모델을 임포트 해야한다. 반대로 되면 안 된다.</li>
+<li>저장소 패턴은 영속적 저장소에 대한 단순한 추상화다.</li>
+</ul>
+<h1 id="번외" style="position:relative;"><a href="#%EB%B2%88%EC%99%B8" aria-label="번외 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>번외</h1>
+<h2 id="text-사용-시" style="position:relative;"><a href="#text-%EC%82%AC%EC%9A%A9-%EC%8B%9C" aria-label="text 사용 시 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code class="language-text">text</code> 사용 시…</h2>
+<ul>
+<li><a href="https://docs.sqlalchemy.org/en/20/tutorial/dbapi_transactions.html#sending-parameters" target="_blank" rel="nofollow noopener noreferrer">파라미터는 꼭 이렇게 보내자…</a></li>
+<li><code class="language-text">Engine</code> 을 쓰건, <code class="language-text">Session</code> 을 쓰건 이런 식이다.</li>
+</ul>
+<h2 id="매핑" style="position:relative;"><a href="#%EB%A7%A4%ED%95%91" aria-label="매핑 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>매핑</h2>
+<p><code class="language-text">sqlalchemy.Table</code> 로 매핑하나 <code class="language-text">sqlalchemy.orm.DeclarativeBase</code> 로 하나 똑같다</p>
+<p><a href="https://docs.sqlalchemy.org/en/20/tutorial/metadata.html#using-orm-declarative-forms-to-define-table-metadata" target="_blank" rel="nofollow noopener noreferrer">https://docs.sqlalchemy.org/en/20/tutorial/metadata.html#using-orm-declarative-forms-to-define-table-metadata</a></p>
+<ol>
+<li>둘 다 충분히 테이블에 엮이지 않도록 한다. 다만 ORM Declarative로 가면 특정 RDBMS에 대한 지원을 보다 더 낫게 할 수도 있다</li>
+<li><code class="language-text">mypy</code> 를 이용한 타입 힌팅을 충분히 가져갈 수 있다</li>
+<li>persistance / object loading 작동에 필요한 테이블 메타데이터를 한번에 가져와서 쓸 수 있다
+<ol>
+<li>SQLAlchemy에 대한 이해도가 높아야겠지만, 쓴다면 당연히 높은 이해도를 제고해야 하는 것이 마땅하다.</li>
+</ol>
+</li>
+</ol>
+<p>어차피 추상 리포지토리를 개별 리포지토리가 상속하고, 개별 리포지토리에서는 접근하고자 하는 RDBMS(SQLAlchemy 예시니까) 별로 다르게 코드가 나온다.
+이게 길어지면 모듈로 분리하여 코드를 작성하면 될 일이다.
+다른 어댑터나 포트는 다른 개별 리포지토리 형식으로 구현될텐데 말이지.</p>
+<p>근데 결국 아는만큼 쓴다고, <code class="language-text">Table</code> 로 매핑하면서 쓰다가 필요할 때 ORM Declarative로 넘어가는게 나을 듯 싶다.</p>
+<h2 id="모델---쿼리-엮기" style="position:relative;"><a href="#%EB%AA%A8%EB%8D%B8---%EC%BF%BC%EB%A6%AC-%EC%97%AE%EA%B8%B0" aria-label="모델   쿼리 엮기 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>모델 - 쿼리 엮기</h2>
+<h3 id="배운-점" style="position:relative;"><a href="#%EB%B0%B0%EC%9A%B4-%EC%A0%90" aria-label="배운 점 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>배운 점</h3>
+<ul>
+<li>논리적인 흐름을 DB로 풀어낼 때…
+<ul>
+<li>VO가 그대로 테이블이 될 수 있다</li>
+<li>엔티티 내의 특정 값(<code class="language-text">set</code>값인 <code class="language-text">allocations</code>) 은 <code class="language-text">OrderLine</code> 을 모아두는 논리적인 값이다
+<ul>
+<li>이 값이 테이블이 될 수 있다</li>
+</ul>
+</li>
+<li><code class="language-text">allocate()</code> 함수를 통해 <code class="language-text">OrderLine</code>을 <code class="language-text">Batch</code>에 allocate 할 수도 있다.
+<ul>
+<li>Java에선 이런 것 하나하나 인터페이스로 처리했어야 했었을 것을 함수 단위로 그냥 선언하고 땡</li>
+<li>다만 하나의 모듈(<code class="language-text">model.py</code>) 안에 잘 두고 분리를 잘 해야할 것이다.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="복습" style="position:relative;"><a href="#%EB%B3%B5%EC%8A%B5" aria-label="복습 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>복습</h3>
+<ul>
+<li>테이블 만들고 <code class="language-text">mapper</code> 로 매핑하는 건 기존 프로젝트들에서 해왔던 것과 유사하다</li>
+</ul>
+<h2 id="리포지토리" style="position:relative;"><a href="#%EB%A6%AC%ED%8F%AC%EC%A7%80%ED%86%A0%EB%A6%AC" aria-label="리포지토리 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>리포지토리</h2>
+<ul>
+<li>
+<p>안 엮인 쿼리를 짜면 greenlet 에러 뜬다. 쿼리를 엮으면서 동시에 <code class="language-text">selectinload</code> 를 배웠음.</p>
+</li>
+<li>
+<p>쿼리 1 예시</p>
+<ul>
+<li>N+1 쿼리 방지를 위한 방안 소개
+<ul>
+<li><code class="language-text">selectinload</code><sup id="fnref-1"><a href="#fn-1" class="footnote-ref">1</a></sup> 를 통해 특정 테이블에 대해서만 내보낼 수 있는 SELECT 양식을 사용하여 쿼리함.</li>
+<li>내부적으로는 두개의 쿼리를 하고 그 결과물을 처리한다고 보면 됨</li>
+</ul>
+</li>
+</ul>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python">query <span class="token operator">=</span> <span class="token punctuation">(</span>
+    <span class="token punctuation">(</span>
+        <span class="token keyword">await</span> self<span class="token punctuation">.</span>session<span class="token punctuation">.</span>execute<span class="token punctuation">(</span>
+            select<span class="token punctuation">(</span>model<span class="token punctuation">.</span>Batch<span class="token punctuation">)</span>
+            <span class="token comment"># 이 라인 없으면 에러납니다!</span>
+            <span class="token comment"># relationship으로 엮인 테이블을 참조할 방도가 없어요~~~</span>
+            <span class="token punctuation">.</span>options<span class="token punctuation">(</span>selectinload<span class="token punctuation">(</span>model<span class="token punctuation">.</span>Batch<span class="token punctuation">.</span>allocations<span class="token punctuation">)</span><span class="token punctuation">)</span>
+            <span class="token punctuation">.</span>filter_by<span class="token punctuation">(</span>reference<span class="token operator">=</span>reference<span class="token punctuation">)</span>
+        <span class="token punctuation">)</span>
+    <span class="token punctuation">)</span>
+    <span class="token punctuation">.</span>scalar_one<span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">)</span></code></pre></div>
+</li>
+<li>
+<p>쿼리 2 예시</p>
+<ul>
+<li>상기 쿼리 1과 마찬가지의 예시임</li>
+</ul>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python">query <span class="token operator">=</span> <span class="token punctuation">(</span>
+    <span class="token punctuation">(</span>
+        <span class="token keyword">await</span> self<span class="token punctuation">.</span>session<span class="token punctuation">.</span>scalars<span class="token punctuation">(</span>
+            select<span class="token punctuation">(</span>model<span class="token punctuation">.</span>Batch<span class="token punctuation">)</span>
+            <span class="token punctuation">.</span>options<span class="token punctuation">(</span>selectinload<span class="token punctuation">(</span>model<span class="token punctuation">.</span>Batch<span class="token punctuation">.</span>allocations<span class="token punctuation">)</span><span class="token punctuation">)</span>
+        <span class="token punctuation">)</span>
+    <span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token builtin">all</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">)</span></code></pre></div>
+</li>
+</ul>
+<div class="footnotes">
+<hr>
+<ol>
+<li id="fn-1"><a href="https://soogoonsoogoonpythonists.github.io/sqlalchemy-for-pythonist/tutorial/7.%20ORM%20%EB%B0%A9%EC%8B%9D%EC%9C%BC%EB%A1%9C%20%EA%B4%80%EB%A0%A8%20%EA%B0%9C%EC%B2%B4%20%EC%9E%91%EC%97%85%ED%95%98%EA%B8%B0.html#select-in-loading-%E1%84%87%E1%85%A1%E1%86%BC%E1%84%89%E1%85%B5%E1%86%A8" target="_blank" rel="nofollow noopener noreferrer">참고 링크</a><a href="#fnref-1" class="footnote-backref">↩</a></li>
+</ol>
+</div></div></div></div><div class="Post-module--footer--f8705"><div class="Meta-module--meta--dae0a"><p class="Meta-module--date--4d30d">Published<!-- --> <!-- -->Apr 13, 2023</p></div><div class="Tags-module--tags--18589"><ul class="Tags-module--list--82ae6"><li class="Tags-module--item--52015"><a class="Button-module--button--b1113" href="/tag/ddd/">ddd</a></li><li class="Tags-module--item--52015"><a class="Button-module--button--b1113" href="/tag/books/">books</a></li><li class="Tags-module--item--52015"><a class="Button-module--button--b1113" href="/tag/backend/">backend</a></li><li class="Tags-module--item--52015"><a class="Button-module--button--b1113" href="/tag/python/">python</a></li></ul></div><div class="Author-module--author--1c58d"><p class="Non scholæ sed vitæ discimus.">Non scholæ sed vitæ discimus.</p><p class="Author-module--bio--08950">his/him</p></div></div><div class="Post-module--comments--d3b99"><div></div></div></div></div></div><div id="gatsby-announcer" style="position:absolute;top:0;width:1px;height:1px;padding:0;overflow:hidden;clip:rect(0, 0, 0, 0);white-space:nowrap;border:0" aria-live="assertive" aria-atomic="true"></div></div><script id="gatsby-script-loader">/*<![CDATA[*/window.pagePath="/books/docker/2023-04-13-pt01-ch02";window.___webpackCompilationHash="d24061204ae2cb9992cd";/*]]>*/</script><script id="gatsby-chunk-mapping">/*<![CDATA[*/window.___chunkMapping={"polyfill":["/polyfill-dd6407b8e4ec4143c35a.js"],"app":["/app-858af14a31533367b173.js"],"component---cache-caches-gatsby-plugin-offline-app-shell-js":["/component---cache-caches-gatsby-plugin-offline-app-shell-js-0c915c7b1bdb5eac4fdf.js"],"component---src-templates-categories-template-categories-template-tsx":["/component---src-templates-categories-template-categories-template-tsx-e2d2add397e32e3517ca.js"],"component---src-templates-category-template-category-template-tsx":["/component---src-templates-category-template-category-template-tsx-078f2adfba160a34229f.js"],"component---src-templates-index-template-index-template-tsx":["/component---src-templates-index-template-index-template-tsx-83380c7954c9f6621026.js"],"component---src-templates-not-found-template-not-found-template-tsx":["/component---src-templates-not-found-template-not-found-template-tsx-56fe4d3b015459d56c99.js"],"component---src-templates-page-template-page-template-tsx":["/component---src-templates-page-template-page-template-tsx-c6c21d7369a9356db3a1.js"],"component---src-templates-post-template-post-template-tsx":["/component---src-templates-post-template-post-template-tsx-119cd0258cb38628d01f.js"],"component---src-templates-tag-template-tag-template-tsx":["/component---src-templates-tag-template-tag-template-tsx-8d0b3090e775aa3c4584.js"],"component---src-templates-tags-template-tags-template-tsx":["/component---src-templates-tags-template-tags-template-tsx-30027e87af7d042f3afb.js"]};/*]]>*/</script><script src="/polyfill-dd6407b8e4ec4143c35a.js" nomodule=""></script><script src="/app-858af14a31533367b173.js" async=""></script><script src="/framework-481a1b6416c14416b2fb.js" async=""></script><script src="/webpack-runtime-de5a94456c9c32f6cdb9.js" async=""></script></body></html>

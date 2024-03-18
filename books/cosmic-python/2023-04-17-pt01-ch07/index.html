@@ -1,0 +1,615 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="ie=edge"/><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/><meta name="generator" content="Gatsby 4.25.4"/><meta name="description" content="파이썬으로 살펴보는 아키텍처 패턴을 읽고 이해한 내용을 작성합니다. 챕터 7, 애그리게이트와 일관성 경계에 대한 내용입니다." data-gatsby-head="true"/><meta name="twitter:card" content="summary_large_image" data-gatsby-head="true"/><meta name="twitter:title" content="파이썬으로 살펴보는 아키텍처 패턴 (7) - 팔공산 창고" data-gatsby-head="true"/><meta name="twitter:description" content="파이썬으로 살펴보는 아키텍처 패턴을 읽고 이해한 내용을 작성합니다. 챕터 7, 애그리게이트와 일관성 경계에 대한 내용입니다." data-gatsby-head="true"/><meta name="og:title" content="파이썬으로 살펴보는 아키텍처 패턴 (7) - 팔공산 창고" data-gatsby-head="true"/><meta name="og:type" content="website" data-gatsby-head="true"/><meta name="og:description" content="파이썬으로 살펴보는 아키텍처 패턴을 읽고 이해한 내용을 작성합니다. 챕터 7, 애그리게이트와 일관성 경계에 대한 내용입니다." data-gatsby-head="true"/><meta name="image" content="https://blog.s3ich4n.me[object Object]" data-gatsby-head="true"/><meta name="og:image" content="https://blog.s3ich4n.me[object Object]" data-gatsby-head="true"/><meta name="twitter:image" content="https://blog.s3ich4n.me[object Object]" data-gatsby-head="true"/><meta name="theme-color" content="hsl(31, 92%, 62%)"/><style data-href="/styles.1fbe3e33e3d898c35e17.css" data-identity="gatsby-global-css">:after,:before,:root{--color-white:#fff;--color-primary:#5c92ff;--color-secondary:#f7a145;--color-prism-background:#eaeaeb;--color-typographic-base-font:#242933;--color-typographic-link-p-font:#5c92ff;--color-typographic-link-s-font:#f7a145;--color-page-border:#eaeaeb;--color-page-background:#fff;--color-sidebar-border:#eaeaeb;--color-sidebar-border-fade:#fff;--color-contacts-border:#eaeaeb;--color-button-border:#eaeaeb;--color-button-color:#242933;--color-theme-switcher:#3f485a;--color-theme-switcher-hover:#5c92ff}.dark :after,.dark :before,:root.dark{--color-white:#fff;--color-primary:#5c92ff;--color-secondary:#f7a145;--color-prism-background:#191d24;--color-typographic-base-font:#fff;--color-typographic-link-p-font:#5c92ff;--color-typographic-link-s-font:#f7a145;--color-page-border:#3f485a;--color-page-background:#242933;--color-sidebar-border:#3f485a;--color-sidebar-border-fade:#242933;--color-contacts-border:#3f485a;--color-button-border:#3f485a;--color-button-color:#fff;--color-theme-switcher:#eaeaeb;--color-theme-switcher-hover:#5c92ff}html{font-size:100}body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;background:var(--color-page-background);color:var(--color-typographic-base-font);font-size:16px;line-height:1.625;margin:0 0 0 calc(100vw - 100%);text-rendering:optimizelegibility}body,h1,h2,h3,h4,h5,h6{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif}h1,h2,h3,h4,h5,h6{font-weight:600}h1{font-size:40px;line-height:52px;margin-bottom:26px;margin-top:104px}h2{font-size:27px;line-height:39px}h2,h3{margin-bottom:13px;margin-top:52px}h3{font-size:22px;line-height:26px}h4{font-size:19.2px;margin-top:39px}h4,h5{line-height:26px;margin-bottom:13px}h5,h6{font-size:16px;margin-top:65px}h6{line-height:26px;margin-bottom:13px}img{max-width:100%}hr,img{border:0;display:block}hr{background-image:linear-gradient(180deg,transparent 1px,transparent 11px,#242933 0,#242933 15px,transparent 0,transparent 26px);background-size:100% 26px;color:var(--color-typographic-base-font);height:26px;margin:52px auto;width:100px}a{color:var(--color-typographic-link-p-font);text-decoration:none}a:active,a:focus,a:hover{color:var(--color-typographic-link-s-font)}b,strong{font-weight:600}ul{list-style:square;margin-bottom:26px}ul li{margin-bottom:10px;padding:0 5px}p{line-height:26px;margin-bottom:26px}blockquote{font-style:italic;padding:0;text-align:center}figure{display:block;height:auto;width:100%}figcaption{color:var(--color-typographic-base-font);font-size:14px;font-style:italic;line-height:19.5px;margin-bottom:0;margin-top:6.5px;text-align:center}@media screen and (min-width:685px){figure.float-left,figure.float-right{max-width:310px;padding:0 26px}.float-right{float:right}.float-left{float:left}}code[class*=language-],pre[class*=language-]{word-wrap:normal;color:#657b83;font-family:Consolas,Monaco,Andale Mono,Ubuntu Mono,monospace;font-size:1em;-webkit-hyphens:none;hyphens:none;line-height:1.5;-o-tab-size:4;tab-size:4;text-align:left;white-space:pre;word-break:normal;word-spacing:normal}pre[class*=language-]{border-radius:.3em;margin:.5em 0;overflow:auto;padding:1em}:not(pre)>code[class*=language-],pre[class*=language-]{background-color:var(--color-prism-background)}:not(pre)>code[class*=language-]{border-radius:.3em;padding:.1em}code[class*=language-] ::selection,code[class*=language-]::selection,pre[class*=language-] ::selection,pre[class*=language-]::selection{background:#073642}.token.cdata,.token.comment,.token.doctype,.token.prolog{color:#93a1a1}.token.punctuation{color:#586e75}.namespace{opacity:.7}.token.boolean,.token.constant,.token.deleted,.token.number,.token.property,.token.symbol,.token.tag{color:#268bd2}.token.attr-name,.token.builtin,.token.char,.token.inserted,.token.selector,.token.string,.token.url{color:#2aa198}.token.entity{background:#eee8d5;color:#657b83;cursor:help}.token.atrule,.token.attr-value,.token.keyword{color:#859900}.token.class-name,.token.function{color:#b58900}.token.important,.token.regex,.token.variable{color:#cb4b16}.token.bold,.token.important{font-weight:700}.token.italic{font-style:italic}.Feed-module--feed--a6204 .Feed-module--item--c7a63{margin-bottom:32.5px}.Feed-module--feed--a6204 .Feed-module--item--c7a63:last-child{margin-bottom:13px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f{font-size:27px;line-height:39px;margin-bottom:13px;margin-top:0}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f .Feed-module--link--6123b{color:var(--color-typographic-base-font)}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f .Feed-module--link--6123b:focus,.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f .Feed-module--link--6123b:hover{border-bottom:1px solid #242933;color:var(--color-typographic-base-font)}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--description--57348{font-size:16px;line-height:26px;margin-bottom:19.5px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--time--72864{color:var(--color-typographic-base-font);font-size:14px;font-weight:600;text-transform:uppercase}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--divider--81a18{margin:0 13px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--category--59f58 .Feed-module--link--6123b{color:var(--color-secondary);font-size:14px;font-weight:600;text-transform:uppercase}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--category--59f58 .Feed-module--link--6123b:focus,.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--category--59f58 .Feed-module--link--6123b:hover{color:#5c92ff}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--more--51a4e{color:var(--color-primary);font-size:16px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--more--51a4e:focus,.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--more--51a4e:hover{border-bottom:1px solid #5c92ff;color:var(--color-primary)}.Layout-module--layout--2c933{margin-left:auto;margin-right:auto;max-width:1070px}.Layout-module--layout--2c933:before{content:"";display:table}.Layout-module--layout--2c933:after{clear:both;content:"";display:table}.Page-module--page--24e03{margin-bottom:52px}.Page-module--page--24e03 .Page-module--inner--4b31d{padding:26px 19.5px 0}.Page-module--page--24e03 .Page-module--title--90338{font-size:40px;font-weight:600;line-height:52px;margin-bottom:37.7px;margin-top:0}.Page-module--page--24e03 .Page-module--body--561c4{font-size:16px;line-height:26px;margin:0 0 26px}@media screen and (min-width:685px){.Page-module--page--24e03{width:calc(58.275% - 12.5px)}.Page-module--page--24e03:nth-child(1n){clear:none;float:left;margin-right:30px}.Page-module--page--24e03:last-child{margin-right:0}.Page-module--page--24e03:nth-child(12n){float:right;margin-right:0}.Page-module--page--24e03:nth-child(12n+1){clear:both}.Page-module--page--24e03 .Page-module--inner--4b31d{padding:32.5px 19.5px 0}}@media screen and (min-width:960px){.Page-module--page--24e03{width:calc(66.6% - 10px)}.Page-module--page--24e03:nth-child(1n){clear:none;float:left;margin-right:30px}.Page-module--page--24e03:last-child{margin-right:0}.Page-module--page--24e03:nth-child(3n){float:right;margin-right:0}.Page-module--page--24e03:nth-child(3n+1){clear:both}.Page-module--page--24e03 .Page-module--inner--4b31d{padding:39px 26px 0}}.Pagination-module--pagination--d61cb{display:flex;margin-top:52px}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b{text-align:left;width:50%}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d{color:var(--color-secondary);font-size:26px;font-weight:700}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d:focus,.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d:hover{color:var(--color-primary)}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d.Pagination-module--disable--7e105{color:#3f485a;pointer-events:none}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8{text-align:right;width:50%}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff{color:var(--color-secondary);font-size:26px;font-weight:700}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff:focus,.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff:hover{color:var(--color-primary)}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff.Pagination-module--disable--7e105{color:#3f485a;pointer-events:none}.Button-module--button--b1113{border:1px solid var(--color-button-border);border-radius:20px;color:var(--color-button-color);display:inline-block;font-size:16px;font-weight:400;height:40px;line-height:40px;margin-left:auto;margin-right:auto;padding:0 26px;text-align:center;text-decoration:none}.Button-module--button--b1113:focus,.Button-module--button--b1113:hover{color:#5c92ff}.ThemeSwitcher-module--themeSwitcher--8a77f{--color:var(--color-theme-switcher)}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--button--7cb7b{align-items:center;background:transparent;border:0;cursor:pointer;display:flex;justify-content:center;outline:0}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--button--7cb7b svg{stroke:var(--color);pointer-events:none;transition:stroke .4s}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--button--7cb7b:hover{--color:var(--color-theme-switcher-hover)}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--moon--10537{stroke-dasharray:0 1px;opacity:0;transition:stroke-dasharray .2s ease-in,opacity .4s ease-in}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--sun--2163a{stroke-dasharray:1px 1px;opacity:1;transition:stroke-dasharray .2s ease-in,opacity .4s ease-in}.ThemeSwitcher-module--themeSwitcher--8a77f.ThemeSwitcher-module--dark--6db0c .ThemeSwitcher-module--moon--10537{stroke-dasharray:1px 1px;opacity:1}.ThemeSwitcher-module--themeSwitcher--8a77f.ThemeSwitcher-module--dark--6db0c .ThemeSwitcher-module--sun--2163a{stroke-dasharray:0 1px;opacity:0}.Author-module--author--cbd31 .Author-module--photo--9787b{background-clip:padding-box;border-radius:50%;display:inline-block;height:75px;margin-bottom:0;width:75px}.Author-module--author--cbd31 .Author-module--photo--9787b img{border-radius:50%}.Author-module--author--cbd31 .Author-module--title--cf7e5{font-size:18px;font-weight:600;line-height:29.25px;margin:0}.Author-module--author--cbd31 .Author-module--title--cf7e5 .Author-module--link--09c17,.Author-module--author--cbd31 .Author-module--title--cf7e5 .Author-module--link--09c17:focus,.Author-module--author--cbd31 .Author-module--title--cf7e5 .Author-module--link--09c17:hover{color:var(--color-typographic-base-font)}.Author-module--author--cbd31 .Author-module--bio--8168d,.Author-module--author--cbd31 .Author-module--subtitle--86ec5{color:#7f8ba4;line-height:26px;margin-bottom:26px}.Author-module--author--cbd31 .Author-module--titleContainer--4f576{align-items:center;display:flex;justify-content:space-between;margin:13px 0}.Categories-module--categories--f3389{color:#7f8ba4;font-size:14px}.Icon-module--icon--1d7da{fill:currentcolor;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;speak:none;stroke:currentcolor;stroke-width:0;display:inline-block;font-style:normal;font-variant:normal;font-weight:400;height:1em;line-height:1em;text-align:center;text-transform:none;width:1em}.Contacts-module--contacts--09178{margin-bottom:26px}.Contacts-module--contacts--09178 .Contacts-module--list--9670b{display:flex;flex-flow:row wrap;flex-grow:0;flex-shrink:0;list-style:none;margin:13px 0;max-width:165px;padding:0}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0{align-content:center;align-items:center;border:1px solid var(--color-contacts-border);border-radius:50%;display:flex;height:40px;justify-content:center;line-height:40px;margin:6.5px;padding:0;text-align:center;width:40px}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0:nth-child(3n+1){margin-left:0}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0 .Contacts-module--link--de1e0{border:0;color:var(--color-typographic-base-font);display:flex}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0 .Contacts-module--link--de1e0:focus,.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0 .Contacts-module--link--de1e0:hover{color:var(--color-typographic-link-p-font)}.Copyright-module--copyright--2c602{color:#7f8ba4;font-size:14px}.Menu-module--menu--113a9{margin-bottom:26px}.Menu-module--menu--113a9 .Menu-module--list--e1ae3{list-style:none;margin:0;padding:0}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679{margin:13px 0;padding:0}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02{border:0;color:var(--color-typographic-base-font);font-size:16px;font-weight:400}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02:focus,.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02:hover{border-bottom:1px solid #5c92ff;color:#5c92ff}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02.Menu-module--active--6cb74{border-bottom:1px solid var(--color-typographic-base-font);color:var(--color-typographic-base-font)}.Tags-module--tags--28a57{color:#7f8ba4;font-size:14px}.Sidebar-module--sidebar--1bfa1{width:100%}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0{padding:26px 19.5px 0;position:relative}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0:after{background:var(--color-sidebar-border);background:linear-gradient(to bottom,var(--color-sidebar-border) 0,var(--color-sidebar-border) 48%,var(--color-sidebar-border-fade) 100%)}@media screen and (min-width:685px){.Sidebar-module--sidebar--1bfa1{width:calc(41.625% - 17.5px)}.Sidebar-module--sidebar--1bfa1:nth-child(1n){clear:none;float:left;margin-right:30px}.Sidebar-module--sidebar--1bfa1:last-child{margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(12n){float:right;margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(12n+1){clear:both}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0{padding:32.5px 19.5px 0}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0:after{bottom:0;content:"";height:540px;position:absolute;right:-10px;top:30px;width:1px}}@media screen and (min-width:960px){.Sidebar-module--sidebar--1bfa1{width:calc(33.3% - 20px)}.Sidebar-module--sidebar--1bfa1:nth-child(1n){clear:none;float:left;margin-right:30px}.Sidebar-module--sidebar--1bfa1:last-child{margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(3n){float:right;margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(3n+1){clear:both}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0{padding:39px}}.Author-module--author--1c58d{border-top:1px solid var(--color-page-border);line-height:26px;margin-bottom:52px;margin-top:26px;max-width:920px;padding-top:26px}.Author-module--author--1c58d .Author-module--bio--08950 .Author-module--twitter--90647{display:block;text-decoration:underline}.Author-module--author--1c58d .Author-module--bio--08950 .Author-module--twitter--90647:focus,.Author-module--author--1c58d .Author-module--bio--08950 .Author-module--twitter--90647:hover{color:var(--color-typographic-link-s-font)}@media screen and (min-width:685px){.Author-module--author--1c58d{margin-left:auto;margin-right:auto}}.Content-module--content--80d58{margin:0 auto;max-width:1070px;padding:0 13px}.Content-module--content--80d58 .Content-module--title--09504{font-size:32px;font-weight:600;line-height:42.9px;margin:26px auto 0;max-width:920px;text-align:center}.Content-module--content--80d58 .Content-module--body--726c2 figure{margin-bottom:26px}.Content-module--content--80d58 .Content-module--body--726c2 figure blockquote{font-style:italic;margin-top:0;padding:26px 0;text-align:center}.Content-module--content--80d58 .Content-module--body--726c2 figure blockquote p{font-size:26.9072px;line-height:39px;margin-bottom:26px;margin-top:0;max-width:920px}.Content-module--content--80d58 .Content-module--body--726c2 a{text-decoration:underline}.Content-module--content--80d58 .Content-module--body--726c2 *{margin-left:auto;margin-right:auto;max-width:920px}.Content-module--content--80d58 .Content-module--body--726c2 h2>a{visibility:hidden}.Content-module--content--80d58 .Content-module--body--726c2 h2>a>svg{fill:var(--color-typographic-base-font)}.Content-module--content--80d58 .Content-module--body--726c2 img{max-width:100%}@media screen and (min-width:960px){.Content-module--content--80d58{padding:0}.Content-module--content--80d58 .Content-module--title--09504{font-size:48px;line-height:58.5px;margin-bottom:39px;margin-top:58.5px}.Content-module--content--80d58 .Content-module--body--726c2,.Content-module--content--80d58 .Content-module--body--726c2 p{font-size:18px;line-height:29.25px;margin-bottom:29.25px}.Content-module--content--80d58 .Content-module--body--726c2 h2>a{padding-right:13px;visibility:unset}}.Meta-module--meta--dae0a .Meta-module--date--4d30d{font-style:italic}.Tags-module--tags--18589{margin-bottom:13px}.Tags-module--tags--18589 .Tags-module--list--82ae6{list-style:none;padding:0}.Tags-module--tags--18589 .Tags-module--list--82ae6 .Tags-module--item--52015{display:inline-block;margin:6.5px 0}@media screen and (min-width:685px){.Tags-module--tags--18589 .Tags-module--list--82ae6 .Tags-module--item--52015:first-child{margin-left:0;padding-left:0}}.Post-module--post--3a994 .Post-module--content--3c6e5{margin:0 auto}.Post-module--post--3a994 .Post-module--comments--d3b99,.Post-module--post--3a994 .Post-module--footer--f8705{margin:0 auto;max-width:920px;padding:0 13px}.Post-module--post--3a994 .Post-module--buttons--2972d{align-items:center;display:flex;justify-content:center;margin:26px 0 0;text-align:center}.Post-module--post--3a994 .Post-module--buttons--2972d .Post-module--buttonArticles--d793a{margin:0 13px 0 0}@media screen and (min-width:960px){.Post-module--post--3a994 .Post-module--comments--d3b99,.Post-module--post--3a994 .Post-module--footer--f8705{padding:0}.Post-module--post--3a994 .Post-module--buttons--2972d{left:30px;margin:0 13px 0 0;max-width:none;position:fixed;top:30px}}</style><title data-gatsby-head="true">파이썬으로 살펴보는 아키텍처 패턴 (7) - 팔공산 창고</title><link rel="alternate" type="application/rss+xml" title="팔공산 창고" href="/rss.xml"/><style type="text/css">
+    .anchor.before {
+      position: absolute;
+      top: 0;
+      left: 0;
+      transform: translateX(-100%);
+      padding-right: 4px;
+    }
+    .anchor.after {
+      display: inline-block;
+      padding-left: 4px;
+    }
+    h1 .anchor svg,
+    h2 .anchor svg,
+    h3 .anchor svg,
+    h4 .anchor svg,
+    h5 .anchor svg,
+    h6 .anchor svg {
+      visibility: hidden;
+    }
+    h1:hover .anchor svg,
+    h2:hover .anchor svg,
+    h3:hover .anchor svg,
+    h4:hover .anchor svg,
+    h5:hover .anchor svg,
+    h6:hover .anchor svg,
+    h1 .anchor:focus svg,
+    h2 .anchor:focus svg,
+    h3 .anchor:focus svg,
+    h4 .anchor:focus svg,
+    h5 .anchor:focus svg,
+    h6 .anchor:focus svg {
+      visibility: visible;
+    }
+  </style><script>
+    document.addEventListener("DOMContentLoaded", function(event) {
+      var hash = window.decodeURI(location.hash.replace('#', ''))
+      if (hash !== '') {
+        var element = document.getElementById(hash)
+        if (element) {
+          var scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+          var clientTop = document.documentElement.clientTop || document.body.clientTop || 0
+          var offset = element.getBoundingClientRect().top + scrollTop - clientTop
+          // Wait for the browser to finish rendering before scrolling.
+          setTimeout((function() {
+            window.scrollTo(0, offset - 0)
+          }), 0)
+        }
+      }
+    })
+  </script><link rel="preconnect" href="https://www.googletagmanager.com"/><link rel="dns-prefetch" href="https://www.googletagmanager.com"/><script async="" src="https://www.googletagmanager.com/gtag/js?id="></script><script>
+      
+      
+      if(true) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){window.dataLayer && window.dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', '', {"send_page_view":false});
+      }
+      </script><link rel="sitemap" type="application/xml" href="/sitemap/sitemap-index.xml"/><link rel="icon" href="/favicon-32x32.png?v=4c2c993a06ee0fd0ee953020b09128a9" type="image/png"/><link rel="manifest" href="/manifest.webmanifest" crossorigin="anonymous"/><link rel="apple-touch-icon" sizes="48x48" href="/icons/icon-48x48.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="72x72" href="/icons/icon-72x72.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="96x96" href="/icons/icon-96x96.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="144x144" href="/icons/icon-144x144.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192x192.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="256x256" href="/icons/icon-256x256.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="384x384" href="/icons/icon-384x384.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="512x512" href="/icons/icon-512x512.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><style>.gatsby-image-wrapper{position:relative;overflow:hidden}.gatsby-image-wrapper picture.object-fit-polyfill{position:static!important}.gatsby-image-wrapper img{bottom:0;height:100%;left:0;margin:0;max-width:none;padding:0;position:absolute;right:0;top:0;width:100%;object-fit:cover}.gatsby-image-wrapper [data-main-image]{opacity:0;transform:translateZ(0);transition:opacity .25s linear;will-change:opacity}.gatsby-image-wrapper-constrained{display:inline-block;vertical-align:top}</style><noscript><style>.gatsby-image-wrapper noscript [data-main-image]{opacity:1!important}.gatsby-image-wrapper [data-placeholder-image]{opacity:0!important}</style></noscript><script type="module">const e="undefined"!=typeof HTMLImageElement&&"loading"in HTMLImageElement.prototype;e&&document.body.addEventListener("load",(function(e){const t=e.target;if(void 0===t.dataset.mainImage)return;if(void 0===t.dataset.gatsbyImageSsr)return;let a=null,n=t;for(;null===a&&n;)void 0!==n.parentNode.dataset.gatsbyImageWrapper&&(a=n.parentNode),n=n.parentNode;const o=a.querySelector("[data-placeholder-image]"),r=new Image;r.src=t.currentSrc,r.decode().catch((()=>{})).then((()=>{t.style.opacity=1,o&&(o.style.opacity=0,o.style.transition="opacity 500ms linear")}))}),!0);</script></head><body><script>
+          void function() {
+            var cachedMode;
+
+            try {
+              var preferredTheme = JSON.parse(localStorage.getItem('diesel:theme-atom'));
+
+              if (preferredTheme && preferredTheme.mode) {
+                cachedMode = preferredTheme.mode;
+              }
+            } catch (err) { }
+
+            function setTheme(newTheme) {
+              document.documentElement.className = newTheme;
+            }
+
+            var darkQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+            setTheme(cachedMode || (darkQuery.matches ? 'dark' : 'light'));
+          }()
+        </script><div id="___gatsby"><div style="outline:none" tabindex="-1" id="gatsby-focus-wrapper"><div class="Layout-module--layout--2c933"><div class="Post-module--post--3a994"><div class="Post-module--buttons--2972d"><a class="Button-module--button--b1113 Post-module--buttonArticles--d793a" href="/">All Articles</a></div><div class="Post-module--content--3c6e5"><div class="Content-module--content--80d58"><h1 class="Content-module--title--09504">파이썬으로 살펴보는 아키텍처 패턴 (7)</h1><div class="Content-module--body--726c2"><p>이 내용은 “파이썬으로 살펴보는 아키텍처 패턴” 을 읽고 작성한 내용입니다. 블로그 게시글과, 작성한 코드를 함께 보시면 더욱 좋습니다.</p>
+<p>7장은 해당 코드를 살펴봐주세요. <a href="https://github.com/s3ich4n/cosmicpython-study/tree/main/pt1/ch07" target="_blank" rel="nofollow noopener noreferrer">코드 링크</a></p>
+<h1 id="7장-애그리게이트와-일관성-경계" style="position:relative;"><a href="#7%EC%9E%A5-%EC%95%A0%EA%B7%B8%EB%A6%AC%EA%B2%8C%EC%9D%B4%ED%8A%B8%EC%99%80-%EC%9D%BC%EA%B4%80%EC%84%B1-%EA%B2%BD%EA%B3%84" aria-label="7장 애그리게이트와 일관성 경계 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>7장 애그리게이트와 일관성 경계</h1>
+<p>도메인 모델을 보면서 불변조건, 제약에 대해 다시 살펴보고 도메인 모델 객체가 개념적으로나 영속적 저장소 안에서나 내부적인 일관성을 유지하는 방법을 살펴본다<sup id="fnref-1"><a href="#fn-1" class="footnote-ref">1</a></sup>.</p>
+<p>일관성 경계(consistency boundary)를 설명하며, 이를 통해 어떻게 유지보수 편의를 해치지 않으면서 고성능 소프트웨어를 만들 수 있게 도와주는지 살펴보자.</p>
+<p>애그리게이트가 추가되면 도메인을 이런식으로 표현할 수 있게 된다</p>
+<p><img src="https://www.cosmicpython.com/book/images/apwp_0701.png" alt="https://www.cosmicpython.com/book/images/apwp_0701.png"></p>
+<h1 id="71-모든-것을-스프레드시트에서-처리하지-않는-이유" style="position:relative;"><a href="#71-%EB%AA%A8%EB%93%A0-%EA%B2%83%EC%9D%84-%EC%8A%A4%ED%94%84%EB%A0%88%EB%93%9C%EC%8B%9C%ED%8A%B8%EC%97%90%EC%84%9C-%EC%B2%98%EB%A6%AC%ED%95%98%EC%A7%80-%EC%95%8A%EB%8A%94-%EC%9D%B4%EC%9C%A0" aria-label="71 모든 것을 스프레드시트에서 처리하지 않는 이유 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>7.1 모든 것을 스프레드시트에서 처리하지 않는 이유</h1>
+<p>도메인 모델의 요즘은 무엇일까? 이걸로 얻는 근본적인 이득이 뭘까?</p>
+<p>걍 스프레드시트로 다 하면 안되나? 어차피 사용자들은 하나로 다 되는거 엄청 좋아하는데.</p>
+<p>많은 수의 기업운영이 CSV over SMTP 수준의 아키텍처에서 걍 머물러있다. 역으로 말하면 딱 그정도의 회사들이 버글버글하단 이야기다. 일단 잘되고 좋은데 일관성이 없어서 확장이 안된다.</p>
+<p>예를 들어…</p>
+<ul>
+<li>특정 필드는 누구만 볼 수 있도록 설정되어있는가?
+<ul>
+<li>누가 그 ‘누구’를 변경할 수 있는가?</li>
+</ul>
+</li>
+<li>의자를 -350개 주문하거나 식탁을 10M개 주문할 수 있나?</li>
+<li>직원의 월급이 음수가 될 수 있나?</li>
+</ul>
+<p>이런 건 일어나서도 안 된다. 도메인 로직은 이런 제약사항을 강제로 지키게 해서 시스템이 만족하는 불변조건을 유지하려는 목적으로 작성된다. 불변조건(*invariants)*은 어떤 연산을 끝낼 때 마다 항상 참이어야 하는 요소를 의미한다.</p>
+<h1 id="72-불변조건-제약-일관성" style="position:relative;"><a href="#72-%EB%B6%88%EB%B3%80%EC%A1%B0%EA%B1%B4-%EC%A0%9C%EC%95%BD-%EC%9D%BC%EA%B4%80%EC%84%B1" aria-label="72 불변조건 제약 일관성 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>7.2 불변조건, 제약, 일관성</h1>
+<ul>
+<li>제약(constraint): 모델이 취할 수 있는 상태의 수를 제한</li>
+<li>불변조건(invariants): 항상 참이어야 하는 조건</li>
+</ul>
+<p>E.g., 호텔 예약 시스템을 작성한다면 중복 예약을 허용하지 않는 <em><strong>제약</strong></em>이 있을 수 있다. 이 제약은 한 객실에 예약 한 개만 있을 수 있다는 <em><strong>불변조건</strong></em>을 지원한다.</p>
+<p>경우에 따라 규칙을 일시적으로 완화(<em>bend</em>)해야할 수도 있다. VIP가 예약하면 VIP의 숙박 기간과 위치에 맞춰 주변의 방 예약을 섞어야 할 수도 있다.</p>
+<p>메모리상에서 예약을 섞는 동안 한 곳에 예약이 2개 이상 발생할 수도 있지만, 도메인 모델은 작업이 완료되면 불변성이 충족되는 최종 일관된 상태가 되도록 보장해야 한다. 모든 고객이 만족하는 방안을 못찾고 연산이 끝나면 안 되고 오류를 발생시켜야 한다.</p>
+<p>다시 예시로 돌아가보자. 이 요구사항부터 시작해보자.</p>
+<blockquote>
+<p>주문 라인은 한번에 한 배치에만 할당될 수 있다</p>
+</blockquote>
+<p>이런 규칙은 불변조건을 만드는 비즈니스 규칙이다. 불변조건은 주문 라인이 <code class="language-text">0</code>또는 <code class="language-text">1</code>개의 배치에만 할당될 수 있고, <code class="language-text">2</code> 개 이상의 배치에 할당될 수는 없다는 것이다. 코드가 실수로 같은 라인에 대해 <code class="language-text">Batch.allocate()</code> 를 두 가지 다른 배치에 호출하는 일이 없도록 해야한다. 현재까지의 코드에선 그런 명시적인 코드는 없다.</p>
+<h2 id="721-불변조건-동시성-락" style="position:relative;"><a href="#721-%EB%B6%88%EB%B3%80%EC%A1%B0%EA%B1%B4-%EB%8F%99%EC%8B%9C%EC%84%B1-%EB%9D%BD" aria-label="721 불변조건 동시성 락 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>7.2.1 불변조건, 동시성, 락</h2>
+<p>비즈니스 로직의 다른 요구사항을 살펴보자</p>
+<blockquote>
+<p>주문 라인 수량보다 더 작은 배치에 라인을 할당할 수는 없다</p>
+</blockquote>
+<p>여기서의 제약조건은 배치에 있는 재고보다 많은 재고를 라인에 할당할 수 없다는 것이다. 이로 인해 두 고객에게 제품을 재고보다 더 많이 파는 일은 발생할 수 없다. 이 제약을 불변조건으로 바구면 가용 재고 수량이 <code class="language-text">0</code>이상이어야 한다는 조건이 된다<sup id="fnref-2"><a href="#fn-2" class="footnote-ref">2</a></sup>.  시스템 상태를 업데이트 할 때마다 코드는 이런 불변조건을 어기지 않는지 확인해야 한다.</p>
+<p>동시성(<em>concurrency</em>)를 도입하면 더 복잡해진다. 갑자기 재고를 여러 주문 라인에 동시에 할당할 수 있게 된다. 심지어 배치 변경과 동시에 주문라인을 할당할 수도 있다.</p>
+<p>보통은 DB 테이블에 lock을 걸어서 해결한다. 두 연산이 동시에 일어나는 것을 방지하기 위함이다.</p>
+<p>앱의 규모확장을 생각하면 모든 배치에 라인을 할당하는 모델은 규모를 키우기 어렵다는 사실을 깨닫는다(내 생각엔 이게 핵심 포인트다. 도메인을 알고 있다면/논의하다보면 이런 추론을 할 수 있어야 한다). 시간당 수만 건의 주문과 수십만 건의 주문 라인을 처리하려면 전체 테이블의 각 row에 lock을 거는 것 만으로는 안 된다. 이러면 데드락 상태에 빠질 수 있다.</p>
+<h1 id="73-aggregate-이란" style="position:relative;"><a href="#73-aggregate-%EC%9D%B4%EB%9E%80" aria-label="73 aggregate 이란 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>7.3 Aggregate 이란?</h1>
+<p>주문 라인을 할당하고 싶을 때마다 DB에 lock을 걸 수 없다면 어떻게 해야할까? 시스템의 불변조건을 보호하면서 동시성을 최대한 살리고 싶다. 불변조건을 유지하려면 불가피하게 동시 쓰기를 막아야 한다. 여러 사용자가 <code class="language-text">DEADLY-SPOON</code> 을 동시에 할당할 수 있다면 과할당이 이루어질 위험이 생긴다.</p>
+<p>반면, <code class="language-text">DEADLY-SPOON</code> 과 <code class="language-text">FLIMSY-DESK</code> 를 동시에 할당할 수 없는 이유는 없다. 두 제품에 동시에 적용되는 불변조건이 없기 때문이다. 즉 서로 다른 두 제품에 대한 할당 사이에 일관성이 있을 이유는 없다.</p>
+<p><strong>애그리게이트</strong>(Aggregate) 패턴은 이런 긴장을 해소하기 위한 설계 패턴이다. 애그리게이트는 다른 도메인 객체를 <strong>포함</strong>하며 이 객체 컬렉션 전체를 한꺼번에 다룰 수 있게 해주는 도메인 객체다.</p>
+<p>애그리게이트에 있는 객체를 변경하는 유일한 방법은 애그리게이트와 그 안의 객체 전체를 불러와서 애그리게이트 자체에 대해 메소드를 호출하는 것이다.</p>
+<p>모델이 점점 복잡해지고 엔티티와 VO가 늘어나면서 각각에 대한 참조가 얽히고설킨 그래프가 된다. 따라서 누가 어떤 객체를 변경할 수 있는지 추적하기 어려워진다. 특히 모델안에 <strong>컬렉션</strong>이 있으면 어떤 엔티티를 선정해서 그 엔티티와 관련된 모든 객체를 변경할 수 있는 단일 진입점으로 삼으면 좋다<sup id="fnref-3"><a href="#fn-3" class="footnote-ref">3</a></sup>. 이러면 시스템이 개념적으로 더 간단해지고 어떤 객체가 다른 객체의 일관성을 책임지게 하면 시스템에 대해 추론하기 쉬워진다.</p>
+<p>쇼핑몰 설계를 예로 들어보자. 장바구니(<em>cart</em>)는 좋은 애그리게이트가 된다. 장바구니는 한 단위로 다뤄야 하는 상품들로 이루어진 <strong>컬렉션</strong>이다. 중요한 점은 데이터 스토어에서 전체 장바구니를 단일 blob으로 읽어오고 싶다는 점이다. 동시에 장바구니 변경을 위해 요청을 두번 보내고 싶지도 않고 이상한 동시성 오류를 발생하게 하고싶지도 않다. 대신 장바구니에 대한 모든 변경을 단일 DB 트랜잭션으로 묶고싶다.</p>
+<p>하지만 여러 고객의 장바구니를 동시에 바꾸는 유스케이스는 없다. 여러 장바구니를 한 트랜잭션 안에서 바꾸고 싶진 않다. 따라서 각 장바구니는 자신만의 불변조건을 유지할 책임을 담당하는 한 <strong>동시성 경계</strong>다.</p>
+<blockquote>
+<p>애그리게이트는 데이터 변경이라는 목적을 위해 한 단위로 취급할 수 있는 연관된 객체의 묶음이다.</p>
+</blockquote>
+<p>Eric Evans, 도메인 주도 설계(위키북스, 2011)</p>
+<blockquote>
+</blockquote>
+<p>Evans에 따르면, 애그리게이트에는 원소에 대한 접근을 캡슐화한 루트 엔티티(장바구니) 가 있다. 원소마다 고유한 정체성이 있지만, 시스템의 나머지 부분은 장바구니를 나눌 수 없는 단일 객체처럼 참고해야 한다.</p>
+<h1 id="74-애그리게이트-선택" style="position:relative;"><a href="#74-%EC%95%A0%EA%B7%B8%EB%A6%AC%EA%B2%8C%EC%9D%B4%ED%8A%B8-%EC%84%A0%ED%83%9D" aria-label="74 애그리게이트 선택 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>7.4 애그리게이트 선택</h1>
+<p>그렇다면 시스템에 어떤 애그리게이트를 써야할까? 내 생각엔 좋은 설계를 위해선 이걸 잘 정해야 한다고 본다. 애그리게이트는 모든 연산이 일관성 있는 상태에서 끝난다는 점을 보장하는 경계가 되기 때문이다. 이러한 사실은 소프트웨어에 대해 추론하고 이상한 경합지점을 방지할 수 있게 해준다. 서로 일관성이 있어야 하는 소수의 객체 주변에 경계를 설정하고자 한다. 성능을 위해선 경계가 더 작을 수록 좋다. 이런 경계에는 좋은 이름을 부여해주는 것 또한 필요하다.</p>
+<p>애그리게이트 내부에서 다뤄야 하는 객체는 <code class="language-text">Batch</code> 이다. 이 컬렉션을 뭐라고 부르는게 좋을까? 어떻게 시스템의 모든 배치를 내부에서 일관성이 보장되는 다른 섬들로 나눌 수 있을까?</p>
+<ul>
+<li>shipment?
+<ul>
+<li>선적엔 여러 배치가 들어갈 수 있다</li>
+<li>모든 배치는 창고로 전달된다</li>
+</ul>
+</li>
+<li>warehouse?
+<ul>
+<li>각 창고에는 여러 배치가 들어있다</li>
+<li>모든 재고수량을 동시에 파악할 수도 있다</li>
+</ul>
+</li>
+</ul>
+<p>그런데 두 상품이 같은 창고에 있거나 같은 선적에 포함되어있어도 동시할당이 된다. 아까 위에서 이렇게 파악했다:</p>
+<blockquote>
+<p><code class="language-text">DEADLY-SPOON</code> 과 <code class="language-text">FLIMSY-DESK</code> 를 동시에 할당할 수 없는 이유는 없다.</p>
+</blockquote>
+<p>그런고로 상기 둘은 경계로 두긴 어렵다.</p>
+<p>주문 라인을 할당할 때는 주문 라인으로 같은 <code class="language-text">SKU</code> 에 속하는 배치에만 관심이 있다. 글로벌한 SKU stock 같은 개념이 필요하다. <code class="language-text">GlobalSkuStock</code> 으로 할까? 근데 저자는 저 이름이 너무 촌스러워서 <code class="language-text">Product</code> 로 하기로 했다<sup id="fnref-4"><a href="#fn-4" class="footnote-ref">4</a></sup>.</p>
+<p>기존에는, 주문 라인을 할당하고 싶으면 모든 <code class="language-text">Batch</code> 객체를 살펴보고 이들을 <code class="language-text">allocate()</code> 도메인 서비스에 전달했다.</p>
+<p><img src="https://www.cosmicpython.com/book/images/apwp_0702.png" alt="도메인 서비스를 사용해 모든 배치를 할당"></p>
+<p>앞으로는 <code class="language-text">Product</code> 객체한테 일임할 것이다. 이 객체는 주문 라인에서 특정 SKU를 표현한다. Product 객체는 <strong>자신이 담당하는 SKU</strong>에 대한 <strong>모든 배치</strong>를 담당한다. <code class="language-text">allocate()</code> 메소드를 <code class="language-text">Product</code>에 대해 호출하도록 열어둘 것이다.</p>
+<p><img src="https://www.cosmicpython.com/book/images/apwp_0703.png" alt="Product 를 추가. 이 객체가 관리하는 배치를 할당해달라고 요청"></p>
+<p>코드를 보자.</p>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token keyword">class</span> <span class="token class-name">Product</span><span class="token punctuation">:</span>
+    <span class="token keyword">def</span> <span class="token function">__init__</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> sku<span class="token punctuation">:</span> <span class="token builtin">str</span><span class="token punctuation">,</span> batches<span class="token punctuation">:</span> List<span class="token punctuation">[</span>Batch<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        self<span class="token punctuation">.</span>sku <span class="token operator">=</span> sku  <span class="token comment">#(1)</span>
+        self<span class="token punctuation">.</span>batches <span class="token operator">=</span> batches  <span class="token comment">#(2)</span>
+
+    <span class="token keyword">def</span> <span class="token function">allocate</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> line<span class="token punctuation">:</span> OrderLine<span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> <span class="token builtin">str</span><span class="token punctuation">:</span>  <span class="token comment">#(3)</span>
+        <span class="token keyword">try</span><span class="token punctuation">:</span>
+            batch <span class="token operator">=</span> <span class="token builtin">next</span><span class="token punctuation">(</span>b <span class="token keyword">for</span> b <span class="token keyword">in</span> <span class="token builtin">sorted</span><span class="token punctuation">(</span>self<span class="token punctuation">.</span>batches<span class="token punctuation">)</span> <span class="token keyword">if</span> b<span class="token punctuation">.</span>can_allocate<span class="token punctuation">(</span>line<span class="token punctuation">)</span><span class="token punctuation">)</span>
+            batch<span class="token punctuation">.</span>allocate<span class="token punctuation">(</span>line<span class="token punctuation">)</span>
+            <span class="token keyword">return</span> batch<span class="token punctuation">.</span>reference
+        <span class="token keyword">except</span> StopIteration<span class="token punctuation">:</span>
+            <span class="token keyword">raise</span> OutOfStock<span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f"Out of stock for sku </span><span class="token interpolation"><span class="token punctuation">{</span>line<span class="token punctuation">.</span>sku<span class="token punctuation">}</span></span><span class="token string">"</span></span><span class="token punctuation">)</span></code></pre></div>
+<ol>
+<li><code class="language-text">Product</code>의 주요 식별자는 <code class="language-text">sku</code> 다.</li>
+<li><code class="language-text">Product</code>클래스는 sku에 해당하는 <code class="language-text">batches</code> 컬렉션 참조를 유지한다</li>
+<li><code class="language-text">allocate()</code> 도메인 서비스를 이 애그리게이트가 제공한다.</li>
+</ol>
+<blockquote>
+<p><code class="language-text">Product</code> 는 통상 우리가 생각하는 <code class="language-text">Product</code> 하고 좀 다르다… 가격도 없고 설명도 없고 크기도 없고…</p>
+</blockquote>
+<p>하지만 현재 서비스에서는 그런 걸 고민할 필요가 없다. 이게 제한된 컨텍스트(이하 Bounded Context)의 강점이다. Bounded Context 상에서는 한 앱의 <code class="language-text">Product</code> 개념이 다른 앱에서의 <code class="language-text">Product</code> 와 완전히 다를 수 있다.</p>
+<blockquote>
+</blockquote>
+<h2 id="aggregates-bounded-contexts-and-microservices" style="position:relative;"><a href="#aggregates-bounded-contexts-and-microservices" aria-label="aggregates bounded contexts and microservices permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Aggregates, Bounded Contexts and Microservices</h2>
+<h3 id="개념-소개-및-전개" style="position:relative;"><a href="#%EA%B0%9C%EB%85%90-%EC%86%8C%EA%B0%9C-%EB%B0%8F-%EC%A0%84%EA%B0%9C" aria-label="개념 소개 및 전개 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>개념 소개 및 전개</h3>
+<p>이 개념은 근본적으로 전체 비즈니스를 한 모델에 넣으려는 시도에 대한 반응이었다. “고객” 이라는 컨텍스트를 가지고 이해해보자.</p>
+<p>“고객” 이란 단어도 각 분야별 사람들에겐 각자 다른 의미를 가진다(판매상에서의 고객, CS에서의 고객, 배송에서의 고객, 지원에서의 고객 등). 그러니 각 “고객”의 속성이나 의미는 분야(컨텍스트)가 달라지면 완전히 다른게 되어버림을 알 수 있다.</p>
+<p>이런식으로 모든 유스케이스를 잡아내는 단일 모델(클래스, DB 등)을 만드는 대신 여러 모델을 만들고 각 컨텍스트 간의 경계(Bounded Context)를 잘 잡은 후 여러 컨텍스트를 왔다갔다 할 때 명시적인 변환을 처리하자는 아이디어가 도출되었다.</p>
+<p>그러니 자연스럽게 마이크로서비스가 대두된다. 각 마이크로서비스가 각자 자유롭게 “고객” 개념을 가지고, 자신이 통합해야 하는 다른 마이크로서비스의 개념으로 변환해 가져오거나 내보낼 수 있다.</p>
+<h3 id="대충-예시로-살펴보자" style="position:relative;"><a href="#%EB%8C%80%EC%B6%A9-%EC%98%88%EC%8B%9C%EB%A1%9C-%EC%82%B4%ED%8E%B4%EB%B3%B4%EC%9E%90" aria-label="대충 예시로 살펴보자 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>(대충) 예시로 살펴보자</h3>
+<p>할당 서비스 에서는 <code class="language-text">Product(sku, batches)</code> 가 있을 수 있을 것이고, 어떤 전자상거래의 <code class="language-text">Product</code> 라면 <code class="language-text">Product(sku, description, price, image_url, dimensions, ...</code>) 가 있을 수 있을 것이다. 내가 앞으로 작성해야 할 도메인 모델은 오직 내가 계산을 수행하기 위한 필요 데이터만을 포함해야 한다!</p>
+<p>마이크로서비스를 떠나서, 애그리게이터를 선택할 때는 어떤 제한된 컨텍스트 안에서 애그리게이트를 실행할지 선택해야 한다. 컨텍스트를 제약하면 애그리게이트의 숫자를 낮게 유지하고 그 크기를 관리하기 좋은 크기로 유지할 수 있다.</p>
+<p>나중에 아래 책들을 꼭 사서 보자…<sup id="fnref-5"><a href="#fn-5" class="footnote-ref">5</a></sup></p>
+<ul>
+<li><a href="http://www.yes24.com/Product/Goods/48577718" target="_blank" rel="nofollow noopener noreferrer">반 버논, &#x3C;도메인 주도 설계 핵심> (에이콘출판사, 2017)</a></li>
+<li>지금 이 책!</li>
+<li><a href="http://www.yes24.com/Product/Goods/25100510" target="_blank" rel="nofollow noopener noreferrer">반 버논, &#x3C;도메인 주도 설계 구현> (저자가 빨간 책이라 하는거) (에이콘출판사, 2016)</a></li>
+<li><a href="http://www.yes24.com/Product/Goods/116613006" target="_blank" rel="nofollow noopener noreferrer">에릭 에반스, &#x3C;도메인 주도 설계> (저자가 파란 책이라 하는거) (위키북스, 2022)</a></li>
+</ul>
+<h1 id="75-one-aggregate--one-repository" style="position:relative;"><a href="#75-one-aggregate--one-repository" aria-label="75 one aggregate  one repository permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>7.5 <strong>One Aggregate = One Repository</strong></h1>
+<p>애그리게이트가 될 엔티티를 정의하고 나면 외부 세게에서 접근할 수 있는 유일한 엔티티가 되어야 한다는 규칙을 적용해야 한다. 허용되는 모든 저장소는 오직 애그리게이트만을 반환해야 한다.</p>
+<blockquote>
+<p>저장소가 애그리게이트만 반환해야 한다는 규칙은 애그리게이트가 <strong>도메인 모델에 접근하는 유일한 통로</strong>라는 관례를 지키도록 하는 핵심 규칙이다. 이를 어기지 말자!</p>
+</blockquote>
+<p>시작해보자!</p>
+<p>그러면 기존에 있던 <code class="language-text">BatchRepository</code> 는 <code class="language-text">ProductRepository</code> 가 될 것이다. 천천히 코드를 갈아보자…</p>
+<ul>
+<li>UoW와 저장소 객체를 살펴보자</li>
+</ul>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token keyword">class</span> <span class="token class-name">AbstractUnitOfWork</span><span class="token punctuation">(</span>abc<span class="token punctuation">.</span>ABC<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    products<span class="token punctuation">:</span> repository<span class="token punctuation">.</span>AbstractProductRepository
+		<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+<span class="token keyword">class</span> <span class="token class-name">AbstractProductRepository</span><span class="token punctuation">(</span>abc<span class="token punctuation">.</span>ABC<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token decorator annotation punctuation">@abc<span class="token punctuation">.</span>abstractmethod</span>
+    <span class="token keyword">async</span> <span class="token keyword">def</span> <span class="token function">get</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> reference<span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> List<span class="token punctuation">[</span><span class="token string">'Product'</span><span class="token punctuation">]</span><span class="token punctuation">:</span>
+        <span class="token keyword">raise</span> NotImplementedError
+
+    <span class="token decorator annotation punctuation">@abc<span class="token punctuation">.</span>abstractmethod</span>
+    <span class="token keyword">async</span> <span class="token keyword">def</span> <span class="token function">add</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> product<span class="token punctuation">:</span> <span class="token string">'Product'</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">raise</span> NotImplementedError</code></pre></div>
+<p>ORM계층을 조절해서 올바른 배치를 가져오게 한 후 Product 객체와 연관시켜야 한다. <code class="language-text">Repository</code> 패턴을 쓰면 이를 어떻게 연관시킬지 아직 신경쓰지 않아도 된다. <code class="language-text">FakeRepository</code> 를 쓰고 새 모델을 서비스 계층으로 전달해서 <code class="language-text">Product</code> 가 엔트리포인트인 경우 서비스 계층이 어떤 모습일지 코드로 볼 수 있다.</p>
+<ul>
+<li>서비스 계층의 변화를 살펴보자
+<ul>
+<li>의외로 쉽게 갈아끼워진다! 서비스 계층에서 서비스”만”을 바라보도록 코드를 작성한 도움인 것 같다.</li>
+</ul>
+</li>
+</ul>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token keyword">async</span> <span class="token keyword">def</span> <span class="token function">add_batch</span><span class="token punctuation">(</span>
+        ref<span class="token punctuation">:</span> <span class="token builtin">str</span><span class="token punctuation">,</span>
+        sku<span class="token punctuation">:</span> <span class="token builtin">str</span><span class="token punctuation">,</span>
+        qty<span class="token punctuation">:</span> <span class="token builtin">int</span><span class="token punctuation">,</span>
+        eta<span class="token punctuation">:</span> Optional<span class="token punctuation">[</span>date<span class="token punctuation">]</span><span class="token punctuation">,</span>
+        uow<span class="token punctuation">:</span> unit_of_work<span class="token punctuation">.</span>AbstractUnitOfWork
+<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">async</span> <span class="token keyword">with</span> uow<span class="token punctuation">:</span>
+        product <span class="token operator">=</span> uow<span class="token punctuation">.</span>products<span class="token punctuation">.</span>get<span class="token punctuation">(</span>sku<span class="token operator">=</span>sku<span class="token punctuation">)</span>
+
+        <span class="token keyword">if</span> product <span class="token keyword">is</span> <span class="token boolean">None</span><span class="token punctuation">:</span>
+            product <span class="token operator">=</span> model<span class="token punctuation">.</span>Product<span class="token punctuation">(</span>sku<span class="token operator">=</span>sku<span class="token punctuation">,</span> batches<span class="token operator">=</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+            uow<span class="token punctuation">.</span>products<span class="token punctuation">.</span>add<span class="token punctuation">(</span>product<span class="token punctuation">)</span>
+
+        <span class="token keyword">await</span> product<span class="token punctuation">.</span>batches<span class="token punctuation">.</span>add<span class="token punctuation">(</span>model<span class="token punctuation">.</span>Batch<span class="token punctuation">(</span>ref<span class="token punctuation">,</span> sku<span class="token punctuation">,</span> qty<span class="token punctuation">,</span> eta<span class="token punctuation">)</span><span class="token punctuation">)</span>
+        <span class="token keyword">await</span> uow<span class="token punctuation">.</span>commit<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+<span class="token keyword">async</span> <span class="token keyword">def</span> <span class="token function">allocate</span><span class="token punctuation">(</span>
+        orderid<span class="token punctuation">:</span> <span class="token builtin">str</span><span class="token punctuation">,</span>
+        sku<span class="token punctuation">:</span> <span class="token builtin">str</span><span class="token punctuation">,</span>
+        qty<span class="token punctuation">:</span> <span class="token builtin">int</span><span class="token punctuation">,</span>
+        uow<span class="token punctuation">:</span> unit_of_work<span class="token punctuation">.</span>AbstractUnitOfWork
+<span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> <span class="token builtin">str</span><span class="token punctuation">:</span>
+    line <span class="token operator">=</span> model<span class="token punctuation">.</span>OrderLine<span class="token punctuation">(</span>orderid<span class="token punctuation">,</span> sku<span class="token punctuation">,</span> qty<span class="token punctuation">)</span>
+
+    <span class="token keyword">async</span> <span class="token keyword">with</span> uow<span class="token punctuation">:</span>
+        product <span class="token operator">=</span> <span class="token keyword">await</span> uow<span class="token punctuation">.</span>products<span class="token punctuation">.</span>get<span class="token punctuation">(</span>sku<span class="token operator">=</span>line<span class="token punctuation">.</span>sku<span class="token punctuation">)</span>
+        <span class="token keyword">if</span> product <span class="token keyword">is</span> <span class="token boolean">None</span><span class="token punctuation">:</span>
+            <span class="token keyword">raise</span> InvalidSku<span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f'Invalid sku </span><span class="token interpolation"><span class="token punctuation">{</span>line<span class="token punctuation">.</span>sku<span class="token punctuation">}</span></span><span class="token string">'</span></span><span class="token punctuation">)</span>
+
+        batchref <span class="token operator">=</span> product<span class="token punctuation">.</span>allocate<span class="token punctuation">(</span>line<span class="token punctuation">)</span>
+        <span class="token keyword">await</span> uow<span class="token punctuation">.</span>commit<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+    <span class="token keyword">return</span> batchref
+
+<span class="token keyword">async</span> <span class="token keyword">def</span> <span class="token function">deallocate</span><span class="token punctuation">(</span>
+        orderid<span class="token punctuation">:</span> <span class="token builtin">str</span><span class="token punctuation">,</span>
+        sku<span class="token punctuation">:</span> <span class="token builtin">str</span><span class="token punctuation">,</span>
+        qty<span class="token punctuation">:</span> <span class="token builtin">int</span><span class="token punctuation">,</span>
+        uow<span class="token punctuation">:</span> unit_of_work<span class="token punctuation">.</span>AbstractUnitOfWork<span class="token punctuation">,</span>
+<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    line <span class="token operator">=</span> model<span class="token punctuation">.</span>OrderLine<span class="token punctuation">(</span>orderid<span class="token punctuation">,</span> sku<span class="token punctuation">,</span> qty<span class="token punctuation">)</span>
+    <span class="token keyword">async</span> <span class="token keyword">with</span> uow<span class="token punctuation">:</span>
+        product <span class="token operator">=</span> <span class="token keyword">await</span> uow<span class="token punctuation">.</span>products<span class="token punctuation">.</span><span class="token builtin">list</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+        <span class="token keyword">if</span> product <span class="token keyword">is</span> <span class="token boolean">None</span><span class="token punctuation">:</span>
+            <span class="token keyword">raise</span> InvalidSku<span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f'Invalid sku </span><span class="token interpolation"><span class="token punctuation">{</span>line<span class="token punctuation">.</span>sku<span class="token punctuation">}</span></span><span class="token string">'</span></span><span class="token punctuation">)</span>
+
+        model<span class="token punctuation">.</span>deallocate<span class="token punctuation">(</span>line<span class="token punctuation">,</span> product<span class="token punctuation">)</span>
+        <span class="token keyword">await</span> uow<span class="token punctuation">.</span>commit<span class="token punctuation">(</span><span class="token punctuation">)</span></code></pre></div>
+<h1 id="76-성능은-어떨까" style="position:relative;"><a href="#76-%EC%84%B1%EB%8A%A5%EC%9D%80-%EC%96%B4%EB%96%A8%EA%B9%8C" aria-label="76 성능은 어떨까 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>7.6 성능은 어떨까?</h1>
+<p>저자가 성능좋은 소프트웨어를 원하기 때문에 애그리게이트로 모델링한다고 여러 번 말했다. 근데 배치 하나만 요청해도 <strong>모든</strong> 배치를 읽어온다. 그럼 안 좋은거 아닌가? 라고 생각했는데 근거가 있다:</p>
+<ol>
+<li>현재는 의도적으로 DB질의를 한 번만 하고 변경된 부분을 한 번만 영속화하여 데이터를 모델링하는 기법을 사용중이다. 이런 방식은 소프트웨어가 진화하면 할 수록 여러번 다양한 질의를 던지는 프로그램보다 시스템 성능이 나은 경향이 있다.</li>
+<li>데이터 구조를 최소한으로 쓰며 한 row 당 최소한의 문자열과 정수만 만든다. 이러면 수백개의 배치를 메모리로 가져올 수 있다.</li>
+<li>시간이 지나도 가져오는 데이터의 양은 제어를 벗어나지 않는다.</li>
+</ol>
+<p>예를 들어 어느 시점에서는 상품마다 20개 정도의 배치가 있을 것이라 “예상” 한다. 배치를 다 사용하고나면 이 배치를 계산에서 배제할 수 있다.
+4. 만일 상품 당 몇천 개의 배치가 있다 예상된다면 배치의 로드방식을 lazy-loading(지연 읽기)으로 처리한다. SQLAlchemy는 이미 데이터를 페이지 단위로 읽어온다. 이렇게 하면 적은 수의 row를 가져오는 DB요청이 더 많아진다. 이렇게 점진적으로 행을 가져오는 방식도 잘 작동한다.</p>
+<p>코드를 짜보자.</p>
+<p>그리고, 다른 모든 방법이 실패하면 다른 애그리게이트를 살펴본다.</p>
+<ul>
+<li>어쩌면 배치를 지역/창고별로 나눠야할 수도 있다</li>
+<li>아니면 선적이라는 개념을 중심으로 데이터 접근전략을 재설계 해야할 수도 있다</li>
+</ul>
+<p>애그리게이트 패턴은 일관성과 성능을 중심으로 여러 기술적 제약사항을 관리하는데 도움이 되도록 설계된 패턴이다. 올바른 애그리게이트가 <strong>하나만 있는 것은 아니다</strong>. 설정한 경계가 성능을 떨어뜨린다면 <strong>언제든 설계를 다시</strong> 할 준비를 하자. <strong>바꿔도 좋다. 언제든 바꿀 수 있다고 생각하고, 또 이게 편하다고 느껴야 한다.</strong></p>
+<h1 id="77-버전-번호와-낙관적-동시성" style="position:relative;"><a href="#77-%EB%B2%84%EC%A0%84-%EB%B2%88%ED%98%B8%EC%99%80-%EB%82%99%EA%B4%80%EC%A0%81-%EB%8F%99%EC%8B%9C%EC%84%B1" aria-label="77 버전 번호와 낙관적 동시성 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>7.7 버전 번호와 낙관적 동시성</h1>
+<p>DB 수준에서 데이터 일관성을 강제할 수 있는 방법을 더 살펴보자</p>
+<blockquote>
+<p>이번 절(<em>section</em>)에서는 구현을 다룬다. 또한 Postgres-specific 코드다.</p>
+</blockquote>
+<p>여러 접근방법 중 하나일 뿐이다.</p>
+<p>실전에서는 요구사항 별로 다르게 접근해야할 수도 있다.
+<em><strong>코드를 절대 프로덕션에 복붙하지 마시오.</strong></em></p>
+<blockquote>
+</blockquote>
+<p>전체 <code class="language-text">batches</code> 테이블에 락걸고 싶지는 않고 특정 SKU에 해당하는 행에만 lock을 걸 수 있을까?</p>
+<p>한가지 답은 Product 모델 속성 하나를 사용해 전체 상태 변경이 완료되었는지 표시하고, 여러 동시성 작업자들이 이 속성을 획득하기 위해 경쟁하는 자원으로 활용하는 방법이다. 두 트랜잭션이 <code class="language-text">batches</code> 에 대한 세계 상태를 동시에 읽고 둘 다 <code class="language-text">allocation</code> 테이블을 업데이트 하려고 한다면, 각 트랜잭션이 <code class="language-text">product_table</code> 에 있는 <code class="language-text">version_number</code> 를 업데이트하도록 강제할 수 있다. 이러면 경쟁하는 트랜잭션 중 하나만 승리하고, 세계가 일관성 있게 남게 된다.</p>
+<p><img src="https://www.cosmicpython.com/book/images/apwp_0704.png" alt="두 트랜잭션 예시:  Product 에 동시 업데이트를 시도하는 시퀀스 다이어그램"></p>
+<ul>
+<li>둘 다 버전 <code class="language-text">3</code>을 가져간다</li>
+<li>모델에 allocate을 하면 버전 <code class="language-text">4</code>를 담고있는 Product 객체가 생긴다
+<ul>
+<li>해당 객체를 먼저 커밋한 사항이 반영된다</li>
+<li>늦게 커밋한 사람은 버전이 안맞아서 못 한다. 혹은 다시 하거나</li>
+</ul>
+</li>
+</ul>
+<h2 id="낙관적-동시성-제어와-재시도" style="position:relative;"><a href="#%EB%82%99%EA%B4%80%EC%A0%81-%EB%8F%99%EC%8B%9C%EC%84%B1-%EC%A0%9C%EC%96%B4%EC%99%80-%EC%9E%AC%EC%8B%9C%EB%8F%84" aria-label="낙관적 동시성 제어와 재시도 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>낙관적 동시성 제어와 재시도</h2>
+<blockquote>
+<p><em>어쨌거나 성능과 충돌 가능성을 측정 후 어떤 정책을 가져가야 할지 평가해야 한다.</em></p>
+</blockquote>
+<ol>
+<li>낙관적/비관적 동시성 제어에 대해
+<ul>
+<li>낙관적 동시성 제어(<em>Optimistic Concurrency Control</em>)
+<ul>
+<li>여러 사용자의 DB 변경 충돌이 <em>드물 것이다</em> 라고 생각한다</li>
+<li>일단 업데이트 하고 문제 시 통지받을 수 있는 방법이 있는지만 확실히 한다</li>
+<li>충돌 발생 시 어떻게 처리해야 할지 명시해야 한다</li>
+</ul>
+</li>
+<li>비관적(<em>pessimistic</em>) 동시성 제어
+<ul>
+<li>여러 사용자의 DB 변경 충돌이 <em>잦을 것이다</em> 라고 가정한다</li>
+<li>모든 충돌을 피하려 노력하고, 안전성을 위해 모든 대상을 lock을 사용해 잠근다</li>
+<li>실패 처리는 DB가 해줘서 고민할 필요는 없지만, deadlock을 고민해봐야 한다</li>
+<li>E.g.,
+<ul>
+<li><code class="language-text">batches</code> 테이블 전체를 lock 걸거나, <code class="language-text">SELECT FOR UPDATE</code> 를 사용한다.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>실패 처리에 대한 방안
+<ol>
+<li>실패한 연산을 처음부터 다시 함
+<ol>
+<li>두 트랜잭션 예시에서 실패한 쪽은 다시 요청해서 결과를 받아본다</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+<h2 id="771-버전-번호를-구현하는-방법" style="position:relative;"><a href="#771-%EB%B2%84%EC%A0%84-%EB%B2%88%ED%98%B8%EB%A5%BC-%EA%B5%AC%ED%98%84%ED%95%98%EB%8A%94-%EB%B0%A9%EB%B2%95" aria-label="771 버전 번호를 구현하는 방법 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>7.7.1 버전 번호를 구현하는 방법</h2>
+<ol>
+<li>도메인의 <code class="language-text">version_number</code> 를 사용
+<ol>
+<li>해당 값을 <code class="language-text">Product</code> 생성자에 추가하고 <code class="language-text">Product.allocate()</code> 가 버전 번호를 올리는 경우</li>
+</ol>
+</li>
+<li>서비스 계층이 수행
+<ol>
+<li>(근거) 버전 번호는 도메인의 관심사가 아니기 때문이다</li>
+<li>따라서 서비스 계층에서 <code class="language-text">Product</code> 에 저장소를 통해 버전번호를 덧붙이고, <code class="language-text">commit()</code> 전에 버전 번호를 증가한다고 가정할 수 있다</li>
+</ol>
+</li>
+<li>인프라와 측에서 사용(controversial)
+<ol>
+<li>(근거) 버전 번호는 결국 인프라와 관련있다</li>
+<li>따라서 UoW와 저장소가 처리한다
+<ol>
+<li>저장소는 자신이 읽어 온 상품의 모든 버전 번호에 접근 가능하다</li>
+<li>UoW는 상품이 변경됐다는 가정 하에 자신이 아는 상품의 버전 번호를 증가할 수 있다</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+<p>3번 방법은 “모든” 제품이 변경되었다고 가정하지 않고서는 구현할 방법이 없다.</p>
+<p>2번 방법은 상태 변경에 대한 책임이 서비스-도메인 계층 사이에 있어서 지저분하다(저자 曰)</p>
+<p>도메인 관심사와 무관하게 가장 나은 방안이 1번 방안이다(저자 曰)</p>
+<p>그럼 어디 둘까? 애그리게이트에 둔다.</p>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token keyword">class</span> <span class="token class-name">Product</span><span class="token punctuation">:</span>
+    <span class="token keyword">def</span> <span class="token function">__init__</span><span class="token punctuation">(</span>
+            self<span class="token punctuation">,</span>
+            sku<span class="token punctuation">:</span> <span class="token builtin">str</span><span class="token punctuation">,</span>
+            batches<span class="token punctuation">:</span> List<span class="token punctuation">[</span>Batch<span class="token punctuation">]</span><span class="token punctuation">,</span>
+            version_number<span class="token punctuation">:</span> <span class="token builtin">int</span> <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">,</span>
+    <span class="token punctuation">)</span><span class="token punctuation">:</span>
+        self<span class="token punctuation">.</span>sku <span class="token operator">=</span> sku
+        self<span class="token punctuation">.</span>batches <span class="token operator">=</span> batches
+        self<span class="token punctuation">.</span>version_number <span class="token operator">=</span> version_number
+
+    <span class="token keyword">def</span> <span class="token function">allocate</span><span class="token punctuation">(</span>
+            self<span class="token punctuation">,</span>
+            line<span class="token punctuation">:</span> OrderLine<span class="token punctuation">,</span>
+    <span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> <span class="token builtin">str</span><span class="token punctuation">:</span>
+        <span class="token keyword">try</span><span class="token punctuation">:</span>
+            batch <span class="token operator">=</span> <span class="token builtin">next</span><span class="token punctuation">(</span>b <span class="token keyword">for</span> b <span class="token keyword">in</span> <span class="token builtin">sorted</span><span class="token punctuation">(</span>self<span class="token punctuation">.</span>batches<span class="token punctuation">)</span> <span class="token keyword">if</span> b<span class="token punctuation">.</span>can_allocate<span class="token punctuation">(</span>line<span class="token punctuation">)</span><span class="token punctuation">)</span>
+            batch<span class="token punctuation">.</span>allocate<span class="token punctuation">(</span>line<span class="token punctuation">)</span>
+            self<span class="token punctuation">.</span>version_number <span class="token operator">+=</span> <span class="token number">1</span>   <span class="token comment"># (1)</span>
+            <span class="token keyword">return</span> batch<span class="token punctuation">.</span>reference
+        <span class="token keyword">except</span> StopIteration<span class="token punctuation">:</span>
+            <span class="token keyword">raise</span> OutOfStock<span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f"Out of stock for sku </span><span class="token interpolation"><span class="token punctuation">{</span>line<span class="token punctuation">.</span>sku<span class="token punctuation">}</span></span><span class="token string">"</span></span><span class="token punctuation">)</span>
+</code></pre></div>
+<ol>
+<li>이 쯤 처리한다
+<ol>
+<li>참고: 버전 번호에 대해 고심하고있다면 “번호” 란 말이 그다지 중요하지 않다는 사실을 깨달으면 좋을 듯 하다.</li>
+<li>중요한 점은 <code class="language-text">Product</code> 애그리게이트 변경 시 <code class="language-text">Product</code> DB 컬럼이 변경된다는 사실이다.</li>
+<li>매번 임의로 UUID를 생성하거나, Snowflake ID<sup id="fnref-6"><a href="#fn-6" class="footnote-ref">6</a></sup> 같은 걸 쓰는건 어떨까 싶다.</li>
+</ol>
+</li>
+</ol>
+<h1 id="78-데이터-무결성-규칙-테스트" style="position:relative;"><a href="#78-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EB%AC%B4%EA%B2%B0%EC%84%B1-%EA%B7%9C%EC%B9%99-%ED%85%8C%EC%8A%A4%ED%8A%B8" aria-label="78 데이터 무결성 규칙 테스트 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>7.8 데이터 무결성 규칙 테스트</h1>
+<p>이 대로 했을 때 의도대로 잘 되는지 살펴보자! 동시에 트랜잭션을 시도하면 모두 버전 번호를 올릴 수는 없으니 둘 중 하나는 실패할 것이다.</p>
+<p>느린 트랜잭션<sup id="fnref-7"><a href="#fn-7" class="footnote-ref">7</a></sup>을 하나 임의로 만들어보자:</p>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token keyword">def</span> <span class="token function">try_to_allocate</span><span class="token punctuation">(</span>orderid<span class="token punctuation">,</span> sku<span class="token punctuation">,</span> exceptions<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    line <span class="token operator">=</span> model<span class="token punctuation">.</span>OrderLine<span class="token punctuation">(</span>orderid<span class="token punctuation">,</span> sku<span class="token punctuation">,</span> <span class="token number">10</span><span class="token punctuation">)</span>
+    <span class="token keyword">try</span><span class="token punctuation">:</span>
+        <span class="token keyword">with</span> unit_of_work<span class="token punctuation">.</span>SqlAlchemyUnitOfWork<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">as</span> uow<span class="token punctuation">:</span>
+            product <span class="token operator">=</span> uow<span class="token punctuation">.</span>products<span class="token punctuation">.</span>get<span class="token punctuation">(</span>sku<span class="token operator">=</span>sku<span class="token punctuation">)</span>
+            product<span class="token punctuation">.</span>allocate<span class="token punctuation">(</span>line<span class="token punctuation">)</span>
+            time<span class="token punctuation">.</span>sleep<span class="token punctuation">(</span><span class="token number">0.2</span><span class="token punctuation">)</span>
+            uow<span class="token punctuation">.</span>commit<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token keyword">except</span> Exception <span class="token keyword">as</span> e<span class="token punctuation">:</span>
+        <span class="token keyword">print</span><span class="token punctuation">(</span>traceback<span class="token punctuation">.</span>format_exc<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+        exceptions<span class="token punctuation">.</span>append<span class="token punctuation">(</span>e<span class="token punctuation">)</span></code></pre></div>
+<p>어떻게 테스트하는지 살펴보자:</p>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token keyword">def</span> <span class="token function">test_concurrent_updates_to_version_are_not_allowed</span><span class="token punctuation">(</span>postgres_session_factory<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    sku<span class="token punctuation">,</span> batch <span class="token operator">=</span> random_sku<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> random_batchref<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    session <span class="token operator">=</span> postgres_session_factory<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    insert_batch<span class="token punctuation">(</span>session<span class="token punctuation">,</span> batch<span class="token punctuation">,</span> sku<span class="token punctuation">,</span> <span class="token number">100</span><span class="token punctuation">,</span> eta<span class="token operator">=</span><span class="token boolean">None</span><span class="token punctuation">,</span> product_version<span class="token operator">=</span><span class="token number">1</span><span class="token punctuation">)</span>
+    session<span class="token punctuation">.</span>commit<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+    order1<span class="token punctuation">,</span> order2 <span class="token operator">=</span> random_orderid<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">,</span> random_orderid<span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span>
+    exceptions <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>  <span class="token comment"># type: List[Exception]</span>
+    try_to_allocate_order1 <span class="token operator">=</span> <span class="token keyword">lambda</span><span class="token punctuation">:</span> try_to_allocate<span class="token punctuation">(</span>order1<span class="token punctuation">,</span> sku<span class="token punctuation">,</span> exceptions<span class="token punctuation">)</span>
+    try_to_allocate_order2 <span class="token operator">=</span> <span class="token keyword">lambda</span><span class="token punctuation">:</span> try_to_allocate<span class="token punctuation">(</span>order2<span class="token punctuation">,</span> sku<span class="token punctuation">,</span> exceptions<span class="token punctuation">)</span>
+    thread1 <span class="token operator">=</span> threading<span class="token punctuation">.</span>Thread<span class="token punctuation">(</span>target<span class="token operator">=</span>try_to_allocate_order1<span class="token punctuation">)</span>  <span class="token comment">#(1)</span>
+    thread2 <span class="token operator">=</span> threading<span class="token punctuation">.</span>Thread<span class="token punctuation">(</span>target<span class="token operator">=</span>try_to_allocate_order2<span class="token punctuation">)</span>  <span class="token comment">#(1)</span>
+    thread1<span class="token punctuation">.</span>start<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    thread2<span class="token punctuation">.</span>start<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    thread1<span class="token punctuation">.</span>join<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    thread2<span class="token punctuation">.</span>join<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+    <span class="token punctuation">[</span><span class="token punctuation">[</span>version<span class="token punctuation">]</span><span class="token punctuation">]</span> <span class="token operator">=</span> session<span class="token punctuation">.</span>execute<span class="token punctuation">(</span>
+        <span class="token string">"SELECT version_number FROM products WHERE sku=:sku"</span><span class="token punctuation">,</span>
+        <span class="token builtin">dict</span><span class="token punctuation">(</span>sku<span class="token operator">=</span>sku<span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token punctuation">)</span>
+    <span class="token keyword">assert</span> version <span class="token operator">==</span> <span class="token number">2</span>  <span class="token comment">#(2)</span>
+    <span class="token punctuation">[</span>exception<span class="token punctuation">]</span> <span class="token operator">=</span> exceptions
+    <span class="token keyword">assert</span> <span class="token string">"could not serialize access due to concurrent update"</span> <span class="token keyword">in</span> <span class="token builtin">str</span><span class="token punctuation">(</span>exception<span class="token punctuation">)</span>  <span class="token comment">#(3)</span>
+
+    orders <span class="token operator">=</span> session<span class="token punctuation">.</span>execute<span class="token punctuation">(</span>
+        <span class="token string">"SELECT orderid FROM allocations"</span>
+        <span class="token string">" JOIN batches ON allocations.batch_id = batches.id"</span>
+        <span class="token string">" JOIN order_lines ON allocations.orderline_id = order_lines.id"</span>
+        <span class="token string">" WHERE order_lines.sku=:sku"</span><span class="token punctuation">,</span>
+        <span class="token builtin">dict</span><span class="token punctuation">(</span>sku<span class="token operator">=</span>sku<span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token punctuation">)</span>
+    <span class="token keyword">assert</span> orders<span class="token punctuation">.</span>rowcount <span class="token operator">==</span> <span class="token number">1</span>  <span class="token comment">#(4)</span>
+    <span class="token keyword">with</span> unit_of_work<span class="token punctuation">.</span>SqlAlchemyUnitOfWork<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">as</span> uow<span class="token punctuation">:</span>
+        uow<span class="token punctuation">.</span>session<span class="token punctuation">.</span>execute<span class="token punctuation">(</span><span class="token string">"select 1"</span><span class="token punctuation">)</span></code></pre></div>
+<ol>
+<li>원하는 동시성 행동 방식을 잘 재현할 수 있는 두 스레드를 실행시킨다.
+<ol>
+<li><code class="language-text">read1</code>, <code class="language-text">read2</code> 그리고 <code class="language-text">write1</code>, <code class="language-text">write2</code></li>
+</ol>
+</li>
+<li>버전 번호가 <code class="language-text">1</code> 오른 것을 확인한다</li>
+<li>필요하면 이런 식으로 확인한다</li>
+<li><code class="language-text">allocate()</code> 이 하나만 되었음을 검사한다</li>
+</ol>
+<h2 id="781-db-트랜잭션-격리-수준을-사용하여-동시성-규칙을-강제" style="position:relative;"><a href="#781-db-%ED%8A%B8%EB%9E%9C%EC%9E%AD%EC%85%98-%EA%B2%A9%EB%A6%AC-%EC%88%98%EC%A4%80%EC%9D%84-%EC%82%AC%EC%9A%A9%ED%95%98%EC%97%AC-%EB%8F%99%EC%8B%9C%EC%84%B1-%EA%B7%9C%EC%B9%99%EC%9D%84-%EA%B0%95%EC%A0%9C" aria-label="781 db 트랜잭션 격리 수준을 사용하여 동시성 규칙을 강제 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>7.8.1 DB 트랜잭션 격리 수준을 사용하여 동시성 규칙을 강제</h2>
+<ul>
+<li>(Postgres 에만 국한되는건 아니지만) 트랜잭션 격리 수준을 <code class="language-text">REPEATABLE READ</code> 로 조절한다. 상세한 정보는 <a href="https://www.postgresql.org/docs/current/transaction-iso.html" target="_blank" rel="nofollow noopener noreferrer">Postgres 공식 문서</a>를 읽자</li>
+</ul>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python">DEFAULT_SESSION_FACTORY <span class="token operator">=</span> sessionmaker<span class="token punctuation">(</span>
+    bind<span class="token operator">=</span>create_engine<span class="token punctuation">(</span>
+        config<span class="token punctuation">.</span>get_postgres_uri<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        isolation_level<span class="token operator">=</span><span class="token string">"REPEATABLE READ"</span><span class="token punctuation">,</span>
+    <span class="token punctuation">)</span>
+<span class="token punctuation">)</span></code></pre></div>
+<h2 id="782-비관적-동시성-제어-예제-select-for-update" style="position:relative;"><a href="#782-%EB%B9%84%EA%B4%80%EC%A0%81-%EB%8F%99%EC%8B%9C%EC%84%B1-%EC%A0%9C%EC%96%B4-%EC%98%88%EC%A0%9C-select-for-update" aria-label="782 비관적 동시성 제어 예제 select for update permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>7.8.2 비관적 동시성 제어 예제: <code class="language-text">SELECT FOR UPDATE</code></h2>
+<p>해당 방안은 비관적 동시성 제어 방안 중 하나이다. <code class="language-text">SELECT FOR UPDATE</code> <sup id="fnref-8"><a href="#fn-8" class="footnote-ref">8</a></sup>는 두 트랜잭션이 동시에 같은 row를 읽도록 허용하지 않는다.</p>
+<p><code class="language-text">SELECT FOR UPDATE</code> 는 lock으로 사용할 row를 선택하는 방안이다(업데이트 대상 row일 필요는 없다). 두 트랜잭션이 동시에 <code class="language-text">SELECT FOR UPDATE</code> 를 수행하면 두 업데이트 중 하나만 승리하고 나머지는 상대방이 lock을 풀 때 까지 기다려야 한다. 이는 동시성 패턴을 아래와 같이 바꾼다.</p>
+<blockquote>
+<p>AS-IS</p>
+</blockquote>
+<p><code class="language-text">read1</code>, <code class="language-text">read2</code> , <code class="language-text">write1</code>, <code class="language-text">write2(fail)</code></p>
+<blockquote>
+</blockquote>
+<blockquote>
+<p>TO-BE</p>
+</blockquote>
+<p><code class="language-text">read1</code>, <code class="language-text">write1</code>, <code class="language-text">read2</code>, <code class="language-text">write2(succeed)</code></p>
+<blockquote>
+</blockquote>
+<p>이걸 “Read-Modify-Write” failure mode 라고 부르는 사람도 있다. 아래 게시글을 읽고 통찰을 얻자!</p>
+<p><a href="https://oreil.ly/uXeZI" target="_blank" rel="nofollow noopener noreferrer">“PostgreSQL Anti-Patterns: Read-Modify-Write Cycles”</a></p>
+<p><code class="language-text">REPEATABLE READ</code> 나 <code class="language-text">SELECT FOR UPDATE</code> 어떤걸 하든 트레이드오프가 있다. 상기 테스트코드와 같은 접근을 하면 어떤 식으로 바뀌는지 알 수 있다. 물론 테스트코드를 더 좋게 보강해야겠지만…</p>
+<p>동시성 제어를 어떻게 할지는 비즈니스 환경, 저장소 기술에 따라 달라진다.</p>
+<h1 id="79-마치며" style="position:relative;"><a href="#79-%EB%A7%88%EC%B9%98%EB%A9%B0" aria-label="79 마치며 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>7.9 마치며</h1>
+<p>이번 장은 애그리게이트의 개념을 살펴봤다.</p>
+<p>애그리게이트는…</p>
+<ul>
+<li>모델의 일부 부분집합에 대한 주 진입점 역할을 한다</li>
+<li>모든 모델 객체에 대한 비즈니스 규칙과 불변조건을 강제하는 역할을 담당하도록 객체를 명시적으로 모델링한다</li>
+</ul>
+<p>올바른 애그리게이트를 잘 선택해야 한다! 시간이 지나고 요구사항 등등 재검토를 수행하다 보면 애그리게이트로 고른 객체가 달라질 수도 있다.</p>
+<p><a href="https://www.dddcommunity.org/library/vernon_2011/" target="_blank" rel="nofollow noopener noreferrer">이 링크</a>를 꼭 읽어보자. 존 버넌이 효과적인 애그리게이트 설계에 대해 쓴 글이다.</p>
+<p>그러면 이어서, 애그리게이트의 트레이드오프에 대해 살펴보자.</p>
+<table>
+<thead>
+<tr>
+<th>장점</th>
+<th>단점</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>애그리게이트는 도메인 모델 클래스 중 어떤 부분이 공개되어있고, 어떤 부분이 비공개인지 결정할 수 있다(멤버함수, 멤버변수에 _ 하나를 붙여서)</td>
+<td>엔티티, VO를 적당히 잘 감싼 객체가 또 하나 생긴다. 솔직히 이해하기 너무 어렵다….</td>
+</tr>
+<tr>
+<td>연산 주변에 명시적인 Bounded Context를 모델링할 수 있으면 ORM 성능 문제 예방에 도움된다</td>
+<td>한번에 한 가지 애그리게이트만 변경할 수 있다는 규칙을 엄격히 지키도록 해야하는데, 그것도 정말 어렵다…</td>
+</tr>
+<tr>
+<td>애그리게이트는 자신이 담당한 모델에 대한 상태변경만을 책임지도록 하면 시스템 추론 및 불변조건 제어가 쉬워진다</td>
+<td>애그리게이트 사이의 최종 일관성을 처리하는 과정이 복잡해질 수 있다. 와 정말 너무 어렵다…………</td>
+</tr>
+</tbody>
+</table>
+<h2 id="791-애그리게이트와-일관성-경계" style="position:relative;"><a href="#791-%EC%95%A0%EA%B7%B8%EB%A6%AC%EA%B2%8C%EC%9D%B4%ED%8A%B8%EC%99%80-%EC%9D%BC%EA%B4%80%EC%84%B1-%EA%B2%BD%EA%B3%84" aria-label="791 애그리게이트와 일관성 경계 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>7.9.1 애그리게이트와 일관성 경계</h2>
+<ol>
+<li>애그리게이트는 도메인 모델에 대한 진입점이다
+<ol>
+<li>도메인에 속한 것을 바꿀 수 있는 방식을 제한하면 시스템을 더 쉽게 추론할 수 있다</li>
+</ol>
+</li>
+<li>애그리게이트는 Bounded Context를 책임진다
+<ol>
+<li>애그리게이트의 역할은 여러 객체로 이루어진 그룹에 적용할 불변조건에 대한 비즈니스 규칙을 관리하는 것이다</li>
+<li>자신이 담당하는 객체 사이와 객체와 비즈니스 규칙 사이의 일관성을 검사하고, 어떤 변경이 일관성을 해친다면 이를 거부하는 것도 애그리게이트의 할 일이다.</li>
+</ol>
+</li>
+<li>애그리게이트와 동시성 문제는 공존한다
+<ol>
+<li>동시성 검사 구현 방안을 고민하면 자연스럽게 트랜잭션과 lock까지 간다. 이는 성능과 직결된 이야기다</li>
+<li>애그리게이트를 제대로 고르는 것은 도메인을 개념적으로 잘 조직화하는 것 뿐 아니라 성능까지 살펴보는 것이다</li>
+</ol>
+</li>
+</ol>
+<h1 id="710-1부-돌아보기" style="position:relative;"><a href="#710-1%EB%B6%80-%EB%8F%8C%EC%95%84%EB%B3%B4%EA%B8%B0" aria-label="710 1부 돌아보기 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>7.10 1부 돌아보기</h1>
+<p>아무리 예제를 베끼고 내가 짜야할 것들을 짜고 했지만 이걸 만들다니….</p>
+<p><img src="https://www.cosmicpython.com/book/images/apwp_0705.png" alt="이겼다! 제 1부 끝!"></p>
+<p>뭘 만들어낸건지 리뷰해보자.</p>
+<ol>
+<li>테스트 피라미드 → 검증된 도메인 모델 생성
+<ol>
+<li>비즈니스 요구사항에 맞게 시스템이 어떻게 도는지를 코드로 작성했다</li>
+<li>비즈니스 요구사항이 바뀌면 테스트도 마찬가지로 변하면 된다</li>
+</ol>
+</li>
+<li>API 핸들러, DB 등의 구조를 분리했다
+<ol>
+<li>애플리케이션 외부에서 하부구조를 끼워넣을 수 있게 만들었다</li>
+<li>코드 베이스의 조직화가 이루어졌다</li>
+</ol>
+→ 코드 내부가 파악하지도 못하게 복잡해지는 것은 막했다</li>
+<li>DIP를 적용했다. 포트와 어댑터에서 영향받은 “저장소” 와 UoW를 사용했다
+<ol>
+<li>저장소 수준의 테스트코드와 UoW 수준의 테스트코드를 분리했다</li>
+<li>시스템의 한쪽 끝부터 다른쪽 끝까지 테스트했다</li>
+</ol>
+</li>
+<li>Bounded Context
+<ol>
+<li>변경이 필요할 때마다 전체 시스템을 잠그고 싶지않아서, 어떤 부분에 대해서만 일관성을 가지는지를 나눴다</li>
+</ol>
+</li>
+</ol>
+<p>2부에서는 모델을 넘어서는 일관성을 처리하기 위한 방안을 살펴볼 것이다.</p>
+<blockquote>
+<p><strong>경고!</strong></p>
+</blockquote>
+<p>이런 패턴이 하나씩하나씩 붙을 때 마다 전부 비용이다.</p>
+<p>간접계층 하나하나가 모두 비용이다.
+이 패턴을 모르는 사람에게 혼동을 야기할 수 있다. 이것도 큰 비용이다.
+만약 만들 앱이 DB를 단순히 감싸는 CRUD wrapper 라면? 앞으로 이것 외의 일을 할 것 같지 않다면?</p>
+<p><strong><em>이런 복잡한걸 쓸 필요가 없다</em>.</strong></p>
+<div class="footnotes">
+<hr>
+<ol>
+<li id="fn-1">왠지 <a href="http://www.yes24.com/Product/Goods/114667254" target="_blank" rel="nofollow noopener noreferrer">이 책의 3장</a>을 다시 읽어봐야할 것 같은 느낌이다. 저기서 본 내용들의 일부가 여기도 나온다.<a href="#fnref-1" class="footnote-backref">↩</a></li>
+<li id="fn-2">할당 후 배치의 가용 재고 수량이 라인의 상품 수량만큼 감소하므로 비즈니스 제약 사항을 만족한다면 항상 가용 재고 수량은 <code class="language-text">0</code>보다 크거나 같다.<a href="#fnref-2" class="footnote-backref">↩</a></li>
+<li id="fn-3">이 코드의 모델의 경우 배치가 컬렉션이다.<a href="#fnref-3" class="footnote-backref">↩</a></li>
+<li id="fn-4"><a href="https://www.cosmicpython.com/book/chapter_01_domain_model.html#allocation_notes" target="_blank" rel="nofollow noopener noreferrer">A product is identified by a SKU, …</a> 하면서 이미 풀어놨음<a href="#fnref-4" class="footnote-backref">↩</a></li>
+<li id="fn-5"><a href="https://haandol.github.io/2021/10/11/thoughts-for-ddd-starters.html#fn:1" target="_blank" rel="nofollow noopener noreferrer">이 분의 블로그 게시글</a>을 보고 뽐뿌가 왔다… 꼭 지식을 머리속에 집어넣도록 하자<a href="#fnref-5" class="footnote-backref">↩</a></li>
+<li id="fn-6"><a href="https://en.wikipedia.org/wiki/Snowflake_ID" target="_blank" rel="nofollow noopener noreferrer">https://en.wikipedia.org/wiki/Snowflake_ID</a> 를 의미한다<a href="#fnref-6" class="footnote-backref">↩</a></li>
+<li id="fn-7">동시성 버그 재현을 위해 스레드 사이에서 세마포어나 비슷한 동기화 기능을 쓰는 편이 테스트 행동 방식을 보다 잘 보장할 수 있다.<a href="#fnref-7" class="footnote-backref">↩</a></li>
+<li id="fn-8"><a href="https://www.postgresql.org/docs/current/explicit-locking.html" target="_blank" rel="nofollow noopener noreferrer">https://www.postgresql.org/docs/current/explicit-locking.html</a><a href="#fnref-8" class="footnote-backref">↩</a></li>
+</ol>
+</div></div></div></div><div class="Post-module--footer--f8705"><div class="Meta-module--meta--dae0a"><p class="Meta-module--date--4d30d">Published<!-- --> <!-- -->Apr 17, 2023</p></div><div class="Tags-module--tags--18589"><ul class="Tags-module--list--82ae6"><li class="Tags-module--item--52015"><a class="Button-module--button--b1113" href="/tag/ddd/">ddd</a></li><li class="Tags-module--item--52015"><a class="Button-module--button--b1113" href="/tag/books/">books</a></li><li class="Tags-module--item--52015"><a class="Button-module--button--b1113" href="/tag/backend/">backend</a></li><li class="Tags-module--item--52015"><a class="Button-module--button--b1113" href="/tag/python/">python</a></li></ul></div><div class="Author-module--author--1c58d"><p class="Non scholæ sed vitæ discimus.">Non scholæ sed vitæ discimus.</p><p class="Author-module--bio--08950">his/him</p></div></div><div class="Post-module--comments--d3b99"><div></div></div></div></div></div><div id="gatsby-announcer" style="position:absolute;top:0;width:1px;height:1px;padding:0;overflow:hidden;clip:rect(0, 0, 0, 0);white-space:nowrap;border:0" aria-live="assertive" aria-atomic="true"></div></div><script id="gatsby-script-loader">/*<![CDATA[*/window.pagePath="/books/cosmic-python/2023-04-17-pt01-ch07";window.___webpackCompilationHash="d24061204ae2cb9992cd";/*]]>*/</script><script id="gatsby-chunk-mapping">/*<![CDATA[*/window.___chunkMapping={"polyfill":["/polyfill-dd6407b8e4ec4143c35a.js"],"app":["/app-858af14a31533367b173.js"],"component---cache-caches-gatsby-plugin-offline-app-shell-js":["/component---cache-caches-gatsby-plugin-offline-app-shell-js-0c915c7b1bdb5eac4fdf.js"],"component---src-templates-categories-template-categories-template-tsx":["/component---src-templates-categories-template-categories-template-tsx-e2d2add397e32e3517ca.js"],"component---src-templates-category-template-category-template-tsx":["/component---src-templates-category-template-category-template-tsx-078f2adfba160a34229f.js"],"component---src-templates-index-template-index-template-tsx":["/component---src-templates-index-template-index-template-tsx-83380c7954c9f6621026.js"],"component---src-templates-not-found-template-not-found-template-tsx":["/component---src-templates-not-found-template-not-found-template-tsx-56fe4d3b015459d56c99.js"],"component---src-templates-page-template-page-template-tsx":["/component---src-templates-page-template-page-template-tsx-c6c21d7369a9356db3a1.js"],"component---src-templates-post-template-post-template-tsx":["/component---src-templates-post-template-post-template-tsx-119cd0258cb38628d01f.js"],"component---src-templates-tag-template-tag-template-tsx":["/component---src-templates-tag-template-tag-template-tsx-8d0b3090e775aa3c4584.js"],"component---src-templates-tags-template-tags-template-tsx":["/component---src-templates-tags-template-tags-template-tsx-30027e87af7d042f3afb.js"]};/*]]>*/</script><script src="/polyfill-dd6407b8e4ec4143c35a.js" nomodule=""></script><script src="/app-858af14a31533367b173.js" async=""></script><script src="/framework-481a1b6416c14416b2fb.js" async=""></script><script src="/webpack-runtime-de5a94456c9c32f6cdb9.js" async=""></script></body></html>

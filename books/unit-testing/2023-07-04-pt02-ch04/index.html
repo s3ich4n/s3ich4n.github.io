@@ -1,0 +1,1037 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="ie=edge"/><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/><meta name="generator" content="Gatsby 4.25.4"/><meta name="description" content="단위 테스트 를 읽고 이해한 내용을 작성합니다. 챕터 4, 좋은 테스트의 4대 요소에 대한 내용입니다." data-gatsby-head="true"/><meta name="twitter:card" content="summary_large_image" data-gatsby-head="true"/><meta name="twitter:title" content="단위 테스트 (4) - 팔공산 창고" data-gatsby-head="true"/><meta name="twitter:description" content="단위 테스트 를 읽고 이해한 내용을 작성합니다. 챕터 4, 좋은 테스트의 4대 요소에 대한 내용입니다." data-gatsby-head="true"/><meta name="og:title" content="단위 테스트 (4) - 팔공산 창고" data-gatsby-head="true"/><meta name="og:type" content="website" data-gatsby-head="true"/><meta name="og:description" content="단위 테스트 를 읽고 이해한 내용을 작성합니다. 챕터 4, 좋은 테스트의 4대 요소에 대한 내용입니다." data-gatsby-head="true"/><meta name="image" content="https://blog.s3ich4n.me[object Object]" data-gatsby-head="true"/><meta name="og:image" content="https://blog.s3ich4n.me[object Object]" data-gatsby-head="true"/><meta name="twitter:image" content="https://blog.s3ich4n.me[object Object]" data-gatsby-head="true"/><meta name="theme-color" content="hsl(31, 92%, 62%)"/><style data-href="/styles.1fbe3e33e3d898c35e17.css" data-identity="gatsby-global-css">:after,:before,:root{--color-white:#fff;--color-primary:#5c92ff;--color-secondary:#f7a145;--color-prism-background:#eaeaeb;--color-typographic-base-font:#242933;--color-typographic-link-p-font:#5c92ff;--color-typographic-link-s-font:#f7a145;--color-page-border:#eaeaeb;--color-page-background:#fff;--color-sidebar-border:#eaeaeb;--color-sidebar-border-fade:#fff;--color-contacts-border:#eaeaeb;--color-button-border:#eaeaeb;--color-button-color:#242933;--color-theme-switcher:#3f485a;--color-theme-switcher-hover:#5c92ff}.dark :after,.dark :before,:root.dark{--color-white:#fff;--color-primary:#5c92ff;--color-secondary:#f7a145;--color-prism-background:#191d24;--color-typographic-base-font:#fff;--color-typographic-link-p-font:#5c92ff;--color-typographic-link-s-font:#f7a145;--color-page-border:#3f485a;--color-page-background:#242933;--color-sidebar-border:#3f485a;--color-sidebar-border-fade:#242933;--color-contacts-border:#3f485a;--color-button-border:#3f485a;--color-button-color:#fff;--color-theme-switcher:#eaeaeb;--color-theme-switcher-hover:#5c92ff}html{font-size:100}body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;background:var(--color-page-background);color:var(--color-typographic-base-font);font-size:16px;line-height:1.625;margin:0 0 0 calc(100vw - 100%);text-rendering:optimizelegibility}body,h1,h2,h3,h4,h5,h6{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif}h1,h2,h3,h4,h5,h6{font-weight:600}h1{font-size:40px;line-height:52px;margin-bottom:26px;margin-top:104px}h2{font-size:27px;line-height:39px}h2,h3{margin-bottom:13px;margin-top:52px}h3{font-size:22px;line-height:26px}h4{font-size:19.2px;margin-top:39px}h4,h5{line-height:26px;margin-bottom:13px}h5,h6{font-size:16px;margin-top:65px}h6{line-height:26px;margin-bottom:13px}img{max-width:100%}hr,img{border:0;display:block}hr{background-image:linear-gradient(180deg,transparent 1px,transparent 11px,#242933 0,#242933 15px,transparent 0,transparent 26px);background-size:100% 26px;color:var(--color-typographic-base-font);height:26px;margin:52px auto;width:100px}a{color:var(--color-typographic-link-p-font);text-decoration:none}a:active,a:focus,a:hover{color:var(--color-typographic-link-s-font)}b,strong{font-weight:600}ul{list-style:square;margin-bottom:26px}ul li{margin-bottom:10px;padding:0 5px}p{line-height:26px;margin-bottom:26px}blockquote{font-style:italic;padding:0;text-align:center}figure{display:block;height:auto;width:100%}figcaption{color:var(--color-typographic-base-font);font-size:14px;font-style:italic;line-height:19.5px;margin-bottom:0;margin-top:6.5px;text-align:center}@media screen and (min-width:685px){figure.float-left,figure.float-right{max-width:310px;padding:0 26px}.float-right{float:right}.float-left{float:left}}code[class*=language-],pre[class*=language-]{word-wrap:normal;color:#657b83;font-family:Consolas,Monaco,Andale Mono,Ubuntu Mono,monospace;font-size:1em;-webkit-hyphens:none;hyphens:none;line-height:1.5;-o-tab-size:4;tab-size:4;text-align:left;white-space:pre;word-break:normal;word-spacing:normal}pre[class*=language-]{border-radius:.3em;margin:.5em 0;overflow:auto;padding:1em}:not(pre)>code[class*=language-],pre[class*=language-]{background-color:var(--color-prism-background)}:not(pre)>code[class*=language-]{border-radius:.3em;padding:.1em}code[class*=language-] ::selection,code[class*=language-]::selection,pre[class*=language-] ::selection,pre[class*=language-]::selection{background:#073642}.token.cdata,.token.comment,.token.doctype,.token.prolog{color:#93a1a1}.token.punctuation{color:#586e75}.namespace{opacity:.7}.token.boolean,.token.constant,.token.deleted,.token.number,.token.property,.token.symbol,.token.tag{color:#268bd2}.token.attr-name,.token.builtin,.token.char,.token.inserted,.token.selector,.token.string,.token.url{color:#2aa198}.token.entity{background:#eee8d5;color:#657b83;cursor:help}.token.atrule,.token.attr-value,.token.keyword{color:#859900}.token.class-name,.token.function{color:#b58900}.token.important,.token.regex,.token.variable{color:#cb4b16}.token.bold,.token.important{font-weight:700}.token.italic{font-style:italic}.Feed-module--feed--a6204 .Feed-module--item--c7a63{margin-bottom:32.5px}.Feed-module--feed--a6204 .Feed-module--item--c7a63:last-child{margin-bottom:13px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f{font-size:27px;line-height:39px;margin-bottom:13px;margin-top:0}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f .Feed-module--link--6123b{color:var(--color-typographic-base-font)}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f .Feed-module--link--6123b:focus,.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f .Feed-module--link--6123b:hover{border-bottom:1px solid #242933;color:var(--color-typographic-base-font)}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--description--57348{font-size:16px;line-height:26px;margin-bottom:19.5px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--time--72864{color:var(--color-typographic-base-font);font-size:14px;font-weight:600;text-transform:uppercase}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--divider--81a18{margin:0 13px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--category--59f58 .Feed-module--link--6123b{color:var(--color-secondary);font-size:14px;font-weight:600;text-transform:uppercase}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--category--59f58 .Feed-module--link--6123b:focus,.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--category--59f58 .Feed-module--link--6123b:hover{color:#5c92ff}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--more--51a4e{color:var(--color-primary);font-size:16px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--more--51a4e:focus,.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--more--51a4e:hover{border-bottom:1px solid #5c92ff;color:var(--color-primary)}.Layout-module--layout--2c933{margin-left:auto;margin-right:auto;max-width:1070px}.Layout-module--layout--2c933:before{content:"";display:table}.Layout-module--layout--2c933:after{clear:both;content:"";display:table}.Page-module--page--24e03{margin-bottom:52px}.Page-module--page--24e03 .Page-module--inner--4b31d{padding:26px 19.5px 0}.Page-module--page--24e03 .Page-module--title--90338{font-size:40px;font-weight:600;line-height:52px;margin-bottom:37.7px;margin-top:0}.Page-module--page--24e03 .Page-module--body--561c4{font-size:16px;line-height:26px;margin:0 0 26px}@media screen and (min-width:685px){.Page-module--page--24e03{width:calc(58.275% - 12.5px)}.Page-module--page--24e03:nth-child(1n){clear:none;float:left;margin-right:30px}.Page-module--page--24e03:last-child{margin-right:0}.Page-module--page--24e03:nth-child(12n){float:right;margin-right:0}.Page-module--page--24e03:nth-child(12n+1){clear:both}.Page-module--page--24e03 .Page-module--inner--4b31d{padding:32.5px 19.5px 0}}@media screen and (min-width:960px){.Page-module--page--24e03{width:calc(66.6% - 10px)}.Page-module--page--24e03:nth-child(1n){clear:none;float:left;margin-right:30px}.Page-module--page--24e03:last-child{margin-right:0}.Page-module--page--24e03:nth-child(3n){float:right;margin-right:0}.Page-module--page--24e03:nth-child(3n+1){clear:both}.Page-module--page--24e03 .Page-module--inner--4b31d{padding:39px 26px 0}}.Pagination-module--pagination--d61cb{display:flex;margin-top:52px}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b{text-align:left;width:50%}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d{color:var(--color-secondary);font-size:26px;font-weight:700}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d:focus,.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d:hover{color:var(--color-primary)}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d.Pagination-module--disable--7e105{color:#3f485a;pointer-events:none}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8{text-align:right;width:50%}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff{color:var(--color-secondary);font-size:26px;font-weight:700}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff:focus,.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff:hover{color:var(--color-primary)}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff.Pagination-module--disable--7e105{color:#3f485a;pointer-events:none}.Button-module--button--b1113{border:1px solid var(--color-button-border);border-radius:20px;color:var(--color-button-color);display:inline-block;font-size:16px;font-weight:400;height:40px;line-height:40px;margin-left:auto;margin-right:auto;padding:0 26px;text-align:center;text-decoration:none}.Button-module--button--b1113:focus,.Button-module--button--b1113:hover{color:#5c92ff}.ThemeSwitcher-module--themeSwitcher--8a77f{--color:var(--color-theme-switcher)}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--button--7cb7b{align-items:center;background:transparent;border:0;cursor:pointer;display:flex;justify-content:center;outline:0}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--button--7cb7b svg{stroke:var(--color);pointer-events:none;transition:stroke .4s}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--button--7cb7b:hover{--color:var(--color-theme-switcher-hover)}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--moon--10537{stroke-dasharray:0 1px;opacity:0;transition:stroke-dasharray .2s ease-in,opacity .4s ease-in}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--sun--2163a{stroke-dasharray:1px 1px;opacity:1;transition:stroke-dasharray .2s ease-in,opacity .4s ease-in}.ThemeSwitcher-module--themeSwitcher--8a77f.ThemeSwitcher-module--dark--6db0c .ThemeSwitcher-module--moon--10537{stroke-dasharray:1px 1px;opacity:1}.ThemeSwitcher-module--themeSwitcher--8a77f.ThemeSwitcher-module--dark--6db0c .ThemeSwitcher-module--sun--2163a{stroke-dasharray:0 1px;opacity:0}.Author-module--author--cbd31 .Author-module--photo--9787b{background-clip:padding-box;border-radius:50%;display:inline-block;height:75px;margin-bottom:0;width:75px}.Author-module--author--cbd31 .Author-module--photo--9787b img{border-radius:50%}.Author-module--author--cbd31 .Author-module--title--cf7e5{font-size:18px;font-weight:600;line-height:29.25px;margin:0}.Author-module--author--cbd31 .Author-module--title--cf7e5 .Author-module--link--09c17,.Author-module--author--cbd31 .Author-module--title--cf7e5 .Author-module--link--09c17:focus,.Author-module--author--cbd31 .Author-module--title--cf7e5 .Author-module--link--09c17:hover{color:var(--color-typographic-base-font)}.Author-module--author--cbd31 .Author-module--bio--8168d,.Author-module--author--cbd31 .Author-module--subtitle--86ec5{color:#7f8ba4;line-height:26px;margin-bottom:26px}.Author-module--author--cbd31 .Author-module--titleContainer--4f576{align-items:center;display:flex;justify-content:space-between;margin:13px 0}.Categories-module--categories--f3389{color:#7f8ba4;font-size:14px}.Icon-module--icon--1d7da{fill:currentcolor;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;speak:none;stroke:currentcolor;stroke-width:0;display:inline-block;font-style:normal;font-variant:normal;font-weight:400;height:1em;line-height:1em;text-align:center;text-transform:none;width:1em}.Contacts-module--contacts--09178{margin-bottom:26px}.Contacts-module--contacts--09178 .Contacts-module--list--9670b{display:flex;flex-flow:row wrap;flex-grow:0;flex-shrink:0;list-style:none;margin:13px 0;max-width:165px;padding:0}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0{align-content:center;align-items:center;border:1px solid var(--color-contacts-border);border-radius:50%;display:flex;height:40px;justify-content:center;line-height:40px;margin:6.5px;padding:0;text-align:center;width:40px}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0:nth-child(3n+1){margin-left:0}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0 .Contacts-module--link--de1e0{border:0;color:var(--color-typographic-base-font);display:flex}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0 .Contacts-module--link--de1e0:focus,.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0 .Contacts-module--link--de1e0:hover{color:var(--color-typographic-link-p-font)}.Copyright-module--copyright--2c602{color:#7f8ba4;font-size:14px}.Menu-module--menu--113a9{margin-bottom:26px}.Menu-module--menu--113a9 .Menu-module--list--e1ae3{list-style:none;margin:0;padding:0}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679{margin:13px 0;padding:0}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02{border:0;color:var(--color-typographic-base-font);font-size:16px;font-weight:400}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02:focus,.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02:hover{border-bottom:1px solid #5c92ff;color:#5c92ff}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02.Menu-module--active--6cb74{border-bottom:1px solid var(--color-typographic-base-font);color:var(--color-typographic-base-font)}.Tags-module--tags--28a57{color:#7f8ba4;font-size:14px}.Sidebar-module--sidebar--1bfa1{width:100%}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0{padding:26px 19.5px 0;position:relative}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0:after{background:var(--color-sidebar-border);background:linear-gradient(to bottom,var(--color-sidebar-border) 0,var(--color-sidebar-border) 48%,var(--color-sidebar-border-fade) 100%)}@media screen and (min-width:685px){.Sidebar-module--sidebar--1bfa1{width:calc(41.625% - 17.5px)}.Sidebar-module--sidebar--1bfa1:nth-child(1n){clear:none;float:left;margin-right:30px}.Sidebar-module--sidebar--1bfa1:last-child{margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(12n){float:right;margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(12n+1){clear:both}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0{padding:32.5px 19.5px 0}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0:after{bottom:0;content:"";height:540px;position:absolute;right:-10px;top:30px;width:1px}}@media screen and (min-width:960px){.Sidebar-module--sidebar--1bfa1{width:calc(33.3% - 20px)}.Sidebar-module--sidebar--1bfa1:nth-child(1n){clear:none;float:left;margin-right:30px}.Sidebar-module--sidebar--1bfa1:last-child{margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(3n){float:right;margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(3n+1){clear:both}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0{padding:39px}}.Author-module--author--1c58d{border-top:1px solid var(--color-page-border);line-height:26px;margin-bottom:52px;margin-top:26px;max-width:920px;padding-top:26px}.Author-module--author--1c58d .Author-module--bio--08950 .Author-module--twitter--90647{display:block;text-decoration:underline}.Author-module--author--1c58d .Author-module--bio--08950 .Author-module--twitter--90647:focus,.Author-module--author--1c58d .Author-module--bio--08950 .Author-module--twitter--90647:hover{color:var(--color-typographic-link-s-font)}@media screen and (min-width:685px){.Author-module--author--1c58d{margin-left:auto;margin-right:auto}}.Content-module--content--80d58{margin:0 auto;max-width:1070px;padding:0 13px}.Content-module--content--80d58 .Content-module--title--09504{font-size:32px;font-weight:600;line-height:42.9px;margin:26px auto 0;max-width:920px;text-align:center}.Content-module--content--80d58 .Content-module--body--726c2 figure{margin-bottom:26px}.Content-module--content--80d58 .Content-module--body--726c2 figure blockquote{font-style:italic;margin-top:0;padding:26px 0;text-align:center}.Content-module--content--80d58 .Content-module--body--726c2 figure blockquote p{font-size:26.9072px;line-height:39px;margin-bottom:26px;margin-top:0;max-width:920px}.Content-module--content--80d58 .Content-module--body--726c2 a{text-decoration:underline}.Content-module--content--80d58 .Content-module--body--726c2 *{margin-left:auto;margin-right:auto;max-width:920px}.Content-module--content--80d58 .Content-module--body--726c2 h2>a{visibility:hidden}.Content-module--content--80d58 .Content-module--body--726c2 h2>a>svg{fill:var(--color-typographic-base-font)}.Content-module--content--80d58 .Content-module--body--726c2 img{max-width:100%}@media screen and (min-width:960px){.Content-module--content--80d58{padding:0}.Content-module--content--80d58 .Content-module--title--09504{font-size:48px;line-height:58.5px;margin-bottom:39px;margin-top:58.5px}.Content-module--content--80d58 .Content-module--body--726c2,.Content-module--content--80d58 .Content-module--body--726c2 p{font-size:18px;line-height:29.25px;margin-bottom:29.25px}.Content-module--content--80d58 .Content-module--body--726c2 h2>a{padding-right:13px;visibility:unset}}.Meta-module--meta--dae0a .Meta-module--date--4d30d{font-style:italic}.Tags-module--tags--18589{margin-bottom:13px}.Tags-module--tags--18589 .Tags-module--list--82ae6{list-style:none;padding:0}.Tags-module--tags--18589 .Tags-module--list--82ae6 .Tags-module--item--52015{display:inline-block;margin:6.5px 0}@media screen and (min-width:685px){.Tags-module--tags--18589 .Tags-module--list--82ae6 .Tags-module--item--52015:first-child{margin-left:0;padding-left:0}}.Post-module--post--3a994 .Post-module--content--3c6e5{margin:0 auto}.Post-module--post--3a994 .Post-module--comments--d3b99,.Post-module--post--3a994 .Post-module--footer--f8705{margin:0 auto;max-width:920px;padding:0 13px}.Post-module--post--3a994 .Post-module--buttons--2972d{align-items:center;display:flex;justify-content:center;margin:26px 0 0;text-align:center}.Post-module--post--3a994 .Post-module--buttons--2972d .Post-module--buttonArticles--d793a{margin:0 13px 0 0}@media screen and (min-width:960px){.Post-module--post--3a994 .Post-module--comments--d3b99,.Post-module--post--3a994 .Post-module--footer--f8705{padding:0}.Post-module--post--3a994 .Post-module--buttons--2972d{left:30px;margin:0 13px 0 0;max-width:none;position:fixed;top:30px}}</style><title data-gatsby-head="true">단위 테스트 (4) - 팔공산 창고</title><link rel="alternate" type="application/rss+xml" title="팔공산 창고" href="/rss.xml"/><style type="text/css">
+    .anchor.before {
+      position: absolute;
+      top: 0;
+      left: 0;
+      transform: translateX(-100%);
+      padding-right: 4px;
+    }
+    .anchor.after {
+      display: inline-block;
+      padding-left: 4px;
+    }
+    h1 .anchor svg,
+    h2 .anchor svg,
+    h3 .anchor svg,
+    h4 .anchor svg,
+    h5 .anchor svg,
+    h6 .anchor svg {
+      visibility: hidden;
+    }
+    h1:hover .anchor svg,
+    h2:hover .anchor svg,
+    h3:hover .anchor svg,
+    h4:hover .anchor svg,
+    h5:hover .anchor svg,
+    h6:hover .anchor svg,
+    h1 .anchor:focus svg,
+    h2 .anchor:focus svg,
+    h3 .anchor:focus svg,
+    h4 .anchor:focus svg,
+    h5 .anchor:focus svg,
+    h6 .anchor:focus svg {
+      visibility: visible;
+    }
+  </style><script>
+    document.addEventListener("DOMContentLoaded", function(event) {
+      var hash = window.decodeURI(location.hash.replace('#', ''))
+      if (hash !== '') {
+        var element = document.getElementById(hash)
+        if (element) {
+          var scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+          var clientTop = document.documentElement.clientTop || document.body.clientTop || 0
+          var offset = element.getBoundingClientRect().top + scrollTop - clientTop
+          // Wait for the browser to finish rendering before scrolling.
+          setTimeout((function() {
+            window.scrollTo(0, offset - 0)
+          }), 0)
+        }
+      }
+    })
+  </script><link rel="preconnect" href="https://www.googletagmanager.com"/><link rel="dns-prefetch" href="https://www.googletagmanager.com"/><script async="" src="https://www.googletagmanager.com/gtag/js?id="></script><script>
+      
+      
+      if(true) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){window.dataLayer && window.dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', '', {"send_page_view":false});
+      }
+      </script><link rel="sitemap" type="application/xml" href="/sitemap/sitemap-index.xml"/><link rel="icon" href="/favicon-32x32.png?v=4c2c993a06ee0fd0ee953020b09128a9" type="image/png"/><link rel="manifest" href="/manifest.webmanifest" crossorigin="anonymous"/><link rel="apple-touch-icon" sizes="48x48" href="/icons/icon-48x48.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="72x72" href="/icons/icon-72x72.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="96x96" href="/icons/icon-96x96.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="144x144" href="/icons/icon-144x144.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192x192.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="256x256" href="/icons/icon-256x256.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="384x384" href="/icons/icon-384x384.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="512x512" href="/icons/icon-512x512.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><style>.gatsby-image-wrapper{position:relative;overflow:hidden}.gatsby-image-wrapper picture.object-fit-polyfill{position:static!important}.gatsby-image-wrapper img{bottom:0;height:100%;left:0;margin:0;max-width:none;padding:0;position:absolute;right:0;top:0;width:100%;object-fit:cover}.gatsby-image-wrapper [data-main-image]{opacity:0;transform:translateZ(0);transition:opacity .25s linear;will-change:opacity}.gatsby-image-wrapper-constrained{display:inline-block;vertical-align:top}</style><noscript><style>.gatsby-image-wrapper noscript [data-main-image]{opacity:1!important}.gatsby-image-wrapper [data-placeholder-image]{opacity:0!important}</style></noscript><script type="module">const e="undefined"!=typeof HTMLImageElement&&"loading"in HTMLImageElement.prototype;e&&document.body.addEventListener("load",(function(e){const t=e.target;if(void 0===t.dataset.mainImage)return;if(void 0===t.dataset.gatsbyImageSsr)return;let a=null,n=t;for(;null===a&&n;)void 0!==n.parentNode.dataset.gatsbyImageWrapper&&(a=n.parentNode),n=n.parentNode;const o=a.querySelector("[data-placeholder-image]"),r=new Image;r.src=t.currentSrc,r.decode().catch((()=>{})).then((()=>{t.style.opacity=1,o&&(o.style.opacity=0,o.style.transition="opacity 500ms linear")}))}),!0);</script></head><body><script>
+          void function() {
+            var cachedMode;
+
+            try {
+              var preferredTheme = JSON.parse(localStorage.getItem('diesel:theme-atom'));
+
+              if (preferredTheme && preferredTheme.mode) {
+                cachedMode = preferredTheme.mode;
+              }
+            } catch (err) { }
+
+            function setTheme(newTheme) {
+              document.documentElement.className = newTheme;
+            }
+
+            var darkQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+            setTheme(cachedMode || (darkQuery.matches ? 'dark' : 'light'));
+          }()
+        </script><div id="___gatsby"><div style="outline:none" tabindex="-1" id="gatsby-focus-wrapper"><div class="Layout-module--layout--2c933"><div class="Post-module--post--3a994"><div class="Post-module--buttons--2972d"><a class="Button-module--button--b1113 Post-module--buttonArticles--d793a" href="/">All Articles</a></div><div class="Post-module--content--3c6e5"><div class="Content-module--content--80d58"><h1 class="Content-module--title--09504">단위 테스트 (4)</h1><div class="Content-module--body--726c2"><p>이 내용은 “단위 테스트” 를 읽고 작성한 내용입니다. 블로그 게시글과, 작성한 코드를 함께 보시면 더욱 좋습니다.</p>
+<p>4장은 해당 코드를 살펴봐주세요. <a href="https://github.com/s3ich4n/unit-testing-101/tree/main/pt2/ch04" target="_blank" rel="nofollow noopener noreferrer">코드 링크</a></p>
+<p>Chapter 4. 좋은 테스트의 4대 요소</p>
+<blockquote>
+<p>커맨드로 테스트를 직접 실행하기 위해선 현재 디렉토리로 이동한다.
+<code class="language-text">cd pt2/ch04</code></p>
+</blockquote>
+<hr>
+<h1 id="들어가며" style="position:relative;"><a href="#%EB%93%A4%EC%96%B4%EA%B0%80%EB%A9%B0" aria-label="들어가며 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>들어가며</h1>
+<p>1장에서 살펴본 좋은 단위 테스트 스위트의 특성을 상기시켜보자</p>
+<ul>
+<li>개발 주기에 통합되어있다. 실제로 사용하는 테스트만 가치있다.</li>
+<li>코드베이스의 가장 중요한 부분만을 테스트 대상으로 한다. 애플리케이션의 핵심(도메인 모델)을 다른 것과 구별하는 것이 중요하다 (7장 참고)</li>
+<li>최소한의 유지비로 최대 가치를 끌어낸다. 이를 위해선 아래 두 가지를 할 수 있어야 한다
+<ul>
+<li>가치 있는 테스트 <em>식별</em>(고가치, 저가치)</li>
+<li>가치 있는 테스트 <em>작성</em></li>
+</ul>
+</li>
+</ul>
+<p>이 장은 가치 있는 테스트를 <em>식별</em> 하는 것 부터 알아본다.</p>
+<h1 id="41-좋은-단위-테스트의-4대-요소" style="position:relative;"><a href="#41-%EC%A2%8B%EC%9D%80-%EB%8B%A8%EC%9C%84-%ED%85%8C%EC%8A%A4%ED%8A%B8%EC%9D%98-4%EB%8C%80-%EC%9A%94%EC%86%8C" aria-label="41 좋은 단위 테스트의 4대 요소 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>4.1 좋은 단위 테스트의 4대 요소</h1>
+<p>좋은 단위 테스트는 아래 네 가지 특성을 가진다:</p>
+<ol>
+<li>회귀 방지</li>
+<li>리팩토링 내성</li>
+<li>빠른 피드백</li>
+<li>유지 보수성</li>
+</ol>
+<p>이 네 특성을 바탕으로 어떠한 자동화된 테스트(단위 테스트, 통합 테스트, e2e 테스트)든 분석 가능하다.</p>
+<h2 id="411-회귀-방지protection-against-regressions" style="position:relative;"><a href="#411-%ED%9A%8C%EA%B7%80-%EB%B0%A9%EC%A7%80protection-against-regressions" aria-label="411 회귀 방지protection against regressions permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>4.1.1 회귀 방지(<em>Protection against regressions</em>)</h2>
+<p>여기서 말하는 회귀는 ‘소프트웨어 버그’다. 코드 수정 후(신규기능 출시 후) 기능이 의도대로 작동하지 않는 경우다.</p>
+<p>버그는 코드베이스가 커지면 커질 수록 잠재적인 버그에 더 많이 노출된다. 따라서 코드보호를 통해 이를 방지해야 한다.</p>
+<p>회귀 방지 지표에 대한 테스트 점수가 얼마나 잘 나오는지 평가하려면 아래 사항을 고려한다:</p>
+<ul>
+<li>테스트 중에 실행되는 코드의 양</li>
+<li>코드 복잡도</li>
+<li>코드의 도메인 유의성(<em>significance</em>)</li>
+</ul>
+<p>실행되는 코드가 많을 수록 테스트에서 회귀가 나타날 가능성이 높다. 물론 이 테스트에 대한 일련의 검증이 있다고 가정할 때, 단순히 코드를 실행시키는 것 만으로는 충분하지 않다. 테스트 수행을 통한 코드베이스의 실행결과도 검증해야 한다.</p>
+<p>코드 양 뿐 아니라 복잡도와 도메인 유의성 또한 중요하다. 복잡한 비즈니스 로직이 보일러플레이트 등을 통한 자동생성코드 보다 훨씬 중요하다. 비즈니스에 중요한 기능버그가 가장 큰 피해를 일으키기 때문이다.</p>
+<p>반면에 단순한 코드를 검증하는 것은 가치가 거의 없다. attribute 하나를 검증하기 위한 로직은 실수할 여지가 그리 많지 않다.</p>
+<p>작성하지 않은 코드(E.g., 라이브러리, 프레임워크, 외부 시스템 등)도 중요하다. 최상의 보호를 위해선 이런 코드 또한 검증이 올바른지 확인한다.</p>
+<blockquote>
+<p>🍅 tips</p>
+<p>회귀 방지 지표를 극대화하려면 테스트가 가능한 한 많은 코드를 실행하도록 목표해야한다.</p>
+</blockquote>
+<h2 id="412-리팩토링-내성" style="position:relative;"><a href="#412-%EB%A6%AC%ED%8C%A9%ED%86%A0%EB%A7%81-%EB%82%B4%EC%84%B1" aria-label="412 리팩토링 내성 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>4.1.2 리팩토링 내성</h2>
+<p>좋은 단위 테스트의 두 번째 특성은 리팩토링 내성이다. 이는 ‘빨간막대’로 바꾸지 않고 기본 애플리케이션 코드를 리팩토링할 수 있는지에 대한 척도다.</p>
+<blockquote>
+<p>‼️ 정의</p>
+<p>리팩토링은 식별할 수 있는 동작을 수정하지 않고 기존 코드를 변경하는 것을 의미한다.</p>
+<p>코드의 비기능적 특징을 개선하는 것으로 가독성을 높이고 복잡도를 낮추는 것이 주요 의도다.</p>
+<p>E.g., 메소드 명 변경, 코드 조각을 새 클래스로 추출.</p>
+</blockquote>
+<p>예를 들어 이런 상황이 발생했다고 생각해보자.</p>
+<p>새 기능 추가, 테스트코드 올패스 후 코드 리팩토링을 하려 한다. 리팩토링을 하니 테스트코드가 말썽이다. 기능은 의도대로 돌아가고 있다. 테스트만 ‘빨간막대’ 로 변했다. 이런 상황을 거짓 양성(<em>false positive</em>, 긍정 오류. Type 1 에러라고도 함)이라고 한다.</p>
+<blockquote>
+<p>이하 <strong>오탐</strong> 으로 지칭하도록 하겠다.</p>
+</blockquote>
+<p>이는 허위 경보다. 기능은 의도대로 돌지만 테스트가 실패하는 경우다. 이러한 ‘오탐’은 코드 리팩토링 시 발생한다. 좋은 단위 테스트의 한 가지 특성으로 이름붙이자면 ‘리팩토링 내성’이라고 일컫는다.</p>
+<blockquote>
+<p>Q: 거짓 양성, 거짓 음성이 헷갈려요</p>
+<p>A: 아래 짤방을 보세요</p>
+</blockquote>
+<p><img src="https://effectsizefaq.files.wordpress.com/2010/05/type-i-and-type-ii-errors.jpg" alt="P는 작대기가 한개니까 Type I Error, N은 작대기가 2개니까 Type II Error"> <sup id="fnref-1"><a href="#fn-1" class="footnote-ref">1</a></sup></p>
+<p>리팩토링 내성 지표에서 테스트 점수가 얼마나 잘 나오는지 평가하려면 테스트에서 얼마나 많은 ‘오탐’이 발생했는지 살펴봐야한다. 이는 적을 수록 좋다.</p>
+<p>‘오탐’을 신경써야 하는 이유는 전체 테스트 스위트에 치명적인 영향을 줄 수 있기 때문이다. 단위 테스트의 목표는 프로젝트 성장을 지속가능하게 하는 것이다. 테스트가 지속 가능한 성장을 하기 위한 메커니즘은 회귀없이 주기적으로 리팩토링하고 새 기능을 추가할 수 있는 것이다. 이로 인한 장점은 아래와 같다:</p>
+<ul>
+<li>기존 기능이 고장났을 시 테스트로 조기경고를 받아볼 수 있다<sup id="fnref-2"><a href="#fn-2" class="footnote-ref">2</a></sup>
+<ul>
+<li>결함 있는 코드를 배포 전 점검가능</li>
+<li>프로덕션 환경에서 문제 처리하려면 더 골치아팠을 것</li>
+</ul>
+</li>
+<li>코드 변경이 회귀로 이어지지 않을 것이라고 확신할 수 있다
+<ul>
+<li>좀더 공격적인 리팩토링을 할 수 있는 추진력이 된다</li>
+<li>코드베이스를 보다 깔끔하게 가져갈 수 있다</li>
+</ul>
+</li>
+</ul>
+<p>‘오탐’은 두 이점을 모두 방해한다! 이유는 아래와 같다:</p>
+<ul>
+<li>테스트가 타당한 이유 없이 실패하면, 코드 대응능력과 의지가 희석된다
+<ul>
+<li>실패에 익숙해지면 신경을 저절로 쓰지 않게 된다</li>
+<li><strong>타당한 실패까지 무시</strong> 하게 된다! 이는 프로덕션 환경에 버그가 살포됨을 의미한다</li>
+</ul>
+</li>
+<li>‘오탐’이 빈번하면 테스트 스위트를 신뢰할 수 없게 된다
+<ul>
+<li>믿을 만한 안전망으로 인식하지 않게 된다. <em>양치기 소년</em> 이 되어버린다!</li>
+<li>신뢰가 부족해지면 리팩토링을 시도하기 어려워진다</li>
+</ul>
+</li>
+</ul>
+<p>이에 대한 대응은 테스트 스위트를 다시 살펴보고, 안정성을 높이는 것이다. (7장에서 다시 볼 것)</p>
+<h2 id="413-무엇이-오탐의-원인인가" style="position:relative;"><a href="#413-%EB%AC%B4%EC%97%87%EC%9D%B4-%EC%98%A4%ED%83%90%EC%9D%98-%EC%9B%90%EC%9D%B8%EC%9D%B8%EA%B0%80" aria-label="413 무엇이 오탐의 원인인가 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>4.1.3 무엇이 ‘오탐’의 원인인가?</h2>
+<p>테스트에서 발생하는 ‘오탐’의 수는 테스트 구성방식과 관련되어있다. <strong>테스트와 SUT의 구현 세부 사항이 많이 결합할 수록</strong> ‘오탐’이 많이 생긴다. 이를 위해선 테스트를 구현 세부 사항에서 분리해야한다.</p>
+<p>테스트는 SUT의 최종결과, 즉 동작을 검증하는 것이다. 동작하기 위한 과정을 테스트하는 것이 아니다. 테스트는 최종 사용자(end user)의 관점에서 SUT 검증하고, 최종 사용자에게 의미있는 결과가 나오는지 확인해야한다. (5장에서 다시 볼 것)</p>
+<p>테스트를 구성하기에 가장 좋은 방법은 문제 영역을 이야기하는 것이다. 테스트가 실패하면, 해당 애플리케이션 동작과 테스트 시나리오가 분리되는 것을 의미한다. 이런 구조라면 실패는 ‘시나리오 밖의 동작 시’ 발생하며, 이는 문제 파악에 도움이 된다.</p>
+<p>예시를 통해 살펴보자. 예시코드를 구동가능한 파이썬 코드로 고치면 아래와 같다. (좋은 코드는 아닙니다!)</p>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token keyword">class</span> <span class="token class-name">Message</span><span class="token punctuation">:</span>
+    header<span class="token punctuation">:</span> <span class="token builtin">str</span>
+    body<span class="token punctuation">:</span> <span class="token builtin">str</span>
+    footer<span class="token punctuation">:</span> <span class="token builtin">str</span>
+
+
+<span class="token keyword">class</span> <span class="token class-name">Renderer</span><span class="token punctuation">(</span>Protocol<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">def</span> <span class="token function">render</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> msg<span class="token punctuation">:</span> Message<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+
+<span class="token keyword">class</span> <span class="token class-name">HeaderRenderer</span><span class="token punctuation">(</span>Renderer<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">def</span> <span class="token function">render</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> msg<span class="token punctuation">:</span> Message<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> <span class="token string-interpolation"><span class="token string">f"&lt;h1></span><span class="token interpolation"><span class="token punctuation">{</span>msg<span class="token punctuation">.</span>header<span class="token punctuation">}</span></span><span class="token string">&lt;/h1>"</span></span>
+
+
+<span class="token keyword">class</span> <span class="token class-name">BodyRenderer</span><span class="token punctuation">(</span>Renderer<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">def</span> <span class="token function">render</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> msg<span class="token punctuation">:</span> Message<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> <span class="token string-interpolation"><span class="token string">f"&lt;b></span><span class="token interpolation"><span class="token punctuation">{</span>msg<span class="token punctuation">.</span>body<span class="token punctuation">}</span></span><span class="token string">&lt;/b>"</span></span>
+
+
+<span class="token keyword">class</span> <span class="token class-name">FooterRenderer</span><span class="token punctuation">(</span>Renderer<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">def</span> <span class="token function">render</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> msg<span class="token punctuation">:</span> Message<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> <span class="token string-interpolation"><span class="token string">f"&lt;i></span><span class="token interpolation"><span class="token punctuation">{</span>msg<span class="token punctuation">.</span>footer<span class="token punctuation">}</span></span><span class="token string">&lt;/i>"</span></span>
+
+
+<span class="token keyword">class</span> <span class="token class-name">MessageRenderer</span><span class="token punctuation">(</span>Renderer<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    sub_renderers<span class="token punctuation">:</span> List<span class="token punctuation">[</span>Callable<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span>
+        HeaderRenderer<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        BodyRenderer<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        FooterRenderer<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token punctuation">]</span>
+
+    <span class="token keyword">def</span> <span class="token function">render</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> msg<span class="token punctuation">:</span> Message<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token comment"># 결과를 계속 받아서 지속적으로 하나의 string에 aggregate</span>
+        output <span class="token operator">=</span> <span class="token punctuation">(</span>x<span class="token punctuation">.</span>render<span class="token punctuation">(</span>msg<span class="token punctuation">)</span> <span class="token keyword">for</span> x <span class="token keyword">in</span> self<span class="token punctuation">.</span>sub_renderers<span class="token punctuation">)</span>
+        result <span class="token operator">=</span> <span class="token string">""</span><span class="token punctuation">.</span>join<span class="token punctuation">(</span>output<span class="token punctuation">)</span>
+
+        <span class="token keyword">return</span> result</code></pre></div>
+<p>테스트는 아래 명령으로 구동한다:</p>
+<blockquote>
+<p><code class="language-text">pytest test\test_01_html_message.py -v</code></p>
+</blockquote>
+<div class="gatsby-highlight" data-language="powershell"><pre class="language-powershell"><code class="language-powershell">=============================================== test session starts ================================================
+platform win32 <span class="token operator">--</span> Python 3<span class="token punctuation">.</span>10<span class="token punctuation">.</span>11<span class="token punctuation">,</span> pytest-7<span class="token punctuation">.</span>4<span class="token punctuation">.</span>0<span class="token punctuation">,</span> pluggy-1<span class="token punctuation">.</span>2<span class="token punctuation">.</span>0 <span class="token operator">--</span> C:\python<span class="token punctuation">.</span>exe
+cachedir: <span class="token punctuation">.</span>pytest_cache
+rootdir: C:\unit_testing\pt2\ch04
+plugins: cov-4<span class="token punctuation">.</span>1<span class="token punctuation">.</span>0<span class="token punctuation">,</span> mock-3<span class="token punctuation">.</span>11<span class="token punctuation">.</span>1
+collected 2 items
+
+test/test_01_html_message<span class="token punctuation">.</span>py::test_message_renderer_uses_correct_sub_renderers PASSED                         <span class="token punctuation">[</span> 50%<span class="token punctuation">]</span> 
+test/test_01_html_message<span class="token punctuation">.</span>py::test_rendering_a_message PASSED                                                 <span class="token punctuation">[</span>100%<span class="token punctuation">]</span> 
+
+================================================ 2 passed in 0<span class="token punctuation">.</span>04s =================================================</code></pre></div>
+<ul>
+<li><code class="language-text">test_message_renderer_uses_correct_sub_renderers</code> 테스트 케이스를 살펴보자</li>
+</ul>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token keyword">def</span> <span class="token function">test_message_renderer_uses_correct_sub_renderers</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    sut <span class="token operator">=</span> MessageRenderer<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+    renderers <span class="token operator">=</span> sut<span class="token punctuation">.</span>sub_renderers
+
+    <span class="token keyword">assert</span> <span class="token number">3</span> <span class="token operator">==</span> <span class="token builtin">len</span><span class="token punctuation">(</span>renderers<span class="token punctuation">)</span>
+    <span class="token keyword">assert</span> <span class="token builtin">isinstance</span><span class="token punctuation">(</span>renderers<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">,</span> HeaderRenderer<span class="token punctuation">)</span>
+    <span class="token keyword">assert</span> <span class="token builtin">isinstance</span><span class="token punctuation">(</span>renderers<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">,</span> BodyRenderer<span class="token punctuation">)</span>
+    <span class="token keyword">assert</span> <span class="token builtin">isinstance</span><span class="token punctuation">(</span>renderers<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">,</span> FooterRenderer<span class="token punctuation">)</span></code></pre></div>
+<p><code class="language-text">MessageRenderer</code> 안의 렌더러 갯수가 3개인 것을 확인하고, 헤더-바디-푸터를 파싱하고있다. 하지만, 이 테스트는 실제 <code class="language-text">MessageRenderer</code>의 <code class="language-text">render()</code> 의 <strong>동작</strong> 을 확인하지 않는다. 하위 렌더링 클래스의 구성을 변경해도 HTML 문서가 동일하게 유지될 수는 있으나, 이 테스트는 구현 세부사항과 매우 결합되어있다. 예를 들어, <code class="language-text">BodyRenderer</code>를 <code class="language-text">BoldRenderer</code>로 바꾼다거나, <code class="language-text">MessageRenderer</code>에서 한번에 렌더링을 구현해버리거나 하면 테스트는 <strong>깨진다</strong>.</p>
+<p>이런 그림으로 테스트를 수행하고 있음을 알 수 있다. 아래 그림과 함께 정리해보자:</p>
+<p><figure class="gatsby-resp-image-figure" style="">
+    <span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 885px; "
+    >
+      <a
+    class="gatsby-resp-image-link"
+    href="/static/f326b97b578fb1d3ac72198cb1ce358c/efc66/001.png"
+    style="display: block"
+    target="_blank"
+    rel="noopener"
+  >
+    <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 49.16666666666667%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAKCAYAAAC0VX7mAAAACXBIWXMAABYlAAAWJQFJUiTwAAABY0lEQVQoz3VSPVPCQBDNjxNbIrV2WgotjZXa6C+w4mfoDP4BHTO0qAydEE8gR5JL7vL1nN14DATcmTd7udt7+7L3nKqq0AQFZWMyZFmGoih29m226+1wmhu2yBiDvCiQZTkTa22Y+BDpNpw8z5EkCZI0ZVDQRVoHgUQgJbTWdJtJ8wbpnsKHwQDnl130+n1cdHt49TwmDKOoJgwkoihCHMdMGMdqo5TEUDMSpI3hc+fq5hYt9wSd0zO02i6ehs+bYoqyLFnNcrmClBLr9RpKKaRpypn2Pj4n+JrN+Y5zfXePo7bLhMduB4/D4d8Ms82v0RwjVhwgDEPESvGMSRkpH4/f4X8LHocjFgt4oxFe3jxMplMolXCx7S6EwCoIuDvBvrydNX1Trs/M/ivbSLVmVURqf7/ih9ENy+zazaEZbcMeEAmpZAcwUiajmv8sw7ZpmrRe171932fM5j6E+Nnz6iFj/wKq8vjdc5LfAwAAAABJRU5ErkJggg=='); background-size: cover; display: block;"
+  ></span>
+  <picture>
+          <source
+              srcset="/static/f326b97b578fb1d3ac72198cb1ce358c/8ac56/001.webp 240w,
+/static/f326b97b578fb1d3ac72198cb1ce358c/d3be9/001.webp 480w,
+/static/f326b97b578fb1d3ac72198cb1ce358c/dad35/001.webp 885w"
+              sizes="(max-width: 885px) 100vw, 885px"
+              type="image/webp"
+            />
+          <source
+            srcset="/static/f326b97b578fb1d3ac72198cb1ce358c/8ff5a/001.png 240w,
+/static/f326b97b578fb1d3ac72198cb1ce358c/e85cb/001.png 480w,
+/static/f326b97b578fb1d3ac72198cb1ce358c/efc66/001.png 885w"
+            sizes="(max-width: 885px) 100vw, 885px"
+            type="image/png"
+          />
+          <img
+            class="gatsby-resp-image-image"
+            src="/static/f326b97b578fb1d3ac72198cb1ce358c/efc66/001.png"
+            alt="SUT 내의 알고리즘과 결합된 테스트. 리팩토링 시 테스트도 함께 깨진다"
+            title="SUT 내의 알고리즘과 결합된 테스트. 리팩토링 시 테스트도 함께 깨진다"
+            loading="lazy"
+            decoding="async"
+            style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+          />
+        </picture>
+  </a>
+    </span>
+    <figcaption class="gatsby-resp-image-figcaption"><p>SUT 내의 알고리즘과 결합된 테스트. 리팩토링 시 테스트도 함께 깨진다</p></figcaption>
+  </figure></p>
+<ul>
+<li>리팩토링 과정은 애플리케이션의 식별동작에 영향을 주지 않으면서 구현을 변경하는 것이다</li>
+<li>상기 예시대로 코드를 바꾸면 이 테스트 케이스는 ‘빨간막대’로 변한다</li>
+</ul>
+<p>즉, SUT의 구현 세부 사항과 결합된 테스트는 리팩토링 내성이 없다. 위에서 살펴본 모든 단점이 보인다:</p>
+<ul>
+<li>회귀 발생 시 조기 경고를 제공하지 않는다. 대부분 잘못된 것이므로 경고를 무시하게 된다</li>
+<li>리팩토링에 대한 능력과 의지를 방해한다. 테스트의 방향성을 알 수가 없으므로 버려진 테스트코드가 된다!</li>
+</ul>
+<p>깨지기 쉬운 테스트코드를 한번 더 살펴보자.</p>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token keyword">def</span> <span class="token function">test_message_renderer_is_implemented_correctly</span><span class="token punctuation">(</span>whole_code<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">import</span> pathlib
+    cwd <span class="token operator">=</span> pathlib<span class="token punctuation">.</span>Path<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>cwd<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">/</span> <span class="token string">"pt2/ch04/test/test_01_html_message.py"</span>
+
+    <span class="token keyword">with</span> <span class="token builtin">open</span><span class="token punctuation">(</span>cwd<span class="token punctuation">,</span> <span class="token string">"r"</span><span class="token punctuation">,</span> encoding<span class="token operator">=</span><span class="token string">"utf-8"</span><span class="token punctuation">)</span> <span class="token keyword">as</span> source_code<span class="token punctuation">:</span>
+        <span class="token keyword">assert</span> whole_code <span class="token operator">==</span> source_code<span class="token punctuation">.</span>read<span class="token punctuation">(</span><span class="token punctuation">)</span></code></pre></div>
+<p>이 코드는 테스트코드의 <strong>단 하나라도</strong> 수정하면 실패한다! SUT의 식별동작이 아니라 특정 구현이 동일한지를 고집한다. 구현을 바꿀 때마다 ‘빨간막대’가 뜬다.</p>
+<h2 id="414-구현-세부-사항-대신-최종-결과를-목표로-하기" style="position:relative;"><a href="#414-%EA%B5%AC%ED%98%84-%EC%84%B8%EB%B6%80-%EC%82%AC%ED%95%AD-%EB%8C%80%EC%8B%A0-%EC%B5%9C%EC%A2%85-%EA%B2%B0%EA%B3%BC%EB%A5%BC-%EB%AA%A9%ED%91%9C%EB%A1%9C-%ED%95%98%EA%B8%B0" aria-label="414 구현 세부 사항 대신 최종 결과를 목표로 하기 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>4.1.4 구현 세부 사항 대신 최종 결과를 목표로 하기</h2>
+<p>리팩토링 내성을 높이려면 SUT의 구현 세부 사항과 테스트 간의 결합도를 낮추는 것이다. 이를 위해서 필요한 것이 어떤 것인지 살펴보자:</p>
+<ul>
+<li><code class="language-text">MessageRender</code>에서 얻는 최종 결과는 메시지의 HTML 표현이다. 클래스에서 얻을 수 있는 관찰 가능한 결과이기 때문에 이를 확인하는 것 또한 마땅하다. 즉, <code class="language-text">MessageRenderer</code>를 블랙박스로 취급하고 식별 가능한 동작에만 신경쓰기로 한 것이다. 관련 테스트 코드는 아래와 같다:</li>
+</ul>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token keyword">def</span> <span class="token function">test_rendering_a_message</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    sut <span class="token operator">=</span> MessageRenderer<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    message<span class="token punctuation">:</span> Message <span class="token operator">=</span> Message<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    message<span class="token punctuation">.</span>header <span class="token operator">=</span> <span class="token string">"h"</span>
+    message<span class="token punctuation">.</span>body <span class="token operator">=</span> <span class="token string">"b"</span>
+    message<span class="token punctuation">.</span>footer <span class="token operator">=</span> <span class="token string">"f"</span>
+
+    html <span class="token operator">=</span> sut<span class="token punctuation">.</span>render<span class="token punctuation">(</span>message<span class="token punctuation">)</span>
+
+    <span class="token keyword">assert</span> <span class="token string">"&lt;h1>h&lt;/h1>&lt;b>b&lt;/b>&lt;i>f&lt;/i>"</span> <span class="token operator">==</span> html</code></pre></div>
+<p>이런 그림으로 테스트를 개선하였음을 알 수 있다. 상기 테스트로 아래 이점을 얻었다:</p>
+<p><figure class="gatsby-resp-image-figure" style="">
+    <span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 922px; "
+    >
+      <a
+    class="gatsby-resp-image-link"
+    href="/static/b6c0103b1f16506967995e1da4c738dd/6da96/002.png"
+    style="display: block"
+    target="_blank"
+    rel="noopener"
+  >
+    <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 40%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAICAYAAAD5nd/tAAAACXBIWXMAABYlAAAWJQFJUiTwAAABXUlEQVQoz2VSW0rDQBSdzfhTBOmPuAxBUfGj/ZCCuAlB3ICgOxBdhK07MPXVSP0wYx+pJmmah0kmbdIj90JkqAcud+aeO/c5oixLVLJcLkEgrZ91XhfdtxIBDUVRIAxDRFGM+XyOxWLBNh1pmjKf5/k/jiAGwyEen57xYVlIkgSj0RiO67IzBf12HLy89tAz3xAEIRzHwWTyxb5KKfYjXYloHZ9grbaO7d09zGYBZ6H2LCmRphmub25R26ijvrmFu3bnrxPP82BZkpOYpgnD6ELKT4iLyyvs7B/g9Owc06nPFdj2hNuih+3OPQ4bTTSPWngwusiVgut68H2fx/OTJAiCAIPBkO+CyqQgNBOlcg5ElRGIo7azLOMzgbrwvCkno070OfJS+v13GIYBKSUbaH62bXOVlJ0S6YjjGGPmba5y9VeIKIq4XN+fsYE2S0GqLZPWH5RlwTwJ8atf5xcoW1Xva5U8qwAAAABJRU5ErkJggg=='); background-size: cover; display: block;"
+  ></span>
+  <picture>
+          <source
+              srcset="/static/b6c0103b1f16506967995e1da4c738dd/8ac56/002.webp 240w,
+/static/b6c0103b1f16506967995e1da4c738dd/d3be9/002.webp 480w,
+/static/b6c0103b1f16506967995e1da4c738dd/88718/002.webp 922w"
+              sizes="(max-width: 922px) 100vw, 922px"
+              type="image/webp"
+            />
+          <source
+            srcset="/static/b6c0103b1f16506967995e1da4c738dd/8ff5a/002.png 240w,
+/static/b6c0103b1f16506967995e1da4c738dd/e85cb/002.png 480w,
+/static/b6c0103b1f16506967995e1da4c738dd/6da96/002.png 922w"
+            sizes="(max-width: 922px) 100vw, 922px"
+            type="image/png"
+          />
+          <img
+            class="gatsby-resp-image-image"
+            src="/static/b6c0103b1f16506967995e1da4c738dd/6da96/002.png"
+            alt="SUT의 식별 가능 동작과 결합된 테스트. 리팩토링 내성이 있어서, &#39;오탐&#39;발생률이 거의 적다."
+            title="SUT의 식별 가능 동작과 결합된 테스트. 리팩토링 내성이 있어서, &#39;오탐&#39;발생률이 거의 적다."
+            loading="lazy"
+            decoding="async"
+            style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+          />
+        </picture>
+  </a>
+    </span>
+    <figcaption class="gatsby-resp-image-figcaption"><p>SUT의 식별 가능 동작과 결합된 테스트. 리팩토링 내성이 있어서, ‘오탐’발생률이 거의 적다.</p></figcaption>
+  </figure></p>
+<ul>
+<li>최종 사용자에게 의미있는 유일한 결과를 검증했다</li>
+<li>고객에게 영향을 줄 수 있는 애플리케이션 동작을 점검한다</li>
+<li>(책처럼 C# 혹은 Java, Kotlin을 쓴다할 때) 컴파일이 잘못된다거나 하면 테스트에 ‘오탐’이 발생할 수 있으나, 이는 훨씬 쉽게 캐치할 수 있는 문제다</li>
+</ul>
+<h1 id="42-첫-번째-특성과-두-번째-특성-간의-본질적인-관계" style="position:relative;"><a href="#42-%EC%B2%AB-%EB%B2%88%EC%A7%B8-%ED%8A%B9%EC%84%B1%EA%B3%BC-%EB%91%90-%EB%B2%88%EC%A7%B8-%ED%8A%B9%EC%84%B1-%EA%B0%84%EC%9D%98-%EB%B3%B8%EC%A7%88%EC%A0%81%EC%9D%B8-%EA%B4%80%EA%B3%84" aria-label="42 첫 번째 특성과 두 번째 특성 간의 본질적인 관계 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>4.2 첫 번째 특성과 두 번째 특성 간의 본질적인 관계</h1>
+<p>좋은 단위 테스트의 처음 두 요소(회귀 방지, 리팩토링 내성) 사이에는 본질적인 관계가 있다. 둘 다 정 반대의 관점에서도 테스트 스위트의 정확도에 기여한다. 이 두가지 특성은 시간이 흐르며 프로젝트에 영향을 다르게 미치는 경향이 있다. 프로젝트가 시작된 직후에는 회귀 방지를 훌륭히 갖추는 것이 중요하지만, 리팩토링 내성은 바로 필요하지 않다.</p>
+<p>이 절에는 아래 내용을 살펴볼 것이다</p>
+<ul>
+<li>테스트 정확도 극대화</li>
+<li>‘오탐’과 거짓 음성(<em>false negative</em>, 부정 오류. Type 2 에러라고도 함. 이하 <strong>미탐</strong> 으로 지칭)의 중요성</li>
+</ul>
+<h2 id="421-테스트-정확도" style="position:relative;"><a href="#421-%ED%85%8C%EC%8A%A4%ED%8A%B8-%EC%A0%95%ED%99%95%EB%8F%84" aria-label="421 테스트 정확도 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>4.2.1 테스트 정확도</h2>
+<p>테스트 결과를 다시 큰 그림으로 보고, 이를 분석해보자:</p>
+<p><figure class="gatsby-resp-image-figure" style="">
+    <span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 857px; "
+    >
+      <a
+    class="gatsby-resp-image-link"
+    href="/static/6bc00fb8657ed1cff2897da758c4c668/3cd52/003.png"
+    style="display: block"
+    target="_blank"
+    rel="noopener"
+  >
+    <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 51.25000000000001%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAKCAYAAAC0VX7mAAAACXBIWXMAABYlAAAWJQFJUiTwAAACNklEQVQoz42SyU9TURSH+7foQo1/hQvjkIgpoIRJhSYmSlUUScAxLjS6ALRAmAepQAxidOMKx52JjSiizPD6OtD2Te0bCqHtZ95FIhsTT/LlnJvc/M7vnnM9juNg2Ra242A7tsiWZZHOZDAtS+DWqqYJdMPAtExM0yRjmli2TT5foFDYxqMZOmuyJJAiYVbDayQ1hfVUAkVX0dI6STXF4soSc4sLrEiraGkDPWOgZQwUTSWXy7MTHlXXkCKyIBKLiuwKuA1WZYmZXz/5HPrCsrRGOBphYXmJbz9meP/pI7Pzc4QjsnCraTqbm5vbgqqhCUexxDrR9Riu6+evX/Goo53OwQHaB/oJ9PXS2t1FZU0tZVXVVNf6KCop5dbde8iyzNt3H4SoR1FV5HhUuHLdzS8vklIVRl9O8iDwhJ5nQfrHRul6Osz9wGOOnvTiLT1N5ZmzHDtRxPkLddi2japqZLNZPLF4nND0tHCXUJLEkwksx+JhSyvHvSVU1PgoP1fDqapqissr8NX5udjQIPD5/bR0dLA7PLo7YNMgpSnIsQjfZ2ewNxyuNFxn7/6DFJeVU+Qt4dDhI+zZd4DLTU10B0foHB6ira+XofFx8vn83y0b6bTYVFJJiVm6m3U2sgyNBLlUf43m23dobL5JY9MN/PVXCfT0MDr5guDEBIPjY7yZmoJCQbgTgq761tYWuVxO5J3a/YuKomBZNv8ThT+inn9dSCQShEJfkaSwOLtNXHY/bzc7Dn8DujmtyO/2kYoAAAAASUVORK5CYII='); background-size: cover; display: block;"
+  ></span>
+  <picture>
+          <source
+              srcset="/static/6bc00fb8657ed1cff2897da758c4c668/8ac56/003.webp 240w,
+/static/6bc00fb8657ed1cff2897da758c4c668/d3be9/003.webp 480w,
+/static/6bc00fb8657ed1cff2897da758c4c668/a145c/003.webp 857w"
+              sizes="(max-width: 857px) 100vw, 857px"
+              type="image/webp"
+            />
+          <source
+            srcset="/static/6bc00fb8657ed1cff2897da758c4c668/8ff5a/003.png 240w,
+/static/6bc00fb8657ed1cff2897da758c4c668/e85cb/003.png 480w,
+/static/6bc00fb8657ed1cff2897da758c4c668/3cd52/003.png 857w"
+            sizes="(max-width: 857px) 100vw, 857px"
+            type="image/png"
+          />
+          <img
+            class="gatsby-resp-image-image"
+            src="/static/6bc00fb8657ed1cff2897da758c4c668/3cd52/003.png"
+            alt="회귀 방지와 리팩토링 내성 간의 관계. 회귀 방지는 &#39;미탐&#39;을 예방하며, 리팩토링 내성은 &#39;오탐&#39;을 예방한다"
+            title="회귀 방지와 리팩토링 내성 간의 관계. 회귀 방지는 &#39;미탐&#39;을 예방하며, 리팩토링 내성은 &#39;오탐&#39;을 예방한다"
+            loading="lazy"
+            decoding="async"
+            style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+          />
+        </picture>
+  </a>
+    </span>
+    <figcaption class="gatsby-resp-image-figcaption"><p>회귀 방지와 리팩토링 내성 간의 관계. 회귀 방지는 ‘미탐’을 예방하며, 리팩토링 내성은 ‘오탐’을 예방한다</p></figcaption>
+  </figure></p>
+<ul>
+<li>버그가 있어서 있다고 하거나(참 양성), 버그가 없어서 없다고 하는 건(참 음성) 지극히 정상이다.</li>
+<li>테스트에서 의도한 오류가 발생하지 않으면 ‘미탐’ 이다. 회귀 방지가 훌륭한 테스트는 ‘미탐’을 최소화하는데 도움이 된다.</li>
+<li>기능은 올바르지만, 테스트에서 실패를 보고하면 ‘오탐’ 이다. 리팩토링 내성이 훌륭한 테스트는 ‘오탐’을 최소화 하는데 도움이 된다.</li>
+</ul>
+<p>결국 테스트의 정확도는 좋은 단위 테스트의 처음 두 특성에 대한 것이다. 회귀 방지와 리팩토링 내성은 테스트 스위트의 정확도를 극대화 하는 것을 목표로 한다. 정확도 지표는 아래 두 가지 요소를 의미한다:</p>
+<ul>
+<li>테스트가 버그 있음을 얼마나 잘 나타내는가(‘미탐’ 제외)</li>
+<li>테스트가 버그 없음을 얼마나 잘 나타내는가(‘오탐’ 제외)</li>
+</ul>
+<p>‘오탐’과 ‘미탐’을 생각해보는 다른 방법은 소음 대비 신호 비율 측면에서 볼 수 있다. 하기 분모를 줄이거나, 분자를 늘리는 테스트로 개선하는 것을 의미한다.</p>
+<p>$테스트 정확도 = \dfrac{신호(발견된 버그 수)}{소음(허위 경보 발생 수)}$</p>
+<h2 id="422-오탐과-미탐의-중요성-역학관계" style="position:relative;"><a href="#422-%EC%98%A4%ED%83%90%EA%B3%BC-%EB%AF%B8%ED%83%90%EC%9D%98-%EC%A4%91%EC%9A%94%EC%84%B1-%EC%97%AD%ED%95%99%EA%B4%80%EA%B3%84" aria-label="422 오탐과 미탐의 중요성 역학관계 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>4.2.2 ‘오탐’과 ‘미탐’의 중요성: 역학관계</h2>
+<p>단기적으로 ‘오탐’도 ‘미탐’만큼 나쁘지 않다. 초기 프로젝트에서는 버그를 프로덕션에 풀지 않는 것이 중요하기 때문이다. 하지만 프로젝트가 성장함에 따라 ‘오탐’은 테스트 스위트에 점차 큰 영향을 미친다.</p>
+<p><figure class="gatsby-resp-image-figure" style="">
+    <span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 621px; "
+    >
+      <a
+    class="gatsby-resp-image-link"
+    href="/static/046d431fcaf8d57fe57b40cb6d76f1ab/3075e/004.png"
+    style="display: block"
+    target="_blank"
+    rel="noopener"
+  >
+    <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 79.16666666666667%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAQCAYAAAAWGF8bAAAACXBIWXMAABYlAAAWJQFJUiTwAAABxUlEQVQ4y51U207CQBDt/z/5YvwEX4xGMNDgBQQTI0Gw1WhUKm1Aq1YDhO29cMwsbN0W6oObTGYze+bkzOzsKihYi8Ui4/PxohzF8zx4no8wDBFFESaTKWaMpQCZWOwphzEXrutyLOWLM8W2bWiajvuHR9D+oHyEy6s2P0zm842qvhwHb282RsMRnvsGhqNXzFdYhcCO48B+/0AcxWi0LtDTdX5IIFlhHMe8kqVFCKNo6cPwV2G+D/VmC9rtbUpIi1rhuh6CIOB7ipNnjMH3fR4nUoorojdJkqSENytCivt+wJPkskkV4T8/HZiWBdO0YBgGHOf7V6FQwwn1JaEfLMnkPpIyKl2+WbktGwlFybMZy5CJUvNEMmYjoX53x/dBEGbAok8yYd7WCVurkhfZW46TJC21aOg3KqSx6XR7a4nyaBSpKyRMBztJuNHFkDrC8Bh5yeRK1gjPmk30NB3/WZkeimd22mhga3sHR6qK/cMSSpUqylUVZfLCqioqtWNUajWoxyfY3duDNRxmFQrJVN7AsmAMBngZmNyn9kLexFO/j3ang/b1Nbo3GurnTf6e157eX19TfrEZw2Q65bM6Ho/50yTCH5v6zxMDv4afAAAAAElFTkSuQmCC'); background-size: cover; display: block;"
+  ></span>
+  <picture>
+          <source
+              srcset="/static/046d431fcaf8d57fe57b40cb6d76f1ab/8ac56/004.webp 240w,
+/static/046d431fcaf8d57fe57b40cb6d76f1ab/d3be9/004.webp 480w,
+/static/046d431fcaf8d57fe57b40cb6d76f1ab/b2315/004.webp 621w"
+              sizes="(max-width: 621px) 100vw, 621px"
+              type="image/webp"
+            />
+          <source
+            srcset="/static/046d431fcaf8d57fe57b40cb6d76f1ab/8ff5a/004.png 240w,
+/static/046d431fcaf8d57fe57b40cb6d76f1ab/e85cb/004.png 480w,
+/static/046d431fcaf8d57fe57b40cb6d76f1ab/3075e/004.png 621w"
+            sizes="(max-width: 621px) 100vw, 621px"
+            type="image/png"
+          />
+          <img
+            class="gatsby-resp-image-image"
+            src="/static/046d431fcaf8d57fe57b40cb6d76f1ab/3075e/004.png"
+            alt="&#39;오탐&#39;이 영향도 증가 추이와 &#39;미탐&#39;의 영향도 증가추이"
+            title="&#39;오탐&#39;이 영향도 증가 추이와 &#39;미탐&#39;의 영향도 증가추이"
+            loading="lazy"
+            decoding="async"
+            style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+          />
+        </picture>
+  </a>
+    </span>
+    <figcaption class="gatsby-resp-image-figcaption"><p>‘오탐’이 영향도 증가 추이와 ‘미탐’의 영향도 증가추이</p></figcaption>
+  </figure></p>
+<p>초기에는 ‘오탐’이 크게 중요하지는 않다. 리팩토링보다는 제품을 내어놓아야 하니까. 초반에는 코드에 대해 리팩토링을 빠르게 할 수 있다. 아직 머릿속에 있으니까. 그렇지만 가면 갈 수록 그 중요성이 점차 중요해진다.</p>
+<p>하지만 시간이 지날 수록 코드베이스는 나빠진다. 이 경향을 줄이려면 정기적으로 리팩토링을 해야한다. 그렇지 않으면 그 모든 것이 비용이다.</p>
+<p>리팩토링이 점차 필요함에 따라 테스트의 리팩토링 내성도 중요해진다. ‘오탐’을 말하는 테스트를 계속 둔다면 이른바 <em>양치기 소년</em> 테스트가 된다.</p>
+<p>후반까지 가는 프로젝트라면 ‘오탐’, ‘미탐’ 이 두가지에 대해 특히나 신경써야 한다.</p>
+<h1 id="43-세-번째-요소와-네-번째-요소-빠른-피드백과-유지-보수성" style="position:relative;"><a href="#43-%EC%84%B8-%EB%B2%88%EC%A7%B8-%EC%9A%94%EC%86%8C%EC%99%80-%EB%84%A4-%EB%B2%88%EC%A7%B8-%EC%9A%94%EC%86%8C-%EB%B9%A0%EB%A5%B8-%ED%94%BC%EB%93%9C%EB%B0%B1%EA%B3%BC-%EC%9C%A0%EC%A7%80-%EB%B3%B4%EC%88%98%EC%84%B1" aria-label="43 세 번째 요소와 네 번째 요소 빠른 피드백과 유지 보수성 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>4.3 세 번째 요소와 네 번째 요소: 빠른 피드백과 유지 보수성</h1>
+<p>아래 두 내용을 마저 살펴보자:</p>
+<ul>
+<li>빠른 피드백</li>
+<li>유지 보수성</li>
+</ul>
+<p>빠른 피드백은 단위 테스트의 필수 속성이다. 테스트를 빠르고 자주 돌리면 코드 결함을 빠르게 캐치할 수 있다. 이를 피드백 루프라고 일컫는데, 이것이 줄어들면 버그 수정비용이 상당히 줄어든다.</p>
+<p>유지 보수성 지표는 유지비를 평가한다. 이 지표는 아래 두 가지 요소로 구성된다:</p>
+<ul>
+<li>테스트가 얼마나 이해하기 어려운가?
+<ul>
+<li>이 구성요소는 테스트의 크기와 관련있다. 테스트가 짧으면 더 읽기 쉽다. (쓸데없이 코드를 줄이는 경우를 말하는 것이 아니다!)</li>
+<li>테스트 코드의 품질 또한 중요하다. 테스트 작성 시에도 절차를 생략하지 말자</li>
+</ul>
+</li>
+<li>테스트가 얼마나 실행하기 어려운가?
+<ul>
+<li>테스트가 프로세스 외부 종속성으로 작동하면, 외부 의존성을 갖추는 시간 또한 들여야 한다</li>
+</ul>
+</li>
+</ul>
+<h1 id="44-이상적인-테스트를-찾아서" style="position:relative;"><a href="#44-%EC%9D%B4%EC%83%81%EC%A0%81%EC%9D%B8-%ED%85%8C%EC%8A%A4%ED%8A%B8%EB%A5%BC-%EC%B0%BE%EC%95%84%EC%84%9C" aria-label="44 이상적인 테스트를 찾아서 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>4.4 이상적인 테스트를 찾아서</h1>
+<p>다시, 좋은 단위 테스트의 4대 특성을 보자.</p>
+<ol>
+<li>회귀 방지</li>
+<li>리팩토링 내성</li>
+<li>빠른 피드백</li>
+<li>유지 보수성</li>
+</ol>
+<p>이 네 특성을 <em>곱하면</em> 테스트의 가치가 결정된다. 즉, 어떤 특성이라도 <code class="language-text">0</code>이 되면 전체가 <code class="language-text">0</code>이 되어버린다(!)</p>
+<p><code class="language-text">가치 추정치 = [0..1] * [0..1] * [0..1] * [0..1]</code></p>
+<blockquote>
+<p>🍅 tips</p>
+<p>가치가 있으려면 테스트는 네 가지 범주 모두에서 점수를 내야 한다.</p>
+</blockquote>
+<p>이 수치는 정확히 산정할 수 없다. 이런 것을 할 수 있는 도구 또한 없다. 다만 네 가지 특성과 관련하여 테스트가 어느정도 레벨인지는 비교할 수 있다. 이 평가를 통해 테스트의 가치평가가 가능하고, 테스트 스위트에서 계속 활용할지/말지 를 결정할 수 있다.</p>
+<p>테스트 코드를 포함한 모든 코드는 책임(<em>liability</em>) 이다. 최소 필수값에 대해 매우 높은 임계치를 정하고, 이 임계치를 충족하는 테스트만 남기자. 매우 가치있는 테스트를 기반으로 쌓아올리자.</p>
+<p>이상적인 테스트는 짤 수 있을까?</p>
+<h2 id="441-이상적인-테스트를-만들-수-있는가" style="position:relative;"><a href="#441-%EC%9D%B4%EC%83%81%EC%A0%81%EC%9D%B8-%ED%85%8C%EC%8A%A4%ED%8A%B8%EB%A5%BC-%EB%A7%8C%EB%93%A4-%EC%88%98-%EC%9E%88%EB%8A%94%EA%B0%80" aria-label="441 이상적인 테스트를 만들 수 있는가 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>4.4.1 이상적인 테스트를 만들 수 있는가?</h2>
+<p>아쉽지만 그럴 수 없다. 회귀 방지, 리팩토링 내성, 빠른 피드백은 상호 배타적(<em>mutually exclusive</em>)이다. 셋 중 하나는 희생해야 한다. 그렇지만 어느 것 하나라도 <code class="language-text">0</code>점이 되면 안 된다. 두 특성을 최대로 하는 것을 목표하되, 한가지 특성을 희생하는 케이스를 살펴보자.</p>
+<h2 id="442-극단적-사례-1-엔드-투-엔드e2e-테스트" style="position:relative;"><a href="#442-%EA%B7%B9%EB%8B%A8%EC%A0%81-%EC%82%AC%EB%A1%80-1-%EC%97%94%EB%93%9C-%ED%88%AC-%EC%97%94%EB%93%9Ce2e-%ED%85%8C%EC%8A%A4%ED%8A%B8" aria-label="442 극단적 사례 1 엔드 투 엔드e2e 테스트 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>4.4.2 극단적 사례 1: 엔드 투 엔드(e2e) 테스트</h2>
+<p>e2e 테스트는 최종 사용자의 관점에서 시스템을 살펴본다. UI, DB, 외부 앱을 포함한 모든 시스템 구성을 거친다.</p>
+<p>이는 많은 코드를 테스트하므로 회귀 방지를 잘 수행한다. 많은 코드에는 직접 작성한 코드 뿐 아니라 외부 라이브러리, 프레임워크, 서드파티 앱 등 간접적으로 사용하는 모든 코드까지 테스트하게 된다.</p>
+<p>‘오탐’에도 면역이다. 리팩토링 내성에도 우수하다. 리팩토링을 올바르게 했다면 식별할 수 있는 동작을 변경하지 않으므로 e2e 테스트에도 영향이 없다. 또한 기능이 되는지만을 보기 때문에 특정 구현에 구애받지 않는다.</p>
+<p>그러나 너무 느리다. <strong>e2e 테스트에만</strong> 의존하면 피드백이 너무 느릴 수 밖에 없다.</p>
+<p><figure class="gatsby-resp-image-figure" style="">
+    <span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 627px; "
+    >
+      <a
+    class="gatsby-resp-image-link"
+    href="/static/efb79f55bd6037a58f5cf44ae0787424/e9c9b/005.png"
+    style="display: block"
+    target="_blank"
+    rel="noopener"
+  >
+    <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 81.66666666666667%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAQCAYAAAAWGF8bAAAACXBIWXMAABYlAAAWJQFJUiTwAAACvUlEQVQ4y22U608aQRTF+WebflA/aGM0WFsrz12eSwB57/IwNtqaVgVEHoohTdtYE1sDEhNFjfFRkkqkK8jjNHMjdFFvcnN3Z2Z/uWfO7KjwKLrdLiWLzkNlcXt7i9/VKtVe9Oa7inWqHkCZtLjToVqv17ESj8PucsFoscDudNI7G1fCelWFZ6I3+VeW4QuF8Eajgd5kgsFspsre2bgsy09UqRqNBprNJtrtNu7v79FqtfqTqUyGPjYLAnibDZzVCs5mhdlup/GNbHZADQErlQr294s4OjrGwUEZxdIBZPkO7U4Hbp8POp7HrMGA6dlZvNVoMaPTQcvx0HIcPIEANaPs8lnJrMtarQanx0MytUYjxiYm8WpiEuPqKeh4E+3nnN9PqpRdDpiibP3s/BzCnBsGiwVmh0BgHccT7J1ej4npaYKWDw8HjFE9NqLVbmNnbw+pfB7S+wVMaTTQWszgBTt4uw3jajWGRkfxYngYerMJPknESiJOBvZdVrr0q1TCajqN9PY2soUCvGEJM0YDNCYer3VaDI2N4eXICO2lGItCikXh9vuQTG8MAunw1uvYyOcJFs9k8Hl9HSupFKKLi7DOuaHWajFjMMDiEAjGMhSNUPVLIi4uLweBl9fXSGSzD8A0PEERLn8AiWwOC8vLMAoCvJJIXXFsb+0CgpEwAb2hIPaLxUHgdbXaB35KJOAVJQQiUXxYXUNsaQmcwwGPGIInGIBFEOh8+sRQH1gqlweBjWYTuUIBqa0tyvXNTapsGz4lkzA7nQhEwpDmo5DmY5QMxrpk0v/c3Dx1uXJ2hrVMhkCsUwZjz8kck/0RnlAQgbBEAJYM5vJ58f3HzlOXe9Dj01NyOJHLUTLgz1IJ8t0dvnz7SiAmkSXrcmd39/+v9/jGUMq/qlZxcXVF7ivjplbDUaWCysnJwHXGDvY/DLU7B5NDaIEAAAAASUVORK5CYII='); background-size: cover; display: block;"
+  ></span>
+  <picture>
+          <source
+              srcset="/static/efb79f55bd6037a58f5cf44ae0787424/8ac56/005.webp 240w,
+/static/efb79f55bd6037a58f5cf44ae0787424/d3be9/005.webp 480w,
+/static/efb79f55bd6037a58f5cf44ae0787424/c4111/005.webp 627w"
+              sizes="(max-width: 627px) 100vw, 627px"
+              type="image/webp"
+            />
+          <source
+            srcset="/static/efb79f55bd6037a58f5cf44ae0787424/8ff5a/005.png 240w,
+/static/efb79f55bd6037a58f5cf44ae0787424/e85cb/005.png 480w,
+/static/efb79f55bd6037a58f5cf44ae0787424/e9c9b/005.png 627w"
+            sizes="(max-width: 627px) 100vw, 627px"
+            type="image/png"
+          />
+          <img
+            class="gatsby-resp-image-image"
+            src="/static/efb79f55bd6037a58f5cf44ae0787424/e9c9b/005.png"
+            alt="e2e 테스트: 회귀 방지, &#39;오탐&#39;에 대한 보호 가능, 피드백이 느림"
+            title="e2e 테스트: 회귀 방지, &#39;오탐&#39;에 대한 보호 가능, 피드백이 느림"
+            loading="lazy"
+            decoding="async"
+            style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+          />
+        </picture>
+  </a>
+    </span>
+    <figcaption class="gatsby-resp-image-figcaption"><p>e2e 테스트: 회귀 방지, ‘오탐’에 대한 보호 가능, 피드백이 느림</p></figcaption>
+  </figure></p>
+<h2 id="443-극단적-사례-2-간단한-테스트" style="position:relative;"><a href="#443-%EA%B7%B9%EB%8B%A8%EC%A0%81-%EC%82%AC%EB%A1%80-2-%EA%B0%84%EB%8B%A8%ED%95%9C-%ED%85%8C%EC%8A%A4%ED%8A%B8" aria-label="443 극단적 사례 2 간단한 테스트 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>4.4.3 극단적 사례 2: 간단한 테스트</h2>
+<p>너무 간단한 테스트… getter/setter 를 테스트 하는 수준의 코드는 빨리돈다. 피드백도 빠르다. 리팩토링 내성도 우수하다. ‘오탐’이 생길 여지가 없기 때문이다.</p>
+<p>그러나 기반 코드에 실수할 여지가 많지 않기 때문에 간단한 테스트는 회귀를 나타내지 않을 것이다.</p>
+<p>이름만 다르고 동일한 테스트를 할 수도 있다. 이런 테스트는 항상 통과하거나 검증이 무의미하므로 제대로된 테스트라 하기 힘들다.</p>
+<p><figure class="gatsby-resp-image-figure" style="">
+    <span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 674px; "
+    >
+      <a
+    class="gatsby-resp-image-link"
+    href="/static/9e08c9b1613989fab3630dd2f8197a21/fdaf8/006.png"
+    style="display: block"
+    target="_blank"
+    rel="noopener"
+  >
+    <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 67.08333333333334%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAANCAYAAACpUE5eAAAACXBIWXMAABYlAAAWJQFJUiTwAAACGklEQVQ4y4VT/VMSURTlj+0nf6omoxpqLFpkYVmCUeRjd1k+otCYkEpNdHGYHHWmzJrGmZIKXJRQEZZgS5nlNPtsGxSMM3Pnvrnv3vPuefc9Ey6g2+0SM9a98WFrHSaDoNd0aH999eAAzzMZCNEokqkUvpdK5w6+WGfCABibP6pVMB4PxigKD2ka92024r8UCriszqSqKur1BtqqCkVR0Gq1oGkaSUil07hntYJ2sRhnGNAsS0i5SITs6/mNRgPNZhOnp52zDo9rxyh8/YZyeQ/FYon4dlslp3GiSLq7br6FqzduYvT2HVjtNCaDQTQUBZVKhdQUS7v42WpdLlmHnhASRVBOJ+wuF6x2O7G7D6ywORzYleXBknsv1ZBaq9eR39jAdGYWY/ZxUC4G9CM3rpnNuDIyAhvjhPg4jrfvN88GqGn9QzECnU4H+fV1vFhcxIIkIT4zA4fXAwtFYdRigcPtRvRJAnw0Aj/PQd4rn3sVfYSHtRrmcznMSxL4WBxi4imS6TSYiQn4wwImAwEy+XA8RgjfrK396/K/hK+yWUxxAoJiBLHkNFifDz6eA+v1wsG6EQwL8Av8cEJD8sulJSzkcni9soK55WV4AgFCEEnEyf0NldxLqg9FWl3FnCQRsmw+j3cfPyCZeoYpLoSAwCMkhrG5tdX3Xfs6NPzvkxPI+/soyjKUZpPE1F8qPu/s4NP2Ng6Pjgb+5z8eo5YBrq+NbQAAAABJRU5ErkJggg=='); background-size: cover; display: block;"
+  ></span>
+  <picture>
+          <source
+              srcset="/static/9e08c9b1613989fab3630dd2f8197a21/8ac56/006.webp 240w,
+/static/9e08c9b1613989fab3630dd2f8197a21/d3be9/006.webp 480w,
+/static/9e08c9b1613989fab3630dd2f8197a21/853dc/006.webp 674w"
+              sizes="(max-width: 674px) 100vw, 674px"
+              type="image/webp"
+            />
+          <source
+            srcset="/static/9e08c9b1613989fab3630dd2f8197a21/8ff5a/006.png 240w,
+/static/9e08c9b1613989fab3630dd2f8197a21/e85cb/006.png 480w,
+/static/9e08c9b1613989fab3630dd2f8197a21/fdaf8/006.png 674w"
+            sizes="(max-width: 674px) 100vw, 674px"
+            type="image/png"
+          />
+          <img
+            class="gatsby-resp-image-image"
+            src="/static/9e08c9b1613989fab3630dd2f8197a21/fdaf8/006.png"
+            alt="간단한 테스트: 리팩토링 내성 우수, 빠른 피드백 제공, 회귀 방지가 없음"
+            title="간단한 테스트: 리팩토링 내성 우수, 빠른 피드백 제공, 회귀 방지가 없음"
+            loading="lazy"
+            decoding="async"
+            style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+          />
+        </picture>
+  </a>
+    </span>
+    <figcaption class="gatsby-resp-image-figcaption"><p>간단한 테스트: 리팩토링 내성 우수, 빠른 피드백 제공, 회귀 방지가 없음</p></figcaption>
+  </figure></p>
+<h2 id="444-극단적-사례-3-깨지기-쉬운-테스트brittle-test" style="position:relative;"><a href="#444-%EA%B7%B9%EB%8B%A8%EC%A0%81-%EC%82%AC%EB%A1%80-3-%EA%B9%A8%EC%A7%80%EA%B8%B0-%EC%89%AC%EC%9A%B4-%ED%85%8C%EC%8A%A4%ED%8A%B8brittle-test" aria-label="444 극단적 사례 3 깨지기 쉬운 테스트brittle test permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>4.4.4 극단적 사례 3: 깨지기 쉬운 테스트(<em>brittle test</em>)</h2>
+<p>실행이 빠르고 회귀를 잡을 가능성이 높지만, ‘오탐’이 많은 테스트도 있다. 이런 테스트를 깨지기 쉬운 테스트라고 한다. 리팩토링을 견디지 못하고, 해당 기능이 고장났는지 여부와 관계없이 ‘빨간막대’로 바뀐다.</p>
+<p>이런 테스트를 생각하면 된다.</p>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token keyword">class</span> <span class="token class-name">UserRepository</span><span class="token punctuation">:</span>
+    last_query<span class="token punctuation">:</span> <span class="token builtin">str</span>
+
+    <span class="token keyword">def</span> <span class="token function">get_by_id</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> user_id<span class="token punctuation">:</span> <span class="token builtin">int</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+    <span class="token keyword">def</span> <span class="token function">get_query</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> self<span class="token punctuation">.</span>last_query
+
+
+<span class="token keyword">def</span> <span class="token function">test_get_by_id_executes_correct_sql_code</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    sut<span class="token punctuation">:</span> UserRepository <span class="token operator">=</span> UserRepository<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+    user <span class="token operator">=</span> sut<span class="token punctuation">.</span>get_by_id<span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">)</span>
+
+    <span class="token keyword">assert</span> sut<span class="token punctuation">.</span>last_query <span class="token operator">==</span> <span class="token string">"SELECT * FROM dbo.User WHERE user_id = 5"</span></code></pre></div>
+<p>빠르게 실행될 수 있고 회귀를 잡을 수도 있겠지만, 리팩토링 내성이 없다. 코드를 잘못짜도 ‘오탐’, ORM으로 만들어지는 쿼리가 조금이라도 다르면 ‘오탐’, 등등. 내부 구현사항에 결합되었기 때문에 이런 결과가 나온다.</p>
+<p><figure class="gatsby-resp-image-figure" style="">
+    <span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 604px; "
+    >
+      <a
+    class="gatsby-resp-image-link"
+    href="/static/45bc3b761498eec1f1a910b87bdcd298/87254/007.png"
+    style="display: block"
+    target="_blank"
+    rel="noopener"
+  >
+    <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 84.58333333333331%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAARCAYAAADdRIy+AAAACXBIWXMAABYlAAAWJQFJUiTwAAACnUlEQVQ4y4WUa08aQRSG97/2S9s0frBptN61sKjLoqBlkYsgKkijDSZYW2W9ERugGNCqKKwNWGO9xGqBpZbb2+zUpStCfJOTmWRmnjlnzplDoUaVSoWYpHK5jHpS7pFHWVTtYi3s6uoKSzyPmdlZzPt8EI6O7u2ttSpQAijnkr6fnIDV69GlUqFPo0GPWo1emsbnUKghlEIDSVCrw0FArMEAZngYWr0e/SwLmmHw4+ys7jkqlUpjdy+OVCqFg8ME4vFDZLM5nJ+fo1/HokelRkt7B1o7u9DW1Y0++p+nwXAYpUIB0WgMhwkByaQAUcyDur39g5woQryzXC6HSrmCpCBgcGgIAzodWto78ep1GxlVAwMk7GWeJx6JirOlUql+yGcXF1jd3ATNsnjDDIIx6EnIEqi5tRVPm5pgNJsR3oqgVFMJ/5Nyl92T01P4/H74AwF4vF709GsIVK3V4kXzSzx59hzdKhXsU5MYHTORClAmiFLWkuTyejCIxRUe730L8C4uwu5yYchoRAdNo623FxotA+uEgwAlGxu3IX18XE3kPWAmm8XS+jqWNzbgnpuDwWTGpOcdAWtHR2Gyj8PqsIMeZGDgODimp2C0WrAVi9YHivk8gX1aW4PTPQOrc4oAPd556DiOAEc4jrynVEqSh5zNip3d3YdAGRrZ3iZv+HF19Z6NmC0w2Wxwuqcx4ZqG0+2qhn5zc1N9R0r5P2UvA6EQFngeH1ZWsOD3E68jsRg8c7N4azGDs1lIqBLwIJFonBR5LBQK+JZOY2d/H/FkEr8yGRKOVKOxrztYC2wg+CWMi8vLB1+Qeqx7SCoWi8hksuSixzoP1WhBbhC/83lEtqIQhCPs7e3j5/V1NQHKy+U5Ve/GRp1ECanX8iTgXz1ltKcmfw6RAAAAAElFTkSuQmCC'); background-size: cover; display: block;"
+  ></span>
+  <picture>
+          <source
+              srcset="/static/45bc3b761498eec1f1a910b87bdcd298/8ac56/007.webp 240w,
+/static/45bc3b761498eec1f1a910b87bdcd298/d3be9/007.webp 480w,
+/static/45bc3b761498eec1f1a910b87bdcd298/059a8/007.webp 604w"
+              sizes="(max-width: 604px) 100vw, 604px"
+              type="image/webp"
+            />
+          <source
+            srcset="/static/45bc3b761498eec1f1a910b87bdcd298/8ff5a/007.png 240w,
+/static/45bc3b761498eec1f1a910b87bdcd298/e85cb/007.png 480w,
+/static/45bc3b761498eec1f1a910b87bdcd298/87254/007.png 604w"
+            sizes="(max-width: 604px) 100vw, 604px"
+            type="image/png"
+          />
+          <img
+            class="gatsby-resp-image-image"
+            src="/static/45bc3b761498eec1f1a910b87bdcd298/87254/007.png"
+            alt="깨지기 쉬운 테스트: 빠른 피드백 제공, 회귀 방지, 리팩터링 내성이 없음"
+            title="깨지기 쉬운 테스트: 빠른 피드백 제공, 회귀 방지, 리팩터링 내성이 없음"
+            loading="lazy"
+            decoding="async"
+            style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+          />
+        </picture>
+  </a>
+    </span>
+    <figcaption class="gatsby-resp-image-figcaption"><p>깨지기 쉬운 테스트: 빠른 피드백 제공, 회귀 방지, 리팩터링 내성이 없음</p></figcaption>
+  </figure></p>
+<h2 id="445-이상적인-테스트를-찾아서-결론" style="position:relative;"><a href="#445-%EC%9D%B4%EC%83%81%EC%A0%81%EC%9D%B8-%ED%85%8C%EC%8A%A4%ED%8A%B8%EB%A5%BC-%EC%B0%BE%EC%95%84%EC%84%9C-%EA%B2%B0%EB%A1%A0" aria-label="445 이상적인 테스트를 찾아서 결론 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>4.4.5 이상적인 테스트를 찾아서: 결론</h2>
+<p><strong>모두 완벽한 테스트는 없다!</strong> 상기 세 가지 특성은 상호 배타적이다. 그렇다면 어떻게 희생해야할지 살펴보자.</p>
+<p><figure class="gatsby-resp-image-figure" style="">
+    <span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 665px; "
+    >
+      <a
+    class="gatsby-resp-image-link"
+    href="/static/db0c93fbc4a05738e073cdfd5c566420/5f4af/008.png"
+    style="display: block"
+    target="_blank"
+    rel="noopener"
+  >
+    <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 78.33333333333333%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAQCAYAAAAWGF8bAAAACXBIWXMAABYlAAAWJQFJUiTwAAACmElEQVQ4y42U+0/aUBTH+WOXZXEmxiyZcdmMSkFoi/IYPoqFIlVxIG5afCAFVDTG+YtxEbaYqXvowrKVoFOjwHe5x+Bg6LKbfHvvSU8//d5zbmsCgGq1itpcW7NxeXnZENfn3TdMdyXt7O5CDYcxIstQVBUbm5sol8v/BTX97Syh6+jiOPT29YGz22G22fDCbMZkJNIEvddhpVKh4MP+PrqtVvAD/RCcTvADAyS2ZlDmlA2WXzNRr1tgLXijaeTMygvotljQY7XexIJAbuVg8J/u2L0Gh+FolLZosfN40tGJ9qcdNHM8jz5RxKDPR7knJ8fI5d8jl8tjby+HXD6PQuF7Y1PIYTxODzvcbtgcDlh4ntwxsS27h4ZgGMbtCbi4uKCZ6fr6+k9TfhgGNra3Ma1pMAs8OFEA73JS7Tq7uvC4vR0PWlpg63cgPB2lWt+75dOzMyTX1jCv60itr0ONRAjaK/B4buHwqK0ND1tbqZbKuAqfEsCwfxQHR0dNDSKHu7kc4rqORCaDuUQCi+k0orOzcEsSnnEcemw2OL0vCeYPjSGghiAF/JiZm2068ATMbm1hIZ3GUiaD0NQreH2jiGlxTMZiEDweDAcCBBGdTnglidajQQVjkxMolUp3A5mrpXQagfEJSEoQ4dgMglNTsLtcGJRleKUR2EQRossFeSxIIuDpaTPwXT6PeDKJxMoKtOVlzCd1LKbS1CDe44GkBKCoIXJW04hfxmtNu/P7N/06P4eezVJTlldXb7WQSkFWVQz7ZXLE6sfEmsJq+OnL55umVCuNQHYplkp0bFgtGYjNb3d28NMwsJJdI6Ck+MltOBrBx8PDBncNwPq/h1Es4luhQC+oTzKKBg6ODvH1+BhXV1dNdasH/gZyXUbXta+u4gAAAABJRU5ErkJggg=='); background-size: cover; display: block;"
+  ></span>
+  <picture>
+          <source
+              srcset="/static/db0c93fbc4a05738e073cdfd5c566420/8ac56/008.webp 240w,
+/static/db0c93fbc4a05738e073cdfd5c566420/d3be9/008.webp 480w,
+/static/db0c93fbc4a05738e073cdfd5c566420/ced6d/008.webp 665w"
+              sizes="(max-width: 665px) 100vw, 665px"
+              type="image/webp"
+            />
+          <source
+            srcset="/static/db0c93fbc4a05738e073cdfd5c566420/8ff5a/008.png 240w,
+/static/db0c93fbc4a05738e073cdfd5c566420/e85cb/008.png 480w,
+/static/db0c93fbc4a05738e073cdfd5c566420/5f4af/008.png 665w"
+            sizes="(max-width: 665px) 100vw, 665px"
+            type="image/png"
+          />
+          <img
+            class="gatsby-resp-image-image"
+            src="/static/db0c93fbc4a05738e073cdfd5c566420/5f4af/008.png"
+            alt="있을 수가 없는 경우"
+            title="있을 수가 없는 경우"
+            loading="lazy"
+            decoding="async"
+            style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+          />
+        </picture>
+  </a>
+    </span>
+    <figcaption class="gatsby-resp-image-figcaption"><p>있을 수가 없는 경우</p></figcaption>
+  </figure></p>
+<p>유지보수성은 e2e 테스트를 제외하고는 처음 세 가지 특성과 크게 관련없다.</p>
+<p>리팩토링 내성은 최대한 많이 갖는 것을 목표로 해야한다. 이것은 양보하기 어려운 요소기 때문이다. 따라서 테스트가 얼마나 버그를 잘 찾는지(회귀방지)와 얼마나 빠른지(빠른 피드백) 사이의 선택으로 절충안을 정하게 된다.</p>
+<p><figure class="gatsby-resp-image-figure" style="">
+    <span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 715px; "
+    >
+      <a
+    class="gatsby-resp-image-link"
+    href="/static/e57004ee844fd0e51d5abc873a9d24c0/d0c0e/009.png"
+    style="display: block"
+    target="_blank"
+    rel="noopener"
+  >
+    <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 63.74999999999999%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAANCAYAAACpUE5eAAAACXBIWXMAABYlAAAWJQFJUiTwAAABkklEQVQ4y4VT21LCMBDt/3+Jb+r44OXRUVREfBAoFKQCbaACTUmb9ArHSTRKgWJndna76Z6ePbsxUPFsNhvli6JAFEWIIo44jpFlWel8pwjGf4B5lsGy+jDNLgaDdzAW/ha7hICQKYjrwnEJZEUl4DYopQFq9Se823Ypn6YpTMtCu9uFEELljjLUhfZkjJPzUzy8vJQA4yTBxc01zq4uETBWDagLtJ8vFnhsNtC3h3v6tnpdvLbekP5oa2gm24y24zzPVWsaIEkSFa/X64NE9gB3p8eFKOVFHKMo/sAksLZN1ZQlEz+gCKPoIBPOOZaUIsvzvTNjtWIYjUZwyRSTiaPWoG/buGvU0bZ6ql1tSZKiyAul5e3zk9LP9314ngfXJVgx9t3yeDxGu91Bp2PC9ylGjoP7ZgPWcKjYapN6yv37cCaoNRswB32EYQifUiwWS3AuqqcsP2KMKRB5O7TJ94hzfM7nB+U4OpQgCNSfKaWKufayzfxHv91aYzdZWlwhfnV1HAdkOsVsNoPnfe7tq46/AKhk77KX3NmJAAAAAElFTkSuQmCC'); background-size: cover; display: block;"
+  ></span>
+  <picture>
+          <source
+              srcset="/static/e57004ee844fd0e51d5abc873a9d24c0/8ac56/009.webp 240w,
+/static/e57004ee844fd0e51d5abc873a9d24c0/d3be9/009.webp 480w,
+/static/e57004ee844fd0e51d5abc873a9d24c0/cb533/009.webp 715w"
+              sizes="(max-width: 715px) 100vw, 715px"
+              type="image/webp"
+            />
+          <source
+            srcset="/static/e57004ee844fd0e51d5abc873a9d24c0/8ff5a/009.png 240w,
+/static/e57004ee844fd0e51d5abc873a9d24c0/e85cb/009.png 480w,
+/static/e57004ee844fd0e51d5abc873a9d24c0/d0c0e/009.png 715w"
+            sizes="(max-width: 715px) 100vw, 715px"
+            type="image/png"
+          />
+          <img
+            class="gatsby-resp-image-image"
+            src="/static/e57004ee844fd0e51d5abc873a9d24c0/d0c0e/009.png"
+            alt="리팩토링 내성을 가진 채로, 회귀방지와 빠른 피드백 사이를 절충한다"
+            title="리팩토링 내성을 가진 채로, 회귀방지와 빠른 피드백 사이를 절충한다"
+            loading="lazy"
+            decoding="async"
+            style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+          />
+        </picture>
+  </a>
+    </span>
+    <figcaption class="gatsby-resp-image-figcaption"><p>리팩토링 내성을 가진 채로, 회귀방지와 빠른 피드백 사이를 절충한다</p></figcaption>
+  </figure></p>
+<p>리팩토링 내성은 포기하기 어렵다. 리팩토링 내성은 둘 중 하나를 선택해야한다. 내상이 있거나/없거나 이다. 그렇다면 가져갈 수 밖에 없다.</p>
+<p>회귀 방지와 빠른 피드백에 대한 지표는 조절이 가능하다.</p>
+<blockquote>
+<p>🍅 tips</p>
+<p>테스트 스위트를 탄탄하게 하려면 테스트의 ‘오탐’을 제거하는 것이 최우선 과제다.</p>
+</blockquote>
+<blockquote>
+<p>❓ CAP Theorem</p>
+<p>좋은 단위 테스트의 세 특성은 상호배타적이다. 이는 마치 DB의 CAP 이론과 유사하다.</p>
+<p>CAP 이론은 분산 데이터 저장소가 아래 세 보증 모두를 동시에 제공할 수 없음을 의미한다</p>
+<ul>
+<li>일관성(Consistency): 모든 읽기가 가장 최근의 쓰기 또는 오류를 수신</li>
+<li>가용성(Availability): 모든 요청(시스템 내 전체 노드 중단 제외)이 응답을 수신</li>
+<li>분할 내성(Partition Toleration): 네트워크 분할(네트워크 노드 간 연결 끊어짐)에도 시스템이 계속 작동함</li>
+</ul>
+<p>두 가지 비슷한 점이 있다</p>
+<ul>
+<li>셋 중 둘을 선택해야한다.</li>
+<li>대규모 시스템이더라도 분할 내성을 포기할 수는 없다. 대규모 서비스는 분할 내성을 수행하지 않으면 그 많은 데이터를 가지고 있을 수가 없다.</li>
+</ul>
+<p>그렇다면 일관성과 가용성 둘 중 하나를 절충해야한다.</p>
+<ul>
+<li>실시간성이 필요하면 일관성을 선택</li>
+<li>죽지않는 서비스여야 한다면 가용성을 선택</li>
+</ul>
+</blockquote>
+<h1 id="45-대중적인-테스트-자동화-개념-살펴보기" style="position:relative;"><a href="#45-%EB%8C%80%EC%A4%91%EC%A0%81%EC%9D%B8-%ED%85%8C%EC%8A%A4%ED%8A%B8-%EC%9E%90%EB%8F%99%ED%99%94-%EA%B0%9C%EB%85%90-%EC%82%B4%ED%8E%B4%EB%B3%B4%EA%B8%B0" aria-label="45 대중적인 테스트 자동화 개념 살펴보기 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>4.5 대중적인 테스트 자동화 개념 살펴보기</h1>
+<p>앞에서 살펴본 좋은 테스트의 특성은 기본적으로 깔고가야 하는 것이다. 기존에 알려진 테스트 자동화 개념은 하기 네 특성으로 거슬러 올라갈 수 있다.</p>
+<ul>
+<li>테스트 피라미드</li>
+<li>블랙박스 테스트</li>
+<li>화이트박스 테스트</li>
+</ul>
+<h2 id="451-테스트-피라미드-분해" style="position:relative;"><a href="#451-%ED%85%8C%EC%8A%A4%ED%8A%B8-%ED%94%BC%EB%9D%BC%EB%AF%B8%EB%93%9C-%EB%B6%84%ED%95%B4" aria-label="451 테스트 피라미드 분해 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>4.5.1 테스트 피라미드 분해</h2>
+<p>테스트 피라미드는, 테스트 스위트에서 아래 테스트 유형 간의 일정한 비율을 일컫는 개념이다.</p>
+<ul>
+<li>단위 테스트</li>
+<li>통합 테스트</li>
+<li>e2e 테스트</li>
+</ul>
+<p><figure class="gatsby-resp-image-figure" style="">
+    <span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 637px; "
+    >
+      <a
+    class="gatsby-resp-image-link"
+    href="/static/1e307ab85c4aaee6423c3bafcaa3a098/13a9a/010.png"
+    style="display: block"
+    target="_blank"
+    rel="noopener"
+  >
+    <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 85.83333333333334%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAARCAYAAADdRIy+AAAACXBIWXMAABYlAAAWJQFJUiTwAAACEklEQVQ4y3VUW3PSQBTOX/ZFxxnFSrkMQVvstGXseGkf1VYiIC0Jl3Cpz7bT6YMlDIQSarEP8YEEkvA5uzVpsiE7c+bsuey339mzuxyYsVwuPR01Z3P9c24VoBt0HAeDoRoC9ufo+l8sFgsvzq1iR4DI0CYT7H38gMnNTcDvB5zNZrAsKxrQn3wkCIin0xDKpUiGpjmHbdthQJbdr14PW/k8ctvb2Mrv4kpRQizvAc0wQ/bADcPAu/19vNndwc7eW6rfHxzQxWzJxOdu4jWFZdeQW4itryPJZ5HIZKiOJRJottte3sMZGpQAYUmEY8Fup1Pwm5tIZXk8jb3Ao8dP8GztJdKvX1H/n7u7QL6u61CUPs7OznE91u4B/SV8PvqKtWQSmY0NpHgez+NxpLJZahP/oSAEAMmVMYwZft9OQSC4QCOuerS8bC5H2RBh5wS81+97Z2mYZrDL/pKb3VMUKscoiSKK1SpKooSyKPlsEYVKBfLpj1CX3So5539AGQxQqddR63QgtdtUvtdqKEsS9bs+Eid2fzj0boRlMfeQOOudLqqyDLHV8uSwWMKnQgFfvhUDfpLX6HYxn8/pGYbu4c+LCxRFESfNJo4bDU+IfSLLK/0k//zyMgxIjGtNw0jTqPbLaOzKeGWMaMLS/zBoU+guC4tq/9zVtmVH5rCv7OEtM5oMVVXp96WqIzjMwmXEH/oPnOLcPFUtgNgAAAAASUVORK5CYII='); background-size: cover; display: block;"
+  ></span>
+  <picture>
+          <source
+              srcset="/static/1e307ab85c4aaee6423c3bafcaa3a098/8ac56/010.webp 240w,
+/static/1e307ab85c4aaee6423c3bafcaa3a098/d3be9/010.webp 480w,
+/static/1e307ab85c4aaee6423c3bafcaa3a098/63990/010.webp 637w"
+              sizes="(max-width: 637px) 100vw, 637px"
+              type="image/webp"
+            />
+          <source
+            srcset="/static/1e307ab85c4aaee6423c3bafcaa3a098/8ff5a/010.png 240w,
+/static/1e307ab85c4aaee6423c3bafcaa3a098/e85cb/010.png 480w,
+/static/1e307ab85c4aaee6423c3bafcaa3a098/13a9a/010.png 637w"
+            sizes="(max-width: 637px) 100vw, 637px"
+            type="image/png"
+          />
+          <img
+            class="gatsby-resp-image-image"
+            src="/static/1e307ab85c4aaee6423c3bafcaa3a098/13a9a/010.png"
+            alt="Behold, the mighty test pyramid!"
+            title="Behold, the mighty test pyramid!"
+            loading="lazy"
+            decoding="async"
+            style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+          />
+        </picture>
+  </a>
+    </span>
+    <figcaption class="gatsby-resp-image-figcaption"><p>Behold, the mighty test pyramid!</p></figcaption>
+  </figure></p>
+<p>피라미드의 특징은 아래와 같다:</p>
+<ul>
+<li>각 층의 너비: 테스트 스위트에서 해당 테스트가 얼마나 보편적인지 나타낸다. 넓을 수록 갯수가 많음을 말한다</li>
+<li>층의 높이: 최종 사용자의 동작을 얼마나 유사하게 흉내내는지를 말한다. e2e 테스트가 가장 위에 있고, 최종 사용자와 유사하게 행동하는지를 나타내는 척도다.</li>
+<li>피라미드 내 테스트 유형에 따라 빠른 피드백↔회귀 방지 사이에서 선택한다. 상단 테스트는 회귀 방지에 유리하다. 하단은 실행속도를 강조한다.</li>
+<li>테스트 갯수는 보통 피라미드 형태를 유지한다. e2e는 최소 필수값만, 단위 테스트는 가장 많이.</li>
+<li>다만 어느 계층도 리팩토링 내성을 포기하지 않는다. 단위 테스트에서도 그래야한다.</li>
+</ul>
+<p><figure class="gatsby-resp-image-figure" style="">
+    <span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 689px; "
+    >
+      <a
+    class="gatsby-resp-image-link"
+    href="/static/28797c9b7a256ed1ae01e0693f9cc1f2/0f79a/011.png"
+    style="display: block"
+    target="_blank"
+    rel="noopener"
+  >
+    <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 80%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAQCAYAAAAWGF8bAAAACXBIWXMAABYlAAAWJQFJUiTwAAABtklEQVQ4y51Ty3KCQBDk/z8mpySXnHJLYlViNIopRRCUp/IQFnnaqVlFAdGkMlVbsLMzPT3bswKu2H6/b3y7zrpM+A0wSRLMpTlkWYGqLcHi+CboTcAqSVEWeP/oYzqTkKbp/wDrSYZt4f7pCRNpdlHsT4Dt+1ssNdw9PuB9OGwAdoEK14Cq/7IswViMkEWIGENRFBcxdWCBNmW5b1StB8TxrgESH0VpM63W1TskkCzLkKZZg0WW5VyYqshFy+v1BgtVg6EbWK10WJYNy3HQG/Qxlee8ZUquFgHPFBlvgz5M2+bgjDFEUcSLC+SQpDlEcQJx8o0wjCBrKp57L/gUx8iPjIhtkhyYDcQxnnuvmMymcGwHqqbxOfU8/9AyVa2qk+V5Dk3XsQ1D+EGA3W6HYLvlwOQjNnRORS5abkt/UrcoEPgB+qMvLFQVw/EYumHgczRCEGwp8DQFB2HLsyhdalEAMXV9nz+/tetyhhvX5d1UAO0REm49egLssrq/nSO0D6g6CUMXTHdFfvrSNEQR4zGkqut6fOCvMjwLksEwTJimBcdZc59pmpAV5bT3PQ/LlX7a1wF/ANLY4Et4eZNuAAAAAElFTkSuQmCC'); background-size: cover; display: block;"
+  ></span>
+  <picture>
+          <source
+              srcset="/static/28797c9b7a256ed1ae01e0693f9cc1f2/8ac56/011.webp 240w,
+/static/28797c9b7a256ed1ae01e0693f9cc1f2/d3be9/011.webp 480w,
+/static/28797c9b7a256ed1ae01e0693f9cc1f2/2e76f/011.webp 689w"
+              sizes="(max-width: 689px) 100vw, 689px"
+              type="image/webp"
+            />
+          <source
+            srcset="/static/28797c9b7a256ed1ae01e0693f9cc1f2/8ff5a/011.png 240w,
+/static/28797c9b7a256ed1ae01e0693f9cc1f2/e85cb/011.png 480w,
+/static/28797c9b7a256ed1ae01e0693f9cc1f2/0f79a/011.png 689w"
+            sizes="(max-width: 689px) 100vw, 689px"
+            type="image/png"
+          />
+          <img
+            class="gatsby-resp-image-image"
+            src="/static/28797c9b7a256ed1ae01e0693f9cc1f2/0f79a/011.png"
+            alt="피라미드 테스트는 빠른 피드백, 회귀 방지 사이에서 선택한다"
+            title="피라미드 테스트는 빠른 피드백, 회귀 방지 사이에서 선택한다"
+            loading="lazy"
+            decoding="async"
+            style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+          />
+        </picture>
+  </a>
+    </span>
+    <figcaption class="gatsby-resp-image-figcaption"><p>피라미드 테스트는 빠른 피드백, 회귀 방지 사이에서 선택한다</p></figcaption>
+  </figure></p>
+<p>테스트 피라미드에도 예외가 있다. 비즈니스 규칙, 복잡도가 거의 없는 CRUD 작업이면 테스트 ‘피라미드’는 단위테스트, 통합테스트만 존재하고 e2e 테스트가 없는 직사각형처럼 될 수도 있다.</p>
+<p>단위 테스트는 알고리즘이나 비즈니스 복잡도가 없는 환경에서는 유용하지 않으므로 간단한 테스트까지 내려간다. 하지만 통합 테스트는 아무리 단순하더라도 다른 하위의 시스템과 ‘통합’하여 도는지 확인하는 것이 중요하다. 결국 단위 테스트는 더 적어지고, 통합 테스트가 더 많아질 수 있다<sup id="fnref-3"><a href="#fn-3" class="footnote-ref">3</a></sup>.</p>
+<p>테스트 피라미드의 또 다른 예외는 프로젝트 외부 의존성(예시: DB) 하나만 연결하는 API다. 이런 경우는 e2e 케이스를 더 많이 두는 것이 이런 애플리케이션에 적합한 옵션일 수 있다. UI도 없으니 유지비도 크지 않다. 이런 환경은 e2e 테스트와 통합테스트가 테스트의 진입점 정도밖에 차이가 없다.</p>
+<h2 id="452-블랙박스-테스트와-화이트박스-테스트-간의-선택" style="position:relative;"><a href="#452-%EB%B8%94%EB%9E%99%EB%B0%95%EC%8A%A4-%ED%85%8C%EC%8A%A4%ED%8A%B8%EC%99%80-%ED%99%94%EC%9D%B4%ED%8A%B8%EB%B0%95%EC%8A%A4-%ED%85%8C%EC%8A%A4%ED%8A%B8-%EA%B0%84%EC%9D%98-%EC%84%A0%ED%83%9D" aria-label="452 블랙박스 테스트와 화이트박스 테스트 간의 선택 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>4.5.2 블랙박스 테스트와 화이트박스 테스트 간의 선택</h2>
+<p>또 다른 잘 알려진 테스트는 블랙박스 테스트와 화이트박스 테스트가 있다.</p>
+<ul>
+<li>블랙박스 테스트
+<ul>
+<li>시스템 구조를 몰라도 시스템 기능을 검사할 수 있는 소프트웨어 테스트 방법</li>
+<li>명세, 요구사항 중심으로 구축한다(“무엇을” 해야하는지 중심으로)</li>
+</ul>
+</li>
+<li>화이트박스 테스트
+<ul>
+<li>애플리케이션 내부 작업을 검증하는 테스트 방식</li>
+<li>소스코드 중심으로 파생된다</li>
+</ul>
+</li>
+</ul>
+<p>두 방법 모두 장단점이 있다. 화이트박스 테스트가 더 철저한 편이다.</p>
+<ul>
+<li>소스코드를 집중분석하면, 외부명세(요구사항)에만 의존할 때 놓칠 수 있는 부분을 잡을 수 있다. 그렇지만 구현에 결합되어 있기 때문에 깨지기 쉽다. 다시말해 ‘오탐’을 많이 내고 리팩토링 내성 지표가 모자라다.</li>
+<li>비즈니스 담당자에게 의미있는 동작으로 유추할 수 없다</li>
+</ul>
+<p>블랙박스 테스트는 정반대의 장단점을 가진다. 아래는 표로 정리한 사항이다.</p>
+<table>
+<thead>
+<tr>
+<th>＼</th>
+<th>회귀 방지</th>
+<th>리팩토링 내성</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>화이트박스 테스트</td>
+<td>좋음</td>
+<td>나쁨</td>
+</tr>
+<tr>
+<td>블랙박스 테스트</td>
+<td>나쁨</td>
+<td>좋음</td>
+</tr>
+</tbody>
+</table>
+<p>그렇지만 리팩토링 내성은 타협할 수 없다. 기본적으로 블랙박스 테스트를 작성하되, 알고리즘 복잡도가 높은 유틸리티 코드를 다루거나 테스트를 분석할 때는 화이트박스 테스트 접근을 수행하라.</p>
+<h1 id="summary" style="position:relative;"><a href="#summary" aria-label="summary permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Summary</h1>
+<ul>
+<li>좋은 단위 테스트에는 단위 테스트, 통합 테스트, e2e 테스트 등 자동화된 테스트를 분석하는 데 사용할 수 있는 네 가지 기본 특성이 있다.
+<ol>
+<li>회귀 방지</li>
+<li>리팩토링 내성</li>
+<li>빠른 피드백</li>
+<li>유지 보수성</li>
+</ol>
+</li>
+<li>회귀 방지: 테스트가 얼마나 버그(회귀)의 존재를 잘 나타내는지에 대한 척도</li>
+<li>리팩토링 내성: 테스트가 거짓 양성(‘오탐’)을 내지 않고 애플리케이션 코드 리팩토링을 유지할 수 있는 정도</li>
+<li>거짓 양성 → 오탐을 의미한다
+<ul>
+<li>오탐에 익숙해지면… 테스트를 의미없는 것으로 본다(문제 대응의지력 하락, 테스트 비신뢰)</li>
+</ul>
+</li>
+<li>거짓 양성은 테스트 대상 시스템과 테스트 코드가 강하게 결합되어있음을 의미한다. 결합도를 낮추려면 SUT의 “단계”가 아니라 “결과”를 검증하라</li>
+<li>회귀 방지와 리팩토링 내성은 테스트 정확도에 기여한다. 테스트는…
+<ul>
+<li>가능한 한(리팩토링 내성)</li>
+<li>적은 소음(‘거짓 양성’)으로</li>
+<li>강한 신호(버그 탐지… 회귀 방지 영역)</li>
+<li>…를 발생시킨다</li>
+</ul>
+</li>
+<li>거짓 양성은 프로젝트가 성장할 수록 점점 더 중요해진다</li>
+<li>빠른 피드백은 테스트가 얼마나 빨리 실행되는지에 대한 척도다</li>
+<li>유지 보수성은 두 가지 요소로 구성된다
+<ul>
+<li>테스트 이해 난이도: 테스트가 작으면 읽기 쉬움</li>
+<li>테스트 실행 난이도: 테스트가 엮인 의존성(프로세스 외부 의존성)이 적으면 쉽게 운영할 수 있음</li>
+</ul>
+</li>
+<li>테스트의 가치 추정치는 상기 네 가지 특성에서 얻은 점수의 곱이다. 모두 중요하다! (하나라도 <code class="language-text">0</code>이 되면 가치없어짐)</li>
+<li>회귀 방지, 리팩토링 내성, 빠른 피드백은 상호 배타적(<em>mutually exclusive</em>)이다
+<ul>
+<li>리팩토링 내성은 양보할 수 없는 가치다</li>
+<li>회귀 방지와 빠른 피드백 사이에서 절충안을 찾는다</li>
+</ul>
+</li>
+<li>테스트 피라미드는 단위 테스트, 통합 테스트, e2e 테스트의 적정 비율을 의미한다
+<ul>
+<li>단위 테스트 > 통합 테스트 > e2e 테스트 순으로 갯수가 많다</li>
+<li>e2e 테스트는 회귀 방지를 선호한다</li>
+<li>단위 테스트는 빠른 피드백을 선호한다</li>
+</ul>
+</li>
+<li>테스트를 작성할 때는 블랙박스 테스트 방법을 사용한다. 테스트 분석 시에는 화이트박스 테스트 방법을 사용한다.</li>
+</ul>
+<div class="footnotes">
+<hr>
+<ol>
+<li id="fn-1">출처: <a href="https://twitter.com/bikutoru/status/981977290430189569" target="_blank" rel="nofollow noopener noreferrer">https://twitter.com/bikutoru/status/981977290430189569</a><a href="#fnref-1" class="footnote-backref">↩</a></li>
+<li id="fn-2">버그 없는 시스템은 없다. 최소한 이 의견에 동의한다. True Negative 영역 어딘가에 존재할 ‘수도 있다’. <a href="https://johngrib.github.io/wiki/Lubarsky-s-Law-of-Cybernetic-Entomology/" target="_blank" rel="nofollow noopener noreferrer">관련 내용에 대한 원본 링크</a><a href="#fnref-2" class="footnote-backref">↩</a></li>
+<li id="fn-3">코스믹 파이썬에서 시사하는 <a href="https://www.cosmicpython.com/book/chapter_05_high_gear_low_gear.html" target="_blank" rel="nofollow noopener noreferrer">high gear, low gear</a>가 연관있을지 살펴보자.<a href="#fnref-3" class="footnote-backref">↩</a></li>
+</ol>
+</div></div></div></div><div class="Post-module--footer--f8705"><div class="Meta-module--meta--dae0a"><p class="Meta-module--date--4d30d">Published<!-- --> <!-- -->Jul 4, 2023</p></div><div class="Tags-module--tags--18589"><ul class="Tags-module--list--82ae6"><li class="Tags-module--item--52015"><a class="Button-module--button--b1113" href="/tag/book-review/">book_review</a></li><li class="Tags-module--item--52015"><a class="Button-module--button--b1113" href="/tag/code-quality/">code_quality</a></li></ul></div><div class="Author-module--author--1c58d"><p class="Non scholæ sed vitæ discimus.">Non scholæ sed vitæ discimus.</p><p class="Author-module--bio--08950">his/him</p></div></div><div class="Post-module--comments--d3b99"><div></div></div></div></div></div><div id="gatsby-announcer" style="position:absolute;top:0;width:1px;height:1px;padding:0;overflow:hidden;clip:rect(0, 0, 0, 0);white-space:nowrap;border:0" aria-live="assertive" aria-atomic="true"></div></div><script id="gatsby-script-loader">/*<![CDATA[*/window.pagePath="/books/unit-testing/2023-07-04-pt02-ch04";window.___webpackCompilationHash="d24061204ae2cb9992cd";/*]]>*/</script><script id="gatsby-chunk-mapping">/*<![CDATA[*/window.___chunkMapping={"polyfill":["/polyfill-dd6407b8e4ec4143c35a.js"],"app":["/app-858af14a31533367b173.js"],"component---cache-caches-gatsby-plugin-offline-app-shell-js":["/component---cache-caches-gatsby-plugin-offline-app-shell-js-0c915c7b1bdb5eac4fdf.js"],"component---src-templates-categories-template-categories-template-tsx":["/component---src-templates-categories-template-categories-template-tsx-e2d2add397e32e3517ca.js"],"component---src-templates-category-template-category-template-tsx":["/component---src-templates-category-template-category-template-tsx-078f2adfba160a34229f.js"],"component---src-templates-index-template-index-template-tsx":["/component---src-templates-index-template-index-template-tsx-83380c7954c9f6621026.js"],"component---src-templates-not-found-template-not-found-template-tsx":["/component---src-templates-not-found-template-not-found-template-tsx-56fe4d3b015459d56c99.js"],"component---src-templates-page-template-page-template-tsx":["/component---src-templates-page-template-page-template-tsx-c6c21d7369a9356db3a1.js"],"component---src-templates-post-template-post-template-tsx":["/component---src-templates-post-template-post-template-tsx-119cd0258cb38628d01f.js"],"component---src-templates-tag-template-tag-template-tsx":["/component---src-templates-tag-template-tag-template-tsx-8d0b3090e775aa3c4584.js"],"component---src-templates-tags-template-tags-template-tsx":["/component---src-templates-tags-template-tags-template-tsx-30027e87af7d042f3afb.js"]};/*]]>*/</script><script src="/polyfill-dd6407b8e4ec4143c35a.js" nomodule=""></script><script src="/app-858af14a31533367b173.js" async=""></script><script src="/framework-481a1b6416c14416b2fb.js" async=""></script><script src="/webpack-runtime-de5a94456c9c32f6cdb9.js" async=""></script></body></html>
