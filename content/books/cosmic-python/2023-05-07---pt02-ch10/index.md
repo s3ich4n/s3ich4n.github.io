@@ -10,7 +10,7 @@ tags:
   - "books"
   - "backend"
   - "python"
-description: "파이썬으로 살펴보는 아키텍처 패턴을 읽고 이해한 내용을 작성합니다. 챕터 8, 애그리게이트와 일관성 경계에 대한 내용입니다."
+description: "파이썬으로 살펴보는 아키텍처 패턴을 읽고 이해한 내용을 작성합니다. 챕터 10, 커맨드와 커맨드 핸들러에 대한 내용입니다."
 socialImage: { "publicURL": "./media/universe.jpg" }
 ---
 
