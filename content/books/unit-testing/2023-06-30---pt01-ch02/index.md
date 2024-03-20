@@ -8,7 +8,7 @@ category: "books"
 tags:
   - "book_review"
   - "code_quality"
-description: "단위 테스트 를 읽고 이해한 내용을 작성합니다. 챕터 2, 에 대한 내용입니다."
+description: "단위 테스트 를 읽고 이해한 내용을 작성합니다. 챕터 2, 단위 테스트란 무엇인가에 대한 내용입니다."
 socialImage: { "publicURL": "./media/testcode.png" }
 ---
 
