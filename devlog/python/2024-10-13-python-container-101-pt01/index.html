@@ -1,0 +1,380 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="ie=edge"/><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/><meta name="generator" content="Gatsby 4.25.4"/><meta name="description" content="컨테이너 기술에 대해 간략히 설명하고, 파이썬 컨테이너는 어떻게 선택할 수 있는지 대해 설명합니다." data-gatsby-head="true"/><meta name="twitter:card" content="summary_large_image" data-gatsby-head="true"/><meta name="twitter:title" content="[연재] 파이썬 컨테이너 선택 제 1형 - 컨테이너에 대해 - 팔공산 창고" data-gatsby-head="true"/><meta name="twitter:description" content="컨테이너 기술에 대해 간략히 설명하고, 파이썬 컨테이너는 어떻게 선택할 수 있는지 대해 설명합니다." data-gatsby-head="true"/><meta name="og:title" content="[연재] 파이썬 컨테이너 선택 제 1형 - 컨테이너에 대해 - 팔공산 창고" data-gatsby-head="true"/><meta name="og:type" content="website" data-gatsby-head="true"/><meta name="og:description" content="컨테이너 기술에 대해 간략히 설명하고, 파이썬 컨테이너는 어떻게 선택할 수 있는지 대해 설명합니다." data-gatsby-head="true"/><meta name="image" content="https://blog.s3ich4n.me[object Object]" data-gatsby-head="true"/><meta name="og:image" content="https://blog.s3ich4n.me[object Object]" data-gatsby-head="true"/><meta name="twitter:image" content="https://blog.s3ich4n.me[object Object]" data-gatsby-head="true"/><meta name="theme-color" content="hsl(31, 92%, 62%)"/><style data-href="/styles.1fbe3e33e3d898c35e17.css" data-identity="gatsby-global-css">:after,:before,:root{--color-white:#fff;--color-primary:#5c92ff;--color-secondary:#f7a145;--color-prism-background:#eaeaeb;--color-typographic-base-font:#242933;--color-typographic-link-p-font:#5c92ff;--color-typographic-link-s-font:#f7a145;--color-page-border:#eaeaeb;--color-page-background:#fff;--color-sidebar-border:#eaeaeb;--color-sidebar-border-fade:#fff;--color-contacts-border:#eaeaeb;--color-button-border:#eaeaeb;--color-button-color:#242933;--color-theme-switcher:#3f485a;--color-theme-switcher-hover:#5c92ff}.dark :after,.dark :before,:root.dark{--color-white:#fff;--color-primary:#5c92ff;--color-secondary:#f7a145;--color-prism-background:#191d24;--color-typographic-base-font:#fff;--color-typographic-link-p-font:#5c92ff;--color-typographic-link-s-font:#f7a145;--color-page-border:#3f485a;--color-page-background:#242933;--color-sidebar-border:#3f485a;--color-sidebar-border-fade:#242933;--color-contacts-border:#3f485a;--color-button-border:#3f485a;--color-button-color:#fff;--color-theme-switcher:#eaeaeb;--color-theme-switcher-hover:#5c92ff}html{font-size:100}body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;background:var(--color-page-background);color:var(--color-typographic-base-font);font-size:16px;line-height:1.625;margin:0 0 0 calc(100vw - 100%);text-rendering:optimizelegibility}body,h1,h2,h3,h4,h5,h6{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif}h1,h2,h3,h4,h5,h6{font-weight:600}h1{font-size:40px;line-height:52px;margin-bottom:26px;margin-top:104px}h2{font-size:27px;line-height:39px}h2,h3{margin-bottom:13px;margin-top:52px}h3{font-size:22px;line-height:26px}h4{font-size:19.2px;margin-top:39px}h4,h5{line-height:26px;margin-bottom:13px}h5,h6{font-size:16px;margin-top:65px}h6{line-height:26px;margin-bottom:13px}img{max-width:100%}hr,img{border:0;display:block}hr{background-image:linear-gradient(180deg,transparent 1px,transparent 11px,#242933 0,#242933 15px,transparent 0,transparent 26px);background-size:100% 26px;color:var(--color-typographic-base-font);height:26px;margin:52px auto;width:100px}a{color:var(--color-typographic-link-p-font);text-decoration:none}a:active,a:focus,a:hover{color:var(--color-typographic-link-s-font)}b,strong{font-weight:600}ul{list-style:square;margin-bottom:26px}ul li{margin-bottom:10px;padding:0 5px}p{line-height:26px;margin-bottom:26px}blockquote{font-style:italic;padding:0;text-align:center}figure{display:block;height:auto;width:100%}figcaption{color:var(--color-typographic-base-font);font-size:14px;font-style:italic;line-height:19.5px;margin-bottom:0;margin-top:6.5px;text-align:center}@media screen and (min-width:685px){figure.float-left,figure.float-right{max-width:310px;padding:0 26px}.float-right{float:right}.float-left{float:left}}code[class*=language-],pre[class*=language-]{word-wrap:normal;color:#657b83;font-family:Consolas,Monaco,Andale Mono,Ubuntu Mono,monospace;font-size:1em;-webkit-hyphens:none;hyphens:none;line-height:1.5;-o-tab-size:4;tab-size:4;text-align:left;white-space:pre;word-break:normal;word-spacing:normal}pre[class*=language-]{border-radius:.3em;margin:.5em 0;overflow:auto;padding:1em}:not(pre)>code[class*=language-],pre[class*=language-]{background-color:var(--color-prism-background)}:not(pre)>code[class*=language-]{border-radius:.3em;padding:.1em}code[class*=language-] ::selection,code[class*=language-]::selection,pre[class*=language-] ::selection,pre[class*=language-]::selection{background:#073642}.token.cdata,.token.comment,.token.doctype,.token.prolog{color:#93a1a1}.token.punctuation{color:#586e75}.namespace{opacity:.7}.token.boolean,.token.constant,.token.deleted,.token.number,.token.property,.token.symbol,.token.tag{color:#268bd2}.token.attr-name,.token.builtin,.token.char,.token.inserted,.token.selector,.token.string,.token.url{color:#2aa198}.token.entity{background:#eee8d5;color:#657b83;cursor:help}.token.atrule,.token.attr-value,.token.keyword{color:#859900}.token.class-name,.token.function{color:#b58900}.token.important,.token.regex,.token.variable{color:#cb4b16}.token.bold,.token.important{font-weight:700}.token.italic{font-style:italic}.Feed-module--feed--a6204 .Feed-module--item--c7a63{margin-bottom:32.5px}.Feed-module--feed--a6204 .Feed-module--item--c7a63:last-child{margin-bottom:13px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f{font-size:27px;line-height:39px;margin-bottom:13px;margin-top:0}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f .Feed-module--link--6123b{color:var(--color-typographic-base-font)}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f .Feed-module--link--6123b:focus,.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f .Feed-module--link--6123b:hover{border-bottom:1px solid #242933;color:var(--color-typographic-base-font)}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--description--57348{font-size:16px;line-height:26px;margin-bottom:19.5px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--time--72864{color:var(--color-typographic-base-font);font-size:14px;font-weight:600;text-transform:uppercase}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--divider--81a18{margin:0 13px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--category--59f58 .Feed-module--link--6123b{color:var(--color-secondary);font-size:14px;font-weight:600;text-transform:uppercase}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--category--59f58 .Feed-module--link--6123b:focus,.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--category--59f58 .Feed-module--link--6123b:hover{color:#5c92ff}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--more--51a4e{color:var(--color-primary);font-size:16px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--more--51a4e:focus,.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--more--51a4e:hover{border-bottom:1px solid #5c92ff;color:var(--color-primary)}.Layout-module--layout--2c933{margin-left:auto;margin-right:auto;max-width:1070px}.Layout-module--layout--2c933:before{content:"";display:table}.Layout-module--layout--2c933:after{clear:both;content:"";display:table}.Page-module--page--24e03{margin-bottom:52px}.Page-module--page--24e03 .Page-module--inner--4b31d{padding:26px 19.5px 0}.Page-module--page--24e03 .Page-module--title--90338{font-size:40px;font-weight:600;line-height:52px;margin-bottom:37.7px;margin-top:0}.Page-module--page--24e03 .Page-module--body--561c4{font-size:16px;line-height:26px;margin:0 0 26px}@media screen and (min-width:685px){.Page-module--page--24e03{width:calc(58.275% - 12.5px)}.Page-module--page--24e03:nth-child(1n){clear:none;float:left;margin-right:30px}.Page-module--page--24e03:last-child{margin-right:0}.Page-module--page--24e03:nth-child(12n){float:right;margin-right:0}.Page-module--page--24e03:nth-child(12n+1){clear:both}.Page-module--page--24e03 .Page-module--inner--4b31d{padding:32.5px 19.5px 0}}@media screen and (min-width:960px){.Page-module--page--24e03{width:calc(66.6% - 10px)}.Page-module--page--24e03:nth-child(1n){clear:none;float:left;margin-right:30px}.Page-module--page--24e03:last-child{margin-right:0}.Page-module--page--24e03:nth-child(3n){float:right;margin-right:0}.Page-module--page--24e03:nth-child(3n+1){clear:both}.Page-module--page--24e03 .Page-module--inner--4b31d{padding:39px 26px 0}}.Pagination-module--pagination--d61cb{display:flex;margin-top:52px}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b{text-align:left;width:50%}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d{color:var(--color-secondary);font-size:26px;font-weight:700}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d:focus,.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d:hover{color:var(--color-primary)}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d.Pagination-module--disable--7e105{color:#3f485a;pointer-events:none}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8{text-align:right;width:50%}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff{color:var(--color-secondary);font-size:26px;font-weight:700}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff:focus,.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff:hover{color:var(--color-primary)}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff.Pagination-module--disable--7e105{color:#3f485a;pointer-events:none}.Button-module--button--b1113{border:1px solid var(--color-button-border);border-radius:20px;color:var(--color-button-color);display:inline-block;font-size:16px;font-weight:400;height:40px;line-height:40px;margin-left:auto;margin-right:auto;padding:0 26px;text-align:center;text-decoration:none}.Button-module--button--b1113:focus,.Button-module--button--b1113:hover{color:#5c92ff}.ThemeSwitcher-module--themeSwitcher--8a77f{--color:var(--color-theme-switcher)}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--button--7cb7b{align-items:center;background:transparent;border:0;cursor:pointer;display:flex;justify-content:center;outline:0}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--button--7cb7b svg{stroke:var(--color);pointer-events:none;transition:stroke .4s}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--button--7cb7b:hover{--color:var(--color-theme-switcher-hover)}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--moon--10537{stroke-dasharray:0 1px;opacity:0;transition:stroke-dasharray .2s ease-in,opacity .4s ease-in}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--sun--2163a{stroke-dasharray:1px 1px;opacity:1;transition:stroke-dasharray .2s ease-in,opacity .4s ease-in}.ThemeSwitcher-module--themeSwitcher--8a77f.ThemeSwitcher-module--dark--6db0c .ThemeSwitcher-module--moon--10537{stroke-dasharray:1px 1px;opacity:1}.ThemeSwitcher-module--themeSwitcher--8a77f.ThemeSwitcher-module--dark--6db0c .ThemeSwitcher-module--sun--2163a{stroke-dasharray:0 1px;opacity:0}.Author-module--author--cbd31 .Author-module--photo--9787b{background-clip:padding-box;border-radius:50%;display:inline-block;height:75px;margin-bottom:0;width:75px}.Author-module--author--cbd31 .Author-module--photo--9787b img{border-radius:50%}.Author-module--author--cbd31 .Author-module--title--cf7e5{font-size:18px;font-weight:600;line-height:29.25px;margin:0}.Author-module--author--cbd31 .Author-module--title--cf7e5 .Author-module--link--09c17,.Author-module--author--cbd31 .Author-module--title--cf7e5 .Author-module--link--09c17:focus,.Author-module--author--cbd31 .Author-module--title--cf7e5 .Author-module--link--09c17:hover{color:var(--color-typographic-base-font)}.Author-module--author--cbd31 .Author-module--bio--8168d,.Author-module--author--cbd31 .Author-module--subtitle--86ec5{color:#7f8ba4;line-height:26px;margin-bottom:26px}.Author-module--author--cbd31 .Author-module--titleContainer--4f576{align-items:center;display:flex;justify-content:space-between;margin:13px 0}.Categories-module--categories--f3389{color:#7f8ba4;font-size:14px}.Icon-module--icon--1d7da{fill:currentcolor;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;speak:none;stroke:currentcolor;stroke-width:0;display:inline-block;font-style:normal;font-variant:normal;font-weight:400;height:1em;line-height:1em;text-align:center;text-transform:none;width:1em}.Contacts-module--contacts--09178{margin-bottom:26px}.Contacts-module--contacts--09178 .Contacts-module--list--9670b{display:flex;flex-flow:row wrap;flex-grow:0;flex-shrink:0;list-style:none;margin:13px 0;max-width:165px;padding:0}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0{align-content:center;align-items:center;border:1px solid var(--color-contacts-border);border-radius:50%;display:flex;height:40px;justify-content:center;line-height:40px;margin:6.5px;padding:0;text-align:center;width:40px}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0:nth-child(3n+1){margin-left:0}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0 .Contacts-module--link--de1e0{border:0;color:var(--color-typographic-base-font);display:flex}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0 .Contacts-module--link--de1e0:focus,.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0 .Contacts-module--link--de1e0:hover{color:var(--color-typographic-link-p-font)}.Copyright-module--copyright--2c602{color:#7f8ba4;font-size:14px}.Menu-module--menu--113a9{margin-bottom:26px}.Menu-module--menu--113a9 .Menu-module--list--e1ae3{list-style:none;margin:0;padding:0}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679{margin:13px 0;padding:0}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02{border:0;color:var(--color-typographic-base-font);font-size:16px;font-weight:400}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02:focus,.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02:hover{border-bottom:1px solid #5c92ff;color:#5c92ff}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02.Menu-module--active--6cb74{border-bottom:1px solid var(--color-typographic-base-font);color:var(--color-typographic-base-font)}.Tags-module--tags--28a57{color:#7f8ba4;font-size:14px}.Sidebar-module--sidebar--1bfa1{width:100%}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0{padding:26px 19.5px 0;position:relative}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0:after{background:var(--color-sidebar-border);background:linear-gradient(to bottom,var(--color-sidebar-border) 0,var(--color-sidebar-border) 48%,var(--color-sidebar-border-fade) 100%)}@media screen and (min-width:685px){.Sidebar-module--sidebar--1bfa1{width:calc(41.625% - 17.5px)}.Sidebar-module--sidebar--1bfa1:nth-child(1n){clear:none;float:left;margin-right:30px}.Sidebar-module--sidebar--1bfa1:last-child{margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(12n){float:right;margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(12n+1){clear:both}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0{padding:32.5px 19.5px 0}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0:after{bottom:0;content:"";height:540px;position:absolute;right:-10px;top:30px;width:1px}}@media screen and (min-width:960px){.Sidebar-module--sidebar--1bfa1{width:calc(33.3% - 20px)}.Sidebar-module--sidebar--1bfa1:nth-child(1n){clear:none;float:left;margin-right:30px}.Sidebar-module--sidebar--1bfa1:last-child{margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(3n){float:right;margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(3n+1){clear:both}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0{padding:39px}}.Author-module--author--1c58d{border-top:1px solid var(--color-page-border);line-height:26px;margin-bottom:52px;margin-top:26px;max-width:920px;padding-top:26px}.Author-module--author--1c58d .Author-module--bio--08950 .Author-module--twitter--90647{display:block;text-decoration:underline}.Author-module--author--1c58d .Author-module--bio--08950 .Author-module--twitter--90647:focus,.Author-module--author--1c58d .Author-module--bio--08950 .Author-module--twitter--90647:hover{color:var(--color-typographic-link-s-font)}@media screen and (min-width:685px){.Author-module--author--1c58d{margin-left:auto;margin-right:auto}}.Content-module--content--80d58{margin:0 auto;max-width:1070px;padding:0 13px}.Content-module--content--80d58 .Content-module--title--09504{font-size:32px;font-weight:600;line-height:42.9px;margin:26px auto 0;max-width:920px;text-align:center}.Content-module--content--80d58 .Content-module--body--726c2 figure{margin-bottom:26px}.Content-module--content--80d58 .Content-module--body--726c2 figure blockquote{font-style:italic;margin-top:0;padding:26px 0;text-align:center}.Content-module--content--80d58 .Content-module--body--726c2 figure blockquote p{font-size:26.9072px;line-height:39px;margin-bottom:26px;margin-top:0;max-width:920px}.Content-module--content--80d58 .Content-module--body--726c2 a{text-decoration:underline}.Content-module--content--80d58 .Content-module--body--726c2 *{margin-left:auto;margin-right:auto;max-width:920px}.Content-module--content--80d58 .Content-module--body--726c2 h2>a{visibility:hidden}.Content-module--content--80d58 .Content-module--body--726c2 h2>a>svg{fill:var(--color-typographic-base-font)}.Content-module--content--80d58 .Content-module--body--726c2 img{max-width:100%}@media screen and (min-width:960px){.Content-module--content--80d58{padding:0}.Content-module--content--80d58 .Content-module--title--09504{font-size:48px;line-height:58.5px;margin-bottom:39px;margin-top:58.5px}.Content-module--content--80d58 .Content-module--body--726c2,.Content-module--content--80d58 .Content-module--body--726c2 p{font-size:18px;line-height:29.25px;margin-bottom:29.25px}.Content-module--content--80d58 .Content-module--body--726c2 h2>a{padding-right:13px;visibility:unset}}.Meta-module--meta--dae0a .Meta-module--date--4d30d{font-style:italic}.Tags-module--tags--18589{margin-bottom:13px}.Tags-module--tags--18589 .Tags-module--list--82ae6{list-style:none;padding:0}.Tags-module--tags--18589 .Tags-module--list--82ae6 .Tags-module--item--52015{display:inline-block;margin:6.5px 0}@media screen and (min-width:685px){.Tags-module--tags--18589 .Tags-module--list--82ae6 .Tags-module--item--52015:first-child{margin-left:0;padding-left:0}}.Post-module--post--3a994 .Post-module--content--3c6e5{margin:0 auto}.Post-module--post--3a994 .Post-module--comments--d3b99,.Post-module--post--3a994 .Post-module--footer--f8705{margin:0 auto;max-width:920px;padding:0 13px}.Post-module--post--3a994 .Post-module--buttons--2972d{align-items:center;display:flex;justify-content:center;margin:26px 0 0;text-align:center}.Post-module--post--3a994 .Post-module--buttons--2972d .Post-module--buttonArticles--d793a{margin:0 13px 0 0}@media screen and (min-width:960px){.Post-module--post--3a994 .Post-module--comments--d3b99,.Post-module--post--3a994 .Post-module--footer--f8705{padding:0}.Post-module--post--3a994 .Post-module--buttons--2972d{left:30px;margin:0 13px 0 0;max-width:none;position:fixed;top:30px}}</style><title data-gatsby-head="true">[연재] 파이썬 컨테이너 선택 제 1형 - 컨테이너에 대해 - 팔공산 창고</title><link rel="alternate" type="application/rss+xml" title="팔공산 창고" href="/rss.xml"/><style type="text/css">
+    .anchor.before {
+      position: absolute;
+      top: 0;
+      left: 0;
+      transform: translateX(-100%);
+      padding-right: 4px;
+    }
+    .anchor.after {
+      display: inline-block;
+      padding-left: 4px;
+    }
+    h1 .anchor svg,
+    h2 .anchor svg,
+    h3 .anchor svg,
+    h4 .anchor svg,
+    h5 .anchor svg,
+    h6 .anchor svg {
+      visibility: hidden;
+    }
+    h1:hover .anchor svg,
+    h2:hover .anchor svg,
+    h3:hover .anchor svg,
+    h4:hover .anchor svg,
+    h5:hover .anchor svg,
+    h6:hover .anchor svg,
+    h1 .anchor:focus svg,
+    h2 .anchor:focus svg,
+    h3 .anchor:focus svg,
+    h4 .anchor:focus svg,
+    h5 .anchor:focus svg,
+    h6 .anchor:focus svg {
+      visibility: visible;
+    }
+  </style><script>
+    document.addEventListener("DOMContentLoaded", function(event) {
+      var hash = window.decodeURI(location.hash.replace('#', ''))
+      if (hash !== '') {
+        var element = document.getElementById(hash)
+        if (element) {
+          var scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+          var clientTop = document.documentElement.clientTop || document.body.clientTop || 0
+          var offset = element.getBoundingClientRect().top + scrollTop - clientTop
+          // Wait for the browser to finish rendering before scrolling.
+          setTimeout((function() {
+            window.scrollTo(0, offset - 0)
+          }), 0)
+        }
+      }
+    })
+  </script><link rel="preconnect" href="https://www.googletagmanager.com"/><link rel="dns-prefetch" href="https://www.googletagmanager.com"/><script async="" src="https://www.googletagmanager.com/gtag/js?id="></script><script>
+      
+      
+      if(true) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){window.dataLayer && window.dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', '', {"send_page_view":false});
+      }
+      </script><link rel="sitemap" type="application/xml" href="/sitemap/sitemap-index.xml"/><link rel="icon" href="/favicon-32x32.png?v=4c2c993a06ee0fd0ee953020b09128a9" type="image/png"/><link rel="manifest" href="/manifest.webmanifest" crossorigin="anonymous"/><link rel="apple-touch-icon" sizes="48x48" href="/icons/icon-48x48.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="72x72" href="/icons/icon-72x72.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="96x96" href="/icons/icon-96x96.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="144x144" href="/icons/icon-144x144.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192x192.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="256x256" href="/icons/icon-256x256.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="384x384" href="/icons/icon-384x384.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="512x512" href="/icons/icon-512x512.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><style>.gatsby-image-wrapper{position:relative;overflow:hidden}.gatsby-image-wrapper picture.object-fit-polyfill{position:static!important}.gatsby-image-wrapper img{bottom:0;height:100%;left:0;margin:0;max-width:none;padding:0;position:absolute;right:0;top:0;width:100%;object-fit:cover}.gatsby-image-wrapper [data-main-image]{opacity:0;transform:translateZ(0);transition:opacity .25s linear;will-change:opacity}.gatsby-image-wrapper-constrained{display:inline-block;vertical-align:top}</style><noscript><style>.gatsby-image-wrapper noscript [data-main-image]{opacity:1!important}.gatsby-image-wrapper [data-placeholder-image]{opacity:0!important}</style></noscript><script type="module">const e="undefined"!=typeof HTMLImageElement&&"loading"in HTMLImageElement.prototype;e&&document.body.addEventListener("load",(function(e){const t=e.target;if(void 0===t.dataset.mainImage)return;if(void 0===t.dataset.gatsbyImageSsr)return;let a=null,n=t;for(;null===a&&n;)void 0!==n.parentNode.dataset.gatsbyImageWrapper&&(a=n.parentNode),n=n.parentNode;const o=a.querySelector("[data-placeholder-image]"),r=new Image;r.src=t.currentSrc,r.decode().catch((()=>{})).then((()=>{t.style.opacity=1,o&&(o.style.opacity=0,o.style.transition="opacity 500ms linear")}))}),!0);</script></head><body><script>
+          void function() {
+            var cachedMode;
+
+            try {
+              var preferredTheme = JSON.parse(localStorage.getItem('diesel:theme-atom'));
+
+              if (preferredTheme && preferredTheme.mode) {
+                cachedMode = preferredTheme.mode;
+              }
+            } catch (err) { }
+
+            function setTheme(newTheme) {
+              document.documentElement.className = newTheme;
+            }
+
+            var darkQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+            setTheme(cachedMode || (darkQuery.matches ? 'dark' : 'light'));
+          }()
+        </script><div id="___gatsby"><div style="outline:none" tabindex="-1" id="gatsby-focus-wrapper"><div class="Layout-module--layout--2c933"><div class="Post-module--post--3a994"><div class="Post-module--buttons--2972d"><a class="Button-module--button--b1113 Post-module--buttonArticles--d793a" href="/">All Articles</a></div><div class="Post-module--content--3c6e5"><div class="Content-module--content--80d58"><h1 class="Content-module--title--09504">[연재] 파이썬 컨테이너 선택 제 1형 - 컨테이너에 대해</h1><div class="Content-module--body--726c2"><p>이번 게시글에서는 컨테이너 기술에 대해 간략히 설명하고, 파이썬 컨테이너를 구성하기 위한 선택지를 살펴봅니다.</p>
+<h2 id="컨테이너-기술" style="position:relative;"><a href="#%EC%BB%A8%ED%85%8C%EC%9D%B4%EB%84%88-%EA%B8%B0%EC%88%A0" aria-label="컨테이너 기술 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>컨테이너 기술?</h2>
+<p>요즘은 컨테이너로 서비스를 배포하는 것이 굉장히 일상적입니다. 각종 기고문 등에서도 컨테이너를 사용한 배포가 일상화 되어있고, 국내의 큰 회사도 100만개의 컨테이너가 동시에(!) 돌기도 한다고 합니다. 그렇다면 컨테이너가 어떤 것인지 먼저 살펴볼까요?</p>
+<h3 id="컨테이너-이전에는" style="position:relative;"><a href="#%EC%BB%A8%ED%85%8C%EC%9D%B4%EB%84%88-%EC%9D%B4%EC%A0%84%EC%97%90%EB%8A%94" aria-label="컨테이너 이전에는 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>컨테이너 이전에는…</h3>
+<p>과거 서버를 구성할 때는 개발팀(Dev)의 개발 후 품질보증팀(QA), 보안팀(Infosec)의 검증을 거쳐서 운영팀(Ops)이 배포하는 흐름이었습니다. 이러한 개발 방식은 서비스를 기획하고 지속적으로 운영하며 여러 문제를 겪는데요. 첫 번째 문제는, 개발한 코드가 배포되기까지의 흐름이 너무 늦다는 것입니다.</p>
+<p>우리는 배포에 가까워지며 버그를 패치할 때는 임시방편으로 일정을 맞추기 위한 코드를 짜죠. 이런 ‘기술 부채’들은 지속적으로 쌓이고, 언젠간 해결해야지 하는 방법으로 계속 때우는 것으론 한계가 발생합니다. 근본결함을 수정하기에는 문제 해결에 대한 시간이 너무 짧다는 것입니다.</p>
+<p>두 번째 문제는 배포와 관리를 하기 위한 서버 관리 비용 또한 고려의 대상이라는 것입니다. 배포를 할 땐 서버 환경을 모두 알고 잘 구성해야 합니다. 하나라도 어긋나면 서버구동이 되지 않을 수 있습니다. 서버를 늘리고 줄이기 위해서는 물리 서버에 동일한 작업을 여러 번 반복하는 것 또한 일입니다.</p>
+<p>이 두 가지 단점에 대해서는, 후술할 DevOps 개념과 컨테이너가 본격적으로 쓰이기 전인 2011년 IDC와 가트너(Gartner)는 전 세계 GDP의 약 3.1조 달러가 IT에 지출된다고 추정했습니다<sup id="fnref-1"><a href="#fn-1" class="footnote-ref">1</a></sup>.</p>
+<blockquote>
+<p>🍎 tips</p>
+<p>컨테이너가 등장하기 이전에도 이를 위한 많은 시도가 있었지만, 주제와 어긋나므로 과감히 생략합니다. 관련해서는 이 글<sup id="fnref-2"><a href="#fn-2" class="footnote-ref">2</a></sup>의 단락을 읽어주세요.</p>
+</blockquote>
+<h3 id="컨테이너-iac-devops-lets-go" style="position:relative;"><a href="#%EC%BB%A8%ED%85%8C%EC%9D%B4%EB%84%88-iac-devops-lets-go" aria-label="컨테이너 iac devops lets go permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>컨테이너, IaC, DevOps, let’s go</h3>
+<p>컨테이너는 정말 쉽게 말하면, 어디서든 구동될 수 있는 서버 환경까지 고정하여 어디서든 동일하게 사용할 수 있도록 구성한 프로세스 입니다. 이게 구동되면 서버가 돌 수 있는 것이지요. 그런 컨테이너 기술로 널리 사용되는 것은 단연 Docker 입니다.</p>
+<details>
+<summary>(생략가능) Docker와 더 상세한 컨테이너 기술에 대한 정보는 여기에 정리했습니다.</summary>
+<blockquote>
+<p>🍎 tips</p>
+<p>글의 방향을 이해하는 데는 크게 필요없지만, 만약 더 알아보시고 싶으시다면 이 내용을 참고해주세요.</p>
+</blockquote>
+<ul>
+<li>
+<p><strong>Docker의 역할과 발전</strong></p>
+<ul>
+<li>Docker는 컨테이너 기술을 대중화한 선구자 역할을 했습니다.</li>
+<li>초기에는 자체적인 도커 엔진을 통해 컨테이너를 관리했습니다.</li>
+<li>현재는 내부적으로 <code class="language-text">containerd</code>를 사용하여 컨테이너 런타임을 관리합니다.</li>
+</ul>
+</li>
+<li>
+<p><strong><code class="language-text">containerd</code>의 분리와 역할</strong></p>
+<ul>
+<li><code class="language-text">containerd</code>는 원래 도커 엔진의 핵심 컴포넌트였습니다.</li>
+<li>2017년 CNCF(Cloud Native Computing Foundation)에 기부되어 독립 프로젝트가 되었습니다.</li>
+<li>2019년 CNCF 졸업 프로젝트가 되었습니다.</li>
+<li>컨테이너 이미지 관리, 실행, 네트워킹 등 컨테이너 생애주기 전반을 관리합니다.</li>
+<li>Docker뿐만 아니라 쿠버네티스 등 다른 상위 레벨 시스템에서도 직접 사용될 수 있습니다.</li>
+</ul>
+</li>
+<li>
+<p><strong>OCI(Open Container Initiative)와 표준화</strong></p>
+<ul>
+<li>2015년 설립되어 컨테이너 포맷과 런타임에 대한 개방형 업계 표준을 개발합니다.</li>
+<li>주요 표준:
+<ul>
+<li>런타임 명세 (runtime-spec)</li>
+<li>이미지 명세 (image-spec)</li>
+</ul>
+</li>
+<li>다양한 컨테이너 런타임이 호환성을 유지할 수 있게 합니다.</li>
+</ul>
+</li>
+<li>
+<p><strong>다른 주요 컨테이너 기술</strong></p>
+<ul>
+<li><code class="language-text">CRI-O</code>: 쿠버네티스를 위해 특별히 설계된 컨테이너 런타임입니다. Red Hat과 쿠버네티스 커뮤니티에 의해 개발되었습니다.</li>
+<li><code class="language-text">rkt</code>: CoreOS에서 개발한 대안적인 컨테이너 런타임으로, 보안과 모듈성에 중점을 두었습니다. (현재는 개발 중단)</li>
+<li><code class="language-text">LXC</code>: 리눅스 커널 수준의 컨테이너화 기술로, 운영 체제 수준의 가상화를 제공합니다.</li>
+</ul>
+</li>
+<li>
+<p><strong>컨테이너 기술의 최신 트렌드</strong></p>
+<ul>
+<li>마이크로서비스 아키텍처의 부상과 함께 컨테이너 기술의 중요성이 더욱 커졌습니다.</li>
+<li>서버리스 컴퓨팅에서도 컨테이너 기술이 백엔드로 활용되고 있습니다.</li>
+<li>쿠버네티스와 같은 오케스트레이션 도구의 발전으로 컨테이너 관리가 더욱 효율적으로 이루어지고 있습니다.</li>
+</ul>
+</li>
+</ul>
+</details>
+<p>컨테이너 기술의 대두는 기존에 지적되어왔던 단점을 훌륭하게 해결해주었지요. 실행 당시의 환경을 별도로 격리시켜주고, 종속성을 유지할 수 있게 할 수 있지요. 이렇게 되면 아래와 같은 장점이 있습니다.</p>
+<ul>
+<li>개발환경과 운영환경 구성 시의 차이점을 최소화 할 수 있습니다.</li>
+<li>다른 사람이 만든 “서버”를 쉽게 가져다 사용할 수 있습니다.</li>
+<li>서버 가용성을 확장하기 위해 컨테이너를 한 서버/다른 서버 에서 동시에 구동하여 처리할 수도 있습니다.</li>
+</ul>
+<p>그리고 클라우드 컴퓨팅의 시대로 들어오며 이런 장점은 더욱 극대화 되기 시작했습니다. 기존에는 서버실 구성, 각종 배선작업 및 쿨링 시스템 구축을 거의 모든 회사가 직접 해야했으나, 원격지의 서버를 임대하여 사용할 수 있는 시스템이 등장함으로 인해 이런 컨테이너를 통한 장점이 더욱 극대화될 수 있는 환경마저 제공된 것이죠. 심지어는 이런 구성마저도 코드로 관리하여(IaC, Infrastructure as Code) 처리하는 접근법이 대두되기도 합니다.</p>
+<p>이런 식으로 기존 개발 방식에서 개발팀(Dev)와 운영팀(Ops)의 역할 사이클을 한 번에 줄이고 보다 자주, 그리고 견고하게 배포하도록 하는 과정이 DevOps의 일부라고 할 수 있겠습니다.</p>
+<blockquote>
+<p>이 이상의 DevOps와 IaC에 대한 내용은 본 주제와 어긋날 수 있으니 과감히 생략하겠습니다.</p>
+<p>만일 알아보시고 싶으시다면 제가 <a href="https://velog.io/@s3ich4n/series/2022%EB%85%84-Terraform-%EC%8A%A4%ED%84%B0%EB%94%94" target="_blank" rel="nofollow noopener noreferrer">기존에 작성한 글타래</a>를 살펴봐주시면 감사하겠습니다. 🙇</p>
+</blockquote>
+<h2 id="파이썬-컨테이너에-대해-알아봅시다" style="position:relative;"><a href="#%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EC%BB%A8%ED%85%8C%EC%9D%B4%EB%84%88%EC%97%90-%EB%8C%80%ED%95%B4-%EC%95%8C%EC%95%84%EB%B4%85%EC%8B%9C%EB%8B%A4" aria-label="파이썬 컨테이너에 대해 알아봅시다 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>파이썬 컨테이너에 대해 알아봅시다</h2>
+<p>그렇다면, 파이썬 컨테이너에 대해 살펴볼까요. 컨테이너는 앞서 언급했듯 어디서든 구동될 수 있는 서버 환경을 구성할 수 있습니다.</p>
+<h3 id="파이썬-컨테이너-살펴보기" style="position:relative;"><a href="#%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EC%BB%A8%ED%85%8C%EC%9D%B4%EB%84%88-%EC%82%B4%ED%8E%B4%EB%B3%B4%EA%B8%B0" aria-label="파이썬 컨테이너 살펴보기 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>파이썬 컨테이너 살펴보기</h3>
+<p>저희가 살펴볼 파이썬 컨테이너는 <a href="https://hub.docker.com/_/python" target="_blank" rel="nofollow noopener noreferrer">Docker Hub에서 확인</a>할 수 있습니다. 사이트에 접속해서 어떤 내용이 있나 살펴보죠.</p>
+<p><figure class="gatsby-resp-image-figure" style="">
+    <span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 960px; "
+    >
+      <a
+    class="gatsby-resp-image-link"
+    href="/static/6d7093f1d4ce49a8a2fe31a4c5427aa7/d74fe/01-python-container-simple.png"
+    style="display: block"
+    target="_blank"
+    rel="noopener"
+  >
+    <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 143.33333333333334%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAdCAYAAACqhkzFAAAACXBIWXMAABYlAAAWJQFJUiTwAAAEXUlEQVRIx41WSXLkNhDs84TUzZ0ACYIAd/a+qLWPJVlyzDhifPDB/39KOqrY24x88KFEEAALWZmVaI3un1/x8f0Hnl7e8frxHS/v3/D6/g27uyfcPb3g8bff8fD1jffQ2tsff6Js57hyIzhh8ilGi+0tf7S9e0K/2GC+3uPu+RXrm3v89fc/eHr9QNHOMV3doOwWHEIVGPuCE0wOiSaB5BjFykBmFrpsIJSBHyeQukCc5nh4fsFyu8e1G+LLxMeVE3CM/RhOKOEEYggaHxGaqoOrl7hKFxirJVy7h5Nv4JotviRznvfLW/jFDr7dwS/2/PTyFTyzhV/cItItnGBIOsqrDqZZQtdLZNUcnizgCsNBY09aOMJ8jvj4zOFE6VAyJVzvH/D88o7V7haPX9/gCzWUFAhM/ncM/BHK0ZUXs2JXboxrLz6RPBCd/KeSv65NDuVyQi9OESQGsW4gTYesXvDTjTOEqkJip1DVHJEq4UuDxPa8x08MoqxiquK8g5PUQ0I3SuFLjVCViLMKsa75o7SYIkgtPJHzhyJvIU3La0FiOTnN+TI/ISTUI+IgLWaolo+Q1QZR1iBrt8i7HVS9QqhqRLpDUi6g6jWkpYMqSDvjdY8Sm56BcB/SH09ohFkNRxQnTkiYEzc8JzChZj6hGYSgCocGT7kfTyVHqoLQNdJyhsSeOSQ+VTlDnJVcKpVM72FimQpqNSr9gsMEYWoh8o4X4rxlIbJqwUJQSWHW8NrAY8ciegcOieOhzQ59SLBpQZFaumFxaKyq5SBM1sBNSi7NjRUjP5bpRorHP7UNlyw0oqzmxJSEnlQOnS5Nj9T2SIopj4O04Kcq5xxEwyXXI7o1qLR6eQ/VbBGZOfzEcm+ResQpvQfE8em9YH5VteADfkpIf1hlVbFviRvvqBxvHCrwRMZzBMCLM5771SncNjSIUgvdrKDrBfMniiU7wY019yUJQTQQv3T40VVEE3F62WIj6h1PDB8GquamJaREOCEhhDS+RMRixIpR0x76nhJPjm0jdIW8XbNH03KOcraHnd7AdFtk9Qq6WcP2O+TNisVJyFmLO96Xtxtep/nBKb5gAcx0D1nMMRYln0YKU8kUTpRxkDiEhjzrEipxWKM9Z4QpAnbKcDkkpmHHEK+RKriJU9sdhNE8L2lPVvF4cND5gmCE0vaMji4B3W5h+j1Us0FarSCLBY/JQXQh5P0euruBqjdI6zUHXRqOrC68LKgNckaTmJaR0WmBzBmtzOuhgWOLay8aVD3EmN69iJOdRKE7jfzKnrVTyGLGTXxUPTb94YpqIXTDLUXl050YcJOXl20zJBSmY9vFds6JiRtqjWPjE3rmTNfnhOSgxCK8cMvBKTn8tGJEpDhtGAeSEdC1RmLRoePI4Nq9LHm4I08/+meVc05C3BGHRx6HuZKvfuKS/Ex72Yb0Mxp+/qEauYeS/KSEn5ZsJ7ab7Rkh9WFA87o5WK5n3zvCnm7vy/9t/gW2CgNi6YDu5gAAAABJRU5ErkJggg=='); background-size: cover; display: block;"
+  ></span>
+  <picture>
+          <source
+              srcset="/static/6d7093f1d4ce49a8a2fe31a4c5427aa7/8ac56/01-python-container-simple.webp 240w,
+/static/6d7093f1d4ce49a8a2fe31a4c5427aa7/d3be9/01-python-container-simple.webp 480w,
+/static/6d7093f1d4ce49a8a2fe31a4c5427aa7/e46b2/01-python-container-simple.webp 960w,
+/static/6d7093f1d4ce49a8a2fe31a4c5427aa7/4b3db/01-python-container-simple.webp 1164w"
+              sizes="(max-width: 960px) 100vw, 960px"
+              type="image/webp"
+            />
+          <source
+            srcset="/static/6d7093f1d4ce49a8a2fe31a4c5427aa7/8ff5a/01-python-container-simple.png 240w,
+/static/6d7093f1d4ce49a8a2fe31a4c5427aa7/e85cb/01-python-container-simple.png 480w,
+/static/6d7093f1d4ce49a8a2fe31a4c5427aa7/d9199/01-python-container-simple.png 960w,
+/static/6d7093f1d4ce49a8a2fe31a4c5427aa7/d74fe/01-python-container-simple.png 1164w"
+            sizes="(max-width: 960px) 100vw, 960px"
+            type="image/png"
+          />
+          <img
+            class="gatsby-resp-image-image"
+            src="/static/6d7093f1d4ce49a8a2fe31a4c5427aa7/d9199/01-python-container-simple.png"
+            alt="Figure 1. 어떤 파이썬 컨테이너가 있나 살펴봅시다 (simple tags)"
+            title="Figure 1. 어떤 파이썬 컨테이너가 있나 살펴봅시다 (simple tags)"
+            loading="lazy"
+            decoding="async"
+            style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+          />
+        </picture>
+  </a>
+    </span>
+    <figcaption class="gatsby-resp-image-figcaption"><p>Figure 1. 어떤 파이썬 컨테이너가 있나 살펴봅시다 (simple tags)</p></figcaption>
+  </figure></p>
+<p><figure class="gatsby-resp-image-figure" style="">
+    <span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 960px; "
+    >
+      <a
+    class="gatsby-resp-image-link"
+    href="/static/1d45d40b2c0ed1c49f1de1b0a02e32f6/c83ae/02-python-container-shared.png"
+    style="display: block"
+    target="_blank"
+    rel="noopener"
+  >
+    <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 107.5%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAWCAYAAADAQbwGAAAACXBIWXMAABYlAAAWJQFJUiTwAAACpklEQVQ4y4VUSXLbMBDkB2xuIPaFABdtVuWQg1MVH/L/T3UKQ1GiZCk5gABBoNkz0z3F5+8/+PX1Bz8/v2hmyqFkClWnv41X+9tR+LRDGA8w/YRxf0bNDV0s2QLwTmt1BfsfaPHWCLy3AnWn8VZzmhtuUHUKjTDg2j+//AK4yIxaacGUR6s8mA7oTESnezATwU1cmF3YPbJ9ZFzkjQXUo7MDVL+HTkeYdEBrZ1TCE9uVeU3szWuGK2AjHFodCZS7CTLsIPxEa+5mdHaEGY7gfkYlEyomLyD3uSXA/GemArjbQcUjzHCGm35Apw96F2EPM3xA9CeUMhJYuaaBwG4qKLZ52eZjCU1fK1535r4gdPY2Xxnmi8L2MGGg4dKMLCXa60foMFCllYuwcYIJI6Tt6Ts3gZSwSu0acqcDlE+QNtJB6SJVPb9rAoh0WblE+xV3L2VUrMg1t2h1ogLknOl0gvA7dHZC55aR9zqXixJRrnl8kNFNNsrTJdkvYHY8U0FkfyBgM5zAwxGl6G8V3uT8GvJdER4OfCvYE4CnTmHSUVOgdXaL8pSCahXxY5PYsPu3U8wAbkfoeISOe3JKyT3KViw5a+WVafmC5QVQoxEWrerJLdyNi0vsQM7JLmFmoJ9k52SnlJc8bkV9c4qw5JTOJAg3wg4nhPkMk47Q/Q4yzDBpD5VOqNXwLQ1bpsUaQg67lj0qEWhuVKS5lpHWWVL52xszeKeWJ2k8dp6lfeVwhaGRRS1MAJMWnXJouCaZtJfeuH7PQuc6UBe6y2F+LCF76oHSDbBpD5f2MP0M6UcIm2iEcUlBa0ayXL73PGQCdXSw1SO5gfsdmJ3AzET7+Z2HA+Ww7OxS9SfNdiObpR8yk5YmGw+Xnjhf+uNMPyizj6+9UN9VOjP8C74dNHFggjZTAAAAAElFTkSuQmCC'); background-size: cover; display: block;"
+  ></span>
+  <picture>
+          <source
+              srcset="/static/1d45d40b2c0ed1c49f1de1b0a02e32f6/8ac56/02-python-container-shared.webp 240w,
+/static/1d45d40b2c0ed1c49f1de1b0a02e32f6/d3be9/02-python-container-shared.webp 480w,
+/static/1d45d40b2c0ed1c49f1de1b0a02e32f6/e46b2/02-python-container-shared.webp 960w,
+/static/1d45d40b2c0ed1c49f1de1b0a02e32f6/2baf0/02-python-container-shared.webp 1180w"
+              sizes="(max-width: 960px) 100vw, 960px"
+              type="image/webp"
+            />
+          <source
+            srcset="/static/1d45d40b2c0ed1c49f1de1b0a02e32f6/8ff5a/02-python-container-shared.png 240w,
+/static/1d45d40b2c0ed1c49f1de1b0a02e32f6/e85cb/02-python-container-shared.png 480w,
+/static/1d45d40b2c0ed1c49f1de1b0a02e32f6/d9199/02-python-container-shared.png 960w,
+/static/1d45d40b2c0ed1c49f1de1b0a02e32f6/c83ae/02-python-container-shared.png 1180w"
+            sizes="(max-width: 960px) 100vw, 960px"
+            type="image/png"
+          />
+          <img
+            class="gatsby-resp-image-image"
+            src="/static/1d45d40b2c0ed1c49f1de1b0a02e32f6/d9199/02-python-container-shared.png"
+            alt="Figure 2. 어떤 파이썬 컨테이너가 있나 살펴봅시다 (simple tags)"
+            title="Figure 2. 어떤 파이썬 컨테이너가 있나 살펴봅시다 (simple tags)"
+            loading="lazy"
+            decoding="async"
+            style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+          />
+        </picture>
+  </a>
+    </span>
+    <figcaption class="gatsby-resp-image-figcaption"><p>Figure 2. 어떤 파이썬 컨테이너가 있나 살펴봅시다 (simple tags)</p></figcaption>
+  </figure></p>
+<p>뭔가 되게 많군요. 숫자는 파이썬 버전같은데, <code class="language-text">-</code> 뒤의 값은 뭔지 알아봅시다. 각각 Simple tags, Shared tags 인데요. 이 값은 아래와 같습니다.</p>
+<ul>
+<li>
+<p><code class="language-text">simple tags</code>: 기재된 리눅스 혹은 윈도우즈에서만 동작을 보장하는 컨테이너 이미지임을 의미합니다. 이 값을 사용하면 해당 태그에 명시된 플랫폼(리눅스나 윈도우즈 등)의 하나의 매니페스트에 연결됩니다. 이 경우, 명확히 지정한 플랫폼의 이미지만 사용할 수 있습니다.</p>
+</li>
+<li>
+<p><code class="language-text">shared tags</code>: 여러 운영체제(리눅스 및 다양한 윈도우즈 버전)와 아키텍처에서 동작하는 컨테이너 이미지를 나타냅니다. 이 값을 Docker Engine이 구동되는 환경(운영체제, 아키텍처 등)에 맞는 적절한 이미지를 자동으로 선택해서 pull하게 됩니다. 예를 들어, mongo:4.0 같은 shared tag를 사용하면 Docker Engine이 현재 실행 중인 호스트의 운영체제와 아키텍처에 맞는 이미지를 알아서 가져옵니다.</p>
+</li>
+</ul>
+<h3 id="헬로-글또" style="position:relative;"><a href="#%ED%97%AC%EB%A1%9C-%EA%B8%80%EB%98%90" aria-label="헬로 글또 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>헬로 글또!</h3>
+<p>그렇다면, shared tags를 사용해서 헬로월드를 출력하는 도커 이미지를 만들어봅시다.</p>
+<ol>
+<li><code class="language-text">hello.py</code> 파일 생성:</li>
+</ol>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"Hello, geultto!"</span><span class="token punctuation">)</span></code></pre></div>
+<ol start="2">
+<li><code class="language-text">Dockerfile</code> 생성:</li>
+</ol>
+<div class="gatsby-highlight" data-language="dockerfile"><pre class="language-dockerfile"><code class="language-dockerfile"><span class="token instruction"><span class="token keyword">FROM</span> python:3.12</span>
+
+<span class="token instruction"><span class="token keyword">WORKDIR</span> /app</span>
+
+<span class="token instruction"><span class="token keyword">COPY</span> hello.py .</span>
+
+<span class="token instruction"><span class="token keyword">CMD</span> [<span class="token string">"python"</span>, <span class="token string">"hello.py"</span>]</span></code></pre></div>
+<ol start="3">
+<li>이미지 빌드 및 실행:</li>
+</ol>
+<div class="gatsby-highlight" data-language="bash"><pre class="language-bash"><code class="language-bash"><span class="token function">docker</span> build <span class="token parameter variable">-t</span> python-hello <span class="token builtin class-name">.</span>
+<span class="token function">docker</span> run python-hello</code></pre></div>
+<p>3을 실행시키면 아래와 같은 결과가 나옵니다.</p>
+<div class="gatsby-highlight" data-language="shell"><pre class="language-shell"><code class="language-shell"><span class="token function">docker</span> build <span class="token parameter variable">-t</span> python-hello <span class="token builtin class-name">.</span>
+<span class="token punctuation">[</span>+<span class="token punctuation">]</span> Building <span class="token number">26</span>.1s <span class="token punctuation">(</span><span class="token number">8</span>/8<span class="token punctuation">)</span> FINISHED                                                                                                 docker:desktop-linux
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">[</span>internal<span class="token punctuation">]</span> load build definition from Dockerfile                                                                                              <span class="token number">0</span>.0s
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token operator">=</span><span class="token operator">></span> transferring dockerfile: 151B                                                                                                              <span class="token number">0</span>.0s
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">[</span>internal<span class="token punctuation">]</span> load metadata <span class="token keyword">for</span> docker.io/library/python:3.12                                                                                    <span class="token number">2</span>.7s
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">[</span>internal<span class="token punctuation">]</span> load .dockerignore                                                                                                                 <span class="token number">0</span>.0s
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token operator">=</span><span class="token operator">></span> transferring context: 2B                                                                                                                   <span class="token number">0</span>.0s
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">[</span><span class="token number">1</span>/3<span class="token punctuation">]</span> FROM docker.io/library/python:3.12@sha256:05855f5bf06f5a004b0c1a8aaac73a9d9ea54390fc289d3e80ef52c4f90d5585                             <span class="token number">22</span>.7s
+ <span class="token punctuation">(</span>생략<span class="token punctuation">)</span>
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token operator">=</span><span class="token operator">></span> extracting sha256:3795519dea7759f67ddca8240187a3dd44b924bf57de62a5a77ac2226c7b9d43                                                         <span class="token number">0</span>.0s
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">[</span>internal<span class="token punctuation">]</span> load build context                                                                                                                 <span class="token number">0</span>.0s
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token operator">=</span><span class="token operator">></span> transferring context: 98B                                                                                                                  <span class="token number">0</span>.0s
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">[</span><span class="token number">2</span>/3<span class="token punctuation">]</span> WORKDIR /app                                                                                                                            <span class="token number">0</span>.5s
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">[</span><span class="token number">3</span>/3<span class="token punctuation">]</span> COPY hello.py <span class="token builtin class-name">.</span>                                                                                                                         <span class="token number">0</span>.0s
+ <span class="token operator">=</span><span class="token operator">></span> exporting to image                                                                                                                            <span class="token number">0</span>.1s
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token operator">=</span><span class="token operator">></span> exporting layers                                                                                                                           <span class="token number">0</span>.0s
+ <span class="token punctuation">(</span>생략<span class="token punctuation">)</span>
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token operator">=</span><span class="token operator">></span> naming to docker.io/library/python-hello:latest                                                                                            <span class="token number">0</span>.0s
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token operator">=</span><span class="token operator">></span> unpacking to docker.io/library/python-hello:latest                                                                                         <span class="token number">0</span>.0s
+
+What's next:
+    View a summary of image vulnerabilities and recommendations → <span class="token function">docker</span> scout quickview
+
+$ <span class="token function">docker</span> run python-hello
+Hello, geultto<span class="token operator">!</span></code></pre></div>
+<p>축하합니다. 당신은 첫 파이썬 컨테이너를 빌드했습니다! 🎉🎉</p>
+<p>이제 빌드한 이미지의 크기를 확인해봅시다.</p>
+<div class="gatsby-highlight" data-language="shell"><pre class="language-shell"><code class="language-shell">$ <span class="token function">docker</span> images python-hello
+REPOSITORY     TAG       IMAGE ID       CREATED         SIZE
+python-hello   latest    746136719e90   <span class="token number">3</span> minutes ago   <span class="token number">1</span>.46GB</code></pre></div>
+<p>헬로월드 하나 찍는데 <code class="language-text">1.46GB</code> 나 쓴다구요?????? 이건 무슨 의미일까요?</p>
+<h3 id="컨테이너-크기가-커지는-이유" style="position:relative;"><a href="#%EC%BB%A8%ED%85%8C%EC%9D%B4%EB%84%88-%ED%81%AC%EA%B8%B0%EA%B0%80-%EC%BB%A4%EC%A7%80%EB%8A%94-%EC%9D%B4%EC%9C%A0" aria-label="컨테이너 크기가 커지는 이유 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>컨테이너 크기가 커지는 이유</h3>
+<p>컨테이너 크기가 비대한 이유는 아래와 같습니다:</p>
+<ul>
+<li>기본 파이썬 이미지의 크기
+<ul>
+<li>기본 파이썬 인터프리터, 표준 라이브러리, pip 뿐 아니라 개발 도구와 디버깅 도구도 포함될 수 있기 때문입니다.</li>
+</ul>
+</li>
+<li>운영체제 레이어와 각종 의존성
+<ul>
+<li>기본 OS 파일 시스템, 유틸리티 등이 함께 포함될 수 있기 때문입니다. 저희는 shared tags를 썼으니까요.</li>
+</ul>
+</li>
+<li>그런데 여기서 애플리케이션 코드 및 데이터가 들어가면?
+<ul>
+<li>프로젝트에 필요한 라이브러리 설치 시 크기 증가</li>
+<li>프로젝트 파일, 정적 자산 등이 추가될 때마다 크기 증가</li>
+</ul>
+</li>
+</ul>
+<p>그렇다면 이미지는 현재라면 더 커지는 수 밖에 없겠습니다. 점점 커지는 이미지는 지양해야 할 것 같은 예감이 드는데요. 어떤 단점이 있는지 살펴보았습니다.</p>
+<ul>
+<li>배포 시간 증가
+<ul>
+<li>큰 이미지는 다운로드와 업로드에 더 많은 시간을 소요합니다.</li>
+</ul>
+</li>
+<li>스토리지 비용 증가
+<ul>
+<li>컨테이너 레지스트리(일종의 컨테이너 저장소입니다)와 호스트 시스템에서 더 많은 공간 차지할 수 있습니다</li>
+</ul>
+</li>
+<li>보안 취약점 증가 가능성
+<ul>
+<li>불필요한 패키지가 포함될 경우 공격 표면(attack vector, 공격받을 수 있는 pain point를 의미)이 잠재적으로 많아집니다</li>
+</ul>
+</li>
+<li>컨테이너 시작 시간 증가
+<ul>
+<li>큰 이미지는 로딩에 더 많은 시간 소요</li>
+<li>앞으로 더 커진다면 더 로딩되는 시간이 길어지겠지요</li>
+</ul>
+</li>
+<li>리소스 사용 효율성 저하
+<ul>
+<li>불필요한 컴포넌트로 인한 메모리 및 CPU 사용량 증가</li>
+</ul>
+</li>
+</ul>
+<p>그렇다면 다음 글에서는 컨테이너 크기를 줄이기 위한 방안을 살펴보고, 파이썬 컨테이너 이미지의 특징을 살펴보도록 하겠습니다.</p>
+<p>긴 글 읽어주셔서 감사합니다.</p>
+<div class="footnotes">
+<hr>
+<ol>
+<li id="fn-1">자세한 내용은 <a href="https://www.itjungle.com/2011/07/11/tfh071111-story03/" target="_blank" rel="nofollow noopener noreferrer">이 링크를</a>, 관련 출처는 <a href="https://readingraphics.com/book-summary-the-devops-handbook/" target="_blank" rel="nofollow noopener noreferrer">이 링크</a>에서 확인할 수 있습니다.<a href="#fnref-1" class="footnote-backref">↩</a></li>
+<li id="fn-2"><a href="https://www.44bits.io/ko/post/why-should-i-use-docker-container#%EC%9A%B4%EC%98%81%ED%95%98%EB%A9%B4%EC%84%9C-%EB%A7%8C%EB%93%A4%EC%96%B4%EC%A7%80%EB%8A%94-%EB%88%88%EC%86%A1%EC%9D%B4-%EC%84%9C%EB%B2%84%EB%93%A4snowflake-servers" target="_blank" rel="nofollow noopener noreferrer">https://www.44bits.io/ko/post/why-should-i-use-docker-container#운영하면서-만들어지는-눈송이-서버들snowflake-servers</a><a href="#fnref-2" class="footnote-backref">↩</a></li>
+</ol>
+</div></div></div></div><div class="Post-module--footer--f8705"><div class="Meta-module--meta--dae0a"><p class="Meta-module--date--4d30d">Published<!-- --> <!-- -->Oct 13, 2024</p></div><div class="Tags-module--tags--18589"><ul class="Tags-module--list--82ae6"><li class="Tags-module--item--52015"><a class="Button-module--button--b1113" href="/tag/python/">python</a></li><li class="Tags-module--item--52015"><a class="Button-module--button--b1113" href="/tag/geultto/">geultto</a></li></ul></div><div class="Author-module--author--1c58d"><p class="Non scholæ sed vitæ discimus.">Non scholæ sed vitæ discimus.</p><p class="Author-module--bio--08950">his/him</p></div></div><div class="Post-module--comments--d3b99"><div></div></div></div></div></div><div id="gatsby-announcer" style="position:absolute;top:0;width:1px;height:1px;padding:0;overflow:hidden;clip:rect(0, 0, 0, 0);white-space:nowrap;border:0" aria-live="assertive" aria-atomic="true"></div></div><script id="gatsby-script-loader">/*<![CDATA[*/window.pagePath="/devlog/python/2024-10-13-python-container-101-pt01";window.___webpackCompilationHash="944e95b7ad74dd7b9ccb";/*]]>*/</script><script id="gatsby-chunk-mapping">/*<![CDATA[*/window.___chunkMapping={"polyfill":["/polyfill-d458e180ce0db2ade457.js"],"app":["/app-4f7f3a7ad20a05c933d6.js"],"component---cache-caches-gatsby-plugin-offline-app-shell-js":["/component---cache-caches-gatsby-plugin-offline-app-shell-js-0c915c7b1bdb5eac4fdf.js"],"component---src-templates-categories-template-categories-template-tsx":["/component---src-templates-categories-template-categories-template-tsx-e2d2add397e32e3517ca.js"],"component---src-templates-category-template-category-template-tsx":["/component---src-templates-category-template-category-template-tsx-078f2adfba160a34229f.js"],"component---src-templates-index-template-index-template-tsx":["/component---src-templates-index-template-index-template-tsx-83380c7954c9f6621026.js"],"component---src-templates-not-found-template-not-found-template-tsx":["/component---src-templates-not-found-template-not-found-template-tsx-56fe4d3b015459d56c99.js"],"component---src-templates-page-template-page-template-tsx":["/component---src-templates-page-template-page-template-tsx-c6c21d7369a9356db3a1.js"],"component---src-templates-post-template-post-template-tsx":["/component---src-templates-post-template-post-template-tsx-119cd0258cb38628d01f.js"],"component---src-templates-tag-template-tag-template-tsx":["/component---src-templates-tag-template-tag-template-tsx-8d0b3090e775aa3c4584.js"],"component---src-templates-tags-template-tags-template-tsx":["/component---src-templates-tags-template-tags-template-tsx-30027e87af7d042f3afb.js"]};/*]]>*/</script><script src="/polyfill-d458e180ce0db2ade457.js" nomodule=""></script><script src="/app-4f7f3a7ad20a05c933d6.js" async=""></script><script src="/framework-481a1b6416c14416b2fb.js" async=""></script><script src="/webpack-runtime-de5a94456c9c32f6cdb9.js" async=""></script></body></html>
