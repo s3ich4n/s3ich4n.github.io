@@ -1,125 +1,45 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[팔공산 창고]]></title><description><![CDATA[팔공산 창고]]></description><link>http://github.com/dylang/node-rss</link><generator>GatsbyJS</generator><lastBuildDate>Sat, 12 Oct 2024 18:21:38 GMT</lastBuildDate><item><title><![CDATA[[연재] 파이썬 컨테이너 선택 제 1형 - 컨테이너에 대해]]></title><description><![CDATA[컨테이너 기술에 대해 간략히 설명하고, 파이썬 컨테이너는 어떻게 선택할 수 있는지 대해 설명합니다.]]></description><link>https://blog.s3ich4n.me/devlog/python/2024-10-13-python-container-101-pt01</link><guid isPermaLink="false">https://blog.s3ich4n.me/devlog/python/2024-10-13-python-container-101-pt01</guid><pubDate>Sun, 13 Oct 2024 03:00:00 GMT</pubDate><content:encoded>&lt;p&gt;이번 게시글에서는 컨테이너 기술에 대해 간략히 설명하고, 파이썬 컨테이너를 구성하기 위한 선택지를 살펴봅니다.&lt;/p&gt;
-&lt;h2 id=&quot;컨테이너-기술&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%BB%A8%ED%85%8C%EC%9D%B4%EB%84%88-%EA%B8%B0%EC%88%A0&quot; aria-label=&quot;컨테이너 기술 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;컨테이너 기술?&lt;/h2&gt;
-&lt;p&gt;요즘은 컨테이너로 서비스를 배포하는 것이 굉장히 일상적입니다. 각종 기고문 등에서도 컨테이너를 사용한 배포가 일상화 되어있고, 국내의 큰 회사도 100만개의 컨테이너가 동시에(!) 돌기도 한다고 합니다. 그렇다면 컨테이너가 어떤 것인지 먼저 살펴볼까요?&lt;/p&gt;
-&lt;h3 id=&quot;컨테이너-이전에는&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%BB%A8%ED%85%8C%EC%9D%B4%EB%84%88-%EC%9D%B4%EC%A0%84%EC%97%90%EB%8A%94&quot; aria-label=&quot;컨테이너 이전에는 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;컨테이너 이전에는…&lt;/h3&gt;
-&lt;p&gt;과거 서버를 구성할 때는 개발팀(Dev)의 개발 후 품질보증팀(QA), 보안팀(Infosec)의 검증을 거쳐서 운영팀(Ops)이 배포하는 흐름이었습니다. 이러한 개발 방식은 서비스를 기획하고 지속적으로 운영하며 여러 문제를 겪는데요. 첫 번째 문제는, 개발한 코드가 배포되기까지의 흐름이 너무 늦다는 것입니다.&lt;/p&gt;
-&lt;p&gt;우리는 배포에 가까워지며 버그를 패치할 때는 임시방편으로 일정을 맞추기 위한 코드를 짜죠. 이런 ‘기술 부채’들은 지속적으로 쌓이고, 언젠간 해결해야지 하는 방법으로 계속 때우는 것으론 한계가 발생합니다. 근본결함을 수정하기에는 문제 해결에 대한 시간이 너무 짧다는 것입니다.&lt;/p&gt;
-&lt;p&gt;두 번째 문제는 배포와 관리를 하기 위한 서버 관리 비용 또한 고려의 대상이라는 것입니다. 배포를 할 땐 서버 환경을 모두 알고 잘 구성해야 합니다. 하나라도 어긋나면 서버구동이 되지 않을 수 있습니다. 서버를 늘리고 줄이기 위해서는 물리 서버에 동일한 작업을 여러 번 반복하는 것 또한 일입니다.&lt;/p&gt;
-&lt;p&gt;이 두 가지 단점에 대해서는, 후술할 DevOps 개념과 컨테이너가 본격적으로 쓰이기 전인 2011년 IDC와 가트너(Gartner)는 전 세계 GDP의 약 3.1조 달러가 IT에 지출된다고 추정했습니다&lt;sup id=&quot;fnref-1&quot;&gt;&lt;a href=&quot;#fn-1&quot; class=&quot;footnote-ref&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;🍎 tips&lt;/p&gt;
-&lt;p&gt;컨테이너가 등장하기 이전에도 이를 위한 많은 시도가 있었지만, 주제와 어긋나므로 과감히 생략합니다. 관련해서는 이 글&lt;sup id=&quot;fnref-2&quot;&gt;&lt;a href=&quot;#fn-2&quot; class=&quot;footnote-ref&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;의 단락을 읽어주세요.&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;h3 id=&quot;컨테이너-iac-devops-lets-go&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%BB%A8%ED%85%8C%EC%9D%B4%EB%84%88-iac-devops-lets-go&quot; aria-label=&quot;컨테이너 iac devops lets go permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;컨테이너, IaC, DevOps, let’s go&lt;/h3&gt;
-&lt;p&gt;컨테이너는 정말 쉽게 말하면, 어디서든 구동될 수 있는 서버 환경까지 고정하여 어디서든 동일하게 사용할 수 있도록 구성한 프로세스 입니다. 이게 구동되면 서버가 돌 수 있는 것이지요. 그런 컨테이너 기술로 널리 사용되는 것은 단연 Docker 입니다.&lt;/p&gt;
-&lt;details&gt;
-&lt;summary&gt;(생략가능) Docker와 더 상세한 컨테이너 기술에 대한 정보는 여기에 정리했습니다.&lt;/summary&gt;
-&lt;blockquote&gt;
-&lt;p&gt;🍎 tips&lt;/p&gt;
-&lt;p&gt;글의 방향을 이해하는 데는 크게 필요없지만, 만약 더 알아보시고 싶으시다면 이 내용을 참고해주세요.&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;Docker의 역할과 발전&lt;/strong&gt;&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Docker는 컨테이너 기술을 대중화한 선구자 역할을 했습니다.&lt;/li&gt;
-&lt;li&gt;초기에는 자체적인 도커 엔진을 통해 컨테이너를 관리했습니다.&lt;/li&gt;
-&lt;li&gt;현재는 내부적으로 &lt;code class=&quot;language-text&quot;&gt;containerd&lt;/code&gt;를 사용하여 컨테이너 런타임을 관리합니다.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;&lt;code class=&quot;language-text&quot;&gt;containerd&lt;/code&gt;의 분리와 역할&lt;/strong&gt;&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;containerd&lt;/code&gt;는 원래 도커 엔진의 핵심 컴포넌트였습니다.&lt;/li&gt;
-&lt;li&gt;2017년 CNCF(Cloud Native Computing Foundation)에 기부되어 독립 프로젝트가 되었습니다.&lt;/li&gt;
-&lt;li&gt;2019년 CNCF 졸업 프로젝트가 되었습니다.&lt;/li&gt;
-&lt;li&gt;컨테이너 이미지 관리, 실행, 네트워킹 등 컨테이너 생애주기 전반을 관리합니다.&lt;/li&gt;
-&lt;li&gt;Docker뿐만 아니라 쿠버네티스 등 다른 상위 레벨 시스템에서도 직접 사용될 수 있습니다.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;OCI(Open Container Initiative)와 표준화&lt;/strong&gt;&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;2015년 설립되어 컨테이너 포맷과 런타임에 대한 개방형 업계 표준을 개발합니다.&lt;/li&gt;
-&lt;li&gt;주요 표준:
-&lt;ul&gt;
-&lt;li&gt;런타임 명세 (runtime-spec)&lt;/li&gt;
-&lt;li&gt;이미지 명세 (image-spec)&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;li&gt;다양한 컨테이너 런타임이 호환성을 유지할 수 있게 합니다.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;다른 주요 컨테이너 기술&lt;/strong&gt;&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;CRI-O&lt;/code&gt;: 쿠버네티스를 위해 특별히 설계된 컨테이너 런타임입니다. Red Hat과 쿠버네티스 커뮤니티에 의해 개발되었습니다.&lt;/li&gt;
-&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;rkt&lt;/code&gt;: CoreOS에서 개발한 대안적인 컨테이너 런타임으로, 보안과 모듈성에 중점을 두었습니다. (현재는 개발 중단)&lt;/li&gt;
-&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;LXC&lt;/code&gt;: 리눅스 커널 수준의 컨테이너화 기술로, 운영 체제 수준의 가상화를 제공합니다.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;컨테이너 기술의 최신 트렌드&lt;/strong&gt;&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;마이크로서비스 아키텍처의 부상과 함께 컨테이너 기술의 중요성이 더욱 커졌습니다.&lt;/li&gt;
-&lt;li&gt;서버리스 컴퓨팅에서도 컨테이너 기술이 백엔드로 활용되고 있습니다.&lt;/li&gt;
-&lt;li&gt;쿠버네티스와 같은 오케스트레이션 도구의 발전으로 컨테이너 관리가 더욱 효율적으로 이루어지고 있습니다.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/details&gt;
-&lt;p&gt;컨테이너 기술의 대두는 기존에 지적되어왔던 단점을 훌륭하게 해결해주었지요. 실행 당시의 환경을 별도로 격리시켜주고, 종속성을 유지할 수 있게 할 수 있지요. 이렇게 되면 아래와 같은 장점이 있습니다.&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;개발환경과 운영환경 구성 시의 차이점을 최소화 할 수 있습니다.&lt;/li&gt;
-&lt;li&gt;다른 사람이 만든 “서버”를 쉽게 가져다 사용할 수 있습니다.&lt;/li&gt;
-&lt;li&gt;서버 가용성을 확장하기 위해 컨테이너를 한 서버/다른 서버 에서 동시에 구동하여 처리할 수도 있습니다.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;그리고 클라우드 컴퓨팅의 시대로 들어오며 이런 장점은 더욱 극대화 되기 시작했습니다. 기존에는 서버실 구성, 각종 배선작업 및 쿨링 시스템 구축을 거의 모든 회사가 직접 해야했으나, 원격지의 서버를 임대하여 사용할 수 있는 시스템이 등장함으로 인해 이런 컨테이너를 통한 장점이 더욱 극대화될 수 있는 환경마저 제공된 것이죠. 심지어는 이런 구성마저도 코드로 관리하여(IaC, Infrastructure as Code) 처리하는 접근법이 대두되기도 합니다.&lt;/p&gt;
-&lt;p&gt;이런 식으로 기존 개발 방식에서 개발팀(Dev)와 운영팀(Ops)의 역할 사이클을 한 번에 줄이고 보다 자주, 그리고 견고하게 배포하도록 하는 과정이 DevOps의 일부라고 할 수 있겠습니다.&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;이 이상의 DevOps와 IaC에 대한 내용은 본 주제와 어긋날 수 있으니 과감히 생략하겠습니다.&lt;/p&gt;
-&lt;p&gt;만일 알아보시고 싶으시다면 제가 &lt;a href=&quot;https://velog.io/@s3ich4n/series/2022%EB%85%84-Terraform-%EC%8A%A4%ED%84%B0%EB%94%94&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;기존에 작성한 글타래&lt;/a&gt;를 살펴봐주시면 감사하겠습니다. 🙇&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;h2 id=&quot;파이썬-컨테이너에-대해-알아봅시다&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EC%BB%A8%ED%85%8C%EC%9D%B4%EB%84%88%EC%97%90-%EB%8C%80%ED%95%B4-%EC%95%8C%EC%95%84%EB%B4%85%EC%8B%9C%EB%8B%A4&quot; aria-label=&quot;파이썬 컨테이너에 대해 알아봅시다 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;파이썬 컨테이너에 대해 알아봅시다&lt;/h2&gt;
-&lt;p&gt;그렇다면, 파이썬 컨테이너에 대해 살펴볼까요. 컨테이너는 앞서 언급했듯 어디서든 구동될 수 있는 서버 환경을 구성할 수 있습니다.&lt;/p&gt;
-&lt;h3 id=&quot;파이썬-컨테이너-살펴보기&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EC%BB%A8%ED%85%8C%EC%9D%B4%EB%84%88-%EC%82%B4%ED%8E%B4%EB%B3%B4%EA%B8%B0&quot; aria-label=&quot;파이썬 컨테이너 살펴보기 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;파이썬 컨테이너 살펴보기&lt;/h3&gt;
-&lt;p&gt;저희가 살펴볼 파이썬 컨테이너는 &lt;a href=&quot;https://hub.docker.com/_/python&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;Docker Hub에서 확인&lt;/a&gt;할 수 있습니다. 사이트에 접속해서 어떤 내용이 있나 살펴보죠.&lt;/p&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[팔공산 창고]]></title><description><![CDATA[팔공산 창고]]></description><link>http://github.com/dylang/node-rss</link><generator>GatsbyJS</generator><lastBuildDate>Fri, 25 Oct 2024 20:24:49 GMT</lastBuildDate><item><title><![CDATA[[연재] 파이썬 컨테이너 선택 제 2형 - 파이썬 컨테이너 최적화]]></title><description><![CDATA[컨테이너 사이즈 최소화의 필요성과, 최소화 과정 중 파이썬 라이브러리 설치 과정에서의 최적화 제안(PEP 656)을 소개합니다.]]></description><link>https://blog.s3ich4n.me/devlog/python/2024-10-26-python-container-101-pt02</link><guid isPermaLink="false">https://blog.s3ich4n.me/devlog/python/2024-10-26-python-container-101-pt02</guid><pubDate>Sat, 26 Oct 2024 05:08:00 GMT</pubDate><content:encoded>&lt;p&gt;이번 게시글에서는 컨테이너 크기를 줄이기 위한 방안을 살펴보고, 파이썬 컨테이너 이미지 빌드가 가지는 특징을 살펴보도록 하겠습니다.&lt;/p&gt;
+&lt;h2 id=&quot;빌드-최적화를-해봅시다&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EB%B9%8C%EB%93%9C-%EC%B5%9C%EC%A0%81%ED%99%94%EB%A5%BC-%ED%95%B4%EB%B4%85%EC%8B%9C%EB%8B%A4&quot; aria-label=&quot;빌드 최적화를 해봅시다 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;빌드 최적화를 해봅시다&lt;/h2&gt;
+&lt;p&gt;지난 글에서 빌드된 이미지의 크기를 다시 살펴볼까요?&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;shell&quot;&gt;&lt;pre class=&quot;language-shell&quot;&gt;&lt;code class=&quot;language-shell&quot;&gt;$ &lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; images python-hello
+REPOSITORY     TAG       IMAGE ID       CREATED         SIZE
+python-hello   latest    746136719e90   &lt;span class=&quot;token number&quot;&gt;3&lt;/span&gt; minutes ago   &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;.46GB&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;1.46GB인 데는 분명 이유가 있을 겁니다. 그러면 &lt;code class=&quot;language-text&quot;&gt;latest&lt;/code&gt; 라는 태그가 무엇을 의미하는지부터 살펴볼까요?&lt;/p&gt;
+&lt;h3 id=&quot;잠시만-왜-이렇게-크지&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%9E%A0%EC%8B%9C%EB%A7%8C-%EC%99%9C-%EC%9D%B4%EB%A0%87%EA%B2%8C-%ED%81%AC%EC%A7%80&quot; aria-label=&quot;잠시만 왜 이렇게 크지 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;잠시만, 왜 이렇게 크지?&lt;/h3&gt;
+&lt;p&gt;&lt;a href=&quot;https://hub.docker.com/_/python&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;Docker Hub&lt;/a&gt;으로 다시 들어가봐서, 어떤 컨테이너가 있나 살펴봅시다.&lt;/p&gt;
+&lt;p&gt;뭔가 되게 많군요. 숫자는 파이썬 버전같은데, &lt;code class=&quot;language-text&quot;&gt;-&lt;/code&gt; 뒤의 값은 뭔지 알아봅시다.&lt;/p&gt;
 &lt;p&gt;&lt;figure class=&quot;gatsby-resp-image-figure&quot; style=&quot;&quot;&gt;
     &lt;span
       class=&quot;gatsby-resp-image-wrapper&quot;
-      style=&quot;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 960px; &quot;
+      style=&quot;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 466px; &quot;
     &gt;
       &lt;a
     class=&quot;gatsby-resp-image-link&quot;
-    href=&quot;/static/6d7093f1d4ce49a8a2fe31a4c5427aa7/d74fe/01-python-container-simple.png&quot;
+    href=&quot;/static/13c8ea80289a195a226aad717c67eb86/fc1a1/01-python-container-simple.png&quot;
     style=&quot;display: block&quot;
     target=&quot;_blank&quot;
     rel=&quot;noopener&quot;
   &gt;
     &lt;span
     class=&quot;gatsby-resp-image-background-image&quot;
-    style=&quot;padding-bottom: 143.33333333333334%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAdCAYAAACqhkzFAAAACXBIWXMAABYlAAAWJQFJUiTwAAAEXUlEQVRIx41WSXLkNhDs84TUzZ0ACYIAd/a+qLWPJVlyzDhifPDB/39KOqrY24x88KFEEAALWZmVaI3un1/x8f0Hnl7e8frxHS/v3/D6/g27uyfcPb3g8bff8fD1jffQ2tsff6Js57hyIzhh8ilGi+0tf7S9e0K/2GC+3uPu+RXrm3v89fc/eHr9QNHOMV3doOwWHEIVGPuCE0wOiSaB5BjFykBmFrpsIJSBHyeQukCc5nh4fsFyu8e1G+LLxMeVE3CM/RhOKOEEYggaHxGaqoOrl7hKFxirJVy7h5Nv4JotviRznvfLW/jFDr7dwS/2/PTyFTyzhV/cItItnGBIOsqrDqZZQtdLZNUcnizgCsNBY09aOMJ8jvj4zOFE6VAyJVzvH/D88o7V7haPX9/gCzWUFAhM/ncM/BHK0ZUXs2JXboxrLz6RPBCd/KeSv65NDuVyQi9OESQGsW4gTYesXvDTjTOEqkJip1DVHJEq4UuDxPa8x08MoqxiquK8g5PUQ0I3SuFLjVCViLMKsa75o7SYIkgtPJHzhyJvIU3La0FiOTnN+TI/ISTUI+IgLWaolo+Q1QZR1iBrt8i7HVS9QqhqRLpDUi6g6jWkpYMqSDvjdY8Sm56BcB/SH09ohFkNRxQnTkiYEzc8JzChZj6hGYSgCocGT7kfTyVHqoLQNdJyhsSeOSQ+VTlDnJVcKpVM72FimQpqNSr9gsMEYWoh8o4X4rxlIbJqwUJQSWHW8NrAY8ciegcOieOhzQ59SLBpQZFaumFxaKyq5SBM1sBNSi7NjRUjP5bpRorHP7UNlyw0oqzmxJSEnlQOnS5Nj9T2SIopj4O04Kcq5xxEwyXXI7o1qLR6eQ/VbBGZOfzEcm+ResQpvQfE8em9YH5VteADfkpIf1hlVbFviRvvqBxvHCrwRMZzBMCLM5771SncNjSIUgvdrKDrBfMniiU7wY019yUJQTQQv3T40VVEE3F62WIj6h1PDB8GquamJaREOCEhhDS+RMRixIpR0x76nhJPjm0jdIW8XbNH03KOcraHnd7AdFtk9Qq6WcP2O+TNisVJyFmLO96Xtxtep/nBKb5gAcx0D1nMMRYln0YKU8kUTpRxkDiEhjzrEipxWKM9Z4QpAnbKcDkkpmHHEK+RKriJU9sdhNE8L2lPVvF4cND5gmCE0vaMji4B3W5h+j1Us0FarSCLBY/JQXQh5P0euruBqjdI6zUHXRqOrC68LKgNckaTmJaR0WmBzBmtzOuhgWOLay8aVD3EmN69iJOdRKE7jfzKnrVTyGLGTXxUPTb94YpqIXTDLUXl050YcJOXl20zJBSmY9vFds6JiRtqjWPjE3rmTNfnhOSgxCK8cMvBKTn8tGJEpDhtGAeSEdC1RmLRoePI4Nq9LHm4I08/+meVc05C3BGHRx6HuZKvfuKS/Ex72Yb0Mxp+/qEauYeS/KSEn5ZsJ7ab7Rkh9WFA87o5WK5n3zvCnm7vy/9t/gW2CgNi6YDu5gAAAABJRU5ErkJggg==&apos;); background-size: cover; display: block;&quot;
+    style=&quot;padding-bottom: 143.33333333333334%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAdCAYAAACqhkzFAAAACXBIWXMAABYlAAAWJQFJUiTwAAAE6ElEQVRIx41WW3ubSAz1626TmPttYIABDNgYMI5vceMm6SZpsl///885uxKO225f9kEeNBfNkXSk8WR/POHb+3d8eXrG0/M3/j49fMWXpxfs7k7YHj7j4esLz//1+o7X9+9o+ltcGy40O/hNJot+zQcOnx/Q9Gusd3fYHU+gi+gwSbno0A5bzNsB1XIFEee4MX02MD0bmlo+y8QRCcK0QFJUELGCF8aQagYniLDZHXB6eIJmufjjWsenqclyYzjQbQ+adRbb/4GwqOaw1Rqf5B7XcgNNHaGpO+jqDldygz/FGkZxgpntYdJYnGBkB+jJBkZ2hJ4d4aQdDGdEOUnyEsmsRVj0iMsBZjiD5ufQg4LFEAU0nyTj+Yt42WXU3fji9qS/3eH59Q3dsMHLtzcEMsWVbrMrU9P9f0J7LZ9dn1wZLq50Bzemy5kzHAHTDaE7AroTXHTDFYyCvk0v5DX9spfiJzhBE5q0ggROXCHIlohmHcK8heaEsMICYdEhqQd46Rw3loDIGshqBTepYQYp4nrN54ywxtQWmNCttkjh5z1EMSCsNpD1FqrZQ+QdzKiEnw+IqlvIao14sUdQrGAEGWS9gavGyz88mJCrgVqg3PyFaH6ElzZImgOy7h5Ze4Qbz+EkC0TVFklzx0Zpj5d1rNuyhKcaiHw5uqxZPkw/QThbwYpqGG7EcmMF7ILB8QuhuyGm1hi3UY84buN6BM2NzzGkQHsRzLCArxZsWBQdNFfCikoEeQdZDewFzX3oXlLDEhkjDrIGuqj4ggml2o1ogWK0QbLYIWvvUHRHyFkPW1YQ5ZbX43pcJ87qXsqxDrL2XIbn0puaHryk4gATCro1KteIygFxtWaDTOCfyuuDxBfd+lHX7DLRhm6KqwF5u2MkMVEjrtgltdggXWyRLjbw0xqypH17qGaHMG9AoC61TFm2hMJ8/wrVP8DLb2H4Kdx0eY7XGnZUwhQFPNWe9RnHlzzxVfMLWs4yZclPSthhDjPIYHkhDC/iDZRFy49hBTEnTzsn8UOn7P/SDyk2TphBdSdkqwfmn5jfM7+IvG7aIJwR6Xv+NgMFXy0RlStGbIqcXb70Q/ohbrlyBiea8Wj4im/TnfA8CthBckkGob/w0Rm9+UDKLgeqRjE8olw/Qs73aA5vWBzeUG6fka0ekQ9PqLYvyPt7qOURYb1Dc3xHc/wb5eYZxfDE8dddOSbFiefI+gfm2LVbQHMTTozuJSxcBY7k+NL8teH9tDau6376gzb0DARpDaHmSMoWSbmESEsWLy5Y9+MCpi8hVMW6LBaXPUEyw80504yQSi5a3MFOW8TtCdnwxGPUfIaoD5DLE8RsgJv1yG+fkfaPkMt7RM0oSXeCEc4/Si9gWjhRDk8WkMUSUd5wkCn79J2UHdNq6mW4MVx+pKhLE5ixMTsXLrJB04/hpi2cpGEkYrZmUpNuyTn3Q+qBnlpyeRITqNsQwe2o4NKlbDNtiIeEMJoN3H3HptkhUHNuvOxBoNgDQkl9jzqN7sVwZMlGqRx/MUgI7aTh7utnLbd36iBEYqpnOkAGr+0YV5qNa93mx4lc/81l/RxDgu3FFaKihSx7ePEMblwymvGdWcKRNZxQ8X7NS3/7G3JGOMbQjhewZA0/6+DnHcJyzQaJaxRLX7UQec/z9CjxW/3fNvYvwn8A+TEY7RVYJ8oAAAAASUVORK5CYII=&apos;); background-size: cover; display: block;&quot;
   &gt;&lt;/span&gt;
   &lt;picture&gt;
           &lt;source
-              srcset=&quot;/static/6d7093f1d4ce49a8a2fe31a4c5427aa7/8ac56/01-python-container-simple.webp 240w,
-/static/6d7093f1d4ce49a8a2fe31a4c5427aa7/d3be9/01-python-container-simple.webp 480w,
-/static/6d7093f1d4ce49a8a2fe31a4c5427aa7/e46b2/01-python-container-simple.webp 960w,
-/static/6d7093f1d4ce49a8a2fe31a4c5427aa7/4b3db/01-python-container-simple.webp 1164w&quot;
-              sizes=&quot;(max-width: 960px) 100vw, 960px&quot;
+              srcset=&quot;/static/13c8ea80289a195a226aad717c67eb86/8ac56/01-python-container-simple.webp 240w,
+/static/13c8ea80289a195a226aad717c67eb86/fbab0/01-python-container-simple.webp 466w&quot;
+              sizes=&quot;(max-width: 466px) 100vw, 466px&quot;
               type=&quot;image/webp&quot;
             /&gt;
           &lt;source
-            srcset=&quot;/static/6d7093f1d4ce49a8a2fe31a4c5427aa7/8ff5a/01-python-container-simple.png 240w,
-/static/6d7093f1d4ce49a8a2fe31a4c5427aa7/e85cb/01-python-container-simple.png 480w,
-/static/6d7093f1d4ce49a8a2fe31a4c5427aa7/d9199/01-python-container-simple.png 960w,
-/static/6d7093f1d4ce49a8a2fe31a4c5427aa7/d74fe/01-python-container-simple.png 1164w&quot;
-            sizes=&quot;(max-width: 960px) 100vw, 960px&quot;
+            srcset=&quot;/static/13c8ea80289a195a226aad717c67eb86/8ff5a/01-python-container-simple.png 240w,
+/static/13c8ea80289a195a226aad717c67eb86/fc1a1/01-python-container-simple.png 466w&quot;
+            sizes=&quot;(max-width: 466px) 100vw, 466px&quot;
             type=&quot;image/png&quot;
           /&gt;
           &lt;img
             class=&quot;gatsby-resp-image-image&quot;
-            src=&quot;/static/6d7093f1d4ce49a8a2fe31a4c5427aa7/d9199/01-python-container-simple.png&quot;
+            src=&quot;/static/13c8ea80289a195a226aad717c67eb86/fc1a1/01-python-container-simple.png&quot;
             alt=&quot;Figure 1. 어떤 파이썬 컨테이너가 있나 살펴봅시다 (simple tags)&quot;
             title=&quot;Figure 1. 어떤 파이썬 컨테이너가 있나 살펴봅시다 (simple tags)&quot;
             loading=&quot;lazy&quot;
@@ -134,41 +54,39 @@
 &lt;p&gt;&lt;figure class=&quot;gatsby-resp-image-figure&quot; style=&quot;&quot;&gt;
     &lt;span
       class=&quot;gatsby-resp-image-wrapper&quot;
-      style=&quot;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 960px; &quot;
+      style=&quot;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 590px; &quot;
     &gt;
       &lt;a
     class=&quot;gatsby-resp-image-link&quot;
-    href=&quot;/static/1d45d40b2c0ed1c49f1de1b0a02e32f6/c83ae/02-python-container-shared.png&quot;
+    href=&quot;/static/c7fe6111e7706fe4a29ae1f54cdd0e5c/fcda8/02-python-container-shared.png&quot;
     style=&quot;display: block&quot;
     target=&quot;_blank&quot;
     rel=&quot;noopener&quot;
   &gt;
     &lt;span
     class=&quot;gatsby-resp-image-background-image&quot;
-    style=&quot;padding-bottom: 107.5%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAWCAYAAADAQbwGAAAACXBIWXMAABYlAAAWJQFJUiTwAAACpklEQVQ4y4VUSXLbMBDkB2xuIPaFABdtVuWQg1MVH/L/T3UKQ1GiZCk5gABBoNkz0z3F5+8/+PX1Bz8/v2hmyqFkClWnv41X+9tR+LRDGA8w/YRxf0bNDV0s2QLwTmt1BfsfaPHWCLy3AnWn8VZzmhtuUHUKjTDg2j+//AK4yIxaacGUR6s8mA7oTESnezATwU1cmF3YPbJ9ZFzkjQXUo7MDVL+HTkeYdEBrZ1TCE9uVeU3szWuGK2AjHFodCZS7CTLsIPxEa+5mdHaEGY7gfkYlEyomLyD3uSXA/GemArjbQcUjzHCGm35Apw96F2EPM3xA9CeUMhJYuaaBwG4qKLZ52eZjCU1fK1535r4gdPY2Xxnmi8L2MGGg4dKMLCXa60foMFCllYuwcYIJI6Tt6Ts3gZSwSu0acqcDlE+QNtJB6SJVPb9rAoh0WblE+xV3L2VUrMg1t2h1ogLknOl0gvA7dHZC55aR9zqXixJRrnl8kNFNNsrTJdkvYHY8U0FkfyBgM5zAwxGl6G8V3uT8GvJdER4OfCvYE4CnTmHSUVOgdXaL8pSCahXxY5PYsPu3U8wAbkfoeISOe3JKyT3KViw5a+WVafmC5QVQoxEWrerJLdyNi0vsQM7JLmFmoJ9k52SnlJc8bkV9c4qw5JTOJAg3wg4nhPkMk47Q/Q4yzDBpD5VOqNXwLQ1bpsUaQg67lj0qEWhuVKS5lpHWWVL52xszeKeWJ2k8dp6lfeVwhaGRRS1MAJMWnXJouCaZtJfeuH7PQuc6UBe6y2F+LCF76oHSDbBpD5f2MP0M6UcIm2iEcUlBa0ayXL73PGQCdXSw1SO5gfsdmJ3AzET7+Z2HA+Ww7OxS9SfNdiObpR8yk5YmGw+Xnjhf+uNMPyizj6+9UN9VOjP8C74dNHFggjZTAAAAAElFTkSuQmCC&apos;); background-size: cover; display: block;&quot;
+    style=&quot;padding-bottom: 107.5%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAWCAYAAADAQbwGAAAACXBIWXMAABYlAAAWJQFJUiTwAAAC1klEQVQ4y41V7XKjOBD0CySAQehbCIHAENvx5urux27tVu29/zv1lQZw7MS5ux9TIwk0zHRPD7vvP3/jx6/f+Ov7T/z49TcqaZFVEjlTn+yr81vbNd0BbZxgfMQwn1HUmi5u9lyK6/r/BN097Tld2nONp6LGvta0LphCKQy48SjqD5km/0XgXcqoFBa19qhUi9oEcNuTZ6YDt92ambrLPGPqLvNrwHSQMihlA94coLsTbHyFi2dU9oC8dijY8g5lXmvkTH+d4TWgcKhMBHcjpJ+gwgtkO0H6GcLP4M0EN15onYkOeSUeErYG1KiUh/Av0P0r3OEP+OlPmOEb7WU4wY1vEN0rMh4oWLbBcBMs+d2Cg3gHuzZkBbdU2nJJX/dLRvLdPrBPpEgX4LoRrhvQDjPCMEO5gKYf4cIAYTyM7+DjRO+ppoN0HYQN1Al7bu5L5qaF9hGq6Sm49j1q3dBFG9YANsD4Hkw1yGv7mZDbgGmTSqrMCO5fCDMTLxDtEXWTCFksnaV9JgLB9LF1rhgSKdQ2M1Rqm+GC5vAGE1+h+zNke4Qbv0G0Jzxzj7zid1ndYbgdJByST8EX+al3WxndCPlPpVTSEWapcZNnukFBbOsbZh9L71+U4lC7EcJPVKrtTyjtAVltkZX1glnJlxa7kd5jpaSSV6UwEymobGeSIm9G8uljNp7A/XSnlA2Ku7ZJ+DHlwd0A6Q/w4wVhfoMbzjD9ETrMcMMJOl5QqH6F4vGc3G20J8z2qkMuAvaqR6kj+W1dmQG5aPFUKjztaxp526zMb9pnJcWCSYtKGGhq4pb2XDuUNBsFmDQQ1i/PXUsqEbb9NCt3W8sw5cBtgPIDmniEH46w3QTdjpBNJAuHM0w3ozSRJJfm6MOS85UU5iZUbgL3R2pi1ryAuZlMhBN4e0ahIjJmkD34NdwpZZuHzA7Q3REmnteZOBPrac3siGdmH8zC95L/ATI2OhhUfcsaAAAAAElFTkSuQmCC&apos;); background-size: cover; display: block;&quot;
   &gt;&lt;/span&gt;
   &lt;picture&gt;
           &lt;source
-              srcset=&quot;/static/1d45d40b2c0ed1c49f1de1b0a02e32f6/8ac56/02-python-container-shared.webp 240w,
-/static/1d45d40b2c0ed1c49f1de1b0a02e32f6/d3be9/02-python-container-shared.webp 480w,
-/static/1d45d40b2c0ed1c49f1de1b0a02e32f6/e46b2/02-python-container-shared.webp 960w,
-/static/1d45d40b2c0ed1c49f1de1b0a02e32f6/2baf0/02-python-container-shared.webp 1180w&quot;
-              sizes=&quot;(max-width: 960px) 100vw, 960px&quot;
+              srcset=&quot;/static/c7fe6111e7706fe4a29ae1f54cdd0e5c/8ac56/02-python-container-shared.webp 240w,
+/static/c7fe6111e7706fe4a29ae1f54cdd0e5c/d3be9/02-python-container-shared.webp 480w,
+/static/c7fe6111e7706fe4a29ae1f54cdd0e5c/5ca24/02-python-container-shared.webp 590w&quot;
+              sizes=&quot;(max-width: 590px) 100vw, 590px&quot;
               type=&quot;image/webp&quot;
             /&gt;
           &lt;source
-            srcset=&quot;/static/1d45d40b2c0ed1c49f1de1b0a02e32f6/8ff5a/02-python-container-shared.png 240w,
-/static/1d45d40b2c0ed1c49f1de1b0a02e32f6/e85cb/02-python-container-shared.png 480w,
-/static/1d45d40b2c0ed1c49f1de1b0a02e32f6/d9199/02-python-container-shared.png 960w,
-/static/1d45d40b2c0ed1c49f1de1b0a02e32f6/c83ae/02-python-container-shared.png 1180w&quot;
-            sizes=&quot;(max-width: 960px) 100vw, 960px&quot;
+            srcset=&quot;/static/c7fe6111e7706fe4a29ae1f54cdd0e5c/8ff5a/02-python-container-shared.png 240w,
+/static/c7fe6111e7706fe4a29ae1f54cdd0e5c/e85cb/02-python-container-shared.png 480w,
+/static/c7fe6111e7706fe4a29ae1f54cdd0e5c/fcda8/02-python-container-shared.png 590w&quot;
+            sizes=&quot;(max-width: 590px) 100vw, 590px&quot;
             type=&quot;image/png&quot;
           /&gt;
           &lt;img
             class=&quot;gatsby-resp-image-image&quot;
-            src=&quot;/static/1d45d40b2c0ed1c49f1de1b0a02e32f6/d9199/02-python-container-shared.png&quot;
-            alt=&quot;Figure 2. 어떤 파이썬 컨테이너가 있나 살펴봅시다 (simple tags)&quot;
-            title=&quot;Figure 2. 어떤 파이썬 컨테이너가 있나 살펴봅시다 (simple tags)&quot;
+            src=&quot;/static/c7fe6111e7706fe4a29ae1f54cdd0e5c/fcda8/02-python-container-shared.png&quot;
+            alt=&quot;Figure 2. 어떤 파이썬 컨테이너가 있나 살펴봅시다 (shared tags)&quot;
+            title=&quot;Figure 2. 어떤 파이썬 컨테이너가 있나 살펴봅시다 (shared tags)&quot;
             loading=&quot;lazy&quot;
             decoding=&quot;async&quot;
             style=&quot;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&quot;
@@ -176,66 +94,616 @@
         &lt;/picture&gt;
   &lt;/a&gt;
     &lt;/span&gt;
-    &lt;figcaption class=&quot;gatsby-resp-image-figcaption&quot;&gt;&lt;p&gt;Figure 2. 어떤 파이썬 컨테이너가 있나 살펴봅시다 (simple tags)&lt;/p&gt;&lt;/figcaption&gt;
+    &lt;figcaption class=&quot;gatsby-resp-image-figcaption&quot;&gt;&lt;p&gt;Figure 2. 어떤 파이썬 컨테이너가 있나 살펴봅시다 (shared tags)&lt;/p&gt;&lt;/figcaption&gt;
   &lt;/figure&gt;&lt;/p&gt;
-&lt;p&gt;뭔가 되게 많군요. 숫자는 파이썬 버전같은데, &lt;code class=&quot;language-text&quot;&gt;-&lt;/code&gt; 뒤의 값은 뭔지 알아봅시다. 각각 Simple tags, Shared tags 인데요. 이 값은 아래와 같습니다.&lt;/p&gt;
+&lt;p&gt;이 값들은 각각 Simple tags, Shared tags 인데요. 이 값은 아래와 같습니다.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;
-&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;simple tags&lt;/code&gt;: 기재된 리눅스 혹은 윈도우즈에서만 동작을 보장하는 컨테이너 이미지임을 의미합니다. 이 값을 사용하면 해당 태그에 명시된 플랫폼(리눅스나 윈도우즈 등)의 하나의 매니페스트에 연결됩니다. 이 경우, 명확히 지정한 플랫폼의 이미지만 사용할 수 있습니다.&lt;/p&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;simple tags&lt;/code&gt;: 태그로 기재된 리눅스 배포판 혹은 윈도우즈에서만 동작을 보장하는 컨테이너 이미지 입니다. 이 값을 사용하면 해당 태그에 명시된 플랫폼(리눅스나 윈도우즈 등)의 하나의 이미지 정보(이미지의 구성 정보, 레이어 정보, 실행 환경 등을 담은 매니페스트)에 연결됩니다. 이 경우, 명확히 지정한 플랫폼의 이미지만 사용할 수 있습니다.&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;shared tags&lt;/code&gt;: 여러 운영체제(리눅스 및 다양한 윈도우즈 버전)와 아키텍처에서 동작하는 컨테이너 이미지를 나타냅니다. 이 값을 Docker Engine이 구동되는 환경(운영체제, 아키텍처 등)에 맞는 적절한 이미지를 자동으로 선택해서 pull하게 됩니다. 예를 들어, mongo:4.0 같은 shared tag를 사용하면 Docker Engine이 현재 실행 중인 호스트의 운영체제와 아키텍처에 맞는 이미지를 알아서 가져옵니다.&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;h3 id=&quot;헬로-글또&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%ED%97%AC%EB%A1%9C-%EA%B8%80%EB%98%90&quot; aria-label=&quot;헬로 글또 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;헬로 글또!&lt;/h3&gt;
-&lt;p&gt;그렇다면, shared tags를 사용해서 헬로월드를 출력하는 도커 이미지를 만들어봅시다.&lt;/p&gt;
+&lt;details&gt;
+&lt;summary&gt;🤔 도커의 매니페스트란?&lt;/summary&gt;
+&lt;p&gt;도커 매니페스트는 컨테이너 이미지에 대한 상세 정보를 담고 있는 메타데이터입니다. 여기에는:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;이미지가 실행될 수 있는 운영체제와 아키텍처&lt;/li&gt;
+&lt;li&gt;이미지를 구성하는 레이어들의 정보&lt;/li&gt;
+&lt;li&gt;이미지의 설정값 (환경 변수, 실행 명령어 등)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;등이 포함됩니다. 도커는 이 매니페스트를 읽어 해당 이미지가 현재 환경에서 실행 가능한지, 어떤 레이어들이 필요한지 등을 파악합니다.&lt;/p&gt;
+&lt;/details&gt;
+&lt;h3 id=&quot;그럼-어떻게-하죠&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EA%B7%B8%EB%9F%BC-%EC%96%B4%EB%96%BB%EA%B2%8C-%ED%95%98%EC%A3%A0&quot; aria-label=&quot;그럼 어떻게 하죠 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;그럼 어떻게 하죠?&lt;/h3&gt;
+&lt;p&gt;도커 이미지 크기를 줄이기 위해서는 아래와 같은 과정을 처리할 수 있습니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;가능하면 가벼운 베이스 이미지를 선택할 것&lt;/li&gt;
+&lt;li&gt;멀티-스테이지를 사용해서, 빌드-런타임 환경을 분리할 것&lt;/li&gt;
+&lt;li&gt;다양한 최적화 방안을 고려해보기
+&lt;ul&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;.dockerignore&lt;/code&gt; 파일 작성&lt;/li&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;RUN&lt;/code&gt; 레이어 최적화&lt;/li&gt;
+&lt;li&gt;나에게 맞는 패키지&lt;sup id=&quot;fnref-1&quot;&gt;&lt;a href=&quot;#fn-1&quot; class=&quot;footnote-ref&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;/파일을 취사선택하기&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;step-1-simple-tag를-골라봅시다&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#step-1-simple-tag%EB%A5%BC-%EA%B3%A8%EB%9D%BC%EB%B4%85%EC%8B%9C%EB%8B%A4&quot; aria-label=&quot;step 1 simple tag를 골라봅시다 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;step 1. simple tag를 골라봅시다&lt;/h3&gt;
+&lt;p&gt;앞서 말씀드린 &lt;code class=&quot;language-text&quot;&gt;latest&lt;/code&gt; 는 shared tags 입니다. 구동하려는 호스트에 맞게 구동될 수는 있지만, 최적화는 다른 문제죠. 이럴 땐 최소한의 내용만을 컨테이너를 통한 배포를 수행할 때는 최소한의 내용만 맞추고 배포하는 것이 보다 나은 접근입니다.&lt;/p&gt;
+&lt;p&gt;대표적인 베이스 이미지는 &lt;code class=&quot;language-text&quot;&gt;Debian linux&lt;/code&gt; 기반의  &lt;code class=&quot;language-text&quot;&gt;slim&lt;/code&gt; 과 &lt;code class=&quot;language-text&quot;&gt;Alpine linux&lt;/code&gt; 기반의 &lt;code class=&quot;language-text&quot;&gt;alpine&lt;/code&gt;이 있습니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;slim 이미지는,
+&lt;ul&gt;
+&lt;li&gt;Debian linux의 최소화 버전이며&lt;/li&gt;
+&lt;li&gt;필수적인 시스템 라이브러리를 갖추고 있습니다&lt;/li&gt;
+&lt;li&gt;C 라이브러리 구현체로 &lt;code class=&quot;language-text&quot;&gt;glibc&lt;/code&gt; 를 사용합니다. 이는 거의 대부분의 라이브러리와 호환됩니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;alpine 이미지는,
+&lt;ul&gt;
+&lt;li&gt;Alpine linux에 대한 최소한의 버전이며&lt;/li&gt;
+&lt;li&gt;필수적인 시스템 라이브러리로 &lt;code class=&quot;language-text&quot;&gt;busybox&lt;/code&gt; 를 이용합니다&lt;/li&gt;
+&lt;li&gt;C 라이브러리 구현체로 &lt;code class=&quot;language-text&quot;&gt;musl&lt;/code&gt; libc를 사용합니다. 경량버전의 라이브러리를 추구하는 것이 목표이므로, 일부 라이브러리와 호환되지 않을 수도 있습니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;그러면 이 둘을 사용해서 각각 빌드해볼까요?&lt;/p&gt;
+&lt;details&gt;
+&lt;summary&gt;👨‍💻 `slim` 빌드를 해봅시다. &lt;/summary&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;Dockerfile&lt;/code&gt; 을 제작합니다.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;dockerfile&quot;&gt;&lt;pre class=&quot;language-dockerfile&quot;&gt;&lt;code class=&quot;language-dockerfile&quot;&gt;&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;FROM&lt;/span&gt; python:3.12-slim       # slim은 Debian slim 이미지를 의미합니다.&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;WORKDIR&lt;/span&gt; /app&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;COPY&lt;/span&gt; hello.py .&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;CMD&lt;/span&gt; [&lt;span class=&quot;token string&quot;&gt;&quot;python&quot;&lt;/span&gt;, &lt;span class=&quot;token string&quot;&gt;&quot;hello.py&quot;&lt;/span&gt;]&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;ol start=&quot;2&quot;&gt;
+&lt;li&gt;빌드를 동일하게 해보고,&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;shell&quot;&gt;&lt;pre class=&quot;language-shell&quot;&gt;&lt;code class=&quot;language-shell&quot;&gt;ocker build &lt;span class=&quot;token parameter variable&quot;&gt;-t&lt;/span&gt; python-hello:slim &lt;span class=&quot;token builtin class-name&quot;&gt;.&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;ol start=&quot;3&quot;&gt;
+&lt;li&gt;사이즈를 확인해볼까요?&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;shell&quot;&gt;&lt;pre class=&quot;language-shell&quot;&gt;&lt;code class=&quot;language-shell&quot;&gt;&lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; images
+REPOSITORY          TAG            IMAGE ID       CREATED         SIZE
+python-hello        slim           2f648897463c   &lt;span class=&quot;token number&quot;&gt;5&lt;/span&gt; seconds ago   212MB
+python-hello        latest         746136719e90   &lt;span class=&quot;token number&quot;&gt;12&lt;/span&gt; days ago     &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;.46GB&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/details&gt;
+&lt;details&gt;
+&lt;summary&gt;👨‍💻 `alpine` 빌드를 해봅시다. &lt;/summary&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;Dockerfile&lt;/code&gt; 을 제작합니다.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;dockerfile&quot;&gt;&lt;pre class=&quot;language-dockerfile&quot;&gt;&lt;code class=&quot;language-dockerfile&quot;&gt;&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;FROM&lt;/span&gt; python:3.12-alpine       # alpine은 Alpine 이미지를 의미합니다.&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;WORKDIR&lt;/span&gt; /app&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;COPY&lt;/span&gt; hello.py .&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;CMD&lt;/span&gt; [&lt;span class=&quot;token string&quot;&gt;&quot;python&quot;&lt;/span&gt;, &lt;span class=&quot;token string&quot;&gt;&quot;hello.py&quot;&lt;/span&gt;]&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;ol start=&quot;2&quot;&gt;
+&lt;li&gt;빌드를 동일하게 해보고,&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;shell&quot;&gt;&lt;pre class=&quot;language-shell&quot;&gt;&lt;code class=&quot;language-shell&quot;&gt;ocker build &lt;span class=&quot;token parameter variable&quot;&gt;-t&lt;/span&gt; python-hello:alpine &lt;span class=&quot;token builtin class-name&quot;&gt;.&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;ol start=&quot;3&quot;&gt;
+&lt;li&gt;사이즈를 확인해볼까요?&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;shell&quot;&gt;&lt;pre class=&quot;language-shell&quot;&gt;&lt;code class=&quot;language-shell&quot;&gt;&lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; images
+REPOSITORY          TAG            IMAGE ID       CREATED         SIZE
+python-hello        slim           2f648897463c   &lt;span class=&quot;token number&quot;&gt;5&lt;/span&gt; seconds ago   212MB
+python-hello        alpine         37a9f605a036   &lt;span class=&quot;token number&quot;&gt;3&lt;/span&gt; minutes ago   &lt;span class=&quot;token number&quot;&gt;78&lt;/span&gt;.4MB
+python-hello        latest         746136719e90   &lt;span class=&quot;token number&quot;&gt;12&lt;/span&gt; days ago     &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;.46GB&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/details&gt;
+&lt;h3 id=&quot;step-2-멀티-스테이지-사용해보기&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#step-2-%EB%A9%80%ED%8B%B0-%EC%8A%A4%ED%85%8C%EC%9D%B4%EC%A7%80-%EC%82%AC%EC%9A%A9%ED%95%B4%EB%B3%B4%EA%B8%B0&quot; aria-label=&quot;step 2 멀티 스테이지 사용해보기 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;step 2. 멀티-스테이지 사용해보기&lt;/h3&gt;
+&lt;p&gt;멀티-스테이지는 하나의 &lt;code class=&quot;language-text&quot;&gt;Dockerfile&lt;/code&gt;에서 다양한 스테이지로 나누어서 레이어를 쌓는 개념을 의미합니다. 그렇다면 어떤 스테이지가 있는지 살펴볼까요?&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;빌드 스테이지
+&lt;ul&gt;
+&lt;li&gt;빌드 도구에 필요한 내용만을 포함합니다&lt;/li&gt;
+&lt;li&gt;빌드 결과를 저장합니다&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;런타임 스테이지
+&lt;ul&gt;
+&lt;li&gt;직전 phase에서 저장한 파일들을 복사합니다.&lt;/li&gt;
+&lt;li&gt;빌드 후의 내용을 구동할 최소한의 파일만을 설치합니다&lt;/li&gt;
+&lt;li&gt;본 내용에서는 런타임 스테이지를 run stage, service stage 둘로 나눕니다.
+&lt;ul&gt;
+&lt;li&gt;이는 각각 실행환경 구성, 앱 실행환경 구성을 의미합니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;그렇다면 멀티-스테이지로 빌드를 수행해볼까요?&lt;/p&gt;
+&lt;p&gt;이번 예시부터는 이 &lt;a href=&quot;https://github.com/max-pfeiffer/python-poetry&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;GitHub repo&lt;/a&gt;를 사용해보겠습니다.&lt;/p&gt;
+&lt;h3 id=&quot;멀티-스테이지가-없다면&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EB%A9%80%ED%8B%B0-%EC%8A%A4%ED%85%8C%EC%9D%B4%EC%A7%80%EA%B0%80-%EC%97%86%EB%8B%A4%EB%A9%B4&quot; aria-label=&quot;멀티 스테이지가 없다면 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;멀티-스테이지가 없다면?&lt;/h3&gt;
+&lt;p&gt;그렇다면, 멀티-스테이지 없이 헬로글또를 찍어볼까요?&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;dockerfile&quot;&gt;&lt;pre class=&quot;language-dockerfile&quot;&gt;&lt;code class=&quot;language-dockerfile&quot;&gt;&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;FROM&lt;/span&gt; python:3.12-slim&lt;/span&gt;
+
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;ARG&lt;/span&gt; POETRY_VERSION=1.6.1&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;ARG&lt;/span&gt; APPLICATION_SERVER_PORT=8000&lt;/span&gt;
+
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;ENV&lt;/span&gt; PIP_NO_CACHE_DIR=off &lt;span class=&quot;token operator&quot;&gt;\&lt;/span&gt;
+    PIP_DISABLE_PIP_VERSION_CHECK=on &lt;span class=&quot;token operator&quot;&gt;\&lt;/span&gt;
+    PIP_DEFAULT_TIMEOUT=100 &lt;span class=&quot;token operator&quot;&gt;\&lt;/span&gt;
+    POETRY_VERSION=&lt;span class=&quot;token variable&quot;&gt;${POETRY_VERSION}&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;\&lt;/span&gt;
+    POETRY_HOME=&lt;span class=&quot;token string&quot;&gt;&quot;/opt/poetry&quot;&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;\&lt;/span&gt;
+    PYTHONUNBUFFERED=1 &lt;span class=&quot;token operator&quot;&gt;\&lt;/span&gt;
+    PYTHONDONTWRITEBYTECODE=1 &lt;span class=&quot;token operator&quot;&gt;\&lt;/span&gt;
+    PYTHONPATH=/application_root &lt;span class=&quot;token operator&quot;&gt;\&lt;/span&gt;
+    POETRY_VIRTUALENVS_IN_PROJECT=true &lt;span class=&quot;token operator&quot;&gt;\&lt;/span&gt;
+    POETRY_CACHE_DIR=&lt;span class=&quot;token string&quot;&gt;&quot;/application_root/.cache&quot;&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;\&lt;/span&gt;
+    VIRTUAL_ENVIRONMENT_PATH=&lt;span class=&quot;token string&quot;&gt;&quot;/application_root/.venv&quot;&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;\&lt;/span&gt;
+    APPLICATION_SERVER_PORT=&lt;span class=&quot;token variable&quot;&gt;$APPLICATION_SERVER_PORT&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;\&lt;/span&gt;
+    PATH=&lt;span class=&quot;token string&quot;&gt;&quot;/opt/poetry/bin:$PATH&quot;&lt;/span&gt;&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# 빌드 도구 설치&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;RUN&lt;/span&gt; apt-get update &lt;span class=&quot;token operator&quot;&gt;\&lt;/span&gt;
+    &amp;amp;&amp;amp; apt-get install --no-install-recommends -y &lt;span class=&quot;token operator&quot;&gt;\&lt;/span&gt;
+        build-essential&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# Poetry 설치&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;RUN&lt;/span&gt; python -m venv &lt;span class=&quot;token variable&quot;&gt;${POETRY_HOME}&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;RUN&lt;/span&gt; &lt;span class=&quot;token variable&quot;&gt;${POETRY_HOME}&lt;/span&gt;/bin/pip install -U pip setuptools&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;RUN&lt;/span&gt; &lt;span class=&quot;token variable&quot;&gt;${POETRY_HOME}&lt;/span&gt;/bin/pip install &lt;span class=&quot;token string&quot;&gt;&quot;poetry==${POETRY_VERSION}&quot;&lt;/span&gt;&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# 사용자 생성&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;RUN&lt;/span&gt; groupadd -g 1001 python_application &amp;amp;&amp;amp; &lt;span class=&quot;token operator&quot;&gt;\&lt;/span&gt;
+    useradd -r -u 1001 -g python_application python_application&lt;/span&gt;
+
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;WORKDIR&lt;/span&gt; &lt;span class=&quot;token variable&quot;&gt;${PYTHONPATH}&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;COPY&lt;/span&gt; . &lt;span class=&quot;token variable&quot;&gt;${PYTHONPATH}&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;RUN&lt;/span&gt; chown python_application:python_application &lt;span class=&quot;token variable&quot;&gt;${PYTHONPATH}&lt;/span&gt;&lt;/span&gt;
+
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;RUN&lt;/span&gt; mkdir &lt;span class=&quot;token variable&quot;&gt;${POETRY_CACHE_DIR}&lt;/span&gt; &amp;amp;&amp;amp; chown python_application:python_application &lt;span class=&quot;token variable&quot;&gt;${POETRY_CACHE_DIR}&lt;/span&gt;&lt;/span&gt;
+
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;EXPOSE&lt;/span&gt; &lt;span class=&quot;token variable&quot;&gt;${APPLICATION_SERVER_PORT}&lt;/span&gt;&lt;/span&gt;
+
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;COPY&lt;/span&gt; ./docker/dev/entrypoint /entrypoint&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;RUN&lt;/span&gt; sed -i &lt;span class=&quot;token string&quot;&gt;&apos;s/\r$//g&apos;&lt;/span&gt; /entrypoint&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;RUN&lt;/span&gt; chmod +x /entrypoint&lt;/span&gt;
+
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;USER&lt;/span&gt; 1001&lt;/span&gt;
+
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;RUN&lt;/span&gt; poetry install --without dev&lt;/span&gt;
+
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;ENTRYPOINT&lt;/span&gt; [&lt;span class=&quot;token string&quot;&gt;&quot;/entrypoint&quot;&lt;/span&gt;]&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;이걸로 만든 이미지의 크기를 살펴봅시다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;shell&quot;&gt;&lt;pre class=&quot;language-shell&quot;&gt;&lt;code class=&quot;language-shell&quot;&gt;&lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; images
+REPOSITORY          TAG                  IMAGE ID       CREATED          SIZE
+python-hello        slim-without-multi   f4be58bb8080   &lt;span class=&quot;token number&quot;&gt;38&lt;/span&gt; seconds ago   700MB&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3 id=&quot;멀티-스테이지가-있다면&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EB%A9%80%ED%8B%B0-%EC%8A%A4%ED%85%8C%EC%9D%B4%EC%A7%80%EA%B0%80-%EC%9E%88%EB%8B%A4%EB%A9%B4&quot; aria-label=&quot;멀티 스테이지가 있다면 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;멀티-스테이지가 있다면?&lt;/h3&gt;
+&lt;p&gt;반대로 멀티-스테이지를 추가해서 헬로글또를 찍어봅시다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;빌드 스테이지&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;빌드 스테이지는 실제 필요한 내용들만을 설치합니다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;dockerfile&quot;&gt;&lt;pre class=&quot;language-dockerfile&quot;&gt;&lt;code class=&quot;language-dockerfile&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;### ### ### ### ### ### ###&lt;/span&gt;
+&lt;span class=&quot;token comment&quot;&gt;# STAGE 0. Prerequisites  #&lt;/span&gt;
+&lt;span class=&quot;token comment&quot;&gt;### ### ### ### ### ### ###&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;ARG&lt;/span&gt; OFFICIAL_PYTHON_IMAGE=3.12&lt;/span&gt;
+
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;FROM&lt;/span&gt; python:&lt;span class=&quot;token variable&quot;&gt;${OFFICIAL_PYTHON_IMAGE}&lt;/span&gt;-slim &lt;span class=&quot;token keyword&quot;&gt;AS&lt;/span&gt; build-stage        # debian slim 이미지를 빌드 스테이지로 설정합시다.&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;ARG&lt;/span&gt; POETRY_VERSION=1.6.1                                        # 패키지 매니저로 poetry v1.6.1를 씁니다.&lt;/span&gt;
+
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;ENV&lt;/span&gt; PIP_NO_CACHE_DIR=off \                                      # 최적화 옵션입니다. 자세한 것은 위의 GitHub 링크를 확인해주세요!&lt;/span&gt;
+    PIP_DISABLE_PIP_VERSION_CHECK=on \
+    PIP_DEFAULT_TIMEOUT=100 \
+    POETRY_VERSION=${POETRY_VERSION} \
+    POETRY_HOME=&quot;/opt/poetry&quot;
+
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;RUN&lt;/span&gt; apt-get update &lt;span class=&quot;token operator&quot;&gt;\&lt;/span&gt;
+    &amp;amp;&amp;amp; apt-get install --no-install-recommends -y build-essential \   # 빌드에 필요한 핵심 내용들만 설치합니다.&lt;/span&gt;
+    &amp;amp;&amp;amp; rm -rf /var/lib/apt/lists/*
+
+&lt;span class=&quot;token comment&quot;&gt;# https://python-poetry.org/docs/#installing-manually&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;RUN&lt;/span&gt; python -m venv &lt;span class=&quot;token variable&quot;&gt;${POETRY_HOME}&lt;/span&gt;                               # 가상환경을 구성하고, poetry를 설치합니다.&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;RUN&lt;/span&gt; &lt;span class=&quot;token variable&quot;&gt;${POETRY_HOME}&lt;/span&gt;/bin/pip install -U pip setuptools&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;RUN&lt;/span&gt; &lt;span class=&quot;token variable&quot;&gt;${POETRY_HOME}&lt;/span&gt;/bin/pip install &lt;span class=&quot;token string&quot;&gt;&quot;poetry==${POETRY_VERSION}&quot;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;ol start=&quot;2&quot;&gt;
+&lt;li&gt;Run 스테이지&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;실행환경을 구성하는 중간단계 입니다.&lt;/li&gt;
+&lt;li&gt;필요한 부분만을 복사하고, 빌드도구를 제외합니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;dockerfile&quot;&gt;&lt;pre class=&quot;language-dockerfile&quot;&gt;&lt;code class=&quot;language-dockerfile&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;### ### ### ### ###&lt;/span&gt;
+&lt;span class=&quot;token comment&quot;&gt;# STAGE 1. &apos;run&apos;  #&lt;/span&gt;
+&lt;span class=&quot;token comment&quot;&gt;### ### ### ### ###&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;FROM&lt;/span&gt; python:&lt;span class=&quot;token variable&quot;&gt;${OFFICIAL_PYTHON_IMAGE}&lt;/span&gt;-slim &lt;span class=&quot;token keyword&quot;&gt;AS&lt;/span&gt; run-stage&lt;/span&gt;
+
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;ENV&lt;/span&gt; PATH=&lt;span class=&quot;token string&quot;&gt;&quot;/opt/poetry/bin:$PATH&quot;&lt;/span&gt;                    # 환경변수를 추가하여, poetry를 쓸 수 있게 구성합니다.&lt;/span&gt;
+
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;COPY&lt;/span&gt; &lt;span class=&quot;token options&quot;&gt;&lt;span class=&quot;token property&quot;&gt;--from&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;build-stage&lt;/span&gt;&lt;/span&gt; /opt/poetry /opt/poetry/    # build-stage에서 필요한 내용만 가져옵니다.&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;ol start=&quot;3&quot;&gt;
+&lt;li&gt;Service 스테이지&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;실제 애플리케이션이 구동될 환경을 구성합니다.&lt;/li&gt;
+&lt;li&gt;보안설정, 런타임에 필요한 의존성을 구성하고 서비스를 구동합니다.&lt;/li&gt;
+&lt;li&gt;구동 전 &lt;code class=&quot;language-text&quot;&gt;entrypoint&lt;/code&gt; 파일을 별도로 두고 이 파일을 entrypoint 로 구성합니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;dockerfile&quot;&gt;&lt;pre class=&quot;language-dockerfile&quot;&gt;&lt;code class=&quot;language-dockerfile&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;### ### ### ### ### ###&lt;/span&gt;
+&lt;span class=&quot;token comment&quot;&gt;# STAGE 2. &apos;service&apos;  #&lt;/span&gt;
+&lt;span class=&quot;token comment&quot;&gt;### ### ### ### ### ###&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;FROM&lt;/span&gt; run-stage &lt;span class=&quot;token keyword&quot;&gt;AS&lt;/span&gt; service-stage&lt;/span&gt;
+
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;ARG&lt;/span&gt; APPLICATION_SERVER_PORT=8000&lt;/span&gt;
+
+    &lt;span class=&quot;token comment&quot;&gt;# https://docs.python.org/3/using/cmdline.html#envvar-PYTHONUNBUFFERED&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;ENV&lt;/span&gt; PYTHONUNBUFFERED=1 &lt;span class=&quot;token operator&quot;&gt;\&lt;/span&gt;
+    &lt;span class=&quot;token comment&quot;&gt;# https://docs.python.org/3/using/cmdline.html#envvar-PYTHONDONTWRITEBYTECODE&lt;/span&gt;
+    PYTHONDONTWRITEBYTECODE=1 &lt;span class=&quot;token operator&quot;&gt;\&lt;/span&gt;
+    PYTHONPATH=/application_root &lt;span class=&quot;token operator&quot;&gt;\&lt;/span&gt;
+    &lt;span class=&quot;token comment&quot;&gt;# https://python-poetry.org/docs/configuration/#virtualenvsin-project&lt;/span&gt;
+    POETRY_VIRTUALENVS_IN_PROJECT=true &lt;span class=&quot;token operator&quot;&gt;\&lt;/span&gt;
+    POETRY_CACHE_DIR=&lt;span class=&quot;token string&quot;&gt;&quot;/application_root/.cache&quot;&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;\&lt;/span&gt;
+    VIRTUAL_ENVIRONMENT_PATH=&lt;span class=&quot;token string&quot;&gt;&quot;/application_root/.venv&quot;&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;\&lt;/span&gt;
+    APPLICATION_SERVER_PORT=&lt;span class=&quot;token variable&quot;&gt;$APPLICATION_SERVER_PORT&lt;/span&gt;&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# 가상환경이 먼저 실행될 수 있도록 PATH의 앞에 추가&lt;/span&gt;
+&lt;span class=&quot;token comment&quot;&gt;# https://docs.python.org/3/library/venv.html#how-venvs-work&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;ENV&lt;/span&gt; PATH=&lt;span class=&quot;token string&quot;&gt;&quot;$VIRTUAL_ENVIRONMENT_PATH/bin:$PATH&quot;&lt;/span&gt;&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# 권한분리를 위해 처리&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;RUN&lt;/span&gt; groupadd -g 1001 python_application &amp;amp;&amp;amp; &lt;span class=&quot;token operator&quot;&gt;\&lt;/span&gt;
+    useradd -r -u 1001 -g python_application python_application&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# WORKDIR를 애플리케이션 루트 디렉터리로 지정&lt;/span&gt;
+&lt;span class=&quot;token comment&quot;&gt;# https://www.uvicorn.org/settings/#development&lt;/span&gt;
+&lt;span class=&quot;token comment&quot;&gt;# https://docs.docker.com/engine/reference/builder/#workdir&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;WORKDIR&lt;/span&gt; &lt;span class=&quot;token variable&quot;&gt;${PYTHONPATH}&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;COPY&lt;/span&gt; . &lt;span class=&quot;token variable&quot;&gt;${PYTHONPATH}&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;RUN&lt;/span&gt; chown python_application:python_application &lt;span class=&quot;token variable&quot;&gt;${PYTHONPATH}&lt;/span&gt;&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# poetry 캐시 디렉터리를 만들고, 권한을 부여함. 링크 참조&lt;/span&gt;
+&lt;span class=&quot;token comment&quot;&gt;# https://python-poetry.org/docs/configuration/#cache-directory&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;RUN&lt;/span&gt; mkdir &lt;span class=&quot;token variable&quot;&gt;${POETRY_CACHE_DIR}&lt;/span&gt; &amp;amp;&amp;amp; chown python_application:python_application &lt;span class=&quot;token variable&quot;&gt;${POETRY_CACHE_DIR}&lt;/span&gt;&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# API 엔드포인트에 대해 문서화를 수행&lt;/span&gt;
+&lt;span class=&quot;token comment&quot;&gt;# https://docs.docker.com/engine/reference/builder/#expose&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;EXPOSE&lt;/span&gt; &lt;span class=&quot;token variable&quot;&gt;${APPLICATION_SERVER_PORT}&lt;/span&gt;&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# ENTRYPOINT로 사용할 파일에 대해 복사 후 내용 구성&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;COPY&lt;/span&gt; ./docker/dev/entrypoint /entrypoint&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;RUN&lt;/span&gt; sed -i &lt;span class=&quot;token string&quot;&gt;&apos;s/\r$//g&apos;&lt;/span&gt; /entrypoint&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;RUN&lt;/span&gt; chmod +x /entrypoint&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# 컨테이너 구동 시에 부여하는 권한을 명시함&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;USER&lt;/span&gt; 1001&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# poetry를 이용하여 의존성 설치&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;RUN&lt;/span&gt; poetry install --without dev&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# Entrypoint 로 추가한 파일을 사용.&lt;/span&gt;
+&lt;span class=&quot;token comment&quot;&gt;# https://www.docker.com/blog/docker-best-practices-choosing-between-run-cmd-and-entrypoint/&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;ENTRYPOINT&lt;/span&gt; [&lt;span class=&quot;token string&quot;&gt;&quot;/entrypoint&quot;&lt;/span&gt;]&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;이렇게 되면 용량은 얼마나 줄어들까요?&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;shell&quot;&gt;&lt;pre class=&quot;language-shell&quot;&gt;&lt;code class=&quot;language-shell&quot;&gt;&lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; images
+REPOSITORY          TAG            IMAGE ID       CREATED          SIZE
+python-hello        slim-multi     4f8e4848dc55   &lt;span class=&quot;token number&quot;&gt;27&lt;/span&gt; minutes ago   324MB&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;절반이나 줄어들었군요!&lt;/p&gt;
+&lt;h3 id=&quot;step-2-빌드-타임을-줄여봅시다&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#step-2-%EB%B9%8C%EB%93%9C-%ED%83%80%EC%9E%84%EC%9D%84-%EC%A4%84%EC%97%AC%EB%B4%85%EC%8B%9C%EB%8B%A4&quot; aria-label=&quot;step 2 빌드 타임을 줄여봅시다 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;step 2. 빌드 타임을 줄여봅시다&lt;/h3&gt;
+&lt;p&gt;멀티-스테이지는 빌드타임이 얼마나 걸리는지 살펴볼까요? 이번에는 외부 패키지를 추가로 설치해서 테스트 해봅시다.
+설치 대상은 &lt;code class=&quot;language-text&quot;&gt;pandas&lt;/code&gt; 와 &lt;code class=&quot;language-text&quot;&gt;matplotlib&lt;/code&gt; 입니다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;shell&quot;&gt;&lt;pre class=&quot;language-shell&quot;&gt;&lt;code class=&quot;language-shell&quot;&gt;&lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; build &lt;span class=&quot;token parameter variable&quot;&gt;-t&lt;/span&gt; python-hello:slim-multi-2 --no-cache &lt;span class=&quot;token builtin class-name&quot;&gt;.&lt;/span&gt;
+&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;+&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; Building &lt;span class=&quot;token number&quot;&gt;45&lt;/span&gt;.6s &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;20&lt;/span&gt;/20&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; FINISHED                                                                                                    docker:desktop-linux
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;internal&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; load build definition from Dockerfile                                                                                                   &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;.0s
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; transferring dockerfile: &lt;span class=&quot;token number&quot;&gt;3&lt;/span&gt;.53kB                                                                                                                 &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;.0s
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;internal&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; load metadata &lt;span class=&quot;token keyword&quot;&gt;for&lt;/span&gt; docker.io/library/python:3.12-slim                                                                                    &lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt;.6s
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;internal&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; load .dockerignore                                                                                                                      &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;.0s
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; transferring context: 2B                                                                                                                        &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;.0s
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;internal&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; load build context                                                                                                                      &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;.0s
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; transferring context: &lt;span class=&quot;token number&quot;&gt;87&lt;/span&gt;.08kB                                                                                                                   &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;.0s
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;build-stage &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;/5&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; FROM docker.io/library/python:3.12-slim@sha256:032c52613401895aa3d418a4c563d2d05f993bc3ecc065c8f4e2280978acd249                  &lt;span class=&quot;token number&quot;&gt;5&lt;/span&gt;.6s
+&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;생략&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;build-stage &lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt;/5&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; RUN &lt;span class=&quot;token function&quot;&gt;apt-get&lt;/span&gt; update     &lt;span class=&quot;token operator&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;apt-get&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;install&lt;/span&gt; --no-install-recommends &lt;span class=&quot;token parameter variable&quot;&gt;-y&lt;/span&gt; build-essential     &lt;span class=&quot;token operator&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;rm&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;-rf&lt;/span&gt; /var/lib/apt/lists/*          &lt;span class=&quot;token number&quot;&gt;12&lt;/span&gt;.4s
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;build-stage &lt;span class=&quot;token number&quot;&gt;3&lt;/span&gt;/5&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; RUN python &lt;span class=&quot;token parameter variable&quot;&gt;-m&lt;/span&gt; venv /opt/poetry                                                                                                   &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;.9s 
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;build-stage &lt;span class=&quot;token number&quot;&gt;4&lt;/span&gt;/5&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; RUN /opt/poetry/bin/pip &lt;span class=&quot;token function&quot;&gt;install&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;-U&lt;/span&gt; pip setuptools                                                                                &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;.1s 
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;build-stage &lt;span class=&quot;token number&quot;&gt;5&lt;/span&gt;/5&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; RUN /opt/poetry/bin/pip &lt;span class=&quot;token function&quot;&gt;install&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;poetry==1.6.1&quot;&lt;/span&gt;                                                                                  &lt;span class=&quot;token number&quot;&gt;5&lt;/span&gt;.1s 
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;run-stage &lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt;/2&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; COPY &lt;span class=&quot;token parameter variable&quot;&gt;--from&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;build-stage /opt/poetry /opt/poetry/                                                                                   &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;.2s
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;service-stage &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;/9&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; RUN &lt;span class=&quot;token function&quot;&gt;groupadd&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;-g&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1001&lt;/span&gt; python_application &lt;span class=&quot;token operator&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt;     &lt;span class=&quot;token function&quot;&gt;useradd&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;-r&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;-u&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1001&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;-g&lt;/span&gt; python_application python_application                     &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;.2s
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;service-stage &lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt;/9&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; WORKDIR /application_root                                                                                                      &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;.0s
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;service-stage &lt;span class=&quot;token number&quot;&gt;3&lt;/span&gt;/9&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; COPY &lt;span class=&quot;token builtin class-name&quot;&gt;.&lt;/span&gt; /application_root                                                                                                       &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;.0s
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;service-stage &lt;span class=&quot;token number&quot;&gt;4&lt;/span&gt;/9&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; RUN &lt;span class=&quot;token function&quot;&gt;chown&lt;/span&gt; python_application:python_application /application_root                                                              &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;.1s
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;service-stage &lt;span class=&quot;token number&quot;&gt;5&lt;/span&gt;/9&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; RUN &lt;span class=&quot;token function&quot;&gt;mkdir&lt;/span&gt; /application_root/.cache &lt;span class=&quot;token operator&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;chown&lt;/span&gt; python_application:python_application /application_root/.cache                     &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;.1s
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;service-stage &lt;span class=&quot;token number&quot;&gt;6&lt;/span&gt;/9&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; COPY entrypoint /entrypoint                                                                                                    &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;.0s
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;service-stage &lt;span class=&quot;token number&quot;&gt;7&lt;/span&gt;/9&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; RUN &lt;span class=&quot;token function&quot;&gt;sed&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;-i&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&apos;s/\r$//g&apos;&lt;/span&gt; /entrypoint                                                                                              &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;.1s
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;service-stage &lt;span class=&quot;token number&quot;&gt;8&lt;/span&gt;/9&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; RUN &lt;span class=&quot;token function&quot;&gt;chmod&lt;/span&gt; +x /entrypoint                                                                                                       &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;.1s
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;service-stage &lt;span class=&quot;token number&quot;&gt;9&lt;/span&gt;/9&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; RUN poetry &lt;span class=&quot;token function&quot;&gt;install&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;--without&lt;/span&gt; dev                                                                                               &lt;span class=&quot;token number&quot;&gt;7&lt;/span&gt;.4s
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; exporting to image                                                                                                                                 &lt;span class=&quot;token number&quot;&gt;8&lt;/span&gt;.3s
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; exporting layers                                                                                                                                &lt;span class=&quot;token number&quot;&gt;6&lt;/span&gt;.5s
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; exporting manifest sha256:2e1a026e67ea60a968a576838692cc7661011085b146d3b94bff86e21c10fedd                                                      &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;.0s
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; exporting config sha256:f7b5913e1edb9f4566cd1bf1c1f32e0baa757f9fae90fea096917d7241a0fd6d                                                        &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;.0s
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; exporting attestation manifest sha256:6482e53034c92e947f0c26372d5a0fc24e24d510ec9a4a5c5ff6901310ef5263                                          &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;.0s
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; exporting manifest list sha256:a23299c55409341354951e7931f8bf1f38137fd21391853773255b17062c1c0f                                                 &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;.0s
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; naming to docker.io/library/python-hello:slim-multi-2                                                                                           &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;.0s
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; unpacking to docker.io/library/python-hello:slim-multi-2                                                                                        &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;.8s&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;그렇다면, alpine 베이스 이미지로 빌드를 수행해봅시다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;shell&quot;&gt;&lt;pre class=&quot;language-shell&quot;&gt;&lt;code class=&quot;language-shell&quot;&gt;&lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; build &lt;span class=&quot;token parameter variable&quot;&gt;-t&lt;/span&gt; python-hello:alpine-multi-2 --no-cache &lt;span class=&quot;token builtin class-name&quot;&gt;.&lt;/span&gt;
+&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;+&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; Building &lt;span class=&quot;token number&quot;&gt;90&lt;/span&gt;.4s &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;21&lt;/span&gt;/21&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; FINISHED                                                                                                     docker:desktop-linux
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;internal&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; load build definition from Dockerfile                                                                                                    &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;.0s
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; transferring dockerfile: &lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt;.18kB                                                                                                                  &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;.0s
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;internal&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; load metadata &lt;span class=&quot;token keyword&quot;&gt;for&lt;/span&gt; docker.io/library/python:3.12-alpine                                                                                   &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;.4s
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;internal&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; load .dockerignore                                                                                                                       &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;.0s
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; transferring context: 2B                                                                                                                         &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;.0s
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;internal&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; load build context                                                                                                                       &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;.0s
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; transferring context: &lt;span class=&quot;token number&quot;&gt;85&lt;/span&gt;.72kB                                                                                                                    &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;.0s
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;build-stage &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;/5&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; FROM docker.io/library/python:3.12-alpine@sha256:38e179a0f0436c97ecc76bcd378d7293ab3ee79e4b8c440fdc7113670cb6e204                 &lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt;.3s
+&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;생략&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;build-stage &lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt;/5&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; RUN apk &lt;span class=&quot;token function&quot;&gt;add&lt;/span&gt; --no-cache     gcc     python3-dev                                                                                   &lt;span class=&quot;token number&quot;&gt;12&lt;/span&gt;.1s
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;build-stage &lt;span class=&quot;token number&quot;&gt;3&lt;/span&gt;/5&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; RUN python &lt;span class=&quot;token parameter variable&quot;&gt;-m&lt;/span&gt; venv /opt/poetry                                                                                                    &lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt;.2s 
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;build-stage &lt;span class=&quot;token number&quot;&gt;4&lt;/span&gt;/5&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; RUN /opt/poetry/bin/pip &lt;span class=&quot;token function&quot;&gt;install&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;-U&lt;/span&gt; pip setuptools                                                                                 &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;.3s 
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;build-stage &lt;span class=&quot;token number&quot;&gt;5&lt;/span&gt;/5&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; RUN /opt/poetry/bin/pip &lt;span class=&quot;token function&quot;&gt;install&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;poetry==1.6.1&quot;&lt;/span&gt;                                                                                   &lt;span class=&quot;token number&quot;&gt;5&lt;/span&gt;.7s 
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;run-stage &lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt;/2&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; COPY &lt;span class=&quot;token parameter variable&quot;&gt;--from&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;build-stage /opt/poetry /opt/poetry/                                                                                    &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;.2s
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;service-stage  &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;/10&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; RUN addgroup &lt;span class=&quot;token parameter variable&quot;&gt;-g&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1001&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;-S&lt;/span&gt; python_application &lt;span class=&quot;token operator&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt;     adduser &lt;span class=&quot;token parameter variable&quot;&gt;-S&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;-u&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1001&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;-G&lt;/span&gt; python_application python_application                 &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;.1s
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;service-stage  &lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt;/10&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; WORKDIR /application_root                                                                                                     &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;.0s
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;service-stage  &lt;span class=&quot;token number&quot;&gt;3&lt;/span&gt;/10&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; COPY &lt;span class=&quot;token builtin class-name&quot;&gt;.&lt;/span&gt; /application_root                                                                                                      &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;.0s
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;service-stage  &lt;span class=&quot;token number&quot;&gt;4&lt;/span&gt;/10&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; RUN &lt;span class=&quot;token function&quot;&gt;chown&lt;/span&gt; python_application:python_application /application_root                                                             &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;.1s
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;service-stage  &lt;span class=&quot;token number&quot;&gt;5&lt;/span&gt;/10&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; RUN &lt;span class=&quot;token function&quot;&gt;mkdir&lt;/span&gt; /application_root/.cache &lt;span class=&quot;token operator&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;chown&lt;/span&gt; python_application:python_application /application_root/.cache                    &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;.2s
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;service-stage  &lt;span class=&quot;token number&quot;&gt;6&lt;/span&gt;/10&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; COPY entrypoint /entrypoint                                                                                                   &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;.0s
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;service-stage  &lt;span class=&quot;token number&quot;&gt;7&lt;/span&gt;/10&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; RUN &lt;span class=&quot;token function&quot;&gt;sed&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;-i&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&apos;s/\r$//&apos;&lt;/span&gt; /entrypoint                                                                                              &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;.2s
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;service-stage  &lt;span class=&quot;token number&quot;&gt;8&lt;/span&gt;/10&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; RUN &lt;span class=&quot;token function&quot;&gt;chmod&lt;/span&gt; +x /entrypoint                                                                                                      &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;.1s
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;service-stage  &lt;span class=&quot;token number&quot;&gt;9&lt;/span&gt;/10&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; RUN apk &lt;span class=&quot;token function&quot;&gt;add&lt;/span&gt; --no-cache     g++     openssl                                                                                    &lt;span class=&quot;token number&quot;&gt;8&lt;/span&gt;.2s
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;service-stage &lt;span class=&quot;token number&quot;&gt;10&lt;/span&gt;/10&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; RUN poetry &lt;span class=&quot;token function&quot;&gt;install&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;--without&lt;/span&gt; dev                                                                                             &lt;span class=&quot;token number&quot;&gt;44&lt;/span&gt;.2s
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; exporting to image                                                                                                                                 &lt;span class=&quot;token number&quot;&gt;11&lt;/span&gt;.8s```
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; exporting layers                                                                                                                                 &lt;span class=&quot;token number&quot;&gt;9&lt;/span&gt;.2s
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; exporting manifest sha256:6b7bcd80340bf252c06947fde85a4fb53012c3d8bb07ff6dfd3a8b6fe6d1022c                                                       &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;.0s
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; exporting config sha256:58c4058d992779af8b0e3aa67ceabd655d234d871e38af0e6996155a56ed953e                                                         &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;.0s
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; exporting attestation manifest sha256:e88ed3098ce10fbce9ed2452c82ada1f5ccccb7c9d094b6f2da495754249db26                                           &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;.0s
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; exporting manifest list sha256:b0b8cc043f1436abf29e9b45bcbcf618d0838de9d1678086c9b2b5acc1541e9b                                                  &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;.0s
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; naming to docker.io/library/python-hello:alpine-multi-2                                                                                          &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;.0s
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; unpacking to docker.io/library/python-hello:alpine-multi-2                                                                                       &lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt;.6s&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;빌드 시간과 크기에 대해 한번 살펴보죠.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;shell&quot;&gt;&lt;pre class=&quot;language-shell&quot;&gt;&lt;code class=&quot;language-shell&quot;&gt;&lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; images
+REPOSITORY     TAG              IMAGE ID       CREATED         SIZE
+python-hello   alpine-multi-2   b0b8cc043f14   &lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt; minutes ago   &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;.13GB
+python-hello   slim-multi-2     a23299c55409   &lt;span class=&quot;token number&quot;&gt;3&lt;/span&gt; minutes ago   755MB&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;베이스이미지&lt;/th&gt;
+&lt;th&gt;빌드된 이미지 크기&lt;/th&gt;
+&lt;th&gt;소요시간(단위: 초)&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;debian slim&lt;/td&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;755 MB&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;45.6&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;alpine&lt;/td&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;1.13 GB&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;90.4&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;ul&gt;
+&lt;li&gt;debian 베이스 이미지는 용량, 소요시간 측면 모두에서 안정적이었습니다.&lt;/li&gt;
+&lt;li&gt;alpine 베이스 이미지는 빌드시간 자체도 늦고, 크기도 커졌습니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;그렇다면 alpine 베이스 이미지는 사용할 수 없는 걸까요? 왜 그런건지 알아보기에 앞서, 앞서  알아봅시다.&lt;/p&gt;
+&lt;h2 id=&quot;c-라이브러리-구현체와-빌드의-차이&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#c-%EB%9D%BC%EC%9D%B4%EB%B8%8C%EB%9F%AC%EB%A6%AC-%EA%B5%AC%ED%98%84%EC%B2%B4%EC%99%80-%EB%B9%8C%EB%93%9C%EC%9D%98-%EC%B0%A8%EC%9D%B4&quot; aria-label=&quot;c 라이브러리 구현체와 빌드의 차이 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;C 라이브러리 구현체와 빌드의 차이&lt;/h2&gt;
+&lt;p&gt;그렇다면 앞서 alpine linux 배포판과 debian 배포판의 차이를 알아봅시다. 이 글에서 살펴볼 둘의 주요 차이점은 C 라이브러리 구현체의 선택입니다. 각각의 특징을 살펴보겠습니다:&lt;/p&gt;
+&lt;h3 id=&quot;glibc-debian-계열&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#glibc-debian-%EA%B3%84%EC%97%B4&quot; aria-label=&quot;glibc debian 계열 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;&lt;code class=&quot;language-text&quot;&gt;glibc&lt;/code&gt; (Debian 계열)&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;리눅스 생태계의 사실상 표준 구현체입니다&lt;/li&gt;
+&lt;li&gt;대부분의 파이썬 패키지가 &lt;code class=&quot;language-text&quot;&gt;glibc&lt;/code&gt; 기준으로 빌드되어있으니, 안정성과 호환성이 검증되어 있습니다.&lt;/li&gt;
+&lt;li&gt;그런 이유로 베이스 이미지 크기가 상대적으로 큽니다&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;musl-alpine-linux&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#musl-alpine-linux&quot; aria-label=&quot;musl alpine linux permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;&lt;code class=&quot;language-text&quot;&gt;musl&lt;/code&gt; (Alpine Linux)&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;경량화된 C 라이브러리 구현체입니다&lt;/li&gt;
+&lt;li&gt;단순한 구현으로 보안 공격 표면이 작습니다&lt;/li&gt;
+&lt;li&gt;베이스 이미지 크기가 매우 작습니다 (Debian 대비 약 1/20)&lt;/li&gt;
+&lt;li&gt;일부 바이너리와 호환성 이슈가 발생할 수 있습니다&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&quot;python-wheels의-발전과-alpine-linux-지원&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#python-wheels%EC%9D%98-%EB%B0%9C%EC%A0%84%EA%B3%BC-alpine-linux-%EC%A7%80%EC%9B%90&quot; aria-label=&quot;python wheels의 발전과 alpine linux 지원 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Python Wheels의 발전과 Alpine Linux 지원&lt;/h2&gt;
+&lt;p&gt;과거에는 Alpine Linux에서 많은 파이썬 패키지를 설치할 때 소스로부터 직접 빌드해야 했고, 이는 컨테이너 빌드 시간을 길어지게 하는 주요 요소였습니다. 하지만 Python 패키징 생태계의 발전으로 상황이 크게 개선되었습니다.&lt;/p&gt;
+&lt;h3 id=&quot;python-패키징의-발전-과정&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#python-%ED%8C%A8%ED%82%A4%EC%A7%95%EC%9D%98-%EB%B0%9C%EC%A0%84-%EA%B3%BC%EC%A0%95&quot; aria-label=&quot;python 패키징의 발전 과정 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Python 패키징의 발전 과정&lt;/h3&gt;
+&lt;p&gt;다양한 배포판에서 파이썬 패키지를 바로 설치할 수 있도록 하기 위해, 아래와 같은 PEP가 지속적으로 제안되어 왔고 또 받아들여졌습니다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;PEP 513 (manylinux1): 최초의 호환성 있는 Linux wheel 표준 도입&lt;/li&gt;
+&lt;li&gt;PEP 571 (manylinux2010): glibc 2.12 기반 호환성 확장&lt;/li&gt;
+&lt;li&gt;PEP 599 (manylinux2014): 더 새로운 시스템 라이브러리 지원&lt;/li&gt;
+&lt;li&gt;PEP 600 (Future manylinux): 향후 확장성을 고려한 태그 체계 도입&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;PEP 656 (musllinux)&lt;/strong&gt;: Alpine Linux 등 &lt;code class=&quot;language-text&quot;&gt;musl&lt;/code&gt; 기반 배포판 공식 지원&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;PEP 656이 accept 되며, &lt;code class=&quot;language-text&quot;&gt;musl&lt;/code&gt; 기반의 빌드가 이루어진 파이썬 패키지도 직접 다운로드 받게 되어, 이를 지원하고 빌드한 라이브러리라면 누구나 쓸 수 있게 되었습니다.&lt;/p&gt;
+&lt;h3 id=&quot;manylinux&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#manylinux&quot; aria-label=&quot;manylinux permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;manylinux?&lt;/h3&gt;
+&lt;p&gt;manylinux는 “Python wheels that work on any linux (almost).” 라는 목표를 가지고 다양한 배포판을 타겟으로 빌드하기 위해 시작된 프로젝트 입니다. 원하는 리눅스 배포판에서 라이브러리를 빌드없이 직접 다운로드 받아 쓸 수 있도록 규약을 잡기 시작한 것이라고 이해할 수 있지요(&lt;a href=&quot;https://github.com/pypa/manylinux&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;manylinux 링크&lt;/a&gt;에서 발췌하였습니다).&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;markdown&quot;&gt;&lt;pre class=&quot;language-markdown&quot;&gt;&lt;code class=&quot;language-markdown&quot;&gt;&lt;span class=&quot;token title important&quot;&gt;manylinux
+&lt;span class=&quot;token punctuation&quot;&gt;---&lt;/span&gt;&lt;/span&gt;
+
+Older archives: https://groups.google.com/forum/#!forum/manylinux-discuss
+
+The goal of the manylinux project is to provide a convenient way to distribute binary Python extensions as wheels on Linux. This effort has produced PEP 513 (manylinux1), PEP 571 (manylinux2010), PEP 599 (manylinux2014), PEP 600 (manylinux_x_y) and PEP 656 (musllinux_x_y).&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3 id=&quot;pep-656의-의의&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#pep-656%EC%9D%98-%EC%9D%98%EC%9D%98&quot; aria-label=&quot;pep 656의 의의 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;PEP 656의 의의&lt;/h3&gt;
+&lt;p&gt;Alpine linux와 관련해서는 PEP 656(Platform Tag for Linux Distributions Using Musl)은 위 PEP의 연장선상이라 할 수 있지요. 이 표준이 받아들여지면서, &lt;code class=&quot;language-text&quot;&gt;musl&lt;/code&gt; 기반의 빌드된 wheel을 배포자가 업데이트 하면 사용자가 즉시 설치할 수 있게 된 것입니다. 이로 인해 alpine linux 기반의 베이스 이미지를 선택해도 빌드 시간 단축 및 의존성 문제를 해결할 수 있게 된 겁니다.&lt;/p&gt;
+&lt;p&gt;이로인해 Alpine 베이스 파이썬 컨테이너를 선택하더라도 빌드 시간 단축과 이미지 크기 최적화의 이점을 누릴 수 있게 되었습니다. 특히 PEP 656 도입 이후에는 많은 패키지가 musllinux wheel을 제공하고 있고, 코어 로직이 Rust로 짜여진 파이썬 패키지들은 크로스플랫폼을 쉽게 지원하기 때문에 이런 부분에서도 선택에 제약이 크게 없습니다.&lt;/p&gt;
+&lt;h2 id=&quot;마지막으로&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EB%A7%88%EC%A7%80%EB%A7%89%EC%9C%BC%EB%A1%9C&quot; aria-label=&quot;마지막으로 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;마지막으로&lt;/h2&gt;
+&lt;p&gt;그렇지만 여전히 의문입니다. 그러면 언제, 어떤 시기에 적절한 베이스 이미지를 선택하면 될까요? 무턱대고 고르기에는 아무래도 의심이 듭니다. 간단하게나마 있을법한 일을 검증해보고 적절한지 예시 데이터를 보면 더욱 안심이겠죠. 그래서 다음장에는 아래의 상황에서 어떤 베이스 이미지가 좋은지 함께 살펴볼 예정입니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;I/O bound 태스크 중심: API 서비스를 만들고, DB에는 1억개의 데이터을 추가한 후, 쿼리 테스트 및 부하 테스트를 수행하여 성능을 리포트&lt;/li&gt;
+&lt;li&gt;CPU bound 태스크 중심: 매우 큰 데이터를 pandas로 처리, matplotlib으로 연산하게 구성해보고 성능을 리포트&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;긴 글 읽어주셔서 감사합니다.&lt;/p&gt;
+&lt;div class=&quot;footnotes&quot;&gt;
+&lt;hr&gt;
+&lt;ol&gt;
+&lt;li id=&quot;fn-1&quot;&gt;패키지(이 글에서는 파이썬 패키지를 의미)는 &lt;code class=&quot;language-text&quot;&gt;pip&lt;/code&gt; 등으로 설치할 수 있는 외부 모듈의 모음을 의미합니다. 쉽게 말하자면 파이썬 라이브러리라고 할 수 있지요.&lt;a href=&quot;#fnref-1&quot; class=&quot;footnote-backref&quot;&gt;↩&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;</content:encoded></item><item><title><![CDATA[[연재] 파이썬 컨테이너 선택 제 1형 - 컨테이너에 대해]]></title><description><![CDATA[컨테이너 기술에 대해 간략히 설명하고, 파이썬 컨테이너는 어떻게 선택할 수 있는지 대해 설명합니다.]]></description><link>https://blog.s3ich4n.me/devlog/python/2024-10-13-python-container-101-pt01</link><guid isPermaLink="false">https://blog.s3ich4n.me/devlog/python/2024-10-13-python-container-101-pt01</guid><pubDate>Sun, 13 Oct 2024 03:00:00 GMT</pubDate><content:encoded>&lt;p&gt;이번 게시글에서는 컨테이너 기술에 대해 간략히 설명하고, 파이썬 컨테이너를 구성하기 위한 선택지를 살펴봅니다.&lt;/p&gt;
+&lt;p&gt;이 게시글은, 파이썬으로 서버 개발을 진행한 경험이 있으시다면 보다 쉽게 이해하실 수 있습니다.&lt;/p&gt;
+&lt;h2 id=&quot;컨테이너-기술&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%BB%A8%ED%85%8C%EC%9D%B4%EB%84%88-%EA%B8%B0%EC%88%A0&quot; aria-label=&quot;컨테이너 기술 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;컨테이너 기술?&lt;/h2&gt;
+&lt;p&gt;요즘은 컨테이너로 서비스를 배포하는 것이 굉장히 일상적입니다. 각종 기고문 등에서도 컨테이너를 사용한 배포가 일상화 되어있고, 국내의 큰 회사도 100만개의 컨테이너가 동시에(!) 돌기도 한다고 합니다. 그렇다면 컨테이너가 어떤 것인지 먼저 살펴볼까요?&lt;/p&gt;
+&lt;h3 id=&quot;컨테이너-이전에는&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%BB%A8%ED%85%8C%EC%9D%B4%EB%84%88-%EC%9D%B4%EC%A0%84%EC%97%90%EB%8A%94&quot; aria-label=&quot;컨테이너 이전에는 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;컨테이너 이전에는…&lt;/h3&gt;
+&lt;p&gt;과거 서버를 구성할 때는 개발팀(Dev)의 개발 후 품질보증팀(QA), 보안팀(Infosec)의 검증을 거쳐서 운영팀(Ops)이 배포하는 흐름이었습니다. 이러한 개발 방식은 서비스를 기획하고 지속적으로 운영하며 여러 문제를 겪는데요. 첫 번째 문제는, 개발한 코드가 배포되기까지의 흐름이 너무 늦다는 것입니다.&lt;/p&gt;
+&lt;p&gt;우리는 배포에 가까워지며 버그를 패치할 때는 임시방편으로 일정을 맞추기 위한 코드를 짜죠. 이런 ‘기술 부채’들은 지속적으로 쌓이고, 언젠간 해결해야지 하는 방법으로 계속 때우는 것으론 한계가 발생합니다. 근본결함을 수정하기에는 문제 해결에 대한 시간이 너무 짧다는 것입니다.&lt;/p&gt;
+&lt;p&gt;두 번째 문제는 배포와 관리를 하기 위한 서버 관리 비용 또한 고려의 대상이라는 것입니다. 배포를 할 땐 서버 환경을 모두 알고 잘 구성해야 합니다. 하나라도 어긋나면 서버구동이 되지 않을 수 있습니다. 서버를 늘리고 줄이기 위해서는 물리 서버에 동일한 작업을 여러 번 반복하는 것 또한 일입니다.&lt;/p&gt;
+&lt;p&gt;이 두 가지 단점에 대해서는, 후술할 DevOps 개념과 컨테이너가 본격적으로 쓰이기 전인 2011년 IDC와 가트너(Gartner)는 전 세계 GDP의 약 3.1조 달러가 IT에 지출된다고 추정했습니다&lt;sup id=&quot;fnref-1&quot;&gt;&lt;a href=&quot;#fn-1&quot; class=&quot;footnote-ref&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;🍎 tips&lt;/p&gt;
+&lt;p&gt;컨테이너가 등장하기 이전에도 이를 위한 많은 시도가 있었지만, 주제와 어긋나므로 과감히 생략합니다. 관련해서는 이 글&lt;sup id=&quot;fnref-2&quot;&gt;&lt;a href=&quot;#fn-2&quot; class=&quot;footnote-ref&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;의 단락을 읽어주세요.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;컨테이너-iac-devops-lets-go&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%BB%A8%ED%85%8C%EC%9D%B4%EB%84%88-iac-devops-lets-go&quot; aria-label=&quot;컨테이너 iac devops lets go permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;컨테이너, IaC, DevOps, let’s go&lt;/h3&gt;
+&lt;p&gt;보통 말하는 컨테이너의 정의는 아래와 같습니다.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;애플리케이션을 패키징화하고 실행을 격리한다.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;다시말해, 서버 구성 환경 하나하나 고정하여 어디서든 동일하게 실행가능한 프로세스 입니다. 좀 뭉뚱그려 말하면 이게 구동되면 서버가 돌 수 있는 것이지요. 그런 컨테이너 기술로 널리 사용되는 것은 단연 Docker 입니다. 컨테이너 기술의 등장으로 인해 기존 배포과정에서의 단점이 훌륭하게 해결되었지요. 실행 당시의 환경을 별도로 격리시켜주고, 종속성을 유지할 수 있게 할 수 있게 되다보니 아래와 같은 장점을 누릴 수 있게 되었습니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;개발환경과 운영환경의 차이점을 최소화 할 수 있습니다.&lt;/li&gt;
+&lt;li&gt;다른 사람이 만든 “서버”를 쉽게 가져다 사용할 수 있습니다.&lt;/li&gt;
+&lt;li&gt;서버 가용성을 확장하기 위해 컨테이너를 한 서버/다른 서버 에서 동시에 구동하여 처리할 수도 있습니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;details&gt;
+&lt;summary&gt;🤔 컨테이너 기술이 DevOps에 끼치는 영향&lt;/summary&gt;
+&lt;blockquote&gt;
+&lt;p&gt;🍎 tips&lt;/p&gt;
+&lt;p&gt;글의 방향을 이해하는 데는 크게 필요없지만, 만약 더 알아보시고 싶으시다면 아래 내용도 참고해주세요.&lt;/p&gt;
+&lt;p&gt;만일 IaC 중 Terraform에 대해 관심이 있으시다면 저의 &lt;a href=&quot;https://velog.io/@s3ich4n/series/2022%EB%85%84-Terraform-%EC%8A%A4%ED%84%B0%EB%94%94&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;다른 연재글&lt;/a&gt;을 함께 살펴봐주시면 감사하겠습니다. 🙇&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;클라우드 컴퓨팅의 시대로 들어오며 이런 장점은 더욱 극대화 되기 시작했습니다. 기존에는 서버실 구성, 각종 배선작업 및 쿨링 시스템 구축을 거의 모든 회사가 직접 해야했으나, 원격지의 서버를 임대하여 사용할 수 있는 시스템이 등장함으로 인해 이런 컨테이너를 통한 장점이 더욱 극대화될 수 있는 환경마저 제공된 것이죠. 심지어는 이런 구성마저도 코드로 관리하여(IaC, Infrastructure as Code) 처리하는 접근법이 대두되기도 합니다.&lt;/p&gt;
+&lt;p&gt;이런 식으로 기존 개발 방식에서 개발팀(Dev)와 운영팀(Ops)의 역할 사이클을 한 번에 줄이고 보다 자주, 그리고 견고하게 배포하도록 하는 과정이 DevOps의 일부라고 할 수 있겠습니다.&lt;/p&gt;
+&lt;/details&gt;
+&lt;h2 id=&quot;컨테이너에-대해&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%BB%A8%ED%85%8C%EC%9D%B4%EB%84%88%EC%97%90-%EB%8C%80%ED%95%B4&quot; aria-label=&quot;컨테이너에 대해 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;컨테이너에 대해&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;🍎 note&lt;/p&gt;
+&lt;p&gt;이 글 이후로 컨테이너 관련 플랫폼은 Docker(이하 도커)를 사용하도록 하겠습니다.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;지금까지 컨테이너에 대한 말이 굉장히 많이 나왔는데요. 그렇다면 이건 어떻게 만들고 구동해볼 수 있을까요? 설명에 앞서 용어부터 정리해봅시다. 컨테이너 기술을 이야기할 때는 흔히 “도커 이미지”와 “도커 컨테이너”라는 용어를 사용하여 실행가능한 형태와 실제 구동중인 형태를 각각 표현합니다. “도커 이미지”에 대한 설계도는 &lt;code class=&quot;language-text&quot;&gt;Dockerfile&lt;/code&gt; 이구요.&lt;/p&gt;
+&lt;p&gt;&lt;figure class=&quot;gatsby-resp-image-figure&quot; style=&quot;&quot;&gt;
+    &lt;span
+      class=&quot;gatsby-resp-image-wrapper&quot;
+      style=&quot;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 960px; &quot;
+    &gt;
+      &lt;a
+    class=&quot;gatsby-resp-image-link&quot;
+    href=&quot;/static/3e98425217ba1cc676b279553aac1cf6/e8950/01-docker-image-container-explained.png&quot;
+    style=&quot;display: block&quot;
+    target=&quot;_blank&quot;
+    rel=&quot;noopener&quot;
+  &gt;
+    &lt;span
+    class=&quot;gatsby-resp-image-background-image&quot;
+    style=&quot;padding-bottom: 34.583333333333336%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAHCAIAAACHqfpvAAAACXBIWXMAAAPoAAAD6AG1e1JrAAABjElEQVQY021PS0sCURi9UO3b9Rdatok2EZjQov5A0LZdmyAIwkUEEVL00KZ8JTaViAZqSgZBY6OUlpb5GMukIsxSxx5j2kw6c7/Q2XZWh8PhPJDDZrWY9LukxULu8LwAAK4Dj3ppmdAbN/WGxZVV8zYJLew7nRpiY43Y0BlNy5p1z+EhGrMEu+d9fdN6u/dINsVTDEVRkfAZRQdO6UD4Mirr1/EEHQi6fUc214GfDiSZNOr3CUj3jlQn4/ZrAKiLEgBUGmBOcZtXLABIGOqiiLGcAEJDLHJVmSOls9CxxLSrYyPW9FM+H7nLZkvcAJlGsxc9hsSo65GIFPPFQiidrQnNU1zlM/f2hqVmB1K4yp3GFzQXHd5jAECs857MJ9LmurZLaOVVYc+9VnhJwjX+J/vVsDIfxiS3FXpY8F5QmQKaPK8p3GXlTkpFPctjvgXx+J6dCbLTNMtWfwGgITVHG5IVNHfTtnjbofKjqZMhrR/B/8AAEgDGuMVah92PP91krteWHzTHeojIhCP6B14NRtjhLb+IAAAAAElFTkSuQmCC&apos;); background-size: cover; display: block;&quot;
+  &gt;&lt;/span&gt;
+  &lt;picture&gt;
+          &lt;source
+              srcset=&quot;/static/3e98425217ba1cc676b279553aac1cf6/8ac56/01-docker-image-container-explained.webp 240w,
+/static/3e98425217ba1cc676b279553aac1cf6/d3be9/01-docker-image-container-explained.webp 480w,
+/static/3e98425217ba1cc676b279553aac1cf6/e46b2/01-docker-image-container-explained.webp 960w,
+/static/3e98425217ba1cc676b279553aac1cf6/f992d/01-docker-image-container-explained.webp 1440w,
+/static/3e98425217ba1cc676b279553aac1cf6/882b9/01-docker-image-container-explained.webp 1920w,
+/static/3e98425217ba1cc676b279553aac1cf6/b84eb/01-docker-image-container-explained.webp 2000w&quot;
+              sizes=&quot;(max-width: 960px) 100vw, 960px&quot;
+              type=&quot;image/webp&quot;
+            /&gt;
+          &lt;source
+            srcset=&quot;/static/3e98425217ba1cc676b279553aac1cf6/8ff5a/01-docker-image-container-explained.png 240w,
+/static/3e98425217ba1cc676b279553aac1cf6/e85cb/01-docker-image-container-explained.png 480w,
+/static/3e98425217ba1cc676b279553aac1cf6/d9199/01-docker-image-container-explained.png 960w,
+/static/3e98425217ba1cc676b279553aac1cf6/07a9c/01-docker-image-container-explained.png 1440w,
+/static/3e98425217ba1cc676b279553aac1cf6/29114/01-docker-image-container-explained.png 1920w,
+/static/3e98425217ba1cc676b279553aac1cf6/e8950/01-docker-image-container-explained.png 2000w&quot;
+            sizes=&quot;(max-width: 960px) 100vw, 960px&quot;
+            type=&quot;image/png&quot;
+          /&gt;
+          &lt;img
+            class=&quot;gatsby-resp-image-image&quot;
+            src=&quot;/static/3e98425217ba1cc676b279553aac1cf6/d9199/01-docker-image-container-explained.png&quot;
+            alt=&quot;귀여운 고래와 함께 보시죠&quot;
+            title=&quot;귀여운 고래와 함께 보시죠&quot;
+            loading=&quot;lazy&quot;
+            decoding=&quot;async&quot;
+            style=&quot;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&quot;
+          /&gt;
+        &lt;/picture&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;
+    &lt;figcaption class=&quot;gatsby-resp-image-figcaption&quot;&gt;&lt;p&gt;귀여운 고래와 함께 보시죠&lt;/p&gt;&lt;/figcaption&gt;
+  &lt;/figure&gt;&lt;/p&gt;
+&lt;h3 id=&quot;도커-이미지와-dockerfile에-대해&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EB%8F%84%EC%BB%A4-%EC%9D%B4%EB%AF%B8%EC%A7%80%EC%99%80-dockerfile%EC%97%90-%EB%8C%80%ED%95%B4&quot; aria-label=&quot;도커 이미지와 dockerfile에 대해 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;도커 이미지와 &lt;code class=&quot;language-text&quot;&gt;Dockerfile&lt;/code&gt;에 대해&lt;/h3&gt;
+&lt;p&gt;이미지는 애플리케이션을 실행하는데 필요한 모든 것을 포함하는 ‘불변의 템플릿’입니다. 여기엔 소스 코드, 런타임, 라이브러리, 환경 변수, 설정 파일 등이 포함됩니다. 그리고 이 이미지를 만드는 명세서가 바로 &lt;code class=&quot;language-text&quot;&gt;Dockerfile&lt;/code&gt;입니다. Dockerfile에는 이미지를 어떻게 만들지 순서대로 적어둡니다. 기준이 되는 이미지부터 우리가 원하는 내용을 추가할 수 있지요. 한번 살펴봅시다.&lt;/p&gt;
+&lt;p&gt;Dockerfile의 각 명령어는 하나의 “레이어”가 되어 이미지를 겹겹이 쌓아갑니다. 각각의 레이어는 그 명령어로 인한 파일 시스템의 변경사항을 담고 있죠. 한번 만들어진 레이어는 읽기 전용이 되어 “불변성”을 보장합니다. 이렇게 모든 레이어가 쌓이면 하나의 이미지가 완성되는 거죠.&lt;/p&gt;
+&lt;p&gt;도커 이미지를 만들기 위한 바탕을 베이스 이미지&lt;sup id=&quot;fnref-3&quot;&gt;&lt;a href=&quot;#fn-3&quot; class=&quot;footnote-ref&quot;&gt;3&lt;/a&gt;&lt;/sup&gt;라고 부르기도 합니다. 파이썬 베이스 이미지는 &lt;a href=&quot;https://hub.docker.com/_/python&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;Docker Hub&lt;/a&gt;에서 확인하실 수 있어요. 필요한 파이썬 버전이 있다면 그에 맞는 값을 바꿔주면 됩니다. &lt;code class=&quot;language-text&quot;&gt;3.12&lt;/code&gt; 버전이 필요하면 그 값을 입력하면 되죠. 심지어는 어떤 운영체제에서 구동되는 걸 기대하는지도 지정해줄 수 있습니다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;dockerfile&quot;&gt;&lt;pre class=&quot;language-dockerfile&quot;&gt;&lt;code class=&quot;language-dockerfile&quot;&gt;&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;FROM&lt;/span&gt; python:3.12            # 앞서 살펴본 베이스 이미지 입니다. 여기서는 파이썬 3.12를 사용해요.&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;WORKDIR&lt;/span&gt; /app                # 이제부터의 명령어들이 실행될 작업 디렉터리를 지정합니다.&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;COPY&lt;/span&gt; hello.py .             # 현재 디렉터리의 hello.py 파일을 컨테이너의 /app 디렉터리로 복사합니다.&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;CMD&lt;/span&gt; [&lt;span class=&quot;token string&quot;&gt;&quot;python&quot;&lt;/span&gt;, &lt;span class=&quot;token string&quot;&gt;&quot;hello.py&quot;&lt;/span&gt;]  # 컨테이너가 시작될 때 실행할 명령어를 지정합니다.&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3 id=&quot;만들어봅시다&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EB%A7%8C%EB%93%A4%EC%96%B4%EB%B4%85%EC%8B%9C%EB%8B%A4&quot; aria-label=&quot;만들어봅시다 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;만들어봅시다!&lt;/h3&gt;
+&lt;p&gt;그러면 헬로월드를 출력하는 도커 이미지를 만들어봅시다. &lt;a href=&quot;https://www.docker.com/products/docker-desktop/&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;Docker Desktop&lt;/a&gt;을 설치하고 한번 만들어볼까요!&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;hello.py&lt;/code&gt; 파일 생성:&lt;/li&gt;
 &lt;/ol&gt;
 &lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;python&quot;&gt;&lt;pre class=&quot;language-python&quot;&gt;&lt;code class=&quot;language-python&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&quot;Hello, geultto!&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;ol start=&quot;2&quot;&gt;
-&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;Dockerfile&lt;/code&gt; 생성:&lt;/li&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;Dockerfile&lt;/code&gt; 생성(위에서 본 내용입니다):&lt;/li&gt;
 &lt;/ol&gt;
 &lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;dockerfile&quot;&gt;&lt;pre class=&quot;language-dockerfile&quot;&gt;&lt;code class=&quot;language-dockerfile&quot;&gt;&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;FROM&lt;/span&gt; python:3.12&lt;/span&gt;
-
 &lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;WORKDIR&lt;/span&gt; /app&lt;/span&gt;
-
 &lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;COPY&lt;/span&gt; hello.py .&lt;/span&gt;
-
 &lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;CMD&lt;/span&gt; [&lt;span class=&quot;token string&quot;&gt;&quot;python&quot;&lt;/span&gt;, &lt;span class=&quot;token string&quot;&gt;&quot;hello.py&quot;&lt;/span&gt;]&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;ol start=&quot;3&quot;&gt;
-&lt;li&gt;이미지 빌드 및 실행:&lt;/li&gt;
+&lt;li&gt;이미지 빌드:&lt;/li&gt;
 &lt;/ol&gt;
-&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;bash&quot;&gt;&lt;pre class=&quot;language-bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;&lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; build &lt;span class=&quot;token parameter variable&quot;&gt;-t&lt;/span&gt; python-hello &lt;span class=&quot;token builtin class-name&quot;&gt;.&lt;/span&gt;
-&lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; run python-hello&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;3을 실행시키면 아래와 같은 결과가 나옵니다.&lt;/p&gt;
 &lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;shell&quot;&gt;&lt;pre class=&quot;language-shell&quot;&gt;&lt;code class=&quot;language-shell&quot;&gt;&lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; build &lt;span class=&quot;token parameter variable&quot;&gt;-t&lt;/span&gt; python-hello &lt;span class=&quot;token builtin class-name&quot;&gt;.&lt;/span&gt;
-&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;+&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; Building &lt;span class=&quot;token number&quot;&gt;26&lt;/span&gt;.1s &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;8&lt;/span&gt;/8&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; FINISHED                                                                                                 docker:desktop-linux
- &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;internal&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; load build definition from Dockerfile                                                                                              &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;.0s
- &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; transferring dockerfile: 151B                                                                                                              &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;.0s
- &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;internal&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; load metadata &lt;span class=&quot;token keyword&quot;&gt;for&lt;/span&gt; docker.io/library/python:3.12                                                                                    &lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt;.7s
- &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;internal&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; load .dockerignore                                                                                                                 &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;.0s
- &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; transferring context: 2B                                                                                                                   &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;.0s
- &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;/3&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; FROM docker.io/library/python:3.12@sha256:05855f5bf06f5a004b0c1a8aaac73a9d9ea54390fc289d3e80ef52c4f90d5585                             &lt;span class=&quot;token number&quot;&gt;22&lt;/span&gt;.7s
+&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;+&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; Building &lt;span class=&quot;token number&quot;&gt;26&lt;/span&gt;.1s &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;8&lt;/span&gt;/8&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; FINISHED                           docker:desktop-linux
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;internal&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; load build definition from Dockerfile                        &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;.0s
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; transferring dockerfile: 151B                                        &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;.0s
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;internal&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; load metadata &lt;span class=&quot;token keyword&quot;&gt;for&lt;/span&gt; docker.io/library/python:3                 &lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt;.7s
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;internal&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; load .dockerignore                                           &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;.0s
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; transferring context: 2B                                             &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;.0s
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;/3&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; FROM docker.io/library/python:3.12@sha256:&lt;span class=&quot;token operator&quot;&gt;&amp;lt;&lt;/span&gt;생략&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt;                 &lt;span class=&quot;token number&quot;&gt;22&lt;/span&gt;.7s
  &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;생략&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
- &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; extracting sha256:3795519dea7759f67ddca8240187a3dd44b924bf57de62a5a77ac2226c7b9d43                                                         &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;.0s
- &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;internal&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; load build context                                                                                                                 &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;.0s
- &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; transferring context: 98B                                                                                                                  &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;.0s
- &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt;/3&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; WORKDIR /app                                                                                                                            &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;.5s
- &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;3&lt;/span&gt;/3&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; COPY hello.py &lt;span class=&quot;token builtin class-name&quot;&gt;.&lt;/span&gt;                                                                                                                         &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;.0s
- &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; exporting to image                                                                                                                            &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;.1s
- &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; exporting layers                                                                                                                           &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;.0s
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; extracting sha256:&lt;span class=&quot;token operator&quot;&gt;&amp;lt;&lt;/span&gt;생략&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt;
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;internal&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; load build context                                           &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;.0s
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; transferring context: 98B                                            &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;.0s
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt;/3&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; WORKDIR /app                                                      &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;.5s
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;3&lt;/span&gt;/3&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; COPY hello.py &lt;span class=&quot;token builtin class-name&quot;&gt;.&lt;/span&gt;                                                   &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;.0s
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; exporting to image                                                      &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;.1s
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; exporting layers                                                     &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;.0s
  &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;생략&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
- &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; naming to docker.io/library/python-hello:latest                                                                                            &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;.0s
- &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; unpacking to docker.io/library/python-hello:latest                                                                                         &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;.0s
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; naming to docker.io/library/python-hello:latest                      &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;.0s
+ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; unpacking to docker.io/library/python-hello:latest                   &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;.0s
 
 What&apos;s next:
-    View a summary of image vulnerabilities and recommendations → &lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; scout quickview
-
-$ &lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; run python-hello
-Hello, geultto&lt;span class=&quot;token operator&quot;&gt;!&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+    View a summary of image vulnerabilities and recommendations → &lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; scout quickview&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;축하합니다. 당신은 첫 파이썬 컨테이너를 빌드했습니다! 🎉🎉&lt;/p&gt;
-&lt;p&gt;이제 빌드한 이미지의 크기를 확인해봅시다.&lt;/p&gt;
+&lt;h3 id=&quot;도커-컨테이너&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EB%8F%84%EC%BB%A4-%EC%BB%A8%ED%85%8C%EC%9D%B4%EB%84%88&quot; aria-label=&quot;도커 컨테이너 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;도커 컨테이너?&lt;/h3&gt;
+&lt;p&gt;그렇다면 도커 컨테이너는 무엇일까요? 바로 도커 이미지를 실행한 프로세스를 말합니다. 이 프로세스는:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;격리된 프로세스 공간 확보&lt;/li&gt;
+&lt;li&gt;호스트로부터 컨테이너 자신만의 독립된 파일시스템을 확보&lt;/li&gt;
+&lt;li&gt;컨테이너 만의 네트워크 환경을 개별적으로 확보&lt;/li&gt;
+&lt;li&gt;심지어 실행 권한도 별도로 부여받을 수 있습니다!&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;이런 특성들 덕분에:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;어떤 환경에서도 동일하게 실행됩니다
+&lt;ul&gt;
+&lt;li&gt;내 컴퓨터에서 잘 돌던 게 서버에서도 그대로!&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;다른 프로세스와 충돌 없이 실행됩니다
+&lt;ul&gt;
+&lt;li&gt;Python 2.7과 3.8이 필요한 프로그램들도 걱정 없이!&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;문제가 생겨도 다른 프로그램에 영향을 주지 않습니다
+&lt;ul&gt;
+&lt;li&gt;하나의 컨테이너가 문제가 생겨도 다른 건 멀쩡해요&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;그러면 컨테이너를 한번 실행해볼까요?&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;shell&quot;&gt;&lt;pre class=&quot;language-shell&quot;&gt;&lt;code class=&quot;language-shell&quot;&gt;$ &lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; run python-hello
+Hello, geultto&lt;span class=&quot;token operator&quot;&gt;!&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;컨테이너 실행 완료! 이제 더 이상 환경에 구애받지 않는 실행환경이 만들어졌어요! 🎉🎉&lt;/p&gt;
+&lt;h2 id=&quot;그런데&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EA%B7%B8%EB%9F%B0%EB%8D%B0&quot; aria-label=&quot;그런데 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;그런데?&lt;/h2&gt;
+&lt;p&gt;성공적으로 실행했으니 이제 빌드한 이미지의 크기를 확인해봅시다.&lt;/p&gt;
 &lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;shell&quot;&gt;&lt;pre class=&quot;language-shell&quot;&gt;&lt;code class=&quot;language-shell&quot;&gt;$ &lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; images python-hello
 REPOSITORY     TAG       IMAGE ID       CREATED         SIZE
 python-hello   latest    746136719e90   &lt;span class=&quot;token number&quot;&gt;3&lt;/span&gt; minutes ago   &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;.46GB&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
@@ -250,7 +718,7 @@ python-hello   latest    746136719e90   &lt;span class=&quot;token number&quot;&
 &lt;/li&gt;
 &lt;li&gt;운영체제 레이어와 각종 의존성
 &lt;ul&gt;
-&lt;li&gt;기본 OS 파일 시스템, 유틸리티 등이 함께 포함될 수 있기 때문입니다. 저희는 shared tags를 썼으니까요.&lt;/li&gt;
+&lt;li&gt;기본 OS 파일 시스템, 유틸리티 등이 함께 포함될 수 있기 때문입니다.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;li&gt;그런데 여기서 애플리케이션 코드 및 데이터가 들어가면?
@@ -289,13 +757,15 @@ python-hello   latest    746136719e90   &lt;span class=&quot;token number&quot;&
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;그렇다면 다음 글에서는 컨테이너 크기를 줄이기 위한 방안을 살펴보고, 파이썬 컨테이너 이미지의 특징을 살펴보도록 하겠습니다.&lt;/p&gt;
+&lt;h2 id=&quot;끝으로&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EB%81%9D%EC%9C%BC%EB%A1%9C&quot; aria-label=&quot;끝으로 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;끝으로&lt;/h2&gt;
+&lt;p&gt;그렇다면 다음 글에서는 파이썬 컨테이너 이미지 크기를 줄이기 위한 여러 방안을 살펴보고, 파이썬 컨테이너 이미지 빌드가 가지는 특징을 살펴보도록 하겠습니다.&lt;/p&gt;
 &lt;p&gt;긴 글 읽어주셔서 감사합니다.&lt;/p&gt;
 &lt;div class=&quot;footnotes&quot;&gt;
 &lt;hr&gt;
 &lt;ol&gt;
 &lt;li id=&quot;fn-1&quot;&gt;자세한 내용은 &lt;a href=&quot;https://www.itjungle.com/2011/07/11/tfh071111-story03/&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;이 링크를&lt;/a&gt;, 관련 출처는 &lt;a href=&quot;https://readingraphics.com/book-summary-the-devops-handbook/&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;이 링크&lt;/a&gt;에서 확인할 수 있습니다.&lt;a href=&quot;#fnref-1&quot; class=&quot;footnote-backref&quot;&gt;↩&lt;/a&gt;&lt;/li&gt;
 &lt;li id=&quot;fn-2&quot;&gt;&lt;a href=&quot;https://www.44bits.io/ko/post/why-should-i-use-docker-container#%EC%9A%B4%EC%98%81%ED%95%98%EB%A9%B4%EC%84%9C-%EB%A7%8C%EB%93%A4%EC%96%B4%EC%A7%80%EB%8A%94-%EB%88%88%EC%86%A1%EC%9D%B4-%EC%84%9C%EB%B2%84%EB%93%A4snowflake-servers&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;https://www.44bits.io/ko/post/why-should-i-use-docker-container#운영하면서-만들어지는-눈송이-서버들snowflake-servers&lt;/a&gt;&lt;a href=&quot;#fnref-2&quot; class=&quot;footnote-backref&quot;&gt;↩&lt;/a&gt;&lt;/li&gt;
+&lt;li id=&quot;fn-3&quot;&gt;모든 이미지의 베이스 이미지도 있습니다. &lt;a href=&quot;https://docs.docker.com/build/building/base-images/#creating-a-simple-parent-image-using-scratch&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;참고 링크&lt;/a&gt;&lt;a href=&quot;#fnref-3&quot; class=&quot;footnote-backref&quot;&gt;↩&lt;/a&gt;&lt;/li&gt;
 &lt;/ol&gt;
 &lt;/div&gt;</content:encoded></item><item><title><![CDATA[[글또10기] 삶의 지도]]></title><description><![CDATA[글또 10기를 지원하며, 개발자로 걸어온 길을 반추해 보았습니다. 어떤 삶을 살았고 앞으로는 어떤 길을 걸어야 할지 생각해 보았습니다. 이 이정표는 역시나 글이겠지요.]]></description><link>https://blog.s3ich4n.me/retrospect/2024-09-17-geultto-10th-life-retrospect</link><guid isPermaLink="false">https://blog.s3ich4n.me/retrospect/2024-09-17-geultto-10th-life-retrospect</guid><pubDate>Tue, 17 Sep 2024 01:01:00 GMT</pubDate><content:encoded>&lt;p&gt;프로그래밍을 업으로 삼게 된 시절부터, 집에서 글을 쓰는 현재까지 돌아보려 합니다.&lt;/p&gt;
 &lt;h2 id=&quot;제1장-프로그래밍에-입문&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%A0%9C1%EC%9E%A5-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D%EC%97%90-%EC%9E%85%EB%AC%B8&quot; aria-label=&quot;제1장 프로그래밍에 입문 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;제1장: 프로그래밍에 입문&lt;/h2&gt;
@@ -16573,45 +17043,7 @@ ENTRYPOINT &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;spa
 &lt;li&gt;VSCode의 Show all commands 가 정말 꿀기능 이었습니다. 필요한 커맨드를 찾고 바로 수행할 수가 있네요.&lt;/li&gt;
 &lt;/ol&gt;
 &lt;h2 id=&quot;마무리&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EB%A7%88%EB%AC%B4%EB%A6%AC&quot; aria-label=&quot;마무리 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;마무리&lt;/h2&gt;
-&lt;p&gt;별 것 아닌 내용이지만, 괜히 지웠다 깔 필요 없이 다음번에도 헤메지 않기 위해 메모했습니다. 별 것 아니지만, 여러분들께도 도움이 되길 바랍니다. 감사합니다.&lt;/p&gt;</content:encoded></item><item><title><![CDATA[PyCharm에서 파일 맨 위에 작성하는 주석을 작성하는 매크로 만들기]]></title><description><![CDATA[매일 입력하는 파일 설명(시그니처)을 귀찮지 않게 커맨드 하나로 자동입력되게 하는 방안을 찾았습니다. 회사 팀원들과 주변사람들에게만 공유하기는 아까워서 짧은 글을 써봤습니다.]]></description><link>https://blog.s3ich4n.me/tips/how-to-use-file-signature-in-pycharm</link><guid isPermaLink="false">https://blog.s3ich4n.me/tips/how-to-use-file-signature-in-pycharm</guid><pubDate>Thu, 03 Jun 2021 09:00:00 GMT</pubDate><content:encoded>&lt;p&gt;PyCharm에서 파일 시그니처를 바로 입력하려면?&lt;/p&gt;
-&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;Live Templates&lt;/code&gt; 기능을 사용하면 보다 손쉽게 사용할 수 있다.&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;
-&lt;p&gt;shift 두번 눌러서 액션을 열고 &lt;code class=&quot;language-text&quot;&gt;Live Templates&lt;/code&gt; 를 연다.&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;add를 하되, 파이썬 파일에서만 쓸거니까 파이썬에서 기능을 혀용하도록 한다.&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;이런 식으로 시그니처를 작성한다.&lt;/p&gt;
-&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;json&quot;&gt;&lt;pre class=&quot;language-json&quot;&gt;&lt;code class=&quot;language-json&quot;&gt;#
-# (코드의 전반적인 내용을 설명해 주세요)
-#
-# @author      Seongeun Yu (seongeun.yu@somma.kr)
-# @date        $DATE$ $TIME$ created.
-# @modified    $DATE$ $TIME$ modified.
-# @copyright   MIT License
-#&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;ol&gt;
-&lt;li&gt;변수를 저렇게 두면 원하는 함수를 써서 매핑할 수 있다.&lt;/li&gt;
-&lt;/ol&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;$DATE$&lt;/code&gt;, &lt;code class=&quot;language-text&quot;&gt;$TIME$&lt;/code&gt; 값은 함수를 쓰면 된다. 관련 참고링크는 &lt;a href=&quot;https://www.jetbrains.com/help/pycharm/template-variables.html#predefined_functions&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;여기&lt;/a&gt;:&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;date()&lt;/code&gt; 함수의 파라미터 규격은 자바의 (&lt;a href=&quot;https://docs.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;SimpleDateFormat&lt;/a&gt;)을 따라간다.&lt;/li&gt;
-&lt;li&gt;date, time의 규격은 이렇게 하면 된다.
-&lt;ol&gt;
-&lt;li&gt;date는? &lt;code class=&quot;language-text&quot;&gt;date(&quot;yyyy/MM/dd&quot;)&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;time은? &lt;code class=&quot;language-text&quot;&gt;date(&quot;HH:mm&quot;)&lt;/code&gt;&lt;/li&gt;
-&lt;/ol&gt;
-&lt;/li&gt;
-&lt;/ol&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;파일을 열 때마다 &lt;code class=&quot;language-text&quot;&gt;sign_s3ich4n&lt;/code&gt; 를 한두글자만 치면 자동완성으로 알아서 완성된다.&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ol&gt;</content:encoded></item><item><title><![CDATA[pre-commit hook, 나도 한번 써보자 (1)]]></title><description><![CDATA[pre-commit hook 말만 들었지 실제로 써보지 못했는데, 이참에 써보고 팀원들에게 공유하기 위해 글을 씁니다. 제 1탄입니다.]]></description><link>https://blog.s3ich4n.me/tips/2021-07-11-how-to-use-pre-commit-hook-vol1</link><guid isPermaLink="false">https://blog.s3ich4n.me/tips/2021-07-11-how-to-use-pre-commit-hook-vol1</guid><pubDate>Thu, 03 Jun 2021 09:00:00 GMT</pubDate><content:encoded>&lt;p&gt;이 글은 pre-commit hook 을 사용하고 전파하기 위해 작성한 시리즈 글입니다.&lt;/p&gt;
+&lt;p&gt;별 것 아닌 내용이지만, 괜히 지웠다 깔 필요 없이 다음번에도 헤메지 않기 위해 메모했습니다. 별 것 아니지만, 여러분들께도 도움이 되길 바랍니다. 감사합니다.&lt;/p&gt;</content:encoded></item><item><title><![CDATA[pre-commit hook, 나도 한번 써보자 (1)]]></title><description><![CDATA[pre-commit hook 말만 들었지 실제로 써보지 못했는데, 이참에 써보고 팀원들에게 공유하기 위해 글을 씁니다. 제 1탄입니다.]]></description><link>https://blog.s3ich4n.me/tips/2021-07-11-how-to-use-pre-commit-hook-vol1</link><guid isPermaLink="false">https://blog.s3ich4n.me/tips/2021-07-11-how-to-use-pre-commit-hook-vol1</guid><pubDate>Thu, 03 Jun 2021 09:00:00 GMT</pubDate><content:encoded>&lt;p&gt;이 글은 pre-commit hook 을 사용하고 전파하기 위해 작성한 시리즈 글입니다.&lt;/p&gt;
 &lt;h2 id=&quot;설치-및-설정하기&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%84%A4%EC%B9%98-%EB%B0%8F-%EC%84%A4%EC%A0%95%ED%95%98%EA%B8%B0&quot; aria-label=&quot;설치 및 설정하기 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;설치 및 설정하기&lt;/h2&gt;
 &lt;ol&gt;
 &lt;li&gt;작업 환경에 맞게 &lt;a href=&quot;https://pre-commit.com/#installation&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;pre-commit hook을 설치한다&lt;/a&gt;&lt;/li&gt;
@@ -16671,7 +17103,45 @@ ENTRYPOINT &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;spa
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&quot;https://pre-commit.com/#usage-in-continuous-integration&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;CI 연동&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;더 없나 찾아보자&lt;/li&gt;
-&lt;/ul&gt;</content:encoded></item><item><title><![CDATA[간략히 써본 서버 점검 가이드]]></title><description><![CDATA[서버 점검과 관련하여]]></description><link>https://blog.s3ich4n.me/tips/2021-02-03-server-maintenance-guide</link><guid isPermaLink="false">https://blog.s3ich4n.me/tips/2021-02-03-server-maintenance-guide</guid><pubDate>Wed, 03 Feb 2021 10:17:43 GMT</pubDate><content:encoded>&lt;p&gt;서버 점검과 관련하여 좋은글들을 추합한 내용을 공유합니다.&lt;/p&gt;
+&lt;/ul&gt;</content:encoded></item><item><title><![CDATA[PyCharm에서 파일 맨 위에 작성하는 주석을 작성하는 매크로 만들기]]></title><description><![CDATA[매일 입력하는 파일 설명(시그니처)을 귀찮지 않게 커맨드 하나로 자동입력되게 하는 방안을 찾았습니다. 회사 팀원들과 주변사람들에게만 공유하기는 아까워서 짧은 글을 써봤습니다.]]></description><link>https://blog.s3ich4n.me/tips/how-to-use-file-signature-in-pycharm</link><guid isPermaLink="false">https://blog.s3ich4n.me/tips/how-to-use-file-signature-in-pycharm</guid><pubDate>Thu, 03 Jun 2021 09:00:00 GMT</pubDate><content:encoded>&lt;p&gt;PyCharm에서 파일 시그니처를 바로 입력하려면?&lt;/p&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;Live Templates&lt;/code&gt; 기능을 사용하면 보다 손쉽게 사용할 수 있다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;shift 두번 눌러서 액션을 열고 &lt;code class=&quot;language-text&quot;&gt;Live Templates&lt;/code&gt; 를 연다.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;add를 하되, 파이썬 파일에서만 쓸거니까 파이썬에서 기능을 혀용하도록 한다.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;이런 식으로 시그니처를 작성한다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;json&quot;&gt;&lt;pre class=&quot;language-json&quot;&gt;&lt;code class=&quot;language-json&quot;&gt;#
+# (코드의 전반적인 내용을 설명해 주세요)
+#
+# @author      Seongeun Yu (seongeun.yu@somma.kr)
+# @date        $DATE$ $TIME$ created.
+# @modified    $DATE$ $TIME$ modified.
+# @copyright   MIT License
+#&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;ol&gt;
+&lt;li&gt;변수를 저렇게 두면 원하는 함수를 써서 매핑할 수 있다.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;$DATE$&lt;/code&gt;, &lt;code class=&quot;language-text&quot;&gt;$TIME$&lt;/code&gt; 값은 함수를 쓰면 된다. 관련 참고링크는 &lt;a href=&quot;https://www.jetbrains.com/help/pycharm/template-variables.html#predefined_functions&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;여기&lt;/a&gt;:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;date()&lt;/code&gt; 함수의 파라미터 규격은 자바의 (&lt;a href=&quot;https://docs.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;SimpleDateFormat&lt;/a&gt;)을 따라간다.&lt;/li&gt;
+&lt;li&gt;date, time의 규격은 이렇게 하면 된다.
+&lt;ol&gt;
+&lt;li&gt;date는? &lt;code class=&quot;language-text&quot;&gt;date(&quot;yyyy/MM/dd&quot;)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;time은? &lt;code class=&quot;language-text&quot;&gt;date(&quot;HH:mm&quot;)&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;파일을 열 때마다 &lt;code class=&quot;language-text&quot;&gt;sign_s3ich4n&lt;/code&gt; 를 한두글자만 치면 자동완성으로 알아서 완성된다.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;</content:encoded></item><item><title><![CDATA[간략히 써본 서버 점검 가이드]]></title><description><![CDATA[서버 점검과 관련하여]]></description><link>https://blog.s3ich4n.me/tips/2021-02-03-server-maintenance-guide</link><guid isPermaLink="false">https://blog.s3ich4n.me/tips/2021-02-03-server-maintenance-guide</guid><pubDate>Wed, 03 Feb 2021 10:17:43 GMT</pubDate><content:encoded>&lt;p&gt;서버 점검과 관련하여 좋은글들을 추합한 내용을 공유합니다.&lt;/p&gt;
 &lt;h1 id=&quot;작성에-앞서&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%9E%91%EC%84%B1%EC%97%90-%EC%95%9E%EC%84%9C&quot; aria-label=&quot;작성에 앞서 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;작성에 앞서…&lt;/h1&gt;
 &lt;p&gt;이 글은 좋은 글을 가져와 제 입맛에 맞게 정리한 것에 불과합니다. 제 스스로 되새김질 하기 위해 썼기 때문에, 하단의 참조링크를 반드시 보실 것을 권해드립니다.&lt;/p&gt;
 &lt;h1 id=&quot;prerequisite&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#prerequisite&quot; aria-label=&quot;prerequisite permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Prerequisite&lt;/h1&gt;

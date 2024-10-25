@@ -1,0 +1,616 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="ie=edge"/><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/><meta name="generator" content="Gatsby 4.25.4"/><meta name="description" content="컨테이너 사이즈 최소화의 필요성과, 최소화 과정 중 파이썬 라이브러리 설치 과정에서의 최적화 제안(PEP 656)을 소개합니다." data-gatsby-head="true"/><meta name="twitter:card" content="summary_large_image" data-gatsby-head="true"/><meta name="twitter:title" content="[연재] 파이썬 컨테이너 선택 제 2형 - 파이썬 컨테이너 최적화 - 팔공산 창고" data-gatsby-head="true"/><meta name="twitter:description" content="컨테이너 사이즈 최소화의 필요성과, 최소화 과정 중 파이썬 라이브러리 설치 과정에서의 최적화 제안(PEP 656)을 소개합니다." data-gatsby-head="true"/><meta name="og:title" content="[연재] 파이썬 컨테이너 선택 제 2형 - 파이썬 컨테이너 최적화 - 팔공산 창고" data-gatsby-head="true"/><meta name="og:type" content="website" data-gatsby-head="true"/><meta name="og:description" content="컨테이너 사이즈 최소화의 필요성과, 최소화 과정 중 파이썬 라이브러리 설치 과정에서의 최적화 제안(PEP 656)을 소개합니다." data-gatsby-head="true"/><meta name="image" content="https://blog.s3ich4n.me[object Object]" data-gatsby-head="true"/><meta name="og:image" content="https://blog.s3ich4n.me[object Object]" data-gatsby-head="true"/><meta name="twitter:image" content="https://blog.s3ich4n.me[object Object]" data-gatsby-head="true"/><meta name="theme-color" content="hsl(31, 92%, 62%)"/><style data-href="/styles.1fbe3e33e3d898c35e17.css" data-identity="gatsby-global-css">:after,:before,:root{--color-white:#fff;--color-primary:#5c92ff;--color-secondary:#f7a145;--color-prism-background:#eaeaeb;--color-typographic-base-font:#242933;--color-typographic-link-p-font:#5c92ff;--color-typographic-link-s-font:#f7a145;--color-page-border:#eaeaeb;--color-page-background:#fff;--color-sidebar-border:#eaeaeb;--color-sidebar-border-fade:#fff;--color-contacts-border:#eaeaeb;--color-button-border:#eaeaeb;--color-button-color:#242933;--color-theme-switcher:#3f485a;--color-theme-switcher-hover:#5c92ff}.dark :after,.dark :before,:root.dark{--color-white:#fff;--color-primary:#5c92ff;--color-secondary:#f7a145;--color-prism-background:#191d24;--color-typographic-base-font:#fff;--color-typographic-link-p-font:#5c92ff;--color-typographic-link-s-font:#f7a145;--color-page-border:#3f485a;--color-page-background:#242933;--color-sidebar-border:#3f485a;--color-sidebar-border-fade:#242933;--color-contacts-border:#3f485a;--color-button-border:#3f485a;--color-button-color:#fff;--color-theme-switcher:#eaeaeb;--color-theme-switcher-hover:#5c92ff}html{font-size:100}body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;background:var(--color-page-background);color:var(--color-typographic-base-font);font-size:16px;line-height:1.625;margin:0 0 0 calc(100vw - 100%);text-rendering:optimizelegibility}body,h1,h2,h3,h4,h5,h6{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif}h1,h2,h3,h4,h5,h6{font-weight:600}h1{font-size:40px;line-height:52px;margin-bottom:26px;margin-top:104px}h2{font-size:27px;line-height:39px}h2,h3{margin-bottom:13px;margin-top:52px}h3{font-size:22px;line-height:26px}h4{font-size:19.2px;margin-top:39px}h4,h5{line-height:26px;margin-bottom:13px}h5,h6{font-size:16px;margin-top:65px}h6{line-height:26px;margin-bottom:13px}img{max-width:100%}hr,img{border:0;display:block}hr{background-image:linear-gradient(180deg,transparent 1px,transparent 11px,#242933 0,#242933 15px,transparent 0,transparent 26px);background-size:100% 26px;color:var(--color-typographic-base-font);height:26px;margin:52px auto;width:100px}a{color:var(--color-typographic-link-p-font);text-decoration:none}a:active,a:focus,a:hover{color:var(--color-typographic-link-s-font)}b,strong{font-weight:600}ul{list-style:square;margin-bottom:26px}ul li{margin-bottom:10px;padding:0 5px}p{line-height:26px;margin-bottom:26px}blockquote{font-style:italic;padding:0;text-align:center}figure{display:block;height:auto;width:100%}figcaption{color:var(--color-typographic-base-font);font-size:14px;font-style:italic;line-height:19.5px;margin-bottom:0;margin-top:6.5px;text-align:center}@media screen and (min-width:685px){figure.float-left,figure.float-right{max-width:310px;padding:0 26px}.float-right{float:right}.float-left{float:left}}code[class*=language-],pre[class*=language-]{word-wrap:normal;color:#657b83;font-family:Consolas,Monaco,Andale Mono,Ubuntu Mono,monospace;font-size:1em;-webkit-hyphens:none;hyphens:none;line-height:1.5;-o-tab-size:4;tab-size:4;text-align:left;white-space:pre;word-break:normal;word-spacing:normal}pre[class*=language-]{border-radius:.3em;margin:.5em 0;overflow:auto;padding:1em}:not(pre)>code[class*=language-],pre[class*=language-]{background-color:var(--color-prism-background)}:not(pre)>code[class*=language-]{border-radius:.3em;padding:.1em}code[class*=language-] ::selection,code[class*=language-]::selection,pre[class*=language-] ::selection,pre[class*=language-]::selection{background:#073642}.token.cdata,.token.comment,.token.doctype,.token.prolog{color:#93a1a1}.token.punctuation{color:#586e75}.namespace{opacity:.7}.token.boolean,.token.constant,.token.deleted,.token.number,.token.property,.token.symbol,.token.tag{color:#268bd2}.token.attr-name,.token.builtin,.token.char,.token.inserted,.token.selector,.token.string,.token.url{color:#2aa198}.token.entity{background:#eee8d5;color:#657b83;cursor:help}.token.atrule,.token.attr-value,.token.keyword{color:#859900}.token.class-name,.token.function{color:#b58900}.token.important,.token.regex,.token.variable{color:#cb4b16}.token.bold,.token.important{font-weight:700}.token.italic{font-style:italic}.Feed-module--feed--a6204 .Feed-module--item--c7a63{margin-bottom:32.5px}.Feed-module--feed--a6204 .Feed-module--item--c7a63:last-child{margin-bottom:13px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f{font-size:27px;line-height:39px;margin-bottom:13px;margin-top:0}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f .Feed-module--link--6123b{color:var(--color-typographic-base-font)}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f .Feed-module--link--6123b:focus,.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f .Feed-module--link--6123b:hover{border-bottom:1px solid #242933;color:var(--color-typographic-base-font)}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--description--57348{font-size:16px;line-height:26px;margin-bottom:19.5px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--time--72864{color:var(--color-typographic-base-font);font-size:14px;font-weight:600;text-transform:uppercase}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--divider--81a18{margin:0 13px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--category--59f58 .Feed-module--link--6123b{color:var(--color-secondary);font-size:14px;font-weight:600;text-transform:uppercase}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--category--59f58 .Feed-module--link--6123b:focus,.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--category--59f58 .Feed-module--link--6123b:hover{color:#5c92ff}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--more--51a4e{color:var(--color-primary);font-size:16px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--more--51a4e:focus,.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--more--51a4e:hover{border-bottom:1px solid #5c92ff;color:var(--color-primary)}.Layout-module--layout--2c933{margin-left:auto;margin-right:auto;max-width:1070px}.Layout-module--layout--2c933:before{content:"";display:table}.Layout-module--layout--2c933:after{clear:both;content:"";display:table}.Page-module--page--24e03{margin-bottom:52px}.Page-module--page--24e03 .Page-module--inner--4b31d{padding:26px 19.5px 0}.Page-module--page--24e03 .Page-module--title--90338{font-size:40px;font-weight:600;line-height:52px;margin-bottom:37.7px;margin-top:0}.Page-module--page--24e03 .Page-module--body--561c4{font-size:16px;line-height:26px;margin:0 0 26px}@media screen and (min-width:685px){.Page-module--page--24e03{width:calc(58.275% - 12.5px)}.Page-module--page--24e03:nth-child(1n){clear:none;float:left;margin-right:30px}.Page-module--page--24e03:last-child{margin-right:0}.Page-module--page--24e03:nth-child(12n){float:right;margin-right:0}.Page-module--page--24e03:nth-child(12n+1){clear:both}.Page-module--page--24e03 .Page-module--inner--4b31d{padding:32.5px 19.5px 0}}@media screen and (min-width:960px){.Page-module--page--24e03{width:calc(66.6% - 10px)}.Page-module--page--24e03:nth-child(1n){clear:none;float:left;margin-right:30px}.Page-module--page--24e03:last-child{margin-right:0}.Page-module--page--24e03:nth-child(3n){float:right;margin-right:0}.Page-module--page--24e03:nth-child(3n+1){clear:both}.Page-module--page--24e03 .Page-module--inner--4b31d{padding:39px 26px 0}}.Pagination-module--pagination--d61cb{display:flex;margin-top:52px}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b{text-align:left;width:50%}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d{color:var(--color-secondary);font-size:26px;font-weight:700}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d:focus,.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d:hover{color:var(--color-primary)}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d.Pagination-module--disable--7e105{color:#3f485a;pointer-events:none}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8{text-align:right;width:50%}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff{color:var(--color-secondary);font-size:26px;font-weight:700}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff:focus,.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff:hover{color:var(--color-primary)}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff.Pagination-module--disable--7e105{color:#3f485a;pointer-events:none}.Button-module--button--b1113{border:1px solid var(--color-button-border);border-radius:20px;color:var(--color-button-color);display:inline-block;font-size:16px;font-weight:400;height:40px;line-height:40px;margin-left:auto;margin-right:auto;padding:0 26px;text-align:center;text-decoration:none}.Button-module--button--b1113:focus,.Button-module--button--b1113:hover{color:#5c92ff}.ThemeSwitcher-module--themeSwitcher--8a77f{--color:var(--color-theme-switcher)}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--button--7cb7b{align-items:center;background:transparent;border:0;cursor:pointer;display:flex;justify-content:center;outline:0}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--button--7cb7b svg{stroke:var(--color);pointer-events:none;transition:stroke .4s}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--button--7cb7b:hover{--color:var(--color-theme-switcher-hover)}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--moon--10537{stroke-dasharray:0 1px;opacity:0;transition:stroke-dasharray .2s ease-in,opacity .4s ease-in}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--sun--2163a{stroke-dasharray:1px 1px;opacity:1;transition:stroke-dasharray .2s ease-in,opacity .4s ease-in}.ThemeSwitcher-module--themeSwitcher--8a77f.ThemeSwitcher-module--dark--6db0c .ThemeSwitcher-module--moon--10537{stroke-dasharray:1px 1px;opacity:1}.ThemeSwitcher-module--themeSwitcher--8a77f.ThemeSwitcher-module--dark--6db0c .ThemeSwitcher-module--sun--2163a{stroke-dasharray:0 1px;opacity:0}.Author-module--author--cbd31 .Author-module--photo--9787b{background-clip:padding-box;border-radius:50%;display:inline-block;height:75px;margin-bottom:0;width:75px}.Author-module--author--cbd31 .Author-module--photo--9787b img{border-radius:50%}.Author-module--author--cbd31 .Author-module--title--cf7e5{font-size:18px;font-weight:600;line-height:29.25px;margin:0}.Author-module--author--cbd31 .Author-module--title--cf7e5 .Author-module--link--09c17,.Author-module--author--cbd31 .Author-module--title--cf7e5 .Author-module--link--09c17:focus,.Author-module--author--cbd31 .Author-module--title--cf7e5 .Author-module--link--09c17:hover{color:var(--color-typographic-base-font)}.Author-module--author--cbd31 .Author-module--bio--8168d,.Author-module--author--cbd31 .Author-module--subtitle--86ec5{color:#7f8ba4;line-height:26px;margin-bottom:26px}.Author-module--author--cbd31 .Author-module--titleContainer--4f576{align-items:center;display:flex;justify-content:space-between;margin:13px 0}.Categories-module--categories--f3389{color:#7f8ba4;font-size:14px}.Icon-module--icon--1d7da{fill:currentcolor;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;speak:none;stroke:currentcolor;stroke-width:0;display:inline-block;font-style:normal;font-variant:normal;font-weight:400;height:1em;line-height:1em;text-align:center;text-transform:none;width:1em}.Contacts-module--contacts--09178{margin-bottom:26px}.Contacts-module--contacts--09178 .Contacts-module--list--9670b{display:flex;flex-flow:row wrap;flex-grow:0;flex-shrink:0;list-style:none;margin:13px 0;max-width:165px;padding:0}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0{align-content:center;align-items:center;border:1px solid var(--color-contacts-border);border-radius:50%;display:flex;height:40px;justify-content:center;line-height:40px;margin:6.5px;padding:0;text-align:center;width:40px}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0:nth-child(3n+1){margin-left:0}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0 .Contacts-module--link--de1e0{border:0;color:var(--color-typographic-base-font);display:flex}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0 .Contacts-module--link--de1e0:focus,.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0 .Contacts-module--link--de1e0:hover{color:var(--color-typographic-link-p-font)}.Copyright-module--copyright--2c602{color:#7f8ba4;font-size:14px}.Menu-module--menu--113a9{margin-bottom:26px}.Menu-module--menu--113a9 .Menu-module--list--e1ae3{list-style:none;margin:0;padding:0}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679{margin:13px 0;padding:0}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02{border:0;color:var(--color-typographic-base-font);font-size:16px;font-weight:400}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02:focus,.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02:hover{border-bottom:1px solid #5c92ff;color:#5c92ff}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02.Menu-module--active--6cb74{border-bottom:1px solid var(--color-typographic-base-font);color:var(--color-typographic-base-font)}.Tags-module--tags--28a57{color:#7f8ba4;font-size:14px}.Sidebar-module--sidebar--1bfa1{width:100%}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0{padding:26px 19.5px 0;position:relative}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0:after{background:var(--color-sidebar-border);background:linear-gradient(to bottom,var(--color-sidebar-border) 0,var(--color-sidebar-border) 48%,var(--color-sidebar-border-fade) 100%)}@media screen and (min-width:685px){.Sidebar-module--sidebar--1bfa1{width:calc(41.625% - 17.5px)}.Sidebar-module--sidebar--1bfa1:nth-child(1n){clear:none;float:left;margin-right:30px}.Sidebar-module--sidebar--1bfa1:last-child{margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(12n){float:right;margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(12n+1){clear:both}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0{padding:32.5px 19.5px 0}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0:after{bottom:0;content:"";height:540px;position:absolute;right:-10px;top:30px;width:1px}}@media screen and (min-width:960px){.Sidebar-module--sidebar--1bfa1{width:calc(33.3% - 20px)}.Sidebar-module--sidebar--1bfa1:nth-child(1n){clear:none;float:left;margin-right:30px}.Sidebar-module--sidebar--1bfa1:last-child{margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(3n){float:right;margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(3n+1){clear:both}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0{padding:39px}}.Author-module--author--1c58d{border-top:1px solid var(--color-page-border);line-height:26px;margin-bottom:52px;margin-top:26px;max-width:920px;padding-top:26px}.Author-module--author--1c58d .Author-module--bio--08950 .Author-module--twitter--90647{display:block;text-decoration:underline}.Author-module--author--1c58d .Author-module--bio--08950 .Author-module--twitter--90647:focus,.Author-module--author--1c58d .Author-module--bio--08950 .Author-module--twitter--90647:hover{color:var(--color-typographic-link-s-font)}@media screen and (min-width:685px){.Author-module--author--1c58d{margin-left:auto;margin-right:auto}}.Content-module--content--80d58{margin:0 auto;max-width:1070px;padding:0 13px}.Content-module--content--80d58 .Content-module--title--09504{font-size:32px;font-weight:600;line-height:42.9px;margin:26px auto 0;max-width:920px;text-align:center}.Content-module--content--80d58 .Content-module--body--726c2 figure{margin-bottom:26px}.Content-module--content--80d58 .Content-module--body--726c2 figure blockquote{font-style:italic;margin-top:0;padding:26px 0;text-align:center}.Content-module--content--80d58 .Content-module--body--726c2 figure blockquote p{font-size:26.9072px;line-height:39px;margin-bottom:26px;margin-top:0;max-width:920px}.Content-module--content--80d58 .Content-module--body--726c2 a{text-decoration:underline}.Content-module--content--80d58 .Content-module--body--726c2 *{margin-left:auto;margin-right:auto;max-width:920px}.Content-module--content--80d58 .Content-module--body--726c2 h2>a{visibility:hidden}.Content-module--content--80d58 .Content-module--body--726c2 h2>a>svg{fill:var(--color-typographic-base-font)}.Content-module--content--80d58 .Content-module--body--726c2 img{max-width:100%}@media screen and (min-width:960px){.Content-module--content--80d58{padding:0}.Content-module--content--80d58 .Content-module--title--09504{font-size:48px;line-height:58.5px;margin-bottom:39px;margin-top:58.5px}.Content-module--content--80d58 .Content-module--body--726c2,.Content-module--content--80d58 .Content-module--body--726c2 p{font-size:18px;line-height:29.25px;margin-bottom:29.25px}.Content-module--content--80d58 .Content-module--body--726c2 h2>a{padding-right:13px;visibility:unset}}.Meta-module--meta--dae0a .Meta-module--date--4d30d{font-style:italic}.Tags-module--tags--18589{margin-bottom:13px}.Tags-module--tags--18589 .Tags-module--list--82ae6{list-style:none;padding:0}.Tags-module--tags--18589 .Tags-module--list--82ae6 .Tags-module--item--52015{display:inline-block;margin:6.5px 0}@media screen and (min-width:685px){.Tags-module--tags--18589 .Tags-module--list--82ae6 .Tags-module--item--52015:first-child{margin-left:0;padding-left:0}}.Post-module--post--3a994 .Post-module--content--3c6e5{margin:0 auto}.Post-module--post--3a994 .Post-module--comments--d3b99,.Post-module--post--3a994 .Post-module--footer--f8705{margin:0 auto;max-width:920px;padding:0 13px}.Post-module--post--3a994 .Post-module--buttons--2972d{align-items:center;display:flex;justify-content:center;margin:26px 0 0;text-align:center}.Post-module--post--3a994 .Post-module--buttons--2972d .Post-module--buttonArticles--d793a{margin:0 13px 0 0}@media screen and (min-width:960px){.Post-module--post--3a994 .Post-module--comments--d3b99,.Post-module--post--3a994 .Post-module--footer--f8705{padding:0}.Post-module--post--3a994 .Post-module--buttons--2972d{left:30px;margin:0 13px 0 0;max-width:none;position:fixed;top:30px}}</style><title data-gatsby-head="true">[연재] 파이썬 컨테이너 선택 제 2형 - 파이썬 컨테이너 최적화 - 팔공산 창고</title><link rel="alternate" type="application/rss+xml" title="팔공산 창고" href="/rss.xml"/><style type="text/css">
+    .anchor.before {
+      position: absolute;
+      top: 0;
+      left: 0;
+      transform: translateX(-100%);
+      padding-right: 4px;
+    }
+    .anchor.after {
+      display: inline-block;
+      padding-left: 4px;
+    }
+    h1 .anchor svg,
+    h2 .anchor svg,
+    h3 .anchor svg,
+    h4 .anchor svg,
+    h5 .anchor svg,
+    h6 .anchor svg {
+      visibility: hidden;
+    }
+    h1:hover .anchor svg,
+    h2:hover .anchor svg,
+    h3:hover .anchor svg,
+    h4:hover .anchor svg,
+    h5:hover .anchor svg,
+    h6:hover .anchor svg,
+    h1 .anchor:focus svg,
+    h2 .anchor:focus svg,
+    h3 .anchor:focus svg,
+    h4 .anchor:focus svg,
+    h5 .anchor:focus svg,
+    h6 .anchor:focus svg {
+      visibility: visible;
+    }
+  </style><script>
+    document.addEventListener("DOMContentLoaded", function(event) {
+      var hash = window.decodeURI(location.hash.replace('#', ''))
+      if (hash !== '') {
+        var element = document.getElementById(hash)
+        if (element) {
+          var scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+          var clientTop = document.documentElement.clientTop || document.body.clientTop || 0
+          var offset = element.getBoundingClientRect().top + scrollTop - clientTop
+          // Wait for the browser to finish rendering before scrolling.
+          setTimeout((function() {
+            window.scrollTo(0, offset - 0)
+          }), 0)
+        }
+      }
+    })
+  </script><link rel="preconnect" href="https://www.googletagmanager.com"/><link rel="dns-prefetch" href="https://www.googletagmanager.com"/><script async="" src="https://www.googletagmanager.com/gtag/js?id="></script><script>
+      
+      
+      if(true) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){window.dataLayer && window.dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', '', {"send_page_view":false});
+      }
+      </script><link rel="sitemap" type="application/xml" href="/sitemap/sitemap-index.xml"/><link rel="icon" href="/favicon-32x32.png?v=4c2c993a06ee0fd0ee953020b09128a9" type="image/png"/><link rel="manifest" href="/manifest.webmanifest" crossorigin="anonymous"/><link rel="apple-touch-icon" sizes="48x48" href="/icons/icon-48x48.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="72x72" href="/icons/icon-72x72.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="96x96" href="/icons/icon-96x96.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="144x144" href="/icons/icon-144x144.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192x192.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="256x256" href="/icons/icon-256x256.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="384x384" href="/icons/icon-384x384.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="512x512" href="/icons/icon-512x512.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><style>.gatsby-image-wrapper{position:relative;overflow:hidden}.gatsby-image-wrapper picture.object-fit-polyfill{position:static!important}.gatsby-image-wrapper img{bottom:0;height:100%;left:0;margin:0;max-width:none;padding:0;position:absolute;right:0;top:0;width:100%;object-fit:cover}.gatsby-image-wrapper [data-main-image]{opacity:0;transform:translateZ(0);transition:opacity .25s linear;will-change:opacity}.gatsby-image-wrapper-constrained{display:inline-block;vertical-align:top}</style><noscript><style>.gatsby-image-wrapper noscript [data-main-image]{opacity:1!important}.gatsby-image-wrapper [data-placeholder-image]{opacity:0!important}</style></noscript><script type="module">const e="undefined"!=typeof HTMLImageElement&&"loading"in HTMLImageElement.prototype;e&&document.body.addEventListener("load",(function(e){const t=e.target;if(void 0===t.dataset.mainImage)return;if(void 0===t.dataset.gatsbyImageSsr)return;let a=null,n=t;for(;null===a&&n;)void 0!==n.parentNode.dataset.gatsbyImageWrapper&&(a=n.parentNode),n=n.parentNode;const o=a.querySelector("[data-placeholder-image]"),r=new Image;r.src=t.currentSrc,r.decode().catch((()=>{})).then((()=>{t.style.opacity=1,o&&(o.style.opacity=0,o.style.transition="opacity 500ms linear")}))}),!0);</script></head><body><script>
+          void function() {
+            var cachedMode;
+
+            try {
+              var preferredTheme = JSON.parse(localStorage.getItem('diesel:theme-atom'));
+
+              if (preferredTheme && preferredTheme.mode) {
+                cachedMode = preferredTheme.mode;
+              }
+            } catch (err) { }
+
+            function setTheme(newTheme) {
+              document.documentElement.className = newTheme;
+            }
+
+            var darkQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+            setTheme(cachedMode || (darkQuery.matches ? 'dark' : 'light'));
+          }()
+        </script><div id="___gatsby"><div style="outline:none" tabindex="-1" id="gatsby-focus-wrapper"><div class="Layout-module--layout--2c933"><div class="Post-module--post--3a994"><div class="Post-module--buttons--2972d"><a class="Button-module--button--b1113 Post-module--buttonArticles--d793a" href="/">All Articles</a></div><div class="Post-module--content--3c6e5"><div class="Content-module--content--80d58"><h1 class="Content-module--title--09504">[연재] 파이썬 컨테이너 선택 제 2형 - 파이썬 컨테이너 최적화</h1><div class="Content-module--body--726c2"><p>이번 게시글에서는 컨테이너 크기를 줄이기 위한 방안을 살펴보고, 파이썬 컨테이너 이미지 빌드가 가지는 특징을 살펴보도록 하겠습니다.</p>
+<h2 id="빌드-최적화를-해봅시다" style="position:relative;"><a href="#%EB%B9%8C%EB%93%9C-%EC%B5%9C%EC%A0%81%ED%99%94%EB%A5%BC-%ED%95%B4%EB%B4%85%EC%8B%9C%EB%8B%A4" aria-label="빌드 최적화를 해봅시다 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>빌드 최적화를 해봅시다</h2>
+<p>지난 글에서 빌드된 이미지의 크기를 다시 살펴볼까요?</p>
+<div class="gatsby-highlight" data-language="shell"><pre class="language-shell"><code class="language-shell">$ <span class="token function">docker</span> images python-hello
+REPOSITORY     TAG       IMAGE ID       CREATED         SIZE
+python-hello   latest    746136719e90   <span class="token number">3</span> minutes ago   <span class="token number">1</span>.46GB</code></pre></div>
+<p>1.46GB인 데는 분명 이유가 있을 겁니다. 그러면 <code class="language-text">latest</code> 라는 태그가 무엇을 의미하는지부터 살펴볼까요?</p>
+<h3 id="잠시만-왜-이렇게-크지" style="position:relative;"><a href="#%EC%9E%A0%EC%8B%9C%EB%A7%8C-%EC%99%9C-%EC%9D%B4%EB%A0%87%EA%B2%8C-%ED%81%AC%EC%A7%80" aria-label="잠시만 왜 이렇게 크지 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>잠시만, 왜 이렇게 크지?</h3>
+<p><a href="https://hub.docker.com/_/python" target="_blank" rel="nofollow noopener noreferrer">Docker Hub</a>으로 다시 들어가봐서, 어떤 컨테이너가 있나 살펴봅시다.</p>
+<p>뭔가 되게 많군요. 숫자는 파이썬 버전같은데, <code class="language-text">-</code> 뒤의 값은 뭔지 알아봅시다.</p>
+<p><figure class="gatsby-resp-image-figure" style="">
+    <span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 466px; "
+    >
+      <a
+    class="gatsby-resp-image-link"
+    href="/static/13c8ea80289a195a226aad717c67eb86/fc1a1/01-python-container-simple.png"
+    style="display: block"
+    target="_blank"
+    rel="noopener"
+  >
+    <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 143.33333333333334%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAdCAYAAACqhkzFAAAACXBIWXMAABYlAAAWJQFJUiTwAAAE6ElEQVRIx41WW3ubSAz1626TmPttYIABDNgYMI5vceMm6SZpsl///885uxKO225f9kEeNBfNkXSk8WR/POHb+3d8eXrG0/M3/j49fMWXpxfs7k7YHj7j4esLz//1+o7X9+9o+ltcGy40O/hNJot+zQcOnx/Q9Gusd3fYHU+gi+gwSbno0A5bzNsB1XIFEee4MX02MD0bmlo+y8QRCcK0QFJUELGCF8aQagYniLDZHXB6eIJmufjjWsenqclyYzjQbQ+adRbb/4GwqOaw1Rqf5B7XcgNNHaGpO+jqDldygz/FGkZxgpntYdJYnGBkB+jJBkZ2hJ4d4aQdDGdEOUnyEsmsRVj0iMsBZjiD5ufQg4LFEAU0nyTj+Yt42WXU3fji9qS/3eH59Q3dsMHLtzcEMsWVbrMrU9P9f0J7LZ9dn1wZLq50Bzemy5kzHAHTDaE7AroTXHTDFYyCvk0v5DX9spfiJzhBE5q0ggROXCHIlohmHcK8heaEsMICYdEhqQd46Rw3loDIGshqBTepYQYp4nrN54ywxtQWmNCttkjh5z1EMSCsNpD1FqrZQ+QdzKiEnw+IqlvIao14sUdQrGAEGWS9gavGyz88mJCrgVqg3PyFaH6ElzZImgOy7h5Ze4Qbz+EkC0TVFklzx0Zpj5d1rNuyhKcaiHw5uqxZPkw/QThbwYpqGG7EcmMF7ILB8QuhuyGm1hi3UY84buN6BM2NzzGkQHsRzLCArxZsWBQdNFfCikoEeQdZDewFzX3oXlLDEhkjDrIGuqj4ggml2o1ogWK0QbLYIWvvUHRHyFkPW1YQ5ZbX43pcJ87qXsqxDrL2XIbn0puaHryk4gATCro1KteIygFxtWaDTOCfyuuDxBfd+lHX7DLRhm6KqwF5u2MkMVEjrtgltdggXWyRLjbw0xqypH17qGaHMG9AoC61TFm2hMJ8/wrVP8DLb2H4Kdx0eY7XGnZUwhQFPNWe9RnHlzzxVfMLWs4yZclPSthhDjPIYHkhDC/iDZRFy49hBTEnTzsn8UOn7P/SDyk2TphBdSdkqwfmn5jfM7+IvG7aIJwR6Xv+NgMFXy0RlStGbIqcXb70Q/ohbrlyBiea8Wj4im/TnfA8CthBckkGob/w0Rm9+UDKLgeqRjE8olw/Qs73aA5vWBzeUG6fka0ekQ9PqLYvyPt7qOURYb1Dc3xHc/wb5eYZxfDE8dddOSbFiefI+gfm2LVbQHMTTozuJSxcBY7k+NL8teH9tDau6376gzb0DARpDaHmSMoWSbmESEsWLy5Y9+MCpi8hVMW6LBaXPUEyw80504yQSi5a3MFOW8TtCdnwxGPUfIaoD5DLE8RsgJv1yG+fkfaPkMt7RM0oSXeCEc4/Si9gWjhRDk8WkMUSUd5wkCn79J2UHdNq6mW4MVx+pKhLE5ixMTsXLrJB04/hpi2cpGEkYrZmUpNuyTn3Q+qBnlpyeRITqNsQwe2o4NKlbDNtiIeEMJoN3H3HptkhUHNuvOxBoNgDQkl9jzqN7sVwZMlGqRx/MUgI7aTh7utnLbd36iBEYqpnOkAGr+0YV5qNa93mx4lc/81l/RxDgu3FFaKihSx7ePEMblwymvGdWcKRNZxQ8X7NS3/7G3JGOMbQjhewZA0/6+DnHcJyzQaJaxRLX7UQec/z9CjxW/3fNvYvwn8A+TEY7RVYJ8oAAAAASUVORK5CYII='); background-size: cover; display: block;"
+  ></span>
+  <picture>
+          <source
+              srcset="/static/13c8ea80289a195a226aad717c67eb86/8ac56/01-python-container-simple.webp 240w,
+/static/13c8ea80289a195a226aad717c67eb86/fbab0/01-python-container-simple.webp 466w"
+              sizes="(max-width: 466px) 100vw, 466px"
+              type="image/webp"
+            />
+          <source
+            srcset="/static/13c8ea80289a195a226aad717c67eb86/8ff5a/01-python-container-simple.png 240w,
+/static/13c8ea80289a195a226aad717c67eb86/fc1a1/01-python-container-simple.png 466w"
+            sizes="(max-width: 466px) 100vw, 466px"
+            type="image/png"
+          />
+          <img
+            class="gatsby-resp-image-image"
+            src="/static/13c8ea80289a195a226aad717c67eb86/fc1a1/01-python-container-simple.png"
+            alt="Figure 1. 어떤 파이썬 컨테이너가 있나 살펴봅시다 (simple tags)"
+            title="Figure 1. 어떤 파이썬 컨테이너가 있나 살펴봅시다 (simple tags)"
+            loading="lazy"
+            decoding="async"
+            style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+          />
+        </picture>
+  </a>
+    </span>
+    <figcaption class="gatsby-resp-image-figcaption"><p>Figure 1. 어떤 파이썬 컨테이너가 있나 살펴봅시다 (simple tags)</p></figcaption>
+  </figure></p>
+<p><figure class="gatsby-resp-image-figure" style="">
+    <span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 590px; "
+    >
+      <a
+    class="gatsby-resp-image-link"
+    href="/static/c7fe6111e7706fe4a29ae1f54cdd0e5c/fcda8/02-python-container-shared.png"
+    style="display: block"
+    target="_blank"
+    rel="noopener"
+  >
+    <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 107.5%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAWCAYAAADAQbwGAAAACXBIWXMAABYlAAAWJQFJUiTwAAAC1klEQVQ4y41V7XKjOBD0CySAQehbCIHAENvx5urux27tVu29/zv1lQZw7MS5ux9TIwk0zHRPD7vvP3/jx6/f+Ov7T/z49TcqaZFVEjlTn+yr81vbNd0BbZxgfMQwn1HUmi5u9lyK6/r/BN097Tld2nONp6LGvta0LphCKQy48SjqD5km/0XgXcqoFBa19qhUi9oEcNuTZ6YDt92ambrLPGPqLvNrwHSQMihlA94coLsTbHyFi2dU9oC8dijY8g5lXmvkTH+d4TWgcKhMBHcjpJ+gwgtkO0H6GcLP4M0EN15onYkOeSUeErYG1KiUh/Av0P0r3OEP+OlPmOEb7WU4wY1vEN0rMh4oWLbBcBMs+d2Cg3gHuzZkBbdU2nJJX/dLRvLdPrBPpEgX4LoRrhvQDjPCMEO5gKYf4cIAYTyM7+DjRO+ppoN0HYQN1Al7bu5L5qaF9hGq6Sm49j1q3dBFG9YANsD4Hkw1yGv7mZDbgGmTSqrMCO5fCDMTLxDtEXWTCFksnaV9JgLB9LF1rhgSKdQ2M1Rqm+GC5vAGE1+h+zNke4Qbv0G0Jzxzj7zid1ndYbgdJByST8EX+al3WxndCPlPpVTSEWapcZNnukFBbOsbZh9L71+U4lC7EcJPVKrtTyjtAVltkZX1glnJlxa7kd5jpaSSV6UwEymobGeSIm9G8uljNp7A/XSnlA2Ku7ZJ+DHlwd0A6Q/w4wVhfoMbzjD9ETrMcMMJOl5QqH6F4vGc3G20J8z2qkMuAvaqR6kj+W1dmQG5aPFUKjztaxp526zMb9pnJcWCSYtKGGhq4pb2XDuUNBsFmDQQ1i/PXUsqEbb9NCt3W8sw5cBtgPIDmniEH46w3QTdjpBNJAuHM0w3ozSRJJfm6MOS85UU5iZUbgL3R2pi1ryAuZlMhBN4e0ahIjJmkD34NdwpZZuHzA7Q3REmnteZOBPrac3siGdmH8zC95L/ATI2OhhUfcsaAAAAAElFTkSuQmCC'); background-size: cover; display: block;"
+  ></span>
+  <picture>
+          <source
+              srcset="/static/c7fe6111e7706fe4a29ae1f54cdd0e5c/8ac56/02-python-container-shared.webp 240w,
+/static/c7fe6111e7706fe4a29ae1f54cdd0e5c/d3be9/02-python-container-shared.webp 480w,
+/static/c7fe6111e7706fe4a29ae1f54cdd0e5c/5ca24/02-python-container-shared.webp 590w"
+              sizes="(max-width: 590px) 100vw, 590px"
+              type="image/webp"
+            />
+          <source
+            srcset="/static/c7fe6111e7706fe4a29ae1f54cdd0e5c/8ff5a/02-python-container-shared.png 240w,
+/static/c7fe6111e7706fe4a29ae1f54cdd0e5c/e85cb/02-python-container-shared.png 480w,
+/static/c7fe6111e7706fe4a29ae1f54cdd0e5c/fcda8/02-python-container-shared.png 590w"
+            sizes="(max-width: 590px) 100vw, 590px"
+            type="image/png"
+          />
+          <img
+            class="gatsby-resp-image-image"
+            src="/static/c7fe6111e7706fe4a29ae1f54cdd0e5c/fcda8/02-python-container-shared.png"
+            alt="Figure 2. 어떤 파이썬 컨테이너가 있나 살펴봅시다 (shared tags)"
+            title="Figure 2. 어떤 파이썬 컨테이너가 있나 살펴봅시다 (shared tags)"
+            loading="lazy"
+            decoding="async"
+            style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+          />
+        </picture>
+  </a>
+    </span>
+    <figcaption class="gatsby-resp-image-figcaption"><p>Figure 2. 어떤 파이썬 컨테이너가 있나 살펴봅시다 (shared tags)</p></figcaption>
+  </figure></p>
+<p>이 값들은 각각 Simple tags, Shared tags 인데요. 이 값은 아래와 같습니다.</p>
+<ul>
+<li>
+<p><code class="language-text">simple tags</code>: 태그로 기재된 리눅스 배포판 혹은 윈도우즈에서만 동작을 보장하는 컨테이너 이미지 입니다. 이 값을 사용하면 해당 태그에 명시된 플랫폼(리눅스나 윈도우즈 등)의 하나의 이미지 정보(이미지의 구성 정보, 레이어 정보, 실행 환경 등을 담은 매니페스트)에 연결됩니다. 이 경우, 명확히 지정한 플랫폼의 이미지만 사용할 수 있습니다.</p>
+</li>
+<li>
+<p><code class="language-text">shared tags</code>: 여러 운영체제(리눅스 및 다양한 윈도우즈 버전)와 아키텍처에서 동작하는 컨테이너 이미지를 나타냅니다. 이 값을 Docker Engine이 구동되는 환경(운영체제, 아키텍처 등)에 맞는 적절한 이미지를 자동으로 선택해서 pull하게 됩니다. 예를 들어, mongo:4.0 같은 shared tag를 사용하면 Docker Engine이 현재 실행 중인 호스트의 운영체제와 아키텍처에 맞는 이미지를 알아서 가져옵니다.</p>
+</li>
+</ul>
+<details>
+<summary>🤔 도커의 매니페스트란?</summary>
+<p>도커 매니페스트는 컨테이너 이미지에 대한 상세 정보를 담고 있는 메타데이터입니다. 여기에는:</p>
+<ul>
+<li>이미지가 실행될 수 있는 운영체제와 아키텍처</li>
+<li>이미지를 구성하는 레이어들의 정보</li>
+<li>이미지의 설정값 (환경 변수, 실행 명령어 등)</li>
+</ul>
+<p>등이 포함됩니다. 도커는 이 매니페스트를 읽어 해당 이미지가 현재 환경에서 실행 가능한지, 어떤 레이어들이 필요한지 등을 파악합니다.</p>
+</details>
+<h3 id="그럼-어떻게-하죠" style="position:relative;"><a href="#%EA%B7%B8%EB%9F%BC-%EC%96%B4%EB%96%BB%EA%B2%8C-%ED%95%98%EC%A3%A0" aria-label="그럼 어떻게 하죠 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>그럼 어떻게 하죠?</h3>
+<p>도커 이미지 크기를 줄이기 위해서는 아래와 같은 과정을 처리할 수 있습니다.</p>
+<ul>
+<li>가능하면 가벼운 베이스 이미지를 선택할 것</li>
+<li>멀티-스테이지를 사용해서, 빌드-런타임 환경을 분리할 것</li>
+<li>다양한 최적화 방안을 고려해보기
+<ul>
+<li><code class="language-text">.dockerignore</code> 파일 작성</li>
+<li><code class="language-text">RUN</code> 레이어 최적화</li>
+<li>나에게 맞는 패키지<sup id="fnref-1"><a href="#fn-1" class="footnote-ref">1</a></sup>/파일을 취사선택하기</li>
+</ul>
+</li>
+</ul>
+<h3 id="step-1-simple-tag를-골라봅시다" style="position:relative;"><a href="#step-1-simple-tag%EB%A5%BC-%EA%B3%A8%EB%9D%BC%EB%B4%85%EC%8B%9C%EB%8B%A4" aria-label="step 1 simple tag를 골라봅시다 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>step 1. simple tag를 골라봅시다</h3>
+<p>앞서 말씀드린 <code class="language-text">latest</code> 는 shared tags 입니다. 구동하려는 호스트에 맞게 구동될 수는 있지만, 최적화는 다른 문제죠. 이럴 땐 최소한의 내용만을 컨테이너를 통한 배포를 수행할 때는 최소한의 내용만 맞추고 배포하는 것이 보다 나은 접근입니다.</p>
+<p>대표적인 베이스 이미지는 <code class="language-text">Debian linux</code> 기반의  <code class="language-text">slim</code> 과 <code class="language-text">Alpine linux</code> 기반의 <code class="language-text">alpine</code>이 있습니다.</p>
+<ul>
+<li>slim 이미지는,
+<ul>
+<li>Debian linux의 최소화 버전이며</li>
+<li>필수적인 시스템 라이브러리를 갖추고 있습니다</li>
+<li>C 라이브러리 구현체로 <code class="language-text">glibc</code> 를 사용합니다. 이는 거의 대부분의 라이브러리와 호환됩니다.</li>
+</ul>
+</li>
+<li>alpine 이미지는,
+<ul>
+<li>Alpine linux에 대한 최소한의 버전이며</li>
+<li>필수적인 시스템 라이브러리로 <code class="language-text">busybox</code> 를 이용합니다</li>
+<li>C 라이브러리 구현체로 <code class="language-text">musl</code> libc를 사용합니다. 경량버전의 라이브러리를 추구하는 것이 목표이므로, 일부 라이브러리와 호환되지 않을 수도 있습니다.</li>
+</ul>
+</li>
+</ul>
+<p>그러면 이 둘을 사용해서 각각 빌드해볼까요?</p>
+<details>
+<summary>👨‍💻 `slim` 빌드를 해봅시다. </summary>
+<ol>
+<li><code class="language-text">Dockerfile</code> 을 제작합니다.</li>
+</ol>
+<div class="gatsby-highlight" data-language="dockerfile"><pre class="language-dockerfile"><code class="language-dockerfile"><span class="token instruction"><span class="token keyword">FROM</span> python:3.12-slim       # slim은 Debian slim 이미지를 의미합니다.</span>
+<span class="token instruction"><span class="token keyword">WORKDIR</span> /app</span>
+<span class="token instruction"><span class="token keyword">COPY</span> hello.py .</span>
+<span class="token instruction"><span class="token keyword">CMD</span> [<span class="token string">"python"</span>, <span class="token string">"hello.py"</span>]</span></code></pre></div>
+<ol start="2">
+<li>빌드를 동일하게 해보고,</li>
+</ol>
+<div class="gatsby-highlight" data-language="shell"><pre class="language-shell"><code class="language-shell">ocker build <span class="token parameter variable">-t</span> python-hello:slim <span class="token builtin class-name">.</span></code></pre></div>
+<ol start="3">
+<li>사이즈를 확인해볼까요?</li>
+</ol>
+<div class="gatsby-highlight" data-language="shell"><pre class="language-shell"><code class="language-shell"><span class="token function">docker</span> images
+REPOSITORY          TAG            IMAGE ID       CREATED         SIZE
+python-hello        slim           2f648897463c   <span class="token number">5</span> seconds ago   212MB
+python-hello        latest         746136719e90   <span class="token number">12</span> days ago     <span class="token number">1</span>.46GB</code></pre></div>
+</details>
+<details>
+<summary>👨‍💻 `alpine` 빌드를 해봅시다. </summary>
+<ol>
+<li><code class="language-text">Dockerfile</code> 을 제작합니다.</li>
+</ol>
+<div class="gatsby-highlight" data-language="dockerfile"><pre class="language-dockerfile"><code class="language-dockerfile"><span class="token instruction"><span class="token keyword">FROM</span> python:3.12-alpine       # alpine은 Alpine 이미지를 의미합니다.</span>
+<span class="token instruction"><span class="token keyword">WORKDIR</span> /app</span>
+<span class="token instruction"><span class="token keyword">COPY</span> hello.py .</span>
+<span class="token instruction"><span class="token keyword">CMD</span> [<span class="token string">"python"</span>, <span class="token string">"hello.py"</span>]</span></code></pre></div>
+<ol start="2">
+<li>빌드를 동일하게 해보고,</li>
+</ol>
+<div class="gatsby-highlight" data-language="shell"><pre class="language-shell"><code class="language-shell">ocker build <span class="token parameter variable">-t</span> python-hello:alpine <span class="token builtin class-name">.</span></code></pre></div>
+<ol start="3">
+<li>사이즈를 확인해볼까요?</li>
+</ol>
+<div class="gatsby-highlight" data-language="shell"><pre class="language-shell"><code class="language-shell"><span class="token function">docker</span> images
+REPOSITORY          TAG            IMAGE ID       CREATED         SIZE
+python-hello        slim           2f648897463c   <span class="token number">5</span> seconds ago   212MB
+python-hello        alpine         37a9f605a036   <span class="token number">3</span> minutes ago   <span class="token number">78</span>.4MB
+python-hello        latest         746136719e90   <span class="token number">12</span> days ago     <span class="token number">1</span>.46GB</code></pre></div>
+</details>
+<h3 id="step-2-멀티-스테이지-사용해보기" style="position:relative;"><a href="#step-2-%EB%A9%80%ED%8B%B0-%EC%8A%A4%ED%85%8C%EC%9D%B4%EC%A7%80-%EC%82%AC%EC%9A%A9%ED%95%B4%EB%B3%B4%EA%B8%B0" aria-label="step 2 멀티 스테이지 사용해보기 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>step 2. 멀티-스테이지 사용해보기</h3>
+<p>멀티-스테이지는 하나의 <code class="language-text">Dockerfile</code>에서 다양한 스테이지로 나누어서 레이어를 쌓는 개념을 의미합니다. 그렇다면 어떤 스테이지가 있는지 살펴볼까요?</p>
+<ul>
+<li>빌드 스테이지
+<ul>
+<li>빌드 도구에 필요한 내용만을 포함합니다</li>
+<li>빌드 결과를 저장합니다</li>
+</ul>
+</li>
+<li>런타임 스테이지
+<ul>
+<li>직전 phase에서 저장한 파일들을 복사합니다.</li>
+<li>빌드 후의 내용을 구동할 최소한의 파일만을 설치합니다</li>
+<li>본 내용에서는 런타임 스테이지를 run stage, service stage 둘로 나눕니다.
+<ul>
+<li>이는 각각 실행환경 구성, 앱 실행환경 구성을 의미합니다.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>그렇다면 멀티-스테이지로 빌드를 수행해볼까요?</p>
+<p>이번 예시부터는 이 <a href="https://github.com/max-pfeiffer/python-poetry" target="_blank" rel="nofollow noopener noreferrer">GitHub repo</a>를 사용해보겠습니다.</p>
+<h3 id="멀티-스테이지가-없다면" style="position:relative;"><a href="#%EB%A9%80%ED%8B%B0-%EC%8A%A4%ED%85%8C%EC%9D%B4%EC%A7%80%EA%B0%80-%EC%97%86%EB%8B%A4%EB%A9%B4" aria-label="멀티 스테이지가 없다면 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>멀티-스테이지가 없다면?</h3>
+<p>그렇다면, 멀티-스테이지 없이 헬로글또를 찍어볼까요?</p>
+<div class="gatsby-highlight" data-language="dockerfile"><pre class="language-dockerfile"><code class="language-dockerfile"><span class="token instruction"><span class="token keyword">FROM</span> python:3.12-slim</span>
+
+<span class="token instruction"><span class="token keyword">ARG</span> POETRY_VERSION=1.6.1</span>
+<span class="token instruction"><span class="token keyword">ARG</span> APPLICATION_SERVER_PORT=8000</span>
+
+<span class="token instruction"><span class="token keyword">ENV</span> PIP_NO_CACHE_DIR=off <span class="token operator">\</span>
+    PIP_DISABLE_PIP_VERSION_CHECK=on <span class="token operator">\</span>
+    PIP_DEFAULT_TIMEOUT=100 <span class="token operator">\</span>
+    POETRY_VERSION=<span class="token variable">${POETRY_VERSION}</span> <span class="token operator">\</span>
+    POETRY_HOME=<span class="token string">"/opt/poetry"</span> <span class="token operator">\</span>
+    PYTHONUNBUFFERED=1 <span class="token operator">\</span>
+    PYTHONDONTWRITEBYTECODE=1 <span class="token operator">\</span>
+    PYTHONPATH=/application_root <span class="token operator">\</span>
+    POETRY_VIRTUALENVS_IN_PROJECT=true <span class="token operator">\</span>
+    POETRY_CACHE_DIR=<span class="token string">"/application_root/.cache"</span> <span class="token operator">\</span>
+    VIRTUAL_ENVIRONMENT_PATH=<span class="token string">"/application_root/.venv"</span> <span class="token operator">\</span>
+    APPLICATION_SERVER_PORT=<span class="token variable">$APPLICATION_SERVER_PORT</span> <span class="token operator">\</span>
+    PATH=<span class="token string">"/opt/poetry/bin:$PATH"</span></span>
+
+<span class="token comment"># 빌드 도구 설치</span>
+<span class="token instruction"><span class="token keyword">RUN</span> apt-get update <span class="token operator">\</span>
+    &amp;&amp; apt-get install --no-install-recommends -y <span class="token operator">\</span>
+        build-essential</span>
+
+<span class="token comment"># Poetry 설치</span>
+<span class="token instruction"><span class="token keyword">RUN</span> python -m venv <span class="token variable">${POETRY_HOME}</span></span>
+<span class="token instruction"><span class="token keyword">RUN</span> <span class="token variable">${POETRY_HOME}</span>/bin/pip install -U pip setuptools</span>
+<span class="token instruction"><span class="token keyword">RUN</span> <span class="token variable">${POETRY_HOME}</span>/bin/pip install <span class="token string">"poetry==${POETRY_VERSION}"</span></span>
+
+<span class="token comment"># 사용자 생성</span>
+<span class="token instruction"><span class="token keyword">RUN</span> groupadd -g 1001 python_application &amp;&amp; <span class="token operator">\</span>
+    useradd -r -u 1001 -g python_application python_application</span>
+
+<span class="token instruction"><span class="token keyword">WORKDIR</span> <span class="token variable">${PYTHONPATH}</span></span>
+<span class="token instruction"><span class="token keyword">COPY</span> . <span class="token variable">${PYTHONPATH}</span></span>
+<span class="token instruction"><span class="token keyword">RUN</span> chown python_application:python_application <span class="token variable">${PYTHONPATH}</span></span>
+
+<span class="token instruction"><span class="token keyword">RUN</span> mkdir <span class="token variable">${POETRY_CACHE_DIR}</span> &amp;&amp; chown python_application:python_application <span class="token variable">${POETRY_CACHE_DIR}</span></span>
+
+<span class="token instruction"><span class="token keyword">EXPOSE</span> <span class="token variable">${APPLICATION_SERVER_PORT}</span></span>
+
+<span class="token instruction"><span class="token keyword">COPY</span> ./docker/dev/entrypoint /entrypoint</span>
+<span class="token instruction"><span class="token keyword">RUN</span> sed -i <span class="token string">'s/\r$//g'</span> /entrypoint</span>
+<span class="token instruction"><span class="token keyword">RUN</span> chmod +x /entrypoint</span>
+
+<span class="token instruction"><span class="token keyword">USER</span> 1001</span>
+
+<span class="token instruction"><span class="token keyword">RUN</span> poetry install --without dev</span>
+
+<span class="token instruction"><span class="token keyword">ENTRYPOINT</span> [<span class="token string">"/entrypoint"</span>]</span></code></pre></div>
+<p>이걸로 만든 이미지의 크기를 살펴봅시다.</p>
+<div class="gatsby-highlight" data-language="shell"><pre class="language-shell"><code class="language-shell"><span class="token function">docker</span> images
+REPOSITORY          TAG                  IMAGE ID       CREATED          SIZE
+python-hello        slim-without-multi   f4be58bb8080   <span class="token number">38</span> seconds ago   700MB</code></pre></div>
+<h3 id="멀티-스테이지가-있다면" style="position:relative;"><a href="#%EB%A9%80%ED%8B%B0-%EC%8A%A4%ED%85%8C%EC%9D%B4%EC%A7%80%EA%B0%80-%EC%9E%88%EB%8B%A4%EB%A9%B4" aria-label="멀티 스테이지가 있다면 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>멀티-스테이지가 있다면?</h3>
+<p>반대로 멀티-스테이지를 추가해서 헬로글또를 찍어봅시다.</p>
+<ol>
+<li>빌드 스테이지</li>
+</ol>
+<p>빌드 스테이지는 실제 필요한 내용들만을 설치합니다.</p>
+<div class="gatsby-highlight" data-language="dockerfile"><pre class="language-dockerfile"><code class="language-dockerfile"><span class="token comment">### ### ### ### ### ### ###</span>
+<span class="token comment"># STAGE 0. Prerequisites  #</span>
+<span class="token comment">### ### ### ### ### ### ###</span>
+<span class="token instruction"><span class="token keyword">ARG</span> OFFICIAL_PYTHON_IMAGE=3.12</span>
+
+<span class="token instruction"><span class="token keyword">FROM</span> python:<span class="token variable">${OFFICIAL_PYTHON_IMAGE}</span>-slim <span class="token keyword">AS</span> build-stage        # debian slim 이미지를 빌드 스테이지로 설정합시다.</span>
+<span class="token instruction"><span class="token keyword">ARG</span> POETRY_VERSION=1.6.1                                        # 패키지 매니저로 poetry v1.6.1를 씁니다.</span>
+
+<span class="token instruction"><span class="token keyword">ENV</span> PIP_NO_CACHE_DIR=off \                                      # 최적화 옵션입니다. 자세한 것은 위의 GitHub 링크를 확인해주세요!</span>
+    PIP_DISABLE_PIP_VERSION_CHECK=on \
+    PIP_DEFAULT_TIMEOUT=100 \
+    POETRY_VERSION=${POETRY_VERSION} \
+    POETRY_HOME="/opt/poetry"
+
+<span class="token instruction"><span class="token keyword">RUN</span> apt-get update <span class="token operator">\</span>
+    &amp;&amp; apt-get install --no-install-recommends -y build-essential \   # 빌드에 필요한 핵심 내용들만 설치합니다.</span>
+    &amp;&amp; rm -rf /var/lib/apt/lists/*
+
+<span class="token comment"># https://python-poetry.org/docs/#installing-manually</span>
+<span class="token instruction"><span class="token keyword">RUN</span> python -m venv <span class="token variable">${POETRY_HOME}</span>                               # 가상환경을 구성하고, poetry를 설치합니다.</span>
+<span class="token instruction"><span class="token keyword">RUN</span> <span class="token variable">${POETRY_HOME}</span>/bin/pip install -U pip setuptools</span>
+<span class="token instruction"><span class="token keyword">RUN</span> <span class="token variable">${POETRY_HOME}</span>/bin/pip install <span class="token string">"poetry==${POETRY_VERSION}"</span></span></code></pre></div>
+<ol start="2">
+<li>Run 스테이지</li>
+</ol>
+<ul>
+<li>실행환경을 구성하는 중간단계 입니다.</li>
+<li>필요한 부분만을 복사하고, 빌드도구를 제외합니다.</li>
+</ul>
+<div class="gatsby-highlight" data-language="dockerfile"><pre class="language-dockerfile"><code class="language-dockerfile"><span class="token comment">### ### ### ### ###</span>
+<span class="token comment"># STAGE 1. 'run'  #</span>
+<span class="token comment">### ### ### ### ###</span>
+<span class="token instruction"><span class="token keyword">FROM</span> python:<span class="token variable">${OFFICIAL_PYTHON_IMAGE}</span>-slim <span class="token keyword">AS</span> run-stage</span>
+
+<span class="token instruction"><span class="token keyword">ENV</span> PATH=<span class="token string">"/opt/poetry/bin:$PATH"</span>                    # 환경변수를 추가하여, poetry를 쓸 수 있게 구성합니다.</span>
+
+<span class="token instruction"><span class="token keyword">COPY</span> <span class="token options"><span class="token property">--from</span><span class="token punctuation">=</span><span class="token string">build-stage</span></span> /opt/poetry /opt/poetry/    # build-stage에서 필요한 내용만 가져옵니다.</span></code></pre></div>
+<ol start="3">
+<li>Service 스테이지</li>
+</ol>
+<ul>
+<li>실제 애플리케이션이 구동될 환경을 구성합니다.</li>
+<li>보안설정, 런타임에 필요한 의존성을 구성하고 서비스를 구동합니다.</li>
+<li>구동 전 <code class="language-text">entrypoint</code> 파일을 별도로 두고 이 파일을 entrypoint 로 구성합니다.</li>
+</ul>
+<div class="gatsby-highlight" data-language="dockerfile"><pre class="language-dockerfile"><code class="language-dockerfile"><span class="token comment">### ### ### ### ### ###</span>
+<span class="token comment"># STAGE 2. 'service'  #</span>
+<span class="token comment">### ### ### ### ### ###</span>
+<span class="token instruction"><span class="token keyword">FROM</span> run-stage <span class="token keyword">AS</span> service-stage</span>
+
+<span class="token instruction"><span class="token keyword">ARG</span> APPLICATION_SERVER_PORT=8000</span>
+
+    <span class="token comment"># https://docs.python.org/3/using/cmdline.html#envvar-PYTHONUNBUFFERED</span>
+<span class="token instruction"><span class="token keyword">ENV</span> PYTHONUNBUFFERED=1 <span class="token operator">\</span>
+    <span class="token comment"># https://docs.python.org/3/using/cmdline.html#envvar-PYTHONDONTWRITEBYTECODE</span>
+    PYTHONDONTWRITEBYTECODE=1 <span class="token operator">\</span>
+    PYTHONPATH=/application_root <span class="token operator">\</span>
+    <span class="token comment"># https://python-poetry.org/docs/configuration/#virtualenvsin-project</span>
+    POETRY_VIRTUALENVS_IN_PROJECT=true <span class="token operator">\</span>
+    POETRY_CACHE_DIR=<span class="token string">"/application_root/.cache"</span> <span class="token operator">\</span>
+    VIRTUAL_ENVIRONMENT_PATH=<span class="token string">"/application_root/.venv"</span> <span class="token operator">\</span>
+    APPLICATION_SERVER_PORT=<span class="token variable">$APPLICATION_SERVER_PORT</span></span>
+
+<span class="token comment"># 가상환경이 먼저 실행될 수 있도록 PATH의 앞에 추가</span>
+<span class="token comment"># https://docs.python.org/3/library/venv.html#how-venvs-work</span>
+<span class="token instruction"><span class="token keyword">ENV</span> PATH=<span class="token string">"$VIRTUAL_ENVIRONMENT_PATH/bin:$PATH"</span></span>
+
+<span class="token comment"># 권한분리를 위해 처리</span>
+<span class="token instruction"><span class="token keyword">RUN</span> groupadd -g 1001 python_application &amp;&amp; <span class="token operator">\</span>
+    useradd -r -u 1001 -g python_application python_application</span>
+
+<span class="token comment"># WORKDIR를 애플리케이션 루트 디렉터리로 지정</span>
+<span class="token comment"># https://www.uvicorn.org/settings/#development</span>
+<span class="token comment"># https://docs.docker.com/engine/reference/builder/#workdir</span>
+<span class="token instruction"><span class="token keyword">WORKDIR</span> <span class="token variable">${PYTHONPATH}</span></span>
+<span class="token instruction"><span class="token keyword">COPY</span> . <span class="token variable">${PYTHONPATH}</span></span>
+<span class="token instruction"><span class="token keyword">RUN</span> chown python_application:python_application <span class="token variable">${PYTHONPATH}</span></span>
+
+<span class="token comment"># poetry 캐시 디렉터리를 만들고, 권한을 부여함. 링크 참조</span>
+<span class="token comment"># https://python-poetry.org/docs/configuration/#cache-directory</span>
+<span class="token instruction"><span class="token keyword">RUN</span> mkdir <span class="token variable">${POETRY_CACHE_DIR}</span> &amp;&amp; chown python_application:python_application <span class="token variable">${POETRY_CACHE_DIR}</span></span>
+
+<span class="token comment"># API 엔드포인트에 대해 문서화를 수행</span>
+<span class="token comment"># https://docs.docker.com/engine/reference/builder/#expose</span>
+<span class="token instruction"><span class="token keyword">EXPOSE</span> <span class="token variable">${APPLICATION_SERVER_PORT}</span></span>
+
+<span class="token comment"># ENTRYPOINT로 사용할 파일에 대해 복사 후 내용 구성</span>
+<span class="token instruction"><span class="token keyword">COPY</span> ./docker/dev/entrypoint /entrypoint</span>
+<span class="token instruction"><span class="token keyword">RUN</span> sed -i <span class="token string">'s/\r$//g'</span> /entrypoint</span>
+<span class="token instruction"><span class="token keyword">RUN</span> chmod +x /entrypoint</span>
+
+<span class="token comment"># 컨테이너 구동 시에 부여하는 권한을 명시함</span>
+<span class="token instruction"><span class="token keyword">USER</span> 1001</span>
+
+<span class="token comment"># poetry를 이용하여 의존성 설치</span>
+<span class="token instruction"><span class="token keyword">RUN</span> poetry install --without dev</span>
+
+<span class="token comment"># Entrypoint 로 추가한 파일을 사용.</span>
+<span class="token comment"># https://www.docker.com/blog/docker-best-practices-choosing-between-run-cmd-and-entrypoint/</span>
+<span class="token instruction"><span class="token keyword">ENTRYPOINT</span> [<span class="token string">"/entrypoint"</span>]</span></code></pre></div>
+<p>이렇게 되면 용량은 얼마나 줄어들까요?</p>
+<div class="gatsby-highlight" data-language="shell"><pre class="language-shell"><code class="language-shell"><span class="token function">docker</span> images
+REPOSITORY          TAG            IMAGE ID       CREATED          SIZE
+python-hello        slim-multi     4f8e4848dc55   <span class="token number">27</span> minutes ago   324MB</code></pre></div>
+<p>절반이나 줄어들었군요!</p>
+<h3 id="step-2-빌드-타임을-줄여봅시다" style="position:relative;"><a href="#step-2-%EB%B9%8C%EB%93%9C-%ED%83%80%EC%9E%84%EC%9D%84-%EC%A4%84%EC%97%AC%EB%B4%85%EC%8B%9C%EB%8B%A4" aria-label="step 2 빌드 타임을 줄여봅시다 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>step 2. 빌드 타임을 줄여봅시다</h3>
+<p>멀티-스테이지는 빌드타임이 얼마나 걸리는지 살펴볼까요? 이번에는 외부 패키지를 추가로 설치해서 테스트 해봅시다.
+설치 대상은 <code class="language-text">pandas</code> 와 <code class="language-text">matplotlib</code> 입니다.</p>
+<div class="gatsby-highlight" data-language="shell"><pre class="language-shell"><code class="language-shell"><span class="token function">docker</span> build <span class="token parameter variable">-t</span> python-hello:slim-multi-2 --no-cache <span class="token builtin class-name">.</span>
+<span class="token punctuation">[</span>+<span class="token punctuation">]</span> Building <span class="token number">45</span>.6s <span class="token punctuation">(</span><span class="token number">20</span>/20<span class="token punctuation">)</span> FINISHED                                                                                                    docker:desktop-linux
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">[</span>internal<span class="token punctuation">]</span> load build definition from Dockerfile                                                                                                   <span class="token number">0</span>.0s
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token operator">=</span><span class="token operator">></span> transferring dockerfile: <span class="token number">3</span>.53kB                                                                                                                 <span class="token number">0</span>.0s
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">[</span>internal<span class="token punctuation">]</span> load metadata <span class="token keyword">for</span> docker.io/library/python:3.12-slim                                                                                    <span class="token number">2</span>.6s
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">[</span>internal<span class="token punctuation">]</span> load .dockerignore                                                                                                                      <span class="token number">0</span>.0s
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token operator">=</span><span class="token operator">></span> transferring context: 2B                                                                                                                        <span class="token number">0</span>.0s
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">[</span>internal<span class="token punctuation">]</span> load build context                                                                                                                      <span class="token number">0</span>.0s
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token operator">=</span><span class="token operator">></span> transferring context: <span class="token number">87</span>.08kB                                                                                                                   <span class="token number">0</span>.0s
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">[</span>build-stage <span class="token number">1</span>/5<span class="token punctuation">]</span> FROM docker.io/library/python:3.12-slim@sha256:032c52613401895aa3d418a4c563d2d05f993bc3ecc065c8f4e2280978acd249                  <span class="token number">5</span>.6s
+<span class="token punctuation">(</span>생략<span class="token punctuation">)</span>
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">[</span>build-stage <span class="token number">2</span>/5<span class="token punctuation">]</span> RUN <span class="token function">apt-get</span> update     <span class="token operator">&amp;&amp;</span> <span class="token function">apt-get</span> <span class="token function">install</span> --no-install-recommends <span class="token parameter variable">-y</span> build-essential     <span class="token operator">&amp;&amp;</span> <span class="token function">rm</span> <span class="token parameter variable">-rf</span> /var/lib/apt/lists/*          <span class="token number">12</span>.4s
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">[</span>build-stage <span class="token number">3</span>/5<span class="token punctuation">]</span> RUN python <span class="token parameter variable">-m</span> venv /opt/poetry                                                                                                   <span class="token number">1</span>.9s 
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">[</span>build-stage <span class="token number">4</span>/5<span class="token punctuation">]</span> RUN /opt/poetry/bin/pip <span class="token function">install</span> <span class="token parameter variable">-U</span> pip setuptools                                                                                <span class="token number">1</span>.1s 
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">[</span>build-stage <span class="token number">5</span>/5<span class="token punctuation">]</span> RUN /opt/poetry/bin/pip <span class="token function">install</span> <span class="token string">"poetry==1.6.1"</span>                                                                                  <span class="token number">5</span>.1s 
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">[</span>run-stage <span class="token number">2</span>/2<span class="token punctuation">]</span> COPY <span class="token parameter variable">--from</span><span class="token operator">=</span>build-stage /opt/poetry /opt/poetry/                                                                                   <span class="token number">0</span>.2s
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">[</span>service-stage <span class="token number">1</span>/9<span class="token punctuation">]</span> RUN <span class="token function">groupadd</span> <span class="token parameter variable">-g</span> <span class="token number">1001</span> python_application <span class="token operator">&amp;&amp;</span>     <span class="token function">useradd</span> <span class="token parameter variable">-r</span> <span class="token parameter variable">-u</span> <span class="token number">1001</span> <span class="token parameter variable">-g</span> python_application python_application                     <span class="token number">0</span>.2s
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">[</span>service-stage <span class="token number">2</span>/9<span class="token punctuation">]</span> WORKDIR /application_root                                                                                                      <span class="token number">0</span>.0s
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">[</span>service-stage <span class="token number">3</span>/9<span class="token punctuation">]</span> COPY <span class="token builtin class-name">.</span> /application_root                                                                                                       <span class="token number">0</span>.0s
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">[</span>service-stage <span class="token number">4</span>/9<span class="token punctuation">]</span> RUN <span class="token function">chown</span> python_application:python_application /application_root                                                              <span class="token number">0</span>.1s
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">[</span>service-stage <span class="token number">5</span>/9<span class="token punctuation">]</span> RUN <span class="token function">mkdir</span> /application_root/.cache <span class="token operator">&amp;&amp;</span> <span class="token function">chown</span> python_application:python_application /application_root/.cache                     <span class="token number">0</span>.1s
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">[</span>service-stage <span class="token number">6</span>/9<span class="token punctuation">]</span> COPY entrypoint /entrypoint                                                                                                    <span class="token number">0</span>.0s
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">[</span>service-stage <span class="token number">7</span>/9<span class="token punctuation">]</span> RUN <span class="token function">sed</span> <span class="token parameter variable">-i</span> <span class="token string">'s/\r$//g'</span> /entrypoint                                                                                              <span class="token number">0</span>.1s
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">[</span>service-stage <span class="token number">8</span>/9<span class="token punctuation">]</span> RUN <span class="token function">chmod</span> +x /entrypoint                                                                                                       <span class="token number">0</span>.1s
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">[</span>service-stage <span class="token number">9</span>/9<span class="token punctuation">]</span> RUN poetry <span class="token function">install</span> <span class="token parameter variable">--without</span> dev                                                                                               <span class="token number">7</span>.4s
+ <span class="token operator">=</span><span class="token operator">></span> exporting to image                                                                                                                                 <span class="token number">8</span>.3s
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token operator">=</span><span class="token operator">></span> exporting layers                                                                                                                                <span class="token number">6</span>.5s
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token operator">=</span><span class="token operator">></span> exporting manifest sha256:2e1a026e67ea60a968a576838692cc7661011085b146d3b94bff86e21c10fedd                                                      <span class="token number">0</span>.0s
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token operator">=</span><span class="token operator">></span> exporting config sha256:f7b5913e1edb9f4566cd1bf1c1f32e0baa757f9fae90fea096917d7241a0fd6d                                                        <span class="token number">0</span>.0s
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token operator">=</span><span class="token operator">></span> exporting attestation manifest sha256:6482e53034c92e947f0c26372d5a0fc24e24d510ec9a4a5c5ff6901310ef5263                                          <span class="token number">0</span>.0s
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token operator">=</span><span class="token operator">></span> exporting manifest list sha256:a23299c55409341354951e7931f8bf1f38137fd21391853773255b17062c1c0f                                                 <span class="token number">0</span>.0s
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token operator">=</span><span class="token operator">></span> naming to docker.io/library/python-hello:slim-multi-2                                                                                           <span class="token number">0</span>.0s
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token operator">=</span><span class="token operator">></span> unpacking to docker.io/library/python-hello:slim-multi-2                                                                                        <span class="token number">1</span>.8s</code></pre></div>
+<p>그렇다면, alpine 베이스 이미지로 빌드를 수행해봅시다.</p>
+<div class="gatsby-highlight" data-language="shell"><pre class="language-shell"><code class="language-shell"><span class="token function">docker</span> build <span class="token parameter variable">-t</span> python-hello:alpine-multi-2 --no-cache <span class="token builtin class-name">.</span>
+<span class="token punctuation">[</span>+<span class="token punctuation">]</span> Building <span class="token number">90</span>.4s <span class="token punctuation">(</span><span class="token number">21</span>/21<span class="token punctuation">)</span> FINISHED                                                                                                     docker:desktop-linux
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">[</span>internal<span class="token punctuation">]</span> load build definition from Dockerfile                                                                                                    <span class="token number">0</span>.0s
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token operator">=</span><span class="token operator">></span> transferring dockerfile: <span class="token number">2</span>.18kB                                                                                                                  <span class="token number">0</span>.0s
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">[</span>internal<span class="token punctuation">]</span> load metadata <span class="token keyword">for</span> docker.io/library/python:3.12-alpine                                                                                   <span class="token number">1</span>.4s
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">[</span>internal<span class="token punctuation">]</span> load .dockerignore                                                                                                                       <span class="token number">0</span>.0s
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token operator">=</span><span class="token operator">></span> transferring context: 2B                                                                                                                         <span class="token number">0</span>.0s
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">[</span>internal<span class="token punctuation">]</span> load build context                                                                                                                       <span class="token number">0</span>.0s
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token operator">=</span><span class="token operator">></span> transferring context: <span class="token number">85</span>.72kB                                                                                                                    <span class="token number">0</span>.0s
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">[</span>build-stage <span class="token number">1</span>/5<span class="token punctuation">]</span> FROM docker.io/library/python:3.12-alpine@sha256:38e179a0f0436c97ecc76bcd378d7293ab3ee79e4b8c440fdc7113670cb6e204                 <span class="token number">2</span>.3s
+<span class="token punctuation">(</span>생략<span class="token punctuation">)</span>
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">[</span>build-stage <span class="token number">2</span>/5<span class="token punctuation">]</span> RUN apk <span class="token function">add</span> --no-cache     gcc     python3-dev                                                                                   <span class="token number">12</span>.1s
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">[</span>build-stage <span class="token number">3</span>/5<span class="token punctuation">]</span> RUN python <span class="token parameter variable">-m</span> venv /opt/poetry                                                                                                    <span class="token number">2</span>.2s 
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">[</span>build-stage <span class="token number">4</span>/5<span class="token punctuation">]</span> RUN /opt/poetry/bin/pip <span class="token function">install</span> <span class="token parameter variable">-U</span> pip setuptools                                                                                 <span class="token number">1</span>.3s 
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">[</span>build-stage <span class="token number">5</span>/5<span class="token punctuation">]</span> RUN /opt/poetry/bin/pip <span class="token function">install</span> <span class="token string">"poetry==1.6.1"</span>                                                                                   <span class="token number">5</span>.7s 
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">[</span>run-stage <span class="token number">2</span>/2<span class="token punctuation">]</span> COPY <span class="token parameter variable">--from</span><span class="token operator">=</span>build-stage /opt/poetry /opt/poetry/                                                                                    <span class="token number">0</span>.2s
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">[</span>service-stage  <span class="token number">1</span>/10<span class="token punctuation">]</span> RUN addgroup <span class="token parameter variable">-g</span> <span class="token number">1001</span> <span class="token parameter variable">-S</span> python_application <span class="token operator">&amp;&amp;</span>     adduser <span class="token parameter variable">-S</span> <span class="token parameter variable">-u</span> <span class="token number">1001</span> <span class="token parameter variable">-G</span> python_application python_application                 <span class="token number">0</span>.1s
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">[</span>service-stage  <span class="token number">2</span>/10<span class="token punctuation">]</span> WORKDIR /application_root                                                                                                     <span class="token number">0</span>.0s
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">[</span>service-stage  <span class="token number">3</span>/10<span class="token punctuation">]</span> COPY <span class="token builtin class-name">.</span> /application_root                                                                                                      <span class="token number">0</span>.0s
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">[</span>service-stage  <span class="token number">4</span>/10<span class="token punctuation">]</span> RUN <span class="token function">chown</span> python_application:python_application /application_root                                                             <span class="token number">0</span>.1s
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">[</span>service-stage  <span class="token number">5</span>/10<span class="token punctuation">]</span> RUN <span class="token function">mkdir</span> /application_root/.cache <span class="token operator">&amp;&amp;</span> <span class="token function">chown</span> python_application:python_application /application_root/.cache                    <span class="token number">0</span>.2s
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">[</span>service-stage  <span class="token number">6</span>/10<span class="token punctuation">]</span> COPY entrypoint /entrypoint                                                                                                   <span class="token number">0</span>.0s
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">[</span>service-stage  <span class="token number">7</span>/10<span class="token punctuation">]</span> RUN <span class="token function">sed</span> <span class="token parameter variable">-i</span> <span class="token string">'s/\r$//'</span> /entrypoint                                                                                              <span class="token number">0</span>.2s
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">[</span>service-stage  <span class="token number">8</span>/10<span class="token punctuation">]</span> RUN <span class="token function">chmod</span> +x /entrypoint                                                                                                      <span class="token number">0</span>.1s
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">[</span>service-stage  <span class="token number">9</span>/10<span class="token punctuation">]</span> RUN apk <span class="token function">add</span> --no-cache     g++     openssl                                                                                    <span class="token number">8</span>.2s
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">[</span>service-stage <span class="token number">10</span>/10<span class="token punctuation">]</span> RUN poetry <span class="token function">install</span> <span class="token parameter variable">--without</span> dev                                                                                             <span class="token number">44</span>.2s
+ <span class="token operator">=</span><span class="token operator">></span> exporting to image                                                                                                                                 <span class="token number">11</span>.8s```
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token operator">=</span><span class="token operator">></span> exporting layers                                                                                                                                 <span class="token number">9</span>.2s
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token operator">=</span><span class="token operator">></span> exporting manifest sha256:6b7bcd80340bf252c06947fde85a4fb53012c3d8bb07ff6dfd3a8b6fe6d1022c                                                       <span class="token number">0</span>.0s
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token operator">=</span><span class="token operator">></span> exporting config sha256:58c4058d992779af8b0e3aa67ceabd655d234d871e38af0e6996155a56ed953e                                                         <span class="token number">0</span>.0s
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token operator">=</span><span class="token operator">></span> exporting attestation manifest sha256:e88ed3098ce10fbce9ed2452c82ada1f5ccccb7c9d094b6f2da495754249db26                                           <span class="token number">0</span>.0s
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token operator">=</span><span class="token operator">></span> exporting manifest list sha256:b0b8cc043f1436abf29e9b45bcbcf618d0838de9d1678086c9b2b5acc1541e9b                                                  <span class="token number">0</span>.0s
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token operator">=</span><span class="token operator">></span> naming to docker.io/library/python-hello:alpine-multi-2                                                                                          <span class="token number">0</span>.0s
+ <span class="token operator">=</span><span class="token operator">></span> <span class="token operator">=</span><span class="token operator">></span> unpacking to docker.io/library/python-hello:alpine-multi-2                                                                                       <span class="token number">2</span>.6s</code></pre></div>
+<p>빌드 시간과 크기에 대해 한번 살펴보죠.</p>
+<div class="gatsby-highlight" data-language="shell"><pre class="language-shell"><code class="language-shell"><span class="token function">docker</span> images
+REPOSITORY     TAG              IMAGE ID       CREATED         SIZE
+python-hello   alpine-multi-2   b0b8cc043f14   <span class="token number">2</span> minutes ago   <span class="token number">1</span>.13GB
+python-hello   slim-multi-2     a23299c55409   <span class="token number">3</span> minutes ago   755MB</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>베이스이미지</th>
+<th>빌드된 이미지 크기</th>
+<th>소요시간(단위: 초)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>debian slim</td>
+<td><code class="language-text">755 MB</code></td>
+<td><code class="language-text">45.6</code></td>
+</tr>
+<tr>
+<td>alpine</td>
+<td><code class="language-text">1.13 GB</code></td>
+<td><code class="language-text">90.4</code></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>debian 베이스 이미지는 용량, 소요시간 측면 모두에서 안정적이었습니다.</li>
+<li>alpine 베이스 이미지는 빌드시간 자체도 늦고, 크기도 커졌습니다.</li>
+</ul>
+<p>그렇다면 alpine 베이스 이미지는 사용할 수 없는 걸까요? 왜 그런건지 알아보기에 앞서, 앞서  알아봅시다.</p>
+<h2 id="c-라이브러리-구현체와-빌드의-차이" style="position:relative;"><a href="#c-%EB%9D%BC%EC%9D%B4%EB%B8%8C%EB%9F%AC%EB%A6%AC-%EA%B5%AC%ED%98%84%EC%B2%B4%EC%99%80-%EB%B9%8C%EB%93%9C%EC%9D%98-%EC%B0%A8%EC%9D%B4" aria-label="c 라이브러리 구현체와 빌드의 차이 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>C 라이브러리 구현체와 빌드의 차이</h2>
+<p>그렇다면 앞서 alpine linux 배포판과 debian 배포판의 차이를 알아봅시다. 이 글에서 살펴볼 둘의 주요 차이점은 C 라이브러리 구현체의 선택입니다. 각각의 특징을 살펴보겠습니다:</p>
+<h3 id="glibc-debian-계열" style="position:relative;"><a href="#glibc-debian-%EA%B3%84%EC%97%B4" aria-label="glibc debian 계열 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code class="language-text">glibc</code> (Debian 계열)</h3>
+<ul>
+<li>리눅스 생태계의 사실상 표준 구현체입니다</li>
+<li>대부분의 파이썬 패키지가 <code class="language-text">glibc</code> 기준으로 빌드되어있으니, 안정성과 호환성이 검증되어 있습니다.</li>
+<li>그런 이유로 베이스 이미지 크기가 상대적으로 큽니다</li>
+</ul>
+<h3 id="musl-alpine-linux" style="position:relative;"><a href="#musl-alpine-linux" aria-label="musl alpine linux permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code class="language-text">musl</code> (Alpine Linux)</h3>
+<ul>
+<li>경량화된 C 라이브러리 구현체입니다</li>
+<li>단순한 구현으로 보안 공격 표면이 작습니다</li>
+<li>베이스 이미지 크기가 매우 작습니다 (Debian 대비 약 1/20)</li>
+<li>일부 바이너리와 호환성 이슈가 발생할 수 있습니다</li>
+</ul>
+<h2 id="python-wheels의-발전과-alpine-linux-지원" style="position:relative;"><a href="#python-wheels%EC%9D%98-%EB%B0%9C%EC%A0%84%EA%B3%BC-alpine-linux-%EC%A7%80%EC%9B%90" aria-label="python wheels의 발전과 alpine linux 지원 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Python Wheels의 발전과 Alpine Linux 지원</h2>
+<p>과거에는 Alpine Linux에서 많은 파이썬 패키지를 설치할 때 소스로부터 직접 빌드해야 했고, 이는 컨테이너 빌드 시간을 길어지게 하는 주요 요소였습니다. 하지만 Python 패키징 생태계의 발전으로 상황이 크게 개선되었습니다.</p>
+<h3 id="python-패키징의-발전-과정" style="position:relative;"><a href="#python-%ED%8C%A8%ED%82%A4%EC%A7%95%EC%9D%98-%EB%B0%9C%EC%A0%84-%EA%B3%BC%EC%A0%95" aria-label="python 패키징의 발전 과정 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Python 패키징의 발전 과정</h3>
+<p>다양한 배포판에서 파이썬 패키지를 바로 설치할 수 있도록 하기 위해, 아래와 같은 PEP가 지속적으로 제안되어 왔고 또 받아들여졌습니다.</p>
+<ol>
+<li>PEP 513 (manylinux1): 최초의 호환성 있는 Linux wheel 표준 도입</li>
+<li>PEP 571 (manylinux2010): glibc 2.12 기반 호환성 확장</li>
+<li>PEP 599 (manylinux2014): 더 새로운 시스템 라이브러리 지원</li>
+<li>PEP 600 (Future manylinux): 향후 확장성을 고려한 태그 체계 도입</li>
+<li><strong>PEP 656 (musllinux)</strong>: Alpine Linux 등 <code class="language-text">musl</code> 기반 배포판 공식 지원</li>
+</ol>
+<p>PEP 656이 accept 되며, <code class="language-text">musl</code> 기반의 빌드가 이루어진 파이썬 패키지도 직접 다운로드 받게 되어, 이를 지원하고 빌드한 라이브러리라면 누구나 쓸 수 있게 되었습니다.</p>
+<h3 id="manylinux" style="position:relative;"><a href="#manylinux" aria-label="manylinux permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>manylinux?</h3>
+<p>manylinux는 “Python wheels that work on any linux (almost).” 라는 목표를 가지고 다양한 배포판을 타겟으로 빌드하기 위해 시작된 프로젝트 입니다. 원하는 리눅스 배포판에서 라이브러리를 빌드없이 직접 다운로드 받아 쓸 수 있도록 규약을 잡기 시작한 것이라고 이해할 수 있지요(<a href="https://github.com/pypa/manylinux" target="_blank" rel="nofollow noopener noreferrer">manylinux 링크</a>에서 발췌하였습니다).</p>
+<div class="gatsby-highlight" data-language="markdown"><pre class="language-markdown"><code class="language-markdown"><span class="token title important">manylinux
+<span class="token punctuation">---</span></span>
+
+Older archives: https://groups.google.com/forum/#!forum/manylinux-discuss
+
+The goal of the manylinux project is to provide a convenient way to distribute binary Python extensions as wheels on Linux. This effort has produced PEP 513 (manylinux1), PEP 571 (manylinux2010), PEP 599 (manylinux2014), PEP 600 (manylinux_x_y) and PEP 656 (musllinux_x_y).</code></pre></div>
+<h3 id="pep-656의-의의" style="position:relative;"><a href="#pep-656%EC%9D%98-%EC%9D%98%EC%9D%98" aria-label="pep 656의 의의 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>PEP 656의 의의</h3>
+<p>Alpine linux와 관련해서는 PEP 656(Platform Tag for Linux Distributions Using Musl)은 위 PEP의 연장선상이라 할 수 있지요. 이 표준이 받아들여지면서, <code class="language-text">musl</code> 기반의 빌드된 wheel을 배포자가 업데이트 하면 사용자가 즉시 설치할 수 있게 된 것입니다. 이로 인해 alpine linux 기반의 베이스 이미지를 선택해도 빌드 시간 단축 및 의존성 문제를 해결할 수 있게 된 겁니다.</p>
+<p>이로인해 Alpine 베이스 파이썬 컨테이너를 선택하더라도 빌드 시간 단축과 이미지 크기 최적화의 이점을 누릴 수 있게 되었습니다. 특히 PEP 656 도입 이후에는 많은 패키지가 musllinux wheel을 제공하고 있고, 코어 로직이 Rust로 짜여진 파이썬 패키지들은 크로스플랫폼을 쉽게 지원하기 때문에 이런 부분에서도 선택에 제약이 크게 없습니다.</p>
+<h2 id="마지막으로" style="position:relative;"><a href="#%EB%A7%88%EC%A7%80%EB%A7%89%EC%9C%BC%EB%A1%9C" aria-label="마지막으로 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>마지막으로</h2>
+<p>그렇지만 여전히 의문입니다. 그러면 언제, 어떤 시기에 적절한 베이스 이미지를 선택하면 될까요? 무턱대고 고르기에는 아무래도 의심이 듭니다. 간단하게나마 있을법한 일을 검증해보고 적절한지 예시 데이터를 보면 더욱 안심이겠죠. 그래서 다음장에는 아래의 상황에서 어떤 베이스 이미지가 좋은지 함께 살펴볼 예정입니다.</p>
+<ul>
+<li>I/O bound 태스크 중심: API 서비스를 만들고, DB에는 1억개의 데이터을 추가한 후, 쿼리 테스트 및 부하 테스트를 수행하여 성능을 리포트</li>
+<li>CPU bound 태스크 중심: 매우 큰 데이터를 pandas로 처리, matplotlib으로 연산하게 구성해보고 성능을 리포트</li>
+</ul>
+<p>긴 글 읽어주셔서 감사합니다.</p>
+<div class="footnotes">
+<hr>
+<ol>
+<li id="fn-1">패키지(이 글에서는 파이썬 패키지를 의미)는 <code class="language-text">pip</code> 등으로 설치할 수 있는 외부 모듈의 모음을 의미합니다. 쉽게 말하자면 파이썬 라이브러리라고 할 수 있지요.<a href="#fnref-1" class="footnote-backref">↩</a></li>
+</ol>
+</div></div></div></div><div class="Post-module--footer--f8705"><div class="Meta-module--meta--dae0a"><p class="Meta-module--date--4d30d">Published<!-- --> <!-- -->Oct 26, 2024</p></div><div class="Tags-module--tags--18589"><ul class="Tags-module--list--82ae6"><li class="Tags-module--item--52015"><a class="Button-module--button--b1113" href="/tag/python/">python</a></li><li class="Tags-module--item--52015"><a class="Button-module--button--b1113" href="/tag/geultto/">geultto</a></li></ul></div><div class="Author-module--author--1c58d"><p class="Non scholæ sed vitæ discimus.">Non scholæ sed vitæ discimus.</p><p class="Author-module--bio--08950">his/him</p></div></div><div class="Post-module--comments--d3b99"><div></div></div></div></div></div><div id="gatsby-announcer" style="position:absolute;top:0;width:1px;height:1px;padding:0;overflow:hidden;clip:rect(0, 0, 0, 0);white-space:nowrap;border:0" aria-live="assertive" aria-atomic="true"></div></div><script id="gatsby-script-loader">/*<![CDATA[*/window.pagePath="/devlog/python/2024-10-26-python-container-101-pt02";window.___webpackCompilationHash="af28f98cfe740e509712";/*]]>*/</script><script id="gatsby-chunk-mapping">/*<![CDATA[*/window.___chunkMapping={"polyfill":["/polyfill-93be280e3dbf3699d675.js"],"app":["/app-ea08e30339acd6ab79af.js"],"component---cache-caches-gatsby-plugin-offline-app-shell-js":["/component---cache-caches-gatsby-plugin-offline-app-shell-js-0c915c7b1bdb5eac4fdf.js"],"component---src-templates-categories-template-categories-template-tsx":["/component---src-templates-categories-template-categories-template-tsx-e2d2add397e32e3517ca.js"],"component---src-templates-category-template-category-template-tsx":["/component---src-templates-category-template-category-template-tsx-078f2adfba160a34229f.js"],"component---src-templates-index-template-index-template-tsx":["/component---src-templates-index-template-index-template-tsx-83380c7954c9f6621026.js"],"component---src-templates-not-found-template-not-found-template-tsx":["/component---src-templates-not-found-template-not-found-template-tsx-56fe4d3b015459d56c99.js"],"component---src-templates-page-template-page-template-tsx":["/component---src-templates-page-template-page-template-tsx-c6c21d7369a9356db3a1.js"],"component---src-templates-post-template-post-template-tsx":["/component---src-templates-post-template-post-template-tsx-119cd0258cb38628d01f.js"],"component---src-templates-tag-template-tag-template-tsx":["/component---src-templates-tag-template-tag-template-tsx-8d0b3090e775aa3c4584.js"],"component---src-templates-tags-template-tags-template-tsx":["/component---src-templates-tags-template-tags-template-tsx-30027e87af7d042f3afb.js"]};/*]]>*/</script><script src="/polyfill-93be280e3dbf3699d675.js" nomodule=""></script><script src="/app-ea08e30339acd6ab79af.js" async=""></script><script src="/framework-481a1b6416c14416b2fb.js" async=""></script><script src="/webpack-runtime-de5a94456c9c32f6cdb9.js" async=""></script></body></html>
