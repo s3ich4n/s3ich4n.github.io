@@ -1,9 +1,9 @@
 ---
 title: '[연재] 파이썬 컨테이너 선택 제 2형 - 파이썬 컨테이너 최적화'
-date: "2024-10-25T03:00:00.000Z"
+date: "2024-10-26T05:08:00.000Z"
 template: "post"
 draft: false
-slug: "/devlog/python/2024-10-25-python-container-101-pt01"
+slug: "/devlog/python/2024-10-26-python-container-101-pt02"
 categories: "devlog"
 tags:
   - "python"
