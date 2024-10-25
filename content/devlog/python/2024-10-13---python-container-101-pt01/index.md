@@ -48,7 +48,7 @@ socialImage: { "publicURL": "./media/sangdo-dong.jpg" }
 
 
 <details>
-<summary>(생략가능) 컨테이너 기술이 DevOps에 끼치는 영향</summary>
+<summary>🤔 컨테이너 기술이 DevOps에 끼치는 영향</summary>
 
 > 🍎 tips
 >
@@ -101,10 +101,10 @@ print("Hello, geultto!")
 2. `Dockerfile` 생성(위에서 본 내용입니다):
 
 ```dockerfile
-FROM python:3.12            # 앞서 살펴본 베이스 이미지 입니다.
-WORKDIR /app                # 이 디렉터리에서 작업을 하겠다는 선언입니다.
-COPY hello.py .             # hello.py 파일을 복사하고
-CMD ["python", "hello.py"]  # 명령을 구동합니다.
+FROM python:3.12
+WORKDIR /app
+COPY hello.py .
+CMD ["python", "hello.py"]
 ```
 
 3. 이미지 빌드:
