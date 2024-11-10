@@ -4,7 +4,7 @@ date: "2024-10-26T05:08:00.000Z"
 template: "post"
 draft: false
 slug: "/devlog/python/2024-10-26-python-container-101-pt02"
-categories: "devlog"
+category: "devlog"
 tags:
   - "python"
   - "geultto"

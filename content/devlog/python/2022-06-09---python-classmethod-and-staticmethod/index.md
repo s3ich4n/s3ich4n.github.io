@@ -4,7 +4,7 @@ date: "2022-06-09T10:30:00.000Z"
 template: "post"
 draft: false
 slug: "/devlog/python/2022-06-09-python-classmethod-and-staticmethod"
-categories: "devlog"
+category: "devlog"
 tags:
   - "python"
 description: 'Python의 "@classmethod" 와 "@staticmethod"에 대해'
