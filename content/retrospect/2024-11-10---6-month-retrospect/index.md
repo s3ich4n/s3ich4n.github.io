@@ -1,5 +1,5 @@
 ---
-title: "[글또10기] 지난 6개월 간 업무 회고"
+title: "지난 6개월 간 업무 회고"
 date: "2024-11-10T23:20:16.000Z"
 template: "post"
 draft: false
