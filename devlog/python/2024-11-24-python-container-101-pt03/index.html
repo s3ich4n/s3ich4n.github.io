@@ -79,21 +79,25 @@
             setTheme(cachedMode || (darkQuery.matches ? 'dark' : 'light'));
           }()
         </script><div id="___gatsby"><div style="outline:none" tabindex="-1" id="gatsby-focus-wrapper"><div class="Layout-module--layout--2c933"><div class="Post-module--post--3a994"><div class="Post-module--buttons--2972d"><a class="Button-module--button--b1113 Post-module--buttonArticles--d793a" href="/">All Articles</a></div><div class="Post-module--content--3c6e5"><div class="Content-module--content--80d58"><h1 class="Content-module--title--09504">[연재] 파이썬 컨테이너 선택 제 3형 - 파이썬 컨테이너 실전비교</h1><div class="Content-module--body--726c2"><p>이번 게시글에서는 Debian 기반의 컨테이너와 Alpine 기반의 컨테이너 간 성능을 비교해보도록 하겠습니다.</p>
-<p>지난 게시글에는 분명 이렇게 소개했습니다.</p>
-<ul>
-<li>I/O bound 태스크 중심: API 서비스를 만들고, DB에는 1억개의 데이터을 추가한 후, 쿼리 테스트 및 부하 테스트를 수행하여 성능을 리포트</li>
-<li>CPU bound 태스크 중심: 매우 큰 데이터를 pandas로 처리, matplotlib으로 연산하게 구성해보고 성능을 리포트</li>
-</ul>
-<p>하지만, 구동 시간이 너무 오래걸려 본 게시글에는 테스트 방안을 “소개”하고, 글을 수정하여 보강할 예정입니다. 벌써부터 이렇게 말씀드리는 점 양해 부탁드립니다. 🙇🙇</p>
+<p>지난 게시글의 소개와는 다르게, 구동 시간이 너무 오래걸려 본 게시글에는 테스트 방안을 “소개”하고, 글을 수정하여 보강할 예정입니다. 벌써부터 이렇게 말씀드리는 점 양해 부탁드립니다. 🙇🙇</p>
 <p>아래와 같이 변경될 예정입니다:</p>
 <ul>
-<li>I/O bound 태스크 중심: <del>API 서비스를 만들고</del>, DB에는 10만 개의 데이터을 추가한 후, 쿼리 테스트 <del>및 부하 테스트를</del> 수행하여 성능을 리포트</li>
-<li>CPU bound 태스크 중심: K-means clustering 과 랜덤 포레스트 기법을 <del>SVD 연산(준비만 되어있습니다!)</del> 사용하여 <del>매우 큰 데이터를 pandas로 처리, matplotlib으로 연산하게 구성해보고</del> CPU, 메모리 사용량을 리포트</li>
+<li>I/O bound 태스크 중심: <del>API 서비스를 만들고</del>, DB에는 10만 개의 데이터를 추가한 후, 쿼리 테스트 <del>및 부하 테스트를</del> 수행하여 성능을 리포트</li>
+<li>CPU bound 태스크 중심: K-means clustering 과 랜덤 포레스트 기법 <del>과 SVD 연산(준비만 되어있습니다!)</del> 을 사용하여 <del>매우 큰 데이터를 pandas로 처리, matplotlib으로 연산하게 구성해보고</del> CPU, 메모리 사용량을 리포트</li>
 </ul>
-<p>그렇다면, 목표와 준비 후, 가절을 세우고 직접 실험해봅시다.</p>
+<p>그렇다면, 목표와 가설을 세우고, 준비 후 직접 실험해봅시다!</p>
 <h1 id="목표" style="position:relative;"><a href="#%EB%AA%A9%ED%91%9C" aria-label="목표 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><strong>목표</strong></h1>
 <p>파이썬으로 작성한 cpu bound task와 io bound task 를 각각 컨테이너화 했을 때, glibc, musl 구현체의 성능 벤치마킹을 통해 적절한 구현체가 무엇인지 파악해봅시다.</p>
-<h2 id="준비" style="position:relative;"><a href="#%EC%A4%80%EB%B9%84" aria-label="준비 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><strong>준비</strong></h2>
+<h1 id="가설" style="position:relative;"><a href="#%EA%B0%80%EC%84%A4" aria-label="가설 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><strong>가설</strong></h1>
+<p>이번 실험을 통해 세운 가설은 아래와 같습니다.</p>
+<ul>
+<li>glibc, musl은 cpu bound task, io bound task 별로 성능차이가 있을 것입니다.
+<ul>
+<li>근거: 여러 작업(precondition, postcondition 이나 실제 구현체 이용)을 많이 하면 각 구현체별 성능차가 있을 것이기 때문입니다.</li>
+</ul>
+</li>
+</ul>
+<h1 id="준비" style="position:relative;"><a href="#%EC%A4%80%EB%B9%84" aria-label="준비 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><strong>준비</strong></h1>
 <ol>
 <li>c 라이브러리 구현체 선택
 <ul>
@@ -122,69 +126,63 @@
 </li>
 <li>해당 코드를 구동하는 환경은 아래와 같습니다
 <ol>
-<li>(로컬 테스트) - M3 Pro 맥북</li>
+<li>(로컬 테스트) - M3 Pro 맥북
+<ul>
+<li>단 docker compose로 cpu, ram usage를 일부 차단.</li>
+<li>CPU는 최대 <code class="language-text">6</code>개를, memory는 최대 <code class="language-text">8GB</code> 를 할당</li>
+</ul>
+</li>
 <li>(<strong>예정</strong>, 실제 환경과 유사한 테스트) - GitHub Actions</li>
 </ol>
 </li>
 </ol>
-<h3 id="cpu-bound-작업을-선별합시다" style="position:relative;"><a href="#cpu-bound-%EC%9E%91%EC%97%85%EC%9D%84-%EC%84%A0%EB%B3%84%ED%95%A9%EC%8B%9C%EB%8B%A4" aria-label="cpu bound 작업을 선별합시다 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>CPU bound 작업을 선별합시다</h3>
-<p>CPU bound 태스크를 테스트하기 위해, 랜덤 포레스트와 K-means clustering을 각각 구동해보기로 했습니다.</p>
-<ol>
-<li>각종 머신러닝 기법을 진짜 맛만보는 코드를 작성했습니다. 아래는 제가 구동하려는 태스크들입니다.</li>
-</ol>
-<ul>
-<li>랜덤 포레스트
-<ul>
-<li>다량의 서로 다른 샘플과 특성이 반영된 decision tree를 구성한다.</li>
-<li>트리 연산은 병렬로 수행하고, 결과값은 다수결로/평균값으로 도출된다</li>
-<li>overfitting(과적합)을 방지하는 앙상블 방법이다</li>
-</ul>
-</li>
-<li>k-means clustering
-<ul>
-<li>k-means - 비지도 학습(unsupervised learning) 알고리즘 - 을 기반으로 한 클러스터링 알고리즘</li>
-<li>데이터 포인트들을 K개의 그룹(클러스터)으로 나눈다</li>
-<li>비슷한 특성을 가진 데이터끼리 같은 그룹으로 묶음</li>
-<li>“비슷하다”의 기준은 데이터 포인트 간의 거리 (주로 유클리드 거리 사용)</li>
-</ul>
-</li>
-</ul>
-<p>이 태스크로 선정한 이유는 아래와 같습니다:</p>
+<h2 id="cpu-bound-작업을-선별합시다" style="position:relative;"><a href="#cpu-bound-%EC%9E%91%EC%97%85%EC%9D%84-%EC%84%A0%EB%B3%84%ED%95%A9%EC%8B%9C%EB%8B%A4" aria-label="cpu bound 작업을 선별합시다 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>CPU bound 작업을 선별합시다</h2>
+<p>CPU bound 태스크를 테스트하기 위해, 랜덤 포레스트와 K-means clustering을 각각 구동해보기로 했습니다. 선정한 이유는 아래와 같습니다:</p>
 <ol>
 <li>여러 복합적인 연산을 수행하기 위해 CPython 구현체나 C 코드로 빌드된 코드를 사용함으로 인해 발생하는 성능차이가 분명히 있을 것이라고 생각했기 때문입니다.</li>
 <li>단순 연산(소수 구하기, 해쉬연산 지속적으로 수행하기)는 CPU 레벨에서 최적화되어 인터프리트 되면 크게 의미없다고 판단했기 때문입니다.</li>
 </ol>
-<h3 id="io-bound-작업을-선별합니다" style="position:relative;"><a href="#io-bound-%EC%9E%91%EC%97%85%EC%9D%84-%EC%84%A0%EB%B3%84%ED%95%A9%EB%8B%88%EB%8B%A4" aria-label="io bound 작업을 선별합니다 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>IO bound 작업을 선별합니다.</h3>
-<p>아래와 같이 테이블 구성</p>
+<p>따라서, 이에 맞게 각종 머신러닝 기법을 진짜 “맛만보는” 코드를 작성했습니다. 아래는 각 내용에 대한 간략한 설명입니다:</p>
+<ul>
+<li>랜덤 포레스트
+<ul>
+<li>다량의 서로 다른 샘플과 특성이 반영된 decision tree를 구성합니다.</li>
+<li>트리 연산은 병렬로 수행하고, 결과값은 다수결로/평균값으로 도출됩니다.</li>
+<li>overfitting(과적합)을 방지하는 앙상블 방법이므로 상대적인 연산이 많을 것으로 판단하여 채택하였습니다.</li>
+</ul>
+</li>
+<li>k-means clustering
+<ul>
+<li>k-means - 비지도 학습(unsupervised learning) 알고리즘 - 을 기반으로 한 클러스터링 알고리즘 입니다.</li>
+<li>데이터 포인트들을 K개의 그룹(클러스터)으로 나눕니다.</li>
+<li>비슷한 특성을 가진 데이터끼리 같은 그룹으로 묶습니다</li>
+<li>“비슷하다”의 기준은 데이터 포인트 간의 거리 (주로 유클리드 거리 사용) 계산입니다.</li>
+<li>연산이 많을 것으로 판단하여 채택하였습니다.</li>
+</ul>
+</li>
+</ul>
+<h2 id="io-bound-작업을-선별합니다" style="position:relative;"><a href="#io-bound-%EC%9E%91%EC%97%85%EC%9D%84-%EC%84%A0%EB%B3%84%ED%95%A9%EB%8B%88%EB%8B%A4" aria-label="io bound 작업을 선별합니다 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>IO bound 작업을 선별합니다.</h2>
+<p>아래와 같이 테이블 구성을 구성합니다.</p>
 <ol>
-<li>기관 테이블을 구성, 기관의 고유식별자를 fk로 쓰는 ‘기관정보’ 테이블 구성</li>
-<li>유저 테이블을 생성</li>
+<li>유저 테이블을 구성합니다</li>
 <li>이 테이블의 uuid 값을 fk로 쓰는 테이블을 아래와 같이 구성
 <ul>
 <li>‘유저 개인정보’</li>
 <li>‘유저 프로필 정보’</li>
 </ul>
 </li>
+<li>최대 10만개의 데이터를 추가, 랜덤하게 데이터를 1000개씩 쿼리하여, 성능을 비교</li>
 </ol>
-<h1 id="가설" style="position:relative;"><a href="#%EA%B0%80%EC%84%A4" aria-label="가설 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><strong>가설</strong></h1>
-<p>이번 실험을 통해 세운 가설은 아래와 같습니다.</p>
-<ul>
-<li>glibc, musl은 cpu bound task, io bound task 별로 성능차이가 있을 것입니다.
-<ul>
-<li>근거: 여러 작업(precondition, postcondition 이나 실제 구현체 이용)을 많이 하면 각 구현체별 성능차가 있을 것이기 때문입니다.</li>
-</ul>
-</li>
-</ul>
 <h1 id="작업-순서" style="position:relative;"><a href="#%EC%9E%91%EC%97%85-%EC%88%9C%EC%84%9C" aria-label="작업 순서 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><strong>작업 순서</strong></h1>
-<p>여기서부터는 작성한 코드를 참고해주세요. 코드는 <a href="">이 github 링크</a> 에 준비되어 있습니다.</p>
+<p>여기서부터는 작성한 코드를 참고해주세요. 코드는 <a href="https://github.com/AmidCode/geultto_10_4th" target="_blank" rel="nofollow noopener noreferrer">이 github 링크</a> 에 준비되어 있습니다.</p>
 <ol>
 <li>컨테이너 만들기
 <ol>
-<li>debian based (slim 이미지인가, 아닌가의 차이도 명확한지 파악 필요)</li>
+<li>debian based</li>
 <li>alpine based</li>
 </ol>
 </li>
-<li>cpu bound task를 수행하는 코드 작성하기 (wip)
+<li>cpu bound task를 수행하는 코드 작성하기
 <ol>
 <li>random forest를 병렬 작업하는 코드</li>
 <li>k-means clustering을 병렬 작업하는 코드</li>
@@ -196,7 +194,7 @@
 <li>유저를 1000명씩 임의로 쿼리 수행</li>
 </ol>
 </li>
-<li>python 버전, 태스크 별로 각각 테스트 수행</li>
+<li>python 버전, 태스크 별로 각각 테스트 수행 - Docker Compose 파일로 개별 실행이 가능하게 구성하기</li>
 </ol>
 <h1 id="리뷰-1" style="position:relative;"><a href="#%EB%A6%AC%EB%B7%B0-1" aria-label="리뷰 1 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><strong>리뷰 (1)</strong></h1>
 <p>하지만 작업 중간에, 아래와 같은 리뷰사항을 받고 태스크의 내용을 한 번 수정했습니다. 확실히 조사가 필요한 부분 및 보강이 가능한 부분에 대해 다듬었습니다.</p>
@@ -218,126 +216,456 @@
 <ul>
 <li>rdbms는 postgres 15버전 사용 예정.</li>
 <li><del>커넥션 풀링은 sqlalchemy의 기본 사용량을 써보고, 너무 처참한 p95 값이 나오면 (1초 이상) 조절 예정</del> (API로 부하 테스트까지 해보는 것이 목표입니다만, 거기까지는 아직 진행을 못했습니다.. 🥲)</li>
-<li>쿼리 유형 다각화 - 어떻게 진행하면 좋을지?
+<li>쿼리 유형 다각화
 <ul>
-<li>실질적으로 많이 일어나는건 쿼리라고 판단함</li>
+<li>실질적으로 많이 일어나는건 쿼리이기 때문에, 이는 포기할 수 없는 과정이라 생각했습니다.</li>
+<li>db에 추가하는 건 테스트 데이터 준비과정이기에 쿼리의 성능을 살펴보는 것이 중요할 것으로 판단했습니다.</li>
+<li>복잡한 쿼리에 대해 구성해보고 테스트해보는 것이 목표입니다.</li>
 </ul>
 </li>
-<li>db에 추가하는 건 어떻게 보면 테스트 데이터 준비과정으로 이해하고, 쿼리의 성능을 살펴보는 것이 중요할 것으로 판단. 일반적인 시스템에서 추가보다는 조회가 훨씬 더 많이 일어나기 때문.</li>
 </ul>
 </li>
 </ol>
 <h1 id="실제-실험결과" style="position:relative;"><a href="#%EC%8B%A4%EC%A0%9C-%EC%8B%A4%ED%97%98%EA%B2%B0%EA%B3%BC" aria-label="실제 실험결과 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><strong>실제 실험결과</strong></h1>
-<p>실험 결과는 위에서 소개시켜드렸던 결과로 구동하려 합니다.</p>
-<h2 id="cpu-bound-태스크의-결과-1---random-forest" style="position:relative;"><a href="#cpu-bound-%ED%83%9C%EC%8A%A4%ED%81%AC%EC%9D%98-%EA%B2%B0%EA%B3%BC-1---random-forest" aria-label="cpu bound 태스크의 결과 1   random forest permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>CPU bound 태스크의 결과 (1) - Random forest</h2>
-<p>Debian 기반의 컨테이너로 CPU bound 태스크를 구동해본 결과는 아래와 같았습니다:</p>
+<p>실험 결과는 아래와 같으며, CPU bound 부터 소개하고 이어서 IO bound 를 소개합니다.</p>
+<h2 id="cpu-bound-태스크의-결과-1---k-means-clustering" style="position:relative;"><a href="#cpu-bound-%ED%83%9C%EC%8A%A4%ED%81%AC%EC%9D%98-%EA%B2%B0%EA%B3%BC-1---k-means-clustering" aria-label="cpu bound 태스크의 결과 1   k means clustering permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>CPU bound 태스크의 결과 (1) - K-means clustering</h2>
+<p>아래와 같은 전제조건을 취했습니다. 코드는 <a href="https://github.com/AmidCode/geultto_10_4th/blob/main/third/cpu/01_kmeans.py" target="_blank" rel="nofollow noopener noreferrer">여기</a>를 살펴봐주세요.</p>
+<h3 id="전제조건" style="position:relative;"><a href="#%EC%A0%84%EC%A0%9C%EC%A1%B0%EA%B1%B4" aria-label="전제조건 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>전제조건</h3>
+<p>데이터셋 조건</p>
+<ul>
+<li>샘플 수: [100,000, 500,000] (n_samples=[100_000, 500_000])</li>
+<li>특성 수: 128차원 (n_features=128)</li>
+<li>make_blobs로 생성된 클러스터링 데이터</li>
+<li>고정된 랜덤 시드: 42 (random_state=42)</li>
+</ul>
+<p>모델 설정</p>
+<ul>
+<li>클러스터 수: [5, 7] (n_clusters=[5, 7])</li>
+<li>초기화 횟수: 10회 (n_init=10)</li>
+<li>최대 반복 횟수: 300회 (max_iter=300)</li>
+</ul>
+<p>측정 항목</p>
+<ul>
+<li>실행 시간 (Execution time)</li>
+<li>반복 횟수 (Iterations)</li>
+<li>Inertia (클러스터 내 거리 제곱합)</li>
+<li>CPU 사용률 (평균, 최대)</li>
+<li>메모리 사용률 (평균, 최대)</li>
+<li>리소스 모니터링 주기: 100ms (time.sleep(0.1))</li>
+</ul>
+<p>재현성 보장</p>
+<ul>
+<li>데이터셋과 모델 모두 랜덤 시드 42로 고정</li>
+</ul>
+<h3 id="결과" style="position:relative;"><a href="#%EA%B2%B0%EA%B3%BC" aria-label="결과 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>결과</h3>
+<p>Alpine 기반의 컨테이너로 K-means clustering 로직을 구동해본 결과는 아래와 같았습니다:</p>
+<blockquote>
+<p>🍅 disclaimer</p>
+<p><code class="language-text">scikit-learn</code> 의 공식 지원이 3.12 까지라, Alpine 리눅스에서는 3.13 베이스 이미지에서 구동이 어려웠습니다.</p>
+</blockquote>
 <table>
 <thead>
 <tr>
-<th>Image</th>
 <th>Version</th>
-<th>Trees</th>
-<th>Training (s)</th>
-<th>Prediction (s)</th>
-<th>Total (s)</th>
+<th align="right">Samples</th>
+<th align="right">Clusters</th>
+<th align="right">Execution Time (s)</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Alpine</td>
 <td><code class="language-text">3.12</code></td>
-<td>1</td>
-<td>1.87</td>
-<td>0.02</td>
-<td>1.89</td>
+<td align="right">1,000,000</td>
+<td align="right">3</td>
+<td align="right"><code class="language-text">5.50</code></td>
 </tr>
 <tr>
-<td>Alpine</td>
 <td><code class="language-text">3.12</code></td>
-<td>10</td>
-<td>5.98</td>
-<td>0.06</td>
-<td>6.04</td>
+<td align="right">1,000,000</td>
+<td align="right">5</td>
+<td align="right"><code class="language-text">4.81</code></td>
 </tr>
 <tr>
-<td>Alpine</td>
 <td><code class="language-text">3.12</code></td>
-<td>100</td>
-<td>46.62</td>
-<td>0.44</td>
-<td>47.06</td>
+<td align="right">5,000,000</td>
+<td align="right">3</td>
+<td align="right"><code class="language-text">11.90</code></td>
 </tr>
 <tr>
-<td>Alpine</td>
-<td><code class="language-text">3.13</code></td>
-<td>1</td>
-<td>2.40</td>
-<td>0.03</td>
-<td>2.43</td>
-</tr>
-<tr>
-<td>Alpine</td>
-<td><code class="language-text">3.13</code></td>
-<td>10</td>
-<td>6.16</td>
-<td>0.07</td>
-<td>6.23</td>
-</tr>
-<tr>
-<td>Alpine</td>
-<td><code class="language-text">3.13</code></td>
-<td>100</td>
-<td>48.25</td>
-<td>0.53</td>
-<td>48.78</td>
-</tr>
-<tr>
-<td>Debian</td>
 <td><code class="language-text">3.12</code></td>
-<td>1</td>
-<td>1.93</td>
-<td>0.02</td>
-<td>1.96</td>
+<td align="right">5,000,000</td>
+<td align="right">5</td>
+<td align="right"><code class="language-text">12.71</code></td>
 </tr>
+</tbody>
+</table>
+<p>Debian 기반의 컨테이너로 K-means clustering 로직을 구동해본 결과는 아래와 같았습니다:</p>
+<table>
+<thead>
 <tr>
-<td>Debian</td>
+<th>Version</th>
+<th align="right">Samples</th>
+<th align="right">Clusters</th>
+<th align="right">Execution Time (s)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
 <td><code class="language-text">3.12</code></td>
-<td>10</td>
-<td>5.93</td>
-<td>0.07</td>
-<td>6.00</td>
+<td align="right">1,000,000</td>
+<td align="right">3</td>
+<td align="right"><code class="language-text">4.72</code></td>
 </tr>
 <tr>
-<td>Debian</td>
 <td><code class="language-text">3.12</code></td>
-<td>100</td>
-<td>46.82</td>
-<td>0.42</td>
-<td>47.24</td>
+<td align="right">1,000,000</td>
+<td align="right">5</td>
+<td align="right"><code class="language-text">4.90</code></td>
 </tr>
 <tr>
-<td>Debian</td>
-<td><code class="language-text">3.13</code></td>
-<td>1</td>
-<td>2.35</td>
-<td>0.03</td>
-<td>2.38</td>
+<td><code class="language-text">3.12</code></td>
+<td align="right">5,000,000</td>
+<td align="right">3</td>
+<td align="right"><code class="language-text">10.37</code></td>
 </tr>
 <tr>
-<td>Debian</td>
-<td><code class="language-text">3.13</code></td>
-<td>10</td>
-<td>6.34</td>
-<td>0.10</td>
-<td>6.44</td>
+<td><code class="language-text">3.12</code></td>
+<td align="right">5,000,000</td>
+<td align="right">5</td>
+<td align="right"><code class="language-text">12.18</code></td>
 </tr>
 <tr>
-<td>Debian</td>
 <td><code class="language-text">3.13</code></td>
-<td>100</td>
-<td>49.17</td>
-<td>0.49</td>
-<td>49.66</td>
+<td align="right">100,000</td>
+<td align="right">5</td>
+<td align="right"><code class="language-text">2.74</code></td>
+</tr>
+<tr>
+<td><code class="language-text">3.13</code></td>
+<td align="right">100,000</td>
+<td align="right">7</td>
+<td align="right"><code class="language-text">3.50</code></td>
+</tr>
+<tr>
+<td><code class="language-text">3.13</code></td>
+<td align="right">500,000</td>
+<td align="right">5</td>
+<td align="right"><code class="language-text">6.92</code></td>
+</tr>
+<tr>
+<td><code class="language-text">3.13</code></td>
+<td align="right">500,000</td>
+<td align="right">7</td>
+<td align="right"><code class="language-text">6.92</code></td>
+</tr>
+</tbody>
+</table>
+<details>
+<summary>베이스 이미지 - Alpine 3.12 의 작업결과</summary>
+<div class="gatsby-highlight" data-language="log"><pre class="language-log"><code class="language-log">Running benchmark for <span class="token number">1000000</span> samples<span class="token punctuation">,</span> <span class="token number">3</span> clusters<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+<span class="token property">Execution time:</span> <span class="token number">5.50</span> seconds
+<span class="token property">Iterations:</span> <span class="token number">2</span>
+<span class="token property">Inertia:</span> <span class="token number">128018685.50</span>
+<span class="token property">Average CPU Usage:</span> <span class="token number">801.99</span><span class="token operator">%</span>
+<span class="token property">Average Memory Usage:</span> <span class="token number">12.59</span><span class="token operator">%</span>
+<span class="token property">Peak CPU Usage:</span> <span class="token number">1261.70</span><span class="token operator">%</span>
+<span class="token property">Peak Memory Usage:</span> <span class="token number">17.07</span><span class="token operator">%</span>
+Running benchmark for <span class="token number">1000000</span> samples<span class="token punctuation">,</span> <span class="token number">5</span> clusters<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token property">Execution time:</span> <span class="token number">4.81</span> seconds
+<span class="token property">Iterations:</span> <span class="token number">2</span>
+<span class="token property">Inertia:</span> <span class="token number">128018441.10</span>
+<span class="token property">Average CPU Usage:</span> <span class="token number">1014.51</span><span class="token operator">%</span>
+<span class="token property">Average Memory Usage:</span> <span class="token number">23.78</span><span class="token operator">%</span>
+<span class="token property">Peak CPU Usage:</span> <span class="token number">1206.10</span><span class="token operator">%</span>
+<span class="token property">Peak Memory Usage:</span> <span class="token number">28.70</span><span class="token operator">%</span>
+Running benchmark for <span class="token number">5000000</span> samples<span class="token punctuation">,</span> <span class="token number">3</span> clusters<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token property">Execution time:</span> <span class="token number">11.90</span> seconds
+<span class="token property">Iterations:</span> <span class="token number">2</span>
+<span class="token property">Inertia:</span> <span class="token number">640003227.45</span>
+<span class="token property">Average CPU Usage:</span> <span class="token number">723.35</span><span class="token operator">%</span>
+<span class="token property">Average Memory Usage:</span> <span class="token number">69.71</span><span class="token operator">%</span>
+<span class="token property">Peak CPU Usage:</span> <span class="token number">1208.10</span><span class="token operator">%</span>
+<span class="token property">Peak Memory Usage:</span> <span class="token number">92.17</span><span class="token operator">%</span>
+Running benchmark for <span class="token number">5000000</span> samples<span class="token punctuation">,</span> <span class="token number">5</span> clusters<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token property">Execution time:</span> <span class="token number">12.71</span> seconds
+<span class="token property">Iterations:</span> <span class="token number">2</span>
+<span class="token property">Inertia:</span> <span class="token number">640002946.03</span>
+<span class="token property">Average CPU Usage:</span> <span class="token number">945.65</span><span class="token operator">%</span>
+<span class="token property">Average Memory Usage:</span> <span class="token number">64.20</span><span class="token operator">%</span>
+<span class="token property">Peak CPU Usage:</span> <span class="token number">1206.70</span><span class="token operator">%</span>
+<span class="token property">Peak Memory Usage:</span> <span class="token number">90.08</span><span class="token operator">%</span>
+<span class="token property">Plotting Data Summary:</span>
+<span class="token property">Dataset Size:</span> <span class="token number">1000000</span><span class="token punctuation">,</span> Clusters<span class="token operator">:</span> <span class="token number">3</span>
+<span class="token property">Execution Time:</span> <span class="token number">5.50s</span>
+<span class="token property">CPU Usage:</span> <span class="token number">52</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">0.0</span><span class="token punctuation">,</span> <span class="token number">1261.7</span><span class="token punctuation">]</span>
+<span class="token property">Memory Usage:</span> <span class="token number">52</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">6.5</span><span class="token punctuation">,</span> <span class="token number">17.1</span><span class="token punctuation">]</span>
+<span class="token property">Dataset Size:</span> <span class="token number">1000000</span><span class="token punctuation">,</span> Clusters<span class="token operator">:</span> <span class="token number">5</span>
+<span class="token property">Execution Time:</span> <span class="token number">4.81s</span>
+<span class="token property">CPU Usage:</span> <span class="token number">47</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">93.4</span><span class="token punctuation">,</span> <span class="token number">1206.1</span><span class="token punctuation">]</span>
+<span class="token property">Memory Usage:</span> <span class="token number">47</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">18.0</span><span class="token punctuation">,</span> <span class="token number">28.7</span><span class="token punctuation">]</span>
+<span class="token property">Dataset Size:</span> <span class="token number">5000000</span><span class="token punctuation">,</span> Clusters<span class="token operator">:</span> <span class="token number">3</span>
+<span class="token property">Execution Time:</span> <span class="token number">11.90s</span>
+<span class="token property">CPU Usage:</span> <span class="token number">112</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">47.9</span><span class="token punctuation">,</span> <span class="token number">1208.1</span><span class="token punctuation">]</span>
+<span class="token property">Memory Usage:</span> <span class="token number">112</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">37.9</span><span class="token punctuation">,</span> <span class="token number">92.2</span><span class="token punctuation">]</span>
+<span class="token property">Dataset Size:</span> <span class="token number">5000000</span><span class="token punctuation">,</span> Clusters<span class="token operator">:</span> <span class="token number">5</span>
+<span class="token property">Execution Time:</span> <span class="token number">12.71s</span>
+<span class="token property">CPU Usage:</span> <span class="token number">121</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">86.0</span><span class="token punctuation">,</span> <span class="token number">1206.7</span><span class="token punctuation">]</span>
+<span class="token property">Memory Usage:</span> <span class="token number">121</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">35.7</span><span class="token punctuation">,</span> <span class="token number">90.1</span><span class="token punctuation">]</span></code></pre></div>
+</details>
+<details>
+<summary>(수행불가) 베이스 이미지 - Alpine 3.13 의 작업결과</summary>
+<p>구동 불가!</p>
+</details>
+<details>
+<summary>베이스 이미지 - Debian 3.12 의 작업결과</summary>
+<div class="gatsby-highlight" data-language="log"><pre class="language-log"><code class="language-log">Running benchmark for <span class="token number">1000000</span> samples<span class="token punctuation">,</span> <span class="token number">3</span> clusters<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token property">Execution time:</span> <span class="token number">4.72</span> seconds
+<span class="token property">Iterations:</span> <span class="token number">2</span>
+<span class="token property">Inertia:</span> <span class="token number">128018685.50</span>
+<span class="token property">Average CPU Usage:</span> <span class="token number">907.44</span><span class="token operator">%</span>
+<span class="token property">Average Memory Usage:</span> <span class="token number">12.71</span><span class="token operator">%</span>
+<span class="token property">Peak CPU Usage:</span> <span class="token number">1199.30</span><span class="token operator">%</span>
+<span class="token property">Peak Memory Usage:</span> <span class="token number">17.33</span><span class="token operator">%</span>
+Running benchmark for <span class="token number">1000000</span> samples<span class="token punctuation">,</span> <span class="token number">5</span> clusters<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token property">Execution time:</span> <span class="token number">4.90</span> seconds
+<span class="token property">Iterations:</span> <span class="token number">2</span>
+<span class="token property">Inertia:</span> <span class="token number">128018441.10</span>
+<span class="token property">Average CPU Usage:</span> <span class="token number">1044.18</span><span class="token operator">%</span>
+<span class="token property">Average Memory Usage:</span> <span class="token number">12.94</span><span class="token operator">%</span>
+<span class="token property">Peak CPU Usage:</span> <span class="token number">1218.20</span><span class="token operator">%</span>
+<span class="token property">Peak Memory Usage:</span> <span class="token number">18.36</span><span class="token operator">%</span>
+Running benchmark for <span class="token number">5000000</span> samples<span class="token punctuation">,</span> <span class="token number">3</span> clusters<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token property">Execution time:</span> <span class="token number">10.37</span> seconds
+<span class="token property">Iterations:</span> <span class="token number">2</span>
+<span class="token property">Inertia:</span> <span class="token number">640003227.45</span>
+<span class="token property">Average CPU Usage:</span> <span class="token number">793.64</span><span class="token operator">%</span>
+<span class="token property">Average Memory Usage:</span> <span class="token number">59.11</span><span class="token operator">%</span>
+<span class="token property">Peak CPU Usage:</span> <span class="token number">1208.20</span><span class="token operator">%</span>
+<span class="token property">Peak Memory Usage:</span> <span class="token number">83.59</span><span class="token operator">%</span>
+Running benchmark for <span class="token number">5000000</span> samples<span class="token punctuation">,</span> <span class="token number">5</span> clusters<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token property">Execution time:</span> <span class="token number">12.18</span> seconds
+<span class="token property">Iterations:</span> <span class="token number">2</span>
+<span class="token property">Inertia:</span> <span class="token number">640002946.03</span>
+<span class="token property">Average CPU Usage:</span> <span class="token number">959.31</span><span class="token operator">%</span>
+<span class="token property">Average Memory Usage:</span> <span class="token number">57.18</span><span class="token operator">%</span>
+<span class="token property">Peak CPU Usage:</span> <span class="token number">1210.40</span><span class="token operator">%</span>
+<span class="token property">Peak Memory Usage:</span> <span class="token number">83.59</span><span class="token operator">%</span>
+<span class="token property">Plotting Data Summary:</span>
+<span class="token property">Dataset Size:</span> <span class="token number">1000000</span><span class="token punctuation">,</span> Clusters<span class="token operator">:</span> <span class="token number">3</span>
+<span class="token property">Execution Time:</span> <span class="token number">4.72s</span>
+<span class="token property">CPU Usage:</span> <span class="token number">46</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">0.0</span><span class="token punctuation">,</span> <span class="token number">1199.3</span><span class="token punctuation">]</span>
+<span class="token property">Memory Usage:</span> <span class="token number">46</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">6.5</span><span class="token punctuation">,</span> <span class="token number">17.3</span><span class="token punctuation">]</span>
+<span class="token property">Dataset Size:</span> <span class="token number">1000000</span><span class="token punctuation">,</span> Clusters<span class="token operator">:</span> <span class="token number">5</span>
+<span class="token property">Execution Time:</span> <span class="token number">4.90s</span>
+<span class="token property">CPU Usage:</span> <span class="token number">48</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">93.4</span><span class="token punctuation">,</span> <span class="token number">1218.2</span><span class="token punctuation">]</span>
+<span class="token property">Memory Usage:</span> <span class="token number">48</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">7.5</span><span class="token punctuation">,</span> <span class="token number">18.4</span><span class="token punctuation">]</span>
+<span class="token property">Dataset Size:</span> <span class="token number">5000000</span><span class="token punctuation">,</span> Clusters<span class="token operator">:</span> <span class="token number">3</span>
+<span class="token property">Execution Time:</span> <span class="token number">10.37s</span>
+<span class="token property">CPU Usage:</span> <span class="token number">100</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">96.5</span><span class="token punctuation">,</span> <span class="token number">1208.2</span><span class="token punctuation">]</span>
+<span class="token property">Memory Usage:</span> <span class="token number">100</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">29.2</span><span class="token punctuation">,</span> <span class="token number">83.6</span><span class="token punctuation">]</span>
+<span class="token property">Dataset Size:</span> <span class="token number">5000000</span><span class="token punctuation">,</span> Clusters<span class="token operator">:</span> <span class="token number">5</span>
+<span class="token property">Execution Time:</span> <span class="token number">12.18s</span>
+<span class="token property">CPU Usage:</span> <span class="token number">118</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">88.9</span><span class="token punctuation">,</span> <span class="token number">1210.4</span><span class="token punctuation">]</span>
+<span class="token property">Memory Usage:</span> <span class="token number">118</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">29.2</span><span class="token punctuation">,</span> <span class="token number">83.6</span><span class="token punctuation">]</span></code></pre></div>
+</details>
+<details>
+<summary>베이스 이미지 - Debian 3.13 의 작업결과</summary>
+<div class="gatsby-highlight" data-language="log"><pre class="language-log"><code class="language-log">Running benchmark for <span class="token number">100000</span> samples<span class="token punctuation">,</span> <span class="token number">5</span> clusters<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token property">Execution time:</span> <span class="token number">2.74</span> seconds
+<span class="token property">Iterations:</span> <span class="token number">2</span>
+<span class="token property">Inertia:</span> <span class="token number">12800855.22</span>
+<span class="token property">Average CPU Usage:</span> <span class="token number">392.67</span><span class="token operator">%</span>
+<span class="token property">Average Memory Usage:</span> <span class="token number">2.48</span><span class="token operator">%</span>
+<span class="token property">Peak CPU Usage:</span> <span class="token number">536.20</span><span class="token operator">%</span>
+<span class="token property">Peak Memory Usage:</span> <span class="token number">2.52</span><span class="token operator">%</span>
+Running benchmark for <span class="token number">100000</span> samples<span class="token punctuation">,</span> <span class="token number">7</span> clusters<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token property">Execution time:</span> <span class="token number">3.50</span> seconds
+<span class="token property">Iterations:</span> <span class="token number">2</span>
+<span class="token property">Inertia:</span> <span class="token number">12800608.95</span>
+<span class="token property">Average CPU Usage:</span> <span class="token number">400.08</span><span class="token operator">%</span>
+<span class="token property">Average Memory Usage:</span> <span class="token number">2.50</span><span class="token operator">%</span>
+<span class="token property">Peak CPU Usage:</span> <span class="token number">564.40</span><span class="token operator">%</span>
+<span class="token property">Peak Memory Usage:</span> <span class="token number">2.52</span><span class="token operator">%</span>
+Running benchmark for <span class="token number">500000</span> samples<span class="token punctuation">,</span> <span class="token number">5</span> clusters<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token property">Execution time:</span> <span class="token number">6.92</span> seconds
+<span class="token property">Iterations:</span> <span class="token number">2</span>
+<span class="token property">Inertia:</span> <span class="token number">64009635.94</span>
+<span class="token property">Average CPU Usage:</span> <span class="token number">366.32</span><span class="token operator">%</span>
+<span class="token property">Average Memory Usage:</span> <span class="token number">7.00</span><span class="token operator">%</span>
+<span class="token property">Peak CPU Usage:</span> <span class="token number">671.20</span><span class="token operator">%</span>
+<span class="token property">Peak Memory Usage:</span> <span class="token number">9.58</span><span class="token operator">%</span>
+Running benchmark for <span class="token number">500000</span> samples<span class="token punctuation">,</span> <span class="token number">7</span> clusters<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token property">Execution time:</span> <span class="token number">6.92</span> seconds
+<span class="token property">Iterations:</span> <span class="token number">2</span>
+<span class="token property">Inertia:</span> <span class="token number">64009455.56</span>
+<span class="token property">Average CPU Usage:</span> <span class="token number">382.56</span><span class="token operator">%</span>
+<span class="token property">Average Memory Usage:</span> <span class="token number">6.93</span><span class="token operator">%</span>
+<span class="token property">Peak CPU Usage:</span> <span class="token number">601.80</span><span class="token operator">%</span>
+<span class="token property">Peak Memory Usage:</span> <span class="token number">7.32</span><span class="token operator">%</span>
+<span class="token property">Plotting Data Summary:</span>
+<span class="token property">Dataset Size:</span> <span class="token number">100000</span><span class="token punctuation">,</span> Clusters<span class="token operator">:</span> <span class="token number">5</span>
+<span class="token property">Execution Time:</span> <span class="token number">2.74s</span>
+<span class="token property">CPU Usage:</span> <span class="token number">26</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">0.0</span><span class="token punctuation">,</span> <span class="token number">536.2</span><span class="token punctuation">]</span>
+<span class="token property">Memory Usage:</span> <span class="token number">26</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">1.7</span><span class="token punctuation">,</span> <span class="token number">2.5</span><span class="token punctuation">]</span>
+<span class="token property">Dataset Size:</span> <span class="token number">100000</span><span class="token punctuation">,</span> Clusters<span class="token operator">:</span> <span class="token number">7</span>
+<span class="token property">Execution Time:</span> <span class="token number">3.50s</span>
+<span class="token property">CPU Usage:</span> <span class="token number">33</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">157.3</span><span class="token punctuation">,</span> <span class="token number">564.4</span><span class="token punctuation">]</span>
+<span class="token property">Memory Usage:</span> <span class="token number">33</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">2.0</span><span class="token punctuation">,</span> <span class="token number">2.5</span><span class="token punctuation">]</span>
+<span class="token property">Dataset Size:</span> <span class="token number">500000</span><span class="token punctuation">,</span> Clusters<span class="token operator">:</span> <span class="token number">5</span>
+<span class="token property">Execution Time:</span> <span class="token number">6.92s</span>
+<span class="token property">CPU Usage:</span> <span class="token number">64</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">97.0</span><span class="token punctuation">,</span> <span class="token number">671.2</span><span class="token punctuation">]</span>
+<span class="token property">Memory Usage:</span> <span class="token number">64</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">4.1</span><span class="token punctuation">,</span> <span class="token number">9.6</span><span class="token punctuation">]</span>
+<span class="token property">Dataset Size:</span> <span class="token number">500000</span><span class="token punctuation">,</span> Clusters<span class="token operator">:</span> <span class="token number">7</span>
+<span class="token property">Execution Time:</span> <span class="token number">6.92s</span>
+<span class="token property">CPU Usage:</span> <span class="token number">65</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">95.2</span><span class="token punctuation">,</span> <span class="token number">601.8</span><span class="token punctuation">]</span>
+<span class="token property">Memory Usage:</span> <span class="token number">65</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">4.3</span><span class="token punctuation">,</span> <span class="token number">7.3</span><span class="token punctuation">]</span></code></pre></div>
+</details>
+<h2 id="cpu-bound-태스크의-결과-2---random-forest" style="position:relative;"><a href="#cpu-bound-%ED%83%9C%EC%8A%A4%ED%81%AC%EC%9D%98-%EA%B2%B0%EA%B3%BC-2---random-forest" aria-label="cpu bound 태스크의 결과 2   random forest permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>CPU bound 태스크의 결과 (2) - Random forest</h2>
+<h3 id="전제조건-1" style="position:relative;"><a href="#%EC%A0%84%EC%A0%9C%EC%A1%B0%EA%B1%B4-1" aria-label="전제조건 1 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>전제조건</h3>
+<p>아래와 같은 전제조건을 취했습니다. 코드는 <a href="https://github.com/AmidCode/geultto_10_4th/blob/main/third/cpu/02_random_forest.py" target="_blank" rel="nofollow noopener noreferrer">여기</a>를 살펴봐주세요.</p>
+<ol>
+<li>데이터셋 조건</li>
+</ol>
+<ul>
+<li>샘플 수: 100,000개 (n_samples=100000)</li>
+<li>특성 수: 100개 (n_features=100)</li>
+<li>무작위 정규분포로 생성된 특성 데이터 (np.random.randn)</li>
+<li>이진 분류용 레이블 (0 또는 1, np.random.randint(0, 2))</li>
+<li>고정된 랜덤 시드: 42 (random_state=42)</li>
+</ul>
+<ol start="2">
+<li>모델 설정</li>
+</ol>
+<ul>
+<li>트리 개수 변화: [1, 2, 5, 10, 25, 50, 100]</li>
+<li>모든 CPU 코어 사용 (n_jobs=-1)</li>
+<li>모델의 랜덤 시드: 42</li>
+</ul>
+<ol start="3">
+<li>측정 항목</li>
+</ol>
+<ul>
+<li>학습 시간 (Training time)</li>
+<li>예측 시간 (Prediction time)</li>
+<li>총 수행 시간 (Total time = Training + Prediction)</li>
+</ul>
+<ol start="4">
+<li>재현성 보장</li>
+</ol>
+<ul>
+<li>numpy 랜덤 시드와 모델의 랜덤 시드를 모두 42로 고정하여 실험의 재현성 확보</li>
+</ul>
+<h3 id="결과-1" style="position:relative;"><a href="#%EA%B2%B0%EA%B3%BC-1" aria-label="결과 1 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>결과</h3>
+<p>Alpine 기반의 컨테이너로 Random forest 로직을 구동해본 결과는 아래와 같았습니다:</p>
+<table>
+<thead>
+<tr>
+<th>Version</th>
+<th align="right">Trees</th>
+<th align="right">Training (s)</th>
+<th align="right">Prediction (s)</th>
+<th align="center">Total (s)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="language-text">3.12</code></td>
+<td align="right">1</td>
+<td align="right">1.87</td>
+<td align="right">0.02</td>
+<td align="center"><code class="language-text">1.89</code></td>
+</tr>
+<tr>
+<td><code class="language-text">3.12</code></td>
+<td align="right">10</td>
+<td align="right">5.98</td>
+<td align="right">0.06</td>
+<td align="center"><code class="language-text">6.04</code></td>
+</tr>
+<tr>
+<td><code class="language-text">3.12</code></td>
+<td align="right">100</td>
+<td align="right">46.62</td>
+<td align="right">0.44</td>
+<td align="center"><code class="language-text">47.06</code></td>
+</tr>
+<tr>
+<td><code class="language-text">3.13</code></td>
+<td align="right">1</td>
+<td align="right">2.40</td>
+<td align="right">0.03</td>
+<td align="center"><code class="language-text">2.43</code></td>
+</tr>
+<tr>
+<td><code class="language-text">3.13</code></td>
+<td align="right">10</td>
+<td align="right">6.16</td>
+<td align="right">0.07</td>
+<td align="center"><code class="language-text">6.23</code></td>
+</tr>
+<tr>
+<td><code class="language-text">3.13</code></td>
+<td align="right">100</td>
+<td align="right">48.25</td>
+<td align="right">0.53</td>
+<td align="center"><code class="language-text">48.78</code></td>
+</tr>
+</tbody>
+</table>
+<p>Debian 기반의 컨테이너로 Random forest 로직을 구동해본 결과는 아래와 같았습니다:</p>
+<table>
+<thead>
+<tr>
+<th>Version</th>
+<th align="right">Trees</th>
+<th align="right">Training (s)</th>
+<th align="right">Prediction (s)</th>
+<th align="center">Total (s)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="language-text">3.12</code></td>
+<td align="right">1</td>
+<td align="right">1.93</td>
+<td align="right">0.02</td>
+<td align="center"><code class="language-text">1.96</code></td>
+</tr>
+<tr>
+<td><code class="language-text">3.12</code></td>
+<td align="right">10</td>
+<td align="right">5.93</td>
+<td align="right">0.07</td>
+<td align="center"><code class="language-text">6.00</code></td>
+</tr>
+<tr>
+<td><code class="language-text">3.12</code></td>
+<td align="right">100</td>
+<td align="right">46.82</td>
+<td align="right">0.42</td>
+<td align="center"><code class="language-text">47.24</code></td>
+</tr>
+<tr>
+<td><code class="language-text">3.13</code></td>
+<td align="right">1</td>
+<td align="right">2.35</td>
+<td align="right">0.03</td>
+<td align="center"><code class="language-text">2.38</code></td>
+</tr>
+<tr>
+<td><code class="language-text">3.13</code></td>
+<td align="right">10</td>
+<td align="right">6.34</td>
+<td align="right">0.10</td>
+<td align="center"><code class="language-text">6.44</code></td>
+</tr>
+<tr>
+<td><code class="language-text">3.13</code></td>
+<td align="right">100</td>
+<td align="right">49.17</td>
+<td align="right">0.49</td>
+<td align="center"><code class="language-text">49.66</code></td>
 </tr>
 </tbody>
 </table>
@@ -541,270 +869,6 @@ Testing RandomForest with <span class="token number">100</span> trees<span class
     <span class="token number">50</span>      <span class="token number">25.04</span>       <span class="token number">0.27</span>      <span class="token number">25.30</span>
    <span class="token number">100</span>      <span class="token number">49.17</span>       <span class="token number">0.49</span>      <span class="token number">49.66</span></code></pre></div>
 </details>
-<h2 id="cpu-bound-태스크의-결과-2---k-means-clustering" style="position:relative;"><a href="#cpu-bound-%ED%83%9C%EC%8A%A4%ED%81%AC%EC%9D%98-%EA%B2%B0%EA%B3%BC-2---k-means-clustering" aria-label="cpu bound 태스크의 결과 2   k means clustering permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>CPU bound 태스크의 결과 (2) - K-means clustering</h2>
-<p>표로 정리하면 아래와 같습니다:</p>
-<table>
-<thead>
-<tr>
-<th>Image</th>
-<th>Version</th>
-<th>Samples</th>
-<th>Clusters</th>
-<th>Execution Time (s)</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Debian</td>
-<td><code class="language-text">3.12</code></td>
-<td>1,000,000</td>
-<td>3</td>
-<td>4.72</td>
-</tr>
-<tr>
-<td>Debian</td>
-<td><code class="language-text">3.12</code></td>
-<td>1,000,000</td>
-<td>5</td>
-<td>4.90</td>
-</tr>
-<tr>
-<td>Debian</td>
-<td><code class="language-text">3.12</code></td>
-<td>5,000,000</td>
-<td>3</td>
-<td>10.37</td>
-</tr>
-<tr>
-<td>Debian</td>
-<td><code class="language-text">3.12</code></td>
-<td>5,000,000</td>
-<td>5</td>
-<td>12.18</td>
-</tr>
-<tr>
-<td>Alpine</td>
-<td><code class="language-text">3.12</code></td>
-<td>1,000,000</td>
-<td>3</td>
-<td>5.50</td>
-</tr>
-<tr>
-<td>Alpine</td>
-<td><code class="language-text">3.12</code></td>
-<td>1,000,000</td>
-<td>5</td>
-<td>4.81</td>
-</tr>
-<tr>
-<td>Alpine</td>
-<td><code class="language-text">3.12</code></td>
-<td>5,000,000</td>
-<td>3</td>
-<td>11.90</td>
-</tr>
-<tr>
-<td>Alpine</td>
-<td><code class="language-text">3.12</code></td>
-<td>5,000,000</td>
-<td>5</td>
-<td>12.71</td>
-</tr>
-<tr>
-<td>Debian</td>
-<td><code class="language-text">3.13</code></td>
-<td>100,000</td>
-<td>5</td>
-<td>2.74</td>
-</tr>
-<tr>
-<td>Debian</td>
-<td><code class="language-text">3.13</code></td>
-<td>100,000</td>
-<td>7</td>
-<td>3.50</td>
-</tr>
-<tr>
-<td>Debian</td>
-<td><code class="language-text">3.13</code></td>
-<td>500,000</td>
-<td>5</td>
-<td>6.92</td>
-</tr>
-<tr>
-<td>Debian</td>
-<td><code class="language-text">3.13</code></td>
-<td>500,000</td>
-<td>7</td>
-<td>6.92</td>
-</tr>
-</tbody>
-</table>
-<blockquote>
-<p>🍅 disclaimer</p>
-<p><code class="language-text">scikit-learn</code> 의 공식 지원이 3.12 까지라, Alpine 리눅스에서는 3.13 베이스 이미지에서 구동이 어려웠습니다.</p>
-</blockquote>
-<details>
-<summary>베이스 이미지 - Alpine 3.12 의 작업결과</summary>
-<div class="gatsby-highlight" data-language="log"><pre class="language-log"><code class="language-log">Running benchmark for <span class="token number">1000000</span> samples<span class="token punctuation">,</span> <span class="token number">3</span> clusters<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
-
-<span class="token property">Execution time:</span> <span class="token number">5.50</span> seconds
-<span class="token property">Iterations:</span> <span class="token number">2</span>
-<span class="token property">Inertia:</span> <span class="token number">128018685.50</span>
-<span class="token property">Average CPU Usage:</span> <span class="token number">801.99</span><span class="token operator">%</span>
-<span class="token property">Average Memory Usage:</span> <span class="token number">12.59</span><span class="token operator">%</span>
-<span class="token property">Peak CPU Usage:</span> <span class="token number">1261.70</span><span class="token operator">%</span>
-<span class="token property">Peak Memory Usage:</span> <span class="token number">17.07</span><span class="token operator">%</span>
-Running benchmark for <span class="token number">1000000</span> samples<span class="token punctuation">,</span> <span class="token number">5</span> clusters<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
-<span class="token property">Execution time:</span> <span class="token number">4.81</span> seconds
-<span class="token property">Iterations:</span> <span class="token number">2</span>
-<span class="token property">Inertia:</span> <span class="token number">128018441.10</span>
-<span class="token property">Average CPU Usage:</span> <span class="token number">1014.51</span><span class="token operator">%</span>
-<span class="token property">Average Memory Usage:</span> <span class="token number">23.78</span><span class="token operator">%</span>
-<span class="token property">Peak CPU Usage:</span> <span class="token number">1206.10</span><span class="token operator">%</span>
-<span class="token property">Peak Memory Usage:</span> <span class="token number">28.70</span><span class="token operator">%</span>
-Running benchmark for <span class="token number">5000000</span> samples<span class="token punctuation">,</span> <span class="token number">3</span> clusters<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
-<span class="token property">Execution time:</span> <span class="token number">11.90</span> seconds
-<span class="token property">Iterations:</span> <span class="token number">2</span>
-<span class="token property">Inertia:</span> <span class="token number">640003227.45</span>
-<span class="token property">Average CPU Usage:</span> <span class="token number">723.35</span><span class="token operator">%</span>
-<span class="token property">Average Memory Usage:</span> <span class="token number">69.71</span><span class="token operator">%</span>
-<span class="token property">Peak CPU Usage:</span> <span class="token number">1208.10</span><span class="token operator">%</span>
-<span class="token property">Peak Memory Usage:</span> <span class="token number">92.17</span><span class="token operator">%</span>
-Running benchmark for <span class="token number">5000000</span> samples<span class="token punctuation">,</span> <span class="token number">5</span> clusters<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
-<span class="token property">Execution time:</span> <span class="token number">12.71</span> seconds
-<span class="token property">Iterations:</span> <span class="token number">2</span>
-<span class="token property">Inertia:</span> <span class="token number">640002946.03</span>
-<span class="token property">Average CPU Usage:</span> <span class="token number">945.65</span><span class="token operator">%</span>
-<span class="token property">Average Memory Usage:</span> <span class="token number">64.20</span><span class="token operator">%</span>
-<span class="token property">Peak CPU Usage:</span> <span class="token number">1206.70</span><span class="token operator">%</span>
-<span class="token property">Peak Memory Usage:</span> <span class="token number">90.08</span><span class="token operator">%</span>
-<span class="token property">Plotting Data Summary:</span>
-<span class="token property">Dataset Size:</span> <span class="token number">1000000</span><span class="token punctuation">,</span> Clusters<span class="token operator">:</span> <span class="token number">3</span>
-<span class="token property">Execution Time:</span> <span class="token number">5.50s</span>
-<span class="token property">CPU Usage:</span> <span class="token number">52</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">0.0</span><span class="token punctuation">,</span> <span class="token number">1261.7</span><span class="token punctuation">]</span>
-<span class="token property">Memory Usage:</span> <span class="token number">52</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">6.5</span><span class="token punctuation">,</span> <span class="token number">17.1</span><span class="token punctuation">]</span>
-<span class="token property">Dataset Size:</span> <span class="token number">1000000</span><span class="token punctuation">,</span> Clusters<span class="token operator">:</span> <span class="token number">5</span>
-<span class="token property">Execution Time:</span> <span class="token number">4.81s</span>
-<span class="token property">CPU Usage:</span> <span class="token number">47</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">93.4</span><span class="token punctuation">,</span> <span class="token number">1206.1</span><span class="token punctuation">]</span>
-<span class="token property">Memory Usage:</span> <span class="token number">47</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">18.0</span><span class="token punctuation">,</span> <span class="token number">28.7</span><span class="token punctuation">]</span>
-<span class="token property">Dataset Size:</span> <span class="token number">5000000</span><span class="token punctuation">,</span> Clusters<span class="token operator">:</span> <span class="token number">3</span>
-<span class="token property">Execution Time:</span> <span class="token number">11.90s</span>
-<span class="token property">CPU Usage:</span> <span class="token number">112</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">47.9</span><span class="token punctuation">,</span> <span class="token number">1208.1</span><span class="token punctuation">]</span>
-<span class="token property">Memory Usage:</span> <span class="token number">112</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">37.9</span><span class="token punctuation">,</span> <span class="token number">92.2</span><span class="token punctuation">]</span>
-<span class="token property">Dataset Size:</span> <span class="token number">5000000</span><span class="token punctuation">,</span> Clusters<span class="token operator">:</span> <span class="token number">5</span>
-<span class="token property">Execution Time:</span> <span class="token number">12.71s</span>
-<span class="token property">CPU Usage:</span> <span class="token number">121</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">86.0</span><span class="token punctuation">,</span> <span class="token number">1206.7</span><span class="token punctuation">]</span>
-<span class="token property">Memory Usage:</span> <span class="token number">121</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">35.7</span><span class="token punctuation">,</span> <span class="token number">90.1</span><span class="token punctuation">]</span></code></pre></div>
-</details>
-<details>
-<summary>(수행불가) 베이스 이미지 - Alpine 3.13 의 작업결과</summary>
-<p>구동 불가!</p>
-</details>
-<details>
-<summary>베이스 이미지 - Debian 3.12 의 작업결과</summary>
-<div class="gatsby-highlight" data-language="log"><pre class="language-log"><code class="language-log">Running benchmark for <span class="token number">1000000</span> samples<span class="token punctuation">,</span> <span class="token number">3</span> clusters<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
-<span class="token property">Execution time:</span> <span class="token number">4.72</span> seconds
-<span class="token property">Iterations:</span> <span class="token number">2</span>
-<span class="token property">Inertia:</span> <span class="token number">128018685.50</span>
-<span class="token property">Average CPU Usage:</span> <span class="token number">907.44</span><span class="token operator">%</span>
-<span class="token property">Average Memory Usage:</span> <span class="token number">12.71</span><span class="token operator">%</span>
-<span class="token property">Peak CPU Usage:</span> <span class="token number">1199.30</span><span class="token operator">%</span>
-<span class="token property">Peak Memory Usage:</span> <span class="token number">17.33</span><span class="token operator">%</span>
-Running benchmark for <span class="token number">1000000</span> samples<span class="token punctuation">,</span> <span class="token number">5</span> clusters<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
-<span class="token property">Execution time:</span> <span class="token number">4.90</span> seconds
-<span class="token property">Iterations:</span> <span class="token number">2</span>
-<span class="token property">Inertia:</span> <span class="token number">128018441.10</span>
-<span class="token property">Average CPU Usage:</span> <span class="token number">1044.18</span><span class="token operator">%</span>
-<span class="token property">Average Memory Usage:</span> <span class="token number">12.94</span><span class="token operator">%</span>
-<span class="token property">Peak CPU Usage:</span> <span class="token number">1218.20</span><span class="token operator">%</span>
-<span class="token property">Peak Memory Usage:</span> <span class="token number">18.36</span><span class="token operator">%</span>
-Running benchmark for <span class="token number">5000000</span> samples<span class="token punctuation">,</span> <span class="token number">3</span> clusters<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
-<span class="token property">Execution time:</span> <span class="token number">10.37</span> seconds
-<span class="token property">Iterations:</span> <span class="token number">2</span>
-<span class="token property">Inertia:</span> <span class="token number">640003227.45</span>
-<span class="token property">Average CPU Usage:</span> <span class="token number">793.64</span><span class="token operator">%</span>
-<span class="token property">Average Memory Usage:</span> <span class="token number">59.11</span><span class="token operator">%</span>
-<span class="token property">Peak CPU Usage:</span> <span class="token number">1208.20</span><span class="token operator">%</span>
-<span class="token property">Peak Memory Usage:</span> <span class="token number">83.59</span><span class="token operator">%</span>
-Running benchmark for <span class="token number">5000000</span> samples<span class="token punctuation">,</span> <span class="token number">5</span> clusters<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
-<span class="token property">Execution time:</span> <span class="token number">12.18</span> seconds
-<span class="token property">Iterations:</span> <span class="token number">2</span>
-<span class="token property">Inertia:</span> <span class="token number">640002946.03</span>
-<span class="token property">Average CPU Usage:</span> <span class="token number">959.31</span><span class="token operator">%</span>
-<span class="token property">Average Memory Usage:</span> <span class="token number">57.18</span><span class="token operator">%</span>
-<span class="token property">Peak CPU Usage:</span> <span class="token number">1210.40</span><span class="token operator">%</span>
-<span class="token property">Peak Memory Usage:</span> <span class="token number">83.59</span><span class="token operator">%</span>
-<span class="token property">Plotting Data Summary:</span>
-<span class="token property">Dataset Size:</span> <span class="token number">1000000</span><span class="token punctuation">,</span> Clusters<span class="token operator">:</span> <span class="token number">3</span>
-<span class="token property">Execution Time:</span> <span class="token number">4.72s</span>
-<span class="token property">CPU Usage:</span> <span class="token number">46</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">0.0</span><span class="token punctuation">,</span> <span class="token number">1199.3</span><span class="token punctuation">]</span>
-<span class="token property">Memory Usage:</span> <span class="token number">46</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">6.5</span><span class="token punctuation">,</span> <span class="token number">17.3</span><span class="token punctuation">]</span>
-<span class="token property">Dataset Size:</span> <span class="token number">1000000</span><span class="token punctuation">,</span> Clusters<span class="token operator">:</span> <span class="token number">5</span>
-<span class="token property">Execution Time:</span> <span class="token number">4.90s</span>
-<span class="token property">CPU Usage:</span> <span class="token number">48</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">93.4</span><span class="token punctuation">,</span> <span class="token number">1218.2</span><span class="token punctuation">]</span>
-<span class="token property">Memory Usage:</span> <span class="token number">48</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">7.5</span><span class="token punctuation">,</span> <span class="token number">18.4</span><span class="token punctuation">]</span>
-<span class="token property">Dataset Size:</span> <span class="token number">5000000</span><span class="token punctuation">,</span> Clusters<span class="token operator">:</span> <span class="token number">3</span>
-<span class="token property">Execution Time:</span> <span class="token number">10.37s</span>
-<span class="token property">CPU Usage:</span> <span class="token number">100</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">96.5</span><span class="token punctuation">,</span> <span class="token number">1208.2</span><span class="token punctuation">]</span>
-<span class="token property">Memory Usage:</span> <span class="token number">100</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">29.2</span><span class="token punctuation">,</span> <span class="token number">83.6</span><span class="token punctuation">]</span>
-<span class="token property">Dataset Size:</span> <span class="token number">5000000</span><span class="token punctuation">,</span> Clusters<span class="token operator">:</span> <span class="token number">5</span>
-<span class="token property">Execution Time:</span> <span class="token number">12.18s</span>
-<span class="token property">CPU Usage:</span> <span class="token number">118</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">88.9</span><span class="token punctuation">,</span> <span class="token number">1210.4</span><span class="token punctuation">]</span>
-<span class="token property">Memory Usage:</span> <span class="token number">118</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">29.2</span><span class="token punctuation">,</span> <span class="token number">83.6</span><span class="token punctuation">]</span></code></pre></div>
-</details>
-<details>
-<summary>베이스 이미지 - Debian 3.13 의 작업결과</summary>
-<div class="gatsby-highlight" data-language="log"><pre class="language-log"><code class="language-log">Running benchmark for <span class="token number">100000</span> samples<span class="token punctuation">,</span> <span class="token number">5</span> clusters<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
-<span class="token property">Execution time:</span> <span class="token number">2.74</span> seconds
-<span class="token property">Iterations:</span> <span class="token number">2</span>
-<span class="token property">Inertia:</span> <span class="token number">12800855.22</span>
-<span class="token property">Average CPU Usage:</span> <span class="token number">392.67</span><span class="token operator">%</span>
-<span class="token property">Average Memory Usage:</span> <span class="token number">2.48</span><span class="token operator">%</span>
-<span class="token property">Peak CPU Usage:</span> <span class="token number">536.20</span><span class="token operator">%</span>
-<span class="token property">Peak Memory Usage:</span> <span class="token number">2.52</span><span class="token operator">%</span>
-Running benchmark for <span class="token number">100000</span> samples<span class="token punctuation">,</span> <span class="token number">7</span> clusters<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
-<span class="token property">Execution time:</span> <span class="token number">3.50</span> seconds
-<span class="token property">Iterations:</span> <span class="token number">2</span>
-<span class="token property">Inertia:</span> <span class="token number">12800608.95</span>
-<span class="token property">Average CPU Usage:</span> <span class="token number">400.08</span><span class="token operator">%</span>
-<span class="token property">Average Memory Usage:</span> <span class="token number">2.50</span><span class="token operator">%</span>
-<span class="token property">Peak CPU Usage:</span> <span class="token number">564.40</span><span class="token operator">%</span>
-<span class="token property">Peak Memory Usage:</span> <span class="token number">2.52</span><span class="token operator">%</span>
-Running benchmark for <span class="token number">500000</span> samples<span class="token punctuation">,</span> <span class="token number">5</span> clusters<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
-<span class="token property">Execution time:</span> <span class="token number">6.92</span> seconds
-<span class="token property">Iterations:</span> <span class="token number">2</span>
-<span class="token property">Inertia:</span> <span class="token number">64009635.94</span>
-<span class="token property">Average CPU Usage:</span> <span class="token number">366.32</span><span class="token operator">%</span>
-<span class="token property">Average Memory Usage:</span> <span class="token number">7.00</span><span class="token operator">%</span>
-<span class="token property">Peak CPU Usage:</span> <span class="token number">671.20</span><span class="token operator">%</span>
-<span class="token property">Peak Memory Usage:</span> <span class="token number">9.58</span><span class="token operator">%</span>
-Running benchmark for <span class="token number">500000</span> samples<span class="token punctuation">,</span> <span class="token number">7</span> clusters<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
-<span class="token property">Execution time:</span> <span class="token number">6.92</span> seconds
-<span class="token property">Iterations:</span> <span class="token number">2</span>
-<span class="token property">Inertia:</span> <span class="token number">64009455.56</span>
-<span class="token property">Average CPU Usage:</span> <span class="token number">382.56</span><span class="token operator">%</span>
-<span class="token property">Average Memory Usage:</span> <span class="token number">6.93</span><span class="token operator">%</span>
-<span class="token property">Peak CPU Usage:</span> <span class="token number">601.80</span><span class="token operator">%</span>
-<span class="token property">Peak Memory Usage:</span> <span class="token number">7.32</span><span class="token operator">%</span>
-<span class="token property">Plotting Data Summary:</span>
-<span class="token property">Dataset Size:</span> <span class="token number">100000</span><span class="token punctuation">,</span> Clusters<span class="token operator">:</span> <span class="token number">5</span>
-<span class="token property">Execution Time:</span> <span class="token number">2.74s</span>
-<span class="token property">CPU Usage:</span> <span class="token number">26</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">0.0</span><span class="token punctuation">,</span> <span class="token number">536.2</span><span class="token punctuation">]</span>
-<span class="token property">Memory Usage:</span> <span class="token number">26</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">1.7</span><span class="token punctuation">,</span> <span class="token number">2.5</span><span class="token punctuation">]</span>
-<span class="token property">Dataset Size:</span> <span class="token number">100000</span><span class="token punctuation">,</span> Clusters<span class="token operator">:</span> <span class="token number">7</span>
-<span class="token property">Execution Time:</span> <span class="token number">3.50s</span>
-<span class="token property">CPU Usage:</span> <span class="token number">33</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">157.3</span><span class="token punctuation">,</span> <span class="token number">564.4</span><span class="token punctuation">]</span>
-<span class="token property">Memory Usage:</span> <span class="token number">33</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">2.0</span><span class="token punctuation">,</span> <span class="token number">2.5</span><span class="token punctuation">]</span>
-<span class="token property">Dataset Size:</span> <span class="token number">500000</span><span class="token punctuation">,</span> Clusters<span class="token operator">:</span> <span class="token number">5</span>
-<span class="token property">Execution Time:</span> <span class="token number">6.92s</span>
-<span class="token property">CPU Usage:</span> <span class="token number">64</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">97.0</span><span class="token punctuation">,</span> <span class="token number">671.2</span><span class="token punctuation">]</span>
-<span class="token property">Memory Usage:</span> <span class="token number">64</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">4.1</span><span class="token punctuation">,</span> <span class="token number">9.6</span><span class="token punctuation">]</span>
-<span class="token property">Dataset Size:</span> <span class="token number">500000</span><span class="token punctuation">,</span> Clusters<span class="token operator">:</span> <span class="token number">7</span>
-<span class="token property">Execution Time:</span> <span class="token number">6.92s</span>
-<span class="token property">CPU Usage:</span> <span class="token number">65</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">95.2</span><span class="token punctuation">,</span> <span class="token number">601.8</span><span class="token punctuation">]</span>
-<span class="token property">Memory Usage:</span> <span class="token number">65</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">4.3</span><span class="token punctuation">,</span> <span class="token number">7.3</span><span class="token punctuation">]</span></code></pre></div>
-</details>
 <h2 id="io-bound-태스크의-결과-1---10만-건의-데이터-조회-결과" style="position:relative;"><a href="#io-bound-%ED%83%9C%EC%8A%A4%ED%81%AC%EC%9D%98-%EA%B2%B0%EA%B3%BC-1---10%EB%A7%8C-%EA%B1%B4%EC%9D%98-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A1%B0%ED%9A%8C-%EA%B2%B0%EA%B3%BC" aria-label="io bound 태스크의 결과 1   10만 건의 데이터 조회 결과 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>I/O bound 태스크의 결과 (1) - 10만 건의 데이터 조회 결과</h2>
 <p>Debian 기반의 컨테이너로 IO bound 태스크를 구동해본 결과는 아래와 같았습니다:</p>
 <p>Alpine 기반의 컨테이너로 IO bound 태스크를 구동해본 결과는 아래와 같았습니다:</p>
@@ -813,4 +877,16 @@ Running benchmark for <span class="token number">500000</span> samples<span clas
 <p>의외로, 미미한 차이가 있었고 심지어는 Alpine 기반 컨테이너가 근소하게나마 빨랐습니다.</p>
 <h2 id="io-bound" style="position:relative;"><a href="#io-bound" aria-label="io bound permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>I/O bound</h2>
 <h1 id="종합하여" style="position:relative;"><a href="#%EC%A2%85%ED%95%A9%ED%95%98%EC%97%AC" aria-label="종합하여 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>종합하여</h1>
-<p>CPU bound task에서 의외로 미미한 차이로 Alpine이 앞섰다는 점에서 놀라웠습니다.</p></div></div></div><div class="Post-module--footer--f8705"><div class="Meta-module--meta--dae0a"><p class="Meta-module--date--4d30d">Published<!-- --> <!-- -->Nov 24, 2024</p></div><div class="Tags-module--tags--18589"><ul class="Tags-module--list--82ae6"><li class="Tags-module--item--52015"><a class="Button-module--button--b1113" href="/tag/python/">python</a></li><li class="Tags-module--item--52015"><a class="Button-module--button--b1113" href="/tag/geultto/">geultto</a></li></ul></div><div class="Author-module--author--1c58d"><p class="Non scholæ sed vitæ discimus.">Non scholæ sed vitæ discimus.</p><p class="Author-module--bio--08950">his/him</p></div></div><div class="Post-module--comments--d3b99"><div></div></div></div></div></div><div id="gatsby-announcer" style="position:absolute;top:0;width:1px;height:1px;padding:0;overflow:hidden;clip:rect(0, 0, 0, 0);white-space:nowrap;border:0" aria-live="assertive" aria-atomic="true"></div></div><script id="gatsby-script-loader">/*<![CDATA[*/window.pagePath="/devlog/python/2024-11-24-python-container-101-pt02";window.___webpackCompilationHash="43e681196d34fe1c4edf";/*]]>*/</script><script id="gatsby-chunk-mapping">/*<![CDATA[*/window.___chunkMapping={"polyfill":["/polyfill-29ec2187e6089b998329.js"],"app":["/app-2d58cf3dd5a5a15ad8a0.js"],"component---cache-caches-gatsby-plugin-offline-app-shell-js":["/component---cache-caches-gatsby-plugin-offline-app-shell-js-0c915c7b1bdb5eac4fdf.js"],"component---src-templates-categories-template-categories-template-tsx":["/component---src-templates-categories-template-categories-template-tsx-e2d2add397e32e3517ca.js"],"component---src-templates-category-template-category-template-tsx":["/component---src-templates-category-template-category-template-tsx-078f2adfba160a34229f.js"],"component---src-templates-index-template-index-template-tsx":["/component---src-templates-index-template-index-template-tsx-83380c7954c9f6621026.js"],"component---src-templates-not-found-template-not-found-template-tsx":["/component---src-templates-not-found-template-not-found-template-tsx-56fe4d3b015459d56c99.js"],"component---src-templates-page-template-page-template-tsx":["/component---src-templates-page-template-page-template-tsx-c6c21d7369a9356db3a1.js"],"component---src-templates-post-template-post-template-tsx":["/component---src-templates-post-template-post-template-tsx-119cd0258cb38628d01f.js"],"component---src-templates-tag-template-tag-template-tsx":["/component---src-templates-tag-template-tag-template-tsx-8d0b3090e775aa3c4584.js"],"component---src-templates-tags-template-tags-template-tsx":["/component---src-templates-tags-template-tags-template-tsx-30027e87af7d042f3afb.js"]};/*]]>*/</script><script src="/polyfill-29ec2187e6089b998329.js" nomodule=""></script><script src="/app-2d58cf3dd5a5a15ad8a0.js" async=""></script><script src="/framework-481a1b6416c14416b2fb.js" async=""></script><script src="/webpack-runtime-de5a94456c9c32f6cdb9.js" async=""></script></body></html>
+<p>CPU bound task에서 의외로 미미한 차이로 Alpine이 앞섰다는 점에서 놀라웠습니다.</p>
+<h1 id="끝으로" style="position:relative;"><a href="#%EB%81%9D%EC%9C%BC%EB%A1%9C" aria-label="끝으로 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>끝으로…</h1>
+<p>이 시리즈를 통하여 아래 접근방안을 보여드렸습니다:</p>
+<ul>
+<li>효율적인 컨테이너 제작에 필요한 기초지식</li>
+<li>프로덕션 환경에 알맞는 테스트방안
+<ul>
+<li>주요 가설과 검증, 벤치마킹 방안</li>
+</ul>
+</li>
+</ul>
+<p>이 시리즈를 통해, 여러분들의 업무나 벤치마킹 및 PoC 에 작게나마 도움이 되었으면 좋겠습니다.</p>
+<p>긴 글 읽어주셔서 감사합니다.</p></div></div></div><div class="Post-module--footer--f8705"><div class="Meta-module--meta--dae0a"><p class="Meta-module--date--4d30d">Published<!-- --> <!-- -->Nov 24, 2024</p></div><div class="Tags-module--tags--18589"><ul class="Tags-module--list--82ae6"><li class="Tags-module--item--52015"><a class="Button-module--button--b1113" href="/tag/python/">python</a></li><li class="Tags-module--item--52015"><a class="Button-module--button--b1113" href="/tag/geultto/">geultto</a></li></ul></div><div class="Author-module--author--1c58d"><p class="Non scholæ sed vitæ discimus.">Non scholæ sed vitæ discimus.</p><p class="Author-module--bio--08950">his/him</p></div></div><div class="Post-module--comments--d3b99"><div></div></div></div></div></div><div id="gatsby-announcer" style="position:absolute;top:0;width:1px;height:1px;padding:0;overflow:hidden;clip:rect(0, 0, 0, 0);white-space:nowrap;border:0" aria-live="assertive" aria-atomic="true"></div></div><script id="gatsby-script-loader">/*<![CDATA[*/window.pagePath="/devlog/python/2024-11-24-python-container-101-pt03";window.___webpackCompilationHash="ab5723d75ba8002bd427";/*]]>*/</script><script id="gatsby-chunk-mapping">/*<![CDATA[*/window.___chunkMapping={"polyfill":["/polyfill-90e9826e935e92429bc2.js"],"app":["/app-073bec7653abfdec7f73.js"],"component---cache-caches-gatsby-plugin-offline-app-shell-js":["/component---cache-caches-gatsby-plugin-offline-app-shell-js-0c915c7b1bdb5eac4fdf.js"],"component---src-templates-categories-template-categories-template-tsx":["/component---src-templates-categories-template-categories-template-tsx-e2d2add397e32e3517ca.js"],"component---src-templates-category-template-category-template-tsx":["/component---src-templates-category-template-category-template-tsx-078f2adfba160a34229f.js"],"component---src-templates-index-template-index-template-tsx":["/component---src-templates-index-template-index-template-tsx-83380c7954c9f6621026.js"],"component---src-templates-not-found-template-not-found-template-tsx":["/component---src-templates-not-found-template-not-found-template-tsx-56fe4d3b015459d56c99.js"],"component---src-templates-page-template-page-template-tsx":["/component---src-templates-page-template-page-template-tsx-c6c21d7369a9356db3a1.js"],"component---src-templates-post-template-post-template-tsx":["/component---src-templates-post-template-post-template-tsx-119cd0258cb38628d01f.js"],"component---src-templates-tag-template-tag-template-tsx":["/component---src-templates-tag-template-tag-template-tsx-8d0b3090e775aa3c4584.js"],"component---src-templates-tags-template-tags-template-tsx":["/component---src-templates-tags-template-tags-template-tsx-30027e87af7d042f3afb.js"]};/*]]>*/</script><script src="/polyfill-90e9826e935e92429bc2.js" nomodule=""></script><script src="/app-073bec7653abfdec7f73.js" async=""></script><script src="/framework-481a1b6416c14416b2fb.js" async=""></script><script src="/webpack-runtime-de5a94456c9c32f6cdb9.js" async=""></script></body></html>
