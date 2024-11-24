@@ -1,4 +1,739 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[팔공산 창고]]></title><description><![CDATA[팔공산 창고]]></description><link>http://github.com/dylang/node-rss</link><generator>GatsbyJS</generator><lastBuildDate>Sun, 10 Nov 2024 14:45:44 GMT</lastBuildDate><item><title><![CDATA[지난 6개월 간 업무 회고]]></title><description><![CDATA[입사 후 지난 6개월을 회고합니다. 지난 6개월간 무엇을 했고, 무엇을 반성하며 무엇을 향해 나아가야할지 썼습니다.]]></description><link>https://blog.s3ich4n.me/retrospect/2024-11-10-6-month-retrospect</link><guid isPermaLink="false">https://blog.s3ich4n.me/retrospect/2024-11-10-6-month-retrospect</guid><pubDate>Sun, 10 Nov 2024 23:20:16 GMT</pubDate><content:encoded>&lt;p&gt;이번 글은 몸이 안 좋아서 회사에서 있었던 일을 회고하는 글로 대체합니다.&lt;/p&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[팔공산 창고]]></title><description><![CDATA[팔공산 창고]]></description><link>http://github.com/dylang/node-rss</link><generator>GatsbyJS</generator><lastBuildDate>Sun, 24 Nov 2024 14:55:37 GMT</lastBuildDate><item><title><![CDATA[[연재] 파이썬 컨테이너 선택 제 3형 - 파이썬 컨테이너 실전비교]]></title><description><![CDATA[파이썬 컨테이너 최적화 기법을 이용하여 CPU bound 작업과 IO bound 작업을 직접 구동해봅니다.]]></description><link>https://blog.s3ich4n.me/devlog/python/2024-11-24-python-container-101-pt02</link><guid isPermaLink="false">https://blog.s3ich4n.me/devlog/python/2024-11-24-python-container-101-pt02</guid><pubDate>Sun, 24 Nov 2024 23:57:00 GMT</pubDate><content:encoded>&lt;p&gt;이번 게시글에서는 Debian 기반의 컨테이너와 Alpine 기반의 컨테이너 간 성능을 비교해보도록 하겠습니다.&lt;/p&gt;
+&lt;p&gt;지난 게시글에는 분명 이렇게 소개했습니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;I/O bound 태스크 중심: API 서비스를 만들고, DB에는 1억개의 데이터을 추가한 후, 쿼리 테스트 및 부하 테스트를 수행하여 성능을 리포트&lt;/li&gt;
+&lt;li&gt;CPU bound 태스크 중심: 매우 큰 데이터를 pandas로 처리, matplotlib으로 연산하게 구성해보고 성능을 리포트&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;하지만, 구동 시간이 너무 오래걸려 본 게시글에는 테스트 방안을 “소개”하고, 글을 수정하여 보강할 예정입니다. 벌써부터 이렇게 말씀드리는 점 양해 부탁드립니다. 🙇🙇&lt;/p&gt;
+&lt;p&gt;아래와 같이 변경될 예정입니다:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;I/O bound 태스크 중심: &lt;del&gt;API 서비스를 만들고&lt;/del&gt;, DB에는 10만 개의 데이터을 추가한 후, 쿼리 테스트 &lt;del&gt;및 부하 테스트를&lt;/del&gt; 수행하여 성능을 리포트&lt;/li&gt;
+&lt;li&gt;CPU bound 태스크 중심: K-means clustering 과 랜덤 포레스트 기법을 &lt;del&gt;SVD 연산(준비만 되어있습니다!)&lt;/del&gt; 사용하여 &lt;del&gt;매우 큰 데이터를 pandas로 처리, matplotlib으로 연산하게 구성해보고&lt;/del&gt; CPU, 메모리 사용량을 리포트&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;그렇다면, 목표와 준비 후, 가절을 세우고 직접 실험해봅시다.&lt;/p&gt;
+&lt;h1 id=&quot;목표&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EB%AA%A9%ED%91%9C&quot; aria-label=&quot;목표 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;&lt;strong&gt;목표&lt;/strong&gt;&lt;/h1&gt;
+&lt;p&gt;파이썬으로 작성한 cpu bound task와 io bound task 를 각각 컨테이너화 했을 때, glibc, musl 구현체의 성능 벤치마킹을 통해 적절한 구현체가 무엇인지 파악해봅시다.&lt;/p&gt;
+&lt;h2 id=&quot;준비&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%A4%80%EB%B9%84&quot; aria-label=&quot;준비 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;&lt;strong&gt;준비&lt;/strong&gt;&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;c 라이브러리 구현체 선택
+&lt;ul&gt;
+&lt;li&gt;앞어 설명드린 바 대로, C 라이브러리의 구현체는 glibc/musl 이 있습니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;저희는 2부에서 설명드린 바와 같이, 도커 컨테이너를 아래와 같이 선택하기로 했습니다
+&lt;ul&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;glibc&lt;/code&gt; C 라이브러리 기반의 운영체제 이미지&lt;/li&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;musl&lt;/code&gt; C 라이브러리 기반의 운영체제 이밎&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;성능을 가리는 조건은 두가지로 한정짓습니다.
+&lt;ol&gt;
+&lt;li&gt;cpu bound
+&lt;ul&gt;
+&lt;li&gt;cpu를 많이 쓰는 태스크 (cpu 연산 그 자체)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;io bound
+&lt;ul&gt;
+&lt;li&gt;io작업이 많은 태스크 (E.g., 서버 업/다운로드, db 콜)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;해당 코드를 구동하는 환경은 아래와 같습니다
+&lt;ol&gt;
+&lt;li&gt;(로컬 테스트) - M3 Pro 맥북&lt;/li&gt;
+&lt;li&gt;(&lt;strong&gt;예정&lt;/strong&gt;, 실제 환경과 유사한 테스트) - GitHub Actions&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&quot;cpu-bound-작업을-선별합시다&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#cpu-bound-%EC%9E%91%EC%97%85%EC%9D%84-%EC%84%A0%EB%B3%84%ED%95%A9%EC%8B%9C%EB%8B%A4&quot; aria-label=&quot;cpu bound 작업을 선별합시다 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;CPU bound 작업을 선별합시다&lt;/h3&gt;
+&lt;p&gt;CPU bound 태스크를 테스트하기 위해, 랜덤 포레스트와 K-means clustering을 각각 구동해보기로 했습니다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;각종 머신러닝 기법을 진짜 맛만보는 코드를 작성했습니다. 아래는 제가 구동하려는 태스크들입니다.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;랜덤 포레스트
+&lt;ul&gt;
+&lt;li&gt;다량의 서로 다른 샘플과 특성이 반영된 decision tree를 구성한다.&lt;/li&gt;
+&lt;li&gt;트리 연산은 병렬로 수행하고, 결과값은 다수결로/평균값으로 도출된다&lt;/li&gt;
+&lt;li&gt;overfitting(과적합)을 방지하는 앙상블 방법이다&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;k-means clustering
+&lt;ul&gt;
+&lt;li&gt;k-means - 비지도 학습(unsupervised learning) 알고리즘 - 을 기반으로 한 클러스터링 알고리즘&lt;/li&gt;
+&lt;li&gt;데이터 포인트들을 K개의 그룹(클러스터)으로 나눈다&lt;/li&gt;
+&lt;li&gt;비슷한 특성을 가진 데이터끼리 같은 그룹으로 묶음&lt;/li&gt;
+&lt;li&gt;“비슷하다”의 기준은 데이터 포인트 간의 거리 (주로 유클리드 거리 사용)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;이 태스크로 선정한 이유는 아래와 같습니다:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;여러 복합적인 연산을 수행하기 위해 CPython 구현체나 C 코드로 빌드된 코드를 사용함으로 인해 발생하는 성능차이가 분명히 있을 것이라고 생각했기 때문입니다.&lt;/li&gt;
+&lt;li&gt;단순 연산(소수 구하기, 해쉬연산 지속적으로 수행하기)는 CPU 레벨에서 최적화되어 인터프리트 되면 크게 의미없다고 판단했기 때문입니다.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&quot;io-bound-작업을-선별합니다&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#io-bound-%EC%9E%91%EC%97%85%EC%9D%84-%EC%84%A0%EB%B3%84%ED%95%A9%EB%8B%88%EB%8B%A4&quot; aria-label=&quot;io bound 작업을 선별합니다 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;IO bound 작업을 선별합니다.&lt;/h3&gt;
+&lt;p&gt;아래와 같이 테이블 구성&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;기관 테이블을 구성, 기관의 고유식별자를 fk로 쓰는 ‘기관정보’ 테이블 구성&lt;/li&gt;
+&lt;li&gt;유저 테이블을 생성&lt;/li&gt;
+&lt;li&gt;이 테이블의 uuid 값을 fk로 쓰는 테이블을 아래와 같이 구성
+&lt;ul&gt;
+&lt;li&gt;‘유저 개인정보’&lt;/li&gt;
+&lt;li&gt;‘유저 프로필 정보’&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h1 id=&quot;가설&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EA%B0%80%EC%84%A4&quot; aria-label=&quot;가설 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;&lt;strong&gt;가설&lt;/strong&gt;&lt;/h1&gt;
+&lt;p&gt;이번 실험을 통해 세운 가설은 아래와 같습니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;glibc, musl은 cpu bound task, io bound task 별로 성능차이가 있을 것입니다.
+&lt;ul&gt;
+&lt;li&gt;근거: 여러 작업(precondition, postcondition 이나 실제 구현체 이용)을 많이 하면 각 구현체별 성능차가 있을 것이기 때문입니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&quot;작업-순서&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%9E%91%EC%97%85-%EC%88%9C%EC%84%9C&quot; aria-label=&quot;작업 순서 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;&lt;strong&gt;작업 순서&lt;/strong&gt;&lt;/h1&gt;
+&lt;p&gt;여기서부터는 작성한 코드를 참고해주세요. 코드는 &lt;a href=&quot;&quot;&gt;이 github 링크&lt;/a&gt; 에 준비되어 있습니다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;컨테이너 만들기
+&lt;ol&gt;
+&lt;li&gt;debian based (slim 이미지인가, 아닌가의 차이도 명확한지 파악 필요)&lt;/li&gt;
+&lt;li&gt;alpine based&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;cpu bound task를 수행하는 코드 작성하기 (wip)
+&lt;ol&gt;
+&lt;li&gt;random forest를 병렬 작업하는 코드&lt;/li&gt;
+&lt;li&gt;k-means clustering을 병렬 작업하는 코드&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;io bound task를 수행하는 코드 작성하기
+&lt;ol&gt;
+&lt;li&gt;10만 건의 유저 데이터(하위 테이블 포함)를 추가하고, 개별 유저에 대해 개인정보를 추가하여 쿼리를 수행&lt;/li&gt;
+&lt;li&gt;유저를 1000명씩 임의로 쿼리 수행&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;python 버전, 태스크 별로 각각 테스트 수행&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h1 id=&quot;리뷰-1&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EB%A6%AC%EB%B7%B0-1&quot; aria-label=&quot;리뷰 1 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;&lt;strong&gt;리뷰 (1)&lt;/strong&gt;&lt;/h1&gt;
+&lt;p&gt;하지만 작업 중간에, 아래와 같은 리뷰사항을 받고 태스크의 내용을 한 번 수정했습니다. 확실히 조사가 필요한 부분 및 보강이 가능한 부분에 대해 다듬었습니다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;cpu bound task 보완&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;데이터셋 크기, 하이퍼 파라미터는 수행 전 별도로 기재하여 실험상에 어떻게 쓰였는지 글로 작성&lt;/li&gt;
+&lt;li&gt;멀티 프로세싱을 고려해야하나? - 현재는 포기
+&lt;ul&gt;
+&lt;li&gt;(“확실한” 조사 필요) 파이썬에서 이런 태스크가 GIL이 처리하려면 &lt;code class=&quot;language-text&quot;&gt;n_jobs&lt;/code&gt; 파라미터 만으로 처리가능한지&lt;/li&gt;
+&lt;li&gt;(“확실한” 조사 필요) 이걸 컨테이너로 처리하면 환경변수로 처리하고, 개별 컨테이너 별 부여받은 최대 CPU만큼 쓰면 되는지&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;io bound task 보완&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;rdbms는 postgres 15버전 사용 예정.&lt;/li&gt;
+&lt;li&gt;&lt;del&gt;커넥션 풀링은 sqlalchemy의 기본 사용량을 써보고, 너무 처참한 p95 값이 나오면 (1초 이상) 조절 예정&lt;/del&gt; (API로 부하 테스트까지 해보는 것이 목표입니다만, 거기까지는 아직 진행을 못했습니다.. 🥲)&lt;/li&gt;
+&lt;li&gt;쿼리 유형 다각화 - 어떻게 진행하면 좋을지?
+&lt;ul&gt;
+&lt;li&gt;실질적으로 많이 일어나는건 쿼리라고 판단함&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;db에 추가하는 건 어떻게 보면 테스트 데이터 준비과정으로 이해하고, 쿼리의 성능을 살펴보는 것이 중요할 것으로 판단. 일반적인 시스템에서 추가보다는 조회가 훨씬 더 많이 일어나기 때문.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h1 id=&quot;실제-실험결과&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%8B%A4%EC%A0%9C-%EC%8B%A4%ED%97%98%EA%B2%B0%EA%B3%BC&quot; aria-label=&quot;실제 실험결과 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;&lt;strong&gt;실제 실험결과&lt;/strong&gt;&lt;/h1&gt;
+&lt;p&gt;실험 결과는 위에서 소개시켜드렸던 결과로 구동하려 합니다.&lt;/p&gt;
+&lt;h2 id=&quot;cpu-bound-태스크의-결과-1---random-forest&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#cpu-bound-%ED%83%9C%EC%8A%A4%ED%81%AC%EC%9D%98-%EA%B2%B0%EA%B3%BC-1---random-forest&quot; aria-label=&quot;cpu bound 태스크의 결과 1   random forest permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;CPU bound 태스크의 결과 (1) - Random forest&lt;/h2&gt;
+&lt;p&gt;Debian 기반의 컨테이너로 CPU bound 태스크를 구동해본 결과는 아래와 같았습니다:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Image&lt;/th&gt;
+&lt;th&gt;Version&lt;/th&gt;
+&lt;th&gt;Trees&lt;/th&gt;
+&lt;th&gt;Training (s)&lt;/th&gt;
+&lt;th&gt;Prediction (s)&lt;/th&gt;
+&lt;th&gt;Total (s)&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Alpine&lt;/td&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;3.12&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;td&gt;1.87&lt;/td&gt;
+&lt;td&gt;0.02&lt;/td&gt;
+&lt;td&gt;1.89&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Alpine&lt;/td&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;3.12&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;10&lt;/td&gt;
+&lt;td&gt;5.98&lt;/td&gt;
+&lt;td&gt;0.06&lt;/td&gt;
+&lt;td&gt;6.04&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Alpine&lt;/td&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;3.12&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;100&lt;/td&gt;
+&lt;td&gt;46.62&lt;/td&gt;
+&lt;td&gt;0.44&lt;/td&gt;
+&lt;td&gt;47.06&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Alpine&lt;/td&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;3.13&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;td&gt;2.40&lt;/td&gt;
+&lt;td&gt;0.03&lt;/td&gt;
+&lt;td&gt;2.43&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Alpine&lt;/td&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;3.13&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;10&lt;/td&gt;
+&lt;td&gt;6.16&lt;/td&gt;
+&lt;td&gt;0.07&lt;/td&gt;
+&lt;td&gt;6.23&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Alpine&lt;/td&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;3.13&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;100&lt;/td&gt;
+&lt;td&gt;48.25&lt;/td&gt;
+&lt;td&gt;0.53&lt;/td&gt;
+&lt;td&gt;48.78&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Debian&lt;/td&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;3.12&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;td&gt;1.93&lt;/td&gt;
+&lt;td&gt;0.02&lt;/td&gt;
+&lt;td&gt;1.96&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Debian&lt;/td&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;3.12&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;10&lt;/td&gt;
+&lt;td&gt;5.93&lt;/td&gt;
+&lt;td&gt;0.07&lt;/td&gt;
+&lt;td&gt;6.00&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Debian&lt;/td&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;3.12&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;100&lt;/td&gt;
+&lt;td&gt;46.82&lt;/td&gt;
+&lt;td&gt;0.42&lt;/td&gt;
+&lt;td&gt;47.24&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Debian&lt;/td&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;3.13&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;td&gt;2.35&lt;/td&gt;
+&lt;td&gt;0.03&lt;/td&gt;
+&lt;td&gt;2.38&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Debian&lt;/td&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;3.13&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;10&lt;/td&gt;
+&lt;td&gt;6.34&lt;/td&gt;
+&lt;td&gt;0.10&lt;/td&gt;
+&lt;td&gt;6.44&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Debian&lt;/td&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;3.13&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;100&lt;/td&gt;
+&lt;td&gt;49.17&lt;/td&gt;
+&lt;td&gt;0.49&lt;/td&gt;
+&lt;td&gt;49.66&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;details&gt;
+&lt;summary&gt;베이스 이미지 - Alpine 3.12 의 작업결과&lt;/summary&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;log&quot;&gt;&lt;pre class=&quot;language-log&quot;&gt;&lt;code class=&quot;language-log&quot;&gt;&lt;span class=&quot;token property&quot;&gt;Dataset generated:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;100000&lt;/span&gt; samples with &lt;span class=&quot;token number&quot;&gt;100&lt;/span&gt; features
+
+Testing RandomForest with &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt; trees&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Training time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1.87&lt;/span&gt; seconds
+&lt;span class=&quot;token property&quot;&gt;Prediction time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0.02&lt;/span&gt; seconds
+&lt;span class=&quot;token property&quot;&gt;Total time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1.89&lt;/span&gt; seconds
+
+Testing RandomForest with &lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt; trees&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Training time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1.92&lt;/span&gt; seconds
+&lt;span class=&quot;token property&quot;&gt;Prediction time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0.03&lt;/span&gt; seconds
+&lt;span class=&quot;token property&quot;&gt;Total time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1.95&lt;/span&gt; seconds
+
+Testing RandomForest with &lt;span class=&quot;token number&quot;&gt;5&lt;/span&gt; trees&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Training time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;3.51&lt;/span&gt; seconds
+&lt;span class=&quot;token property&quot;&gt;Prediction time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0.05&lt;/span&gt; seconds
+&lt;span class=&quot;token property&quot;&gt;Total time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;3.56&lt;/span&gt; seconds
+
+Testing RandomForest with &lt;span class=&quot;token number&quot;&gt;10&lt;/span&gt; trees&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Training time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;5.98&lt;/span&gt; seconds
+&lt;span class=&quot;token property&quot;&gt;Prediction time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0.06&lt;/span&gt; seconds
+&lt;span class=&quot;token property&quot;&gt;Total time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;6.04&lt;/span&gt; seconds
+
+Testing RandomForest with &lt;span class=&quot;token number&quot;&gt;25&lt;/span&gt; trees&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Training time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;11.93&lt;/span&gt; seconds
+&lt;span class=&quot;token property&quot;&gt;Prediction time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0.14&lt;/span&gt; seconds
+&lt;span class=&quot;token property&quot;&gt;Total time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;12.07&lt;/span&gt; seconds
+
+Testing RandomForest with &lt;span class=&quot;token number&quot;&gt;50&lt;/span&gt; trees&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Training time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;22.90&lt;/span&gt; seconds
+&lt;span class=&quot;token property&quot;&gt;Prediction time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0.24&lt;/span&gt; seconds
+&lt;span class=&quot;token property&quot;&gt;Total time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;23.14&lt;/span&gt; seconds
+
+Testing RandomForest with &lt;span class=&quot;token number&quot;&gt;100&lt;/span&gt; trees&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Training time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;46.62&lt;/span&gt; seconds
+&lt;span class=&quot;token property&quot;&gt;Prediction time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0.44&lt;/span&gt; seconds
+&lt;span class=&quot;token property&quot;&gt;Total time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;47.06&lt;/span&gt; seconds
+
+&lt;span class=&quot;token property&quot;&gt;Summary:&lt;/span&gt;
+ Trees   Train&lt;span class=&quot;token operator&quot;&gt;(&lt;/span&gt;s&lt;span class=&quot;token operator&quot;&gt;)&lt;/span&gt; Predict&lt;span class=&quot;token operator&quot;&gt;(&lt;/span&gt;s&lt;span class=&quot;token operator&quot;&gt;)&lt;/span&gt;   Total&lt;span class=&quot;token operator&quot;&gt;(&lt;/span&gt;s&lt;span class=&quot;token operator&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;token separator comment&quot;&gt;----------------------------------------&lt;/span&gt;
+     &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;       &lt;span class=&quot;token number&quot;&gt;1.87&lt;/span&gt;       &lt;span class=&quot;token number&quot;&gt;0.02&lt;/span&gt;       &lt;span class=&quot;token number&quot;&gt;1.89&lt;/span&gt;
+     &lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt;       &lt;span class=&quot;token number&quot;&gt;1.92&lt;/span&gt;       &lt;span class=&quot;token number&quot;&gt;0.03&lt;/span&gt;       &lt;span class=&quot;token number&quot;&gt;1.95&lt;/span&gt;
+     &lt;span class=&quot;token number&quot;&gt;5&lt;/span&gt;       &lt;span class=&quot;token number&quot;&gt;3.51&lt;/span&gt;       &lt;span class=&quot;token number&quot;&gt;0.05&lt;/span&gt;       &lt;span class=&quot;token number&quot;&gt;3.56&lt;/span&gt;
+    &lt;span class=&quot;token number&quot;&gt;10&lt;/span&gt;       &lt;span class=&quot;token number&quot;&gt;5.98&lt;/span&gt;       &lt;span class=&quot;token number&quot;&gt;0.06&lt;/span&gt;       &lt;span class=&quot;token number&quot;&gt;6.04&lt;/span&gt;
+    &lt;span class=&quot;token number&quot;&gt;25&lt;/span&gt;      &lt;span class=&quot;token number&quot;&gt;11.93&lt;/span&gt;       &lt;span class=&quot;token number&quot;&gt;0.14&lt;/span&gt;      &lt;span class=&quot;token number&quot;&gt;12.07&lt;/span&gt;
+    &lt;span class=&quot;token number&quot;&gt;50&lt;/span&gt;      &lt;span class=&quot;token number&quot;&gt;22.90&lt;/span&gt;       &lt;span class=&quot;token number&quot;&gt;0.24&lt;/span&gt;      &lt;span class=&quot;token number&quot;&gt;23.14&lt;/span&gt;
+   &lt;span class=&quot;token number&quot;&gt;100&lt;/span&gt;      &lt;span class=&quot;token number&quot;&gt;46.62&lt;/span&gt;       &lt;span class=&quot;token number&quot;&gt;0.44&lt;/span&gt;      &lt;span class=&quot;token number&quot;&gt;47.06&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/details&gt;
+&lt;details&gt;
+&lt;summary&gt;베이스 이미지 - Alpine 3.13 의 작업결과&lt;/summary&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;log&quot;&gt;&lt;pre class=&quot;language-log&quot;&gt;&lt;code class=&quot;language-log&quot;&gt;&lt;span class=&quot;token property&quot;&gt;Dataset generated:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;100000&lt;/span&gt; samples with &lt;span class=&quot;token number&quot;&gt;100&lt;/span&gt; features
+
+Testing RandomForest with &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt; trees&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Training time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;2.40&lt;/span&gt; seconds
+&lt;span class=&quot;token property&quot;&gt;Prediction time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0.03&lt;/span&gt; seconds
+&lt;span class=&quot;token property&quot;&gt;Total time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;2.43&lt;/span&gt; seconds
+
+Testing RandomForest with &lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt; trees&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Training time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;2.32&lt;/span&gt; seconds
+&lt;span class=&quot;token property&quot;&gt;Prediction time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0.05&lt;/span&gt; seconds
+&lt;span class=&quot;token property&quot;&gt;Total time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;2.37&lt;/span&gt; seconds
+
+Testing RandomForest with &lt;span class=&quot;token number&quot;&gt;5&lt;/span&gt; trees&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Training time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;4.15&lt;/span&gt; seconds
+&lt;span class=&quot;token property&quot;&gt;Prediction time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0.08&lt;/span&gt; seconds
+&lt;span class=&quot;token property&quot;&gt;Total time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;4.23&lt;/span&gt; seconds
+
+Testing RandomForest with &lt;span class=&quot;token number&quot;&gt;10&lt;/span&gt; trees&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Training time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;6.16&lt;/span&gt; seconds
+&lt;span class=&quot;token property&quot;&gt;Prediction time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0.07&lt;/span&gt; seconds
+&lt;span class=&quot;token property&quot;&gt;Total time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;6.23&lt;/span&gt; seconds
+
+Testing RandomForest with &lt;span class=&quot;token number&quot;&gt;25&lt;/span&gt; trees&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Training time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;12.64&lt;/span&gt; seconds
+&lt;span class=&quot;token property&quot;&gt;Prediction time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0.15&lt;/span&gt; seconds
+&lt;span class=&quot;token property&quot;&gt;Total time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;12.80&lt;/span&gt; seconds
+
+Testing RandomForest with &lt;span class=&quot;token number&quot;&gt;50&lt;/span&gt; trees&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Training time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;24.41&lt;/span&gt; seconds
+&lt;span class=&quot;token property&quot;&gt;Prediction time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0.27&lt;/span&gt; seconds
+&lt;span class=&quot;token property&quot;&gt;Total time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;24.68&lt;/span&gt; seconds
+
+Testing RandomForest with &lt;span class=&quot;token number&quot;&gt;100&lt;/span&gt; trees&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Training time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;48.25&lt;/span&gt; seconds
+&lt;span class=&quot;token property&quot;&gt;Prediction time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0.53&lt;/span&gt; seconds
+&lt;span class=&quot;token property&quot;&gt;Total time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;48.78&lt;/span&gt; seconds
+
+&lt;span class=&quot;token property&quot;&gt;Summary:&lt;/span&gt;
+ Trees   Train&lt;span class=&quot;token operator&quot;&gt;(&lt;/span&gt;s&lt;span class=&quot;token operator&quot;&gt;)&lt;/span&gt; Predict&lt;span class=&quot;token operator&quot;&gt;(&lt;/span&gt;s&lt;span class=&quot;token operator&quot;&gt;)&lt;/span&gt;   Total&lt;span class=&quot;token operator&quot;&gt;(&lt;/span&gt;s&lt;span class=&quot;token operator&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;token separator comment&quot;&gt;----------------------------------------&lt;/span&gt;
+     &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;       &lt;span class=&quot;token number&quot;&gt;2.40&lt;/span&gt;       &lt;span class=&quot;token number&quot;&gt;0.03&lt;/span&gt;       &lt;span class=&quot;token number&quot;&gt;2.43&lt;/span&gt;
+     &lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt;       &lt;span class=&quot;token number&quot;&gt;2.32&lt;/span&gt;       &lt;span class=&quot;token number&quot;&gt;0.05&lt;/span&gt;       &lt;span class=&quot;token number&quot;&gt;2.37&lt;/span&gt;
+     &lt;span class=&quot;token number&quot;&gt;5&lt;/span&gt;       &lt;span class=&quot;token number&quot;&gt;4.15&lt;/span&gt;       &lt;span class=&quot;token number&quot;&gt;0.08&lt;/span&gt;       &lt;span class=&quot;token number&quot;&gt;4.23&lt;/span&gt;
+    &lt;span class=&quot;token number&quot;&gt;10&lt;/span&gt;       &lt;span class=&quot;token number&quot;&gt;6.16&lt;/span&gt;       &lt;span class=&quot;token number&quot;&gt;0.07&lt;/span&gt;       &lt;span class=&quot;token number&quot;&gt;6.23&lt;/span&gt;
+    &lt;span class=&quot;token number&quot;&gt;25&lt;/span&gt;      &lt;span class=&quot;token number&quot;&gt;12.64&lt;/span&gt;       &lt;span class=&quot;token number&quot;&gt;0.15&lt;/span&gt;      &lt;span class=&quot;token number&quot;&gt;12.80&lt;/span&gt;
+    &lt;span class=&quot;token number&quot;&gt;50&lt;/span&gt;      &lt;span class=&quot;token number&quot;&gt;24.41&lt;/span&gt;       &lt;span class=&quot;token number&quot;&gt;0.27&lt;/span&gt;      &lt;span class=&quot;token number&quot;&gt;24.68&lt;/span&gt;
+   &lt;span class=&quot;token number&quot;&gt;100&lt;/span&gt;      &lt;span class=&quot;token number&quot;&gt;48.25&lt;/span&gt;       &lt;span class=&quot;token number&quot;&gt;0.53&lt;/span&gt;      &lt;span class=&quot;token number&quot;&gt;48.78&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/details&gt;
+&lt;details&gt;
+&lt;summary&gt;베이스 이미지 - Debian 3.12 의 작업결과&lt;/summary&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;log&quot;&gt;&lt;pre class=&quot;language-log&quot;&gt;&lt;code class=&quot;language-log&quot;&gt;&lt;span class=&quot;token property&quot;&gt;Dataset generated:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;100000&lt;/span&gt; samples with &lt;span class=&quot;token number&quot;&gt;100&lt;/span&gt; features
+
+Testing RandomForest with &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt; trees&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Training time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1.93&lt;/span&gt; seconds
+&lt;span class=&quot;token property&quot;&gt;Prediction time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0.02&lt;/span&gt; seconds
+&lt;span class=&quot;token property&quot;&gt;Total time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1.96&lt;/span&gt; seconds
+
+Testing RandomForest with &lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt; trees&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Training time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;2.01&lt;/span&gt; seconds
+&lt;span class=&quot;token property&quot;&gt;Prediction time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0.03&lt;/span&gt; seconds
+&lt;span class=&quot;token property&quot;&gt;Total time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;2.04&lt;/span&gt; seconds
+
+Testing RandomForest with &lt;span class=&quot;token number&quot;&gt;5&lt;/span&gt; trees&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Training time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;3.83&lt;/span&gt; seconds
+&lt;span class=&quot;token property&quot;&gt;Prediction time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0.05&lt;/span&gt; seconds
+&lt;span class=&quot;token property&quot;&gt;Total time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;3.88&lt;/span&gt; seconds
+
+Testing RandomForest with &lt;span class=&quot;token number&quot;&gt;10&lt;/span&gt; trees&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Training time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;5.93&lt;/span&gt; seconds
+&lt;span class=&quot;token property&quot;&gt;Prediction time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0.07&lt;/span&gt; seconds
+&lt;span class=&quot;token property&quot;&gt;Total time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;6.00&lt;/span&gt; seconds
+
+Testing RandomForest with &lt;span class=&quot;token number&quot;&gt;25&lt;/span&gt; trees&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Training time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;12.12&lt;/span&gt; seconds
+&lt;span class=&quot;token property&quot;&gt;Prediction time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0.12&lt;/span&gt; seconds
+&lt;span class=&quot;token property&quot;&gt;Total time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;12.24&lt;/span&gt; seconds
+
+Testing RandomForest with &lt;span class=&quot;token number&quot;&gt;50&lt;/span&gt; trees&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Training time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;23.62&lt;/span&gt; seconds
+&lt;span class=&quot;token property&quot;&gt;Prediction time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0.27&lt;/span&gt; seconds
+&lt;span class=&quot;token property&quot;&gt;Total time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;23.89&lt;/span&gt; seconds
+
+Testing RandomForest with &lt;span class=&quot;token number&quot;&gt;100&lt;/span&gt; trees&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Training time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;46.82&lt;/span&gt; seconds
+&lt;span class=&quot;token property&quot;&gt;Prediction time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0.42&lt;/span&gt; seconds
+&lt;span class=&quot;token property&quot;&gt;Total time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;47.24&lt;/span&gt; seconds
+
+&lt;span class=&quot;token property&quot;&gt;Summary:&lt;/span&gt;
+ Trees   Train&lt;span class=&quot;token operator&quot;&gt;(&lt;/span&gt;s&lt;span class=&quot;token operator&quot;&gt;)&lt;/span&gt; Predict&lt;span class=&quot;token operator&quot;&gt;(&lt;/span&gt;s&lt;span class=&quot;token operator&quot;&gt;)&lt;/span&gt;   Total&lt;span class=&quot;token operator&quot;&gt;(&lt;/span&gt;s&lt;span class=&quot;token operator&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;token separator comment&quot;&gt;----------------------------------------&lt;/span&gt;
+     &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;       &lt;span class=&quot;token number&quot;&gt;1.93&lt;/span&gt;       &lt;span class=&quot;token number&quot;&gt;0.02&lt;/span&gt;       &lt;span class=&quot;token number&quot;&gt;1.96&lt;/span&gt;
+     &lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt;       &lt;span class=&quot;token number&quot;&gt;2.01&lt;/span&gt;       &lt;span class=&quot;token number&quot;&gt;0.03&lt;/span&gt;       &lt;span class=&quot;token number&quot;&gt;2.04&lt;/span&gt;
+     &lt;span class=&quot;token number&quot;&gt;5&lt;/span&gt;       &lt;span class=&quot;token number&quot;&gt;3.83&lt;/span&gt;       &lt;span class=&quot;token number&quot;&gt;0.05&lt;/span&gt;       &lt;span class=&quot;token number&quot;&gt;3.88&lt;/span&gt;
+    &lt;span class=&quot;token number&quot;&gt;10&lt;/span&gt;       &lt;span class=&quot;token number&quot;&gt;5.93&lt;/span&gt;       &lt;span class=&quot;token number&quot;&gt;0.07&lt;/span&gt;       &lt;span class=&quot;token number&quot;&gt;6.00&lt;/span&gt;
+    &lt;span class=&quot;token number&quot;&gt;25&lt;/span&gt;      &lt;span class=&quot;token number&quot;&gt;12.12&lt;/span&gt;       &lt;span class=&quot;token number&quot;&gt;0.12&lt;/span&gt;      &lt;span class=&quot;token number&quot;&gt;12.24&lt;/span&gt;
+    &lt;span class=&quot;token number&quot;&gt;50&lt;/span&gt;      &lt;span class=&quot;token number&quot;&gt;23.62&lt;/span&gt;       &lt;span class=&quot;token number&quot;&gt;0.27&lt;/span&gt;      &lt;span class=&quot;token number&quot;&gt;23.89&lt;/span&gt;
+   &lt;span class=&quot;token number&quot;&gt;100&lt;/span&gt;      &lt;span class=&quot;token number&quot;&gt;46.82&lt;/span&gt;       &lt;span class=&quot;token number&quot;&gt;0.42&lt;/span&gt;      &lt;span class=&quot;token number&quot;&gt;47.24&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/details&gt;
+&lt;details&gt;
+&lt;summary&gt;베이스 이미지 - Debian 3.13 의 작업결과&lt;/summary&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;log&quot;&gt;&lt;pre class=&quot;language-log&quot;&gt;&lt;code class=&quot;language-log&quot;&gt;&lt;span class=&quot;token property&quot;&gt;Dataset generated:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;100000&lt;/span&gt; samples with &lt;span class=&quot;token number&quot;&gt;100&lt;/span&gt; features
+
+Testing RandomForest with &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt; trees&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Training time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;2.35&lt;/span&gt; seconds
+&lt;span class=&quot;token property&quot;&gt;Prediction time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0.03&lt;/span&gt; seconds
+&lt;span class=&quot;token property&quot;&gt;Total time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;2.38&lt;/span&gt; seconds
+
+Testing RandomForest with &lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt; trees&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Training time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;2.21&lt;/span&gt; seconds
+&lt;span class=&quot;token property&quot;&gt;Prediction time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0.05&lt;/span&gt; seconds
+&lt;span class=&quot;token property&quot;&gt;Total time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;2.26&lt;/span&gt; seconds
+
+Testing RandomForest with &lt;span class=&quot;token number&quot;&gt;5&lt;/span&gt; trees&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Training time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;4.18&lt;/span&gt; seconds
+&lt;span class=&quot;token property&quot;&gt;Prediction time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0.05&lt;/span&gt; seconds
+&lt;span class=&quot;token property&quot;&gt;Total time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;4.23&lt;/span&gt; seconds
+
+Testing RandomForest with &lt;span class=&quot;token number&quot;&gt;10&lt;/span&gt; trees&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Training time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;6.34&lt;/span&gt; seconds
+&lt;span class=&quot;token property&quot;&gt;Prediction time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0.10&lt;/span&gt; seconds
+&lt;span class=&quot;token property&quot;&gt;Total time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;6.44&lt;/span&gt; seconds
+
+Testing RandomForest with &lt;span class=&quot;token number&quot;&gt;25&lt;/span&gt; trees&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Training time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;12.59&lt;/span&gt; seconds
+&lt;span class=&quot;token property&quot;&gt;Prediction time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0.13&lt;/span&gt; seconds
+&lt;span class=&quot;token property&quot;&gt;Total time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;12.72&lt;/span&gt; seconds
+
+Testing RandomForest with &lt;span class=&quot;token number&quot;&gt;50&lt;/span&gt; trees&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Training time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;25.04&lt;/span&gt; seconds
+&lt;span class=&quot;token property&quot;&gt;Prediction time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0.27&lt;/span&gt; seconds
+&lt;span class=&quot;token property&quot;&gt;Total time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;25.30&lt;/span&gt; seconds
+
+Testing RandomForest with &lt;span class=&quot;token number&quot;&gt;100&lt;/span&gt; trees&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Training time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;49.17&lt;/span&gt; seconds
+&lt;span class=&quot;token property&quot;&gt;Prediction time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0.49&lt;/span&gt; seconds
+&lt;span class=&quot;token property&quot;&gt;Total time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;49.66&lt;/span&gt; seconds
+
+&lt;span class=&quot;token property&quot;&gt;Summary:&lt;/span&gt;
+ Trees   Train&lt;span class=&quot;token operator&quot;&gt;(&lt;/span&gt;s&lt;span class=&quot;token operator&quot;&gt;)&lt;/span&gt; Predict&lt;span class=&quot;token operator&quot;&gt;(&lt;/span&gt;s&lt;span class=&quot;token operator&quot;&gt;)&lt;/span&gt;   Total&lt;span class=&quot;token operator&quot;&gt;(&lt;/span&gt;s&lt;span class=&quot;token operator&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;token separator comment&quot;&gt;----------------------------------------&lt;/span&gt;
+     &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;       &lt;span class=&quot;token number&quot;&gt;2.35&lt;/span&gt;       &lt;span class=&quot;token number&quot;&gt;0.03&lt;/span&gt;       &lt;span class=&quot;token number&quot;&gt;2.38&lt;/span&gt;
+     &lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt;       &lt;span class=&quot;token number&quot;&gt;2.21&lt;/span&gt;       &lt;span class=&quot;token number&quot;&gt;0.05&lt;/span&gt;       &lt;span class=&quot;token number&quot;&gt;2.26&lt;/span&gt;
+     &lt;span class=&quot;token number&quot;&gt;5&lt;/span&gt;       &lt;span class=&quot;token number&quot;&gt;4.18&lt;/span&gt;       &lt;span class=&quot;token number&quot;&gt;0.05&lt;/span&gt;       &lt;span class=&quot;token number&quot;&gt;4.23&lt;/span&gt;
+    &lt;span class=&quot;token number&quot;&gt;10&lt;/span&gt;       &lt;span class=&quot;token number&quot;&gt;6.34&lt;/span&gt;       &lt;span class=&quot;token number&quot;&gt;0.10&lt;/span&gt;       &lt;span class=&quot;token number&quot;&gt;6.44&lt;/span&gt;
+    &lt;span class=&quot;token number&quot;&gt;25&lt;/span&gt;      &lt;span class=&quot;token number&quot;&gt;12.59&lt;/span&gt;       &lt;span class=&quot;token number&quot;&gt;0.13&lt;/span&gt;      &lt;span class=&quot;token number&quot;&gt;12.72&lt;/span&gt;
+    &lt;span class=&quot;token number&quot;&gt;50&lt;/span&gt;      &lt;span class=&quot;token number&quot;&gt;25.04&lt;/span&gt;       &lt;span class=&quot;token number&quot;&gt;0.27&lt;/span&gt;      &lt;span class=&quot;token number&quot;&gt;25.30&lt;/span&gt;
+   &lt;span class=&quot;token number&quot;&gt;100&lt;/span&gt;      &lt;span class=&quot;token number&quot;&gt;49.17&lt;/span&gt;       &lt;span class=&quot;token number&quot;&gt;0.49&lt;/span&gt;      &lt;span class=&quot;token number&quot;&gt;49.66&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/details&gt;
+&lt;h2 id=&quot;cpu-bound-태스크의-결과-2---k-means-clustering&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#cpu-bound-%ED%83%9C%EC%8A%A4%ED%81%AC%EC%9D%98-%EA%B2%B0%EA%B3%BC-2---k-means-clustering&quot; aria-label=&quot;cpu bound 태스크의 결과 2   k means clustering permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;CPU bound 태스크의 결과 (2) - K-means clustering&lt;/h2&gt;
+&lt;p&gt;표로 정리하면 아래와 같습니다:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Image&lt;/th&gt;
+&lt;th&gt;Version&lt;/th&gt;
+&lt;th&gt;Samples&lt;/th&gt;
+&lt;th&gt;Clusters&lt;/th&gt;
+&lt;th&gt;Execution Time (s)&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Debian&lt;/td&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;3.12&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;1,000,000&lt;/td&gt;
+&lt;td&gt;3&lt;/td&gt;
+&lt;td&gt;4.72&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Debian&lt;/td&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;3.12&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;1,000,000&lt;/td&gt;
+&lt;td&gt;5&lt;/td&gt;
+&lt;td&gt;4.90&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Debian&lt;/td&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;3.12&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;5,000,000&lt;/td&gt;
+&lt;td&gt;3&lt;/td&gt;
+&lt;td&gt;10.37&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Debian&lt;/td&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;3.12&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;5,000,000&lt;/td&gt;
+&lt;td&gt;5&lt;/td&gt;
+&lt;td&gt;12.18&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Alpine&lt;/td&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;3.12&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;1,000,000&lt;/td&gt;
+&lt;td&gt;3&lt;/td&gt;
+&lt;td&gt;5.50&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Alpine&lt;/td&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;3.12&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;1,000,000&lt;/td&gt;
+&lt;td&gt;5&lt;/td&gt;
+&lt;td&gt;4.81&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Alpine&lt;/td&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;3.12&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;5,000,000&lt;/td&gt;
+&lt;td&gt;3&lt;/td&gt;
+&lt;td&gt;11.90&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Alpine&lt;/td&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;3.12&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;5,000,000&lt;/td&gt;
+&lt;td&gt;5&lt;/td&gt;
+&lt;td&gt;12.71&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Debian&lt;/td&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;3.13&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;100,000&lt;/td&gt;
+&lt;td&gt;5&lt;/td&gt;
+&lt;td&gt;2.74&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Debian&lt;/td&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;3.13&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;100,000&lt;/td&gt;
+&lt;td&gt;7&lt;/td&gt;
+&lt;td&gt;3.50&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Debian&lt;/td&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;3.13&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;500,000&lt;/td&gt;
+&lt;td&gt;5&lt;/td&gt;
+&lt;td&gt;6.92&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Debian&lt;/td&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;3.13&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;500,000&lt;/td&gt;
+&lt;td&gt;7&lt;/td&gt;
+&lt;td&gt;6.92&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;blockquote&gt;
+&lt;p&gt;🍅 disclaimer&lt;/p&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;scikit-learn&lt;/code&gt; 의 공식 지원이 3.12 까지라, Alpine 리눅스에서는 3.13 베이스 이미지에서 구동이 어려웠습니다.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;details&gt;
+&lt;summary&gt;베이스 이미지 - Alpine 3.12 의 작업결과&lt;/summary&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;log&quot;&gt;&lt;pre class=&quot;language-log&quot;&gt;&lt;code class=&quot;language-log&quot;&gt;Running benchmark for &lt;span class=&quot;token number&quot;&gt;1000000&lt;/span&gt; samples&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;3&lt;/span&gt; clusters&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;
+
+&lt;span class=&quot;token property&quot;&gt;Execution time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;5.50&lt;/span&gt; seconds
+&lt;span class=&quot;token property&quot;&gt;Iterations:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Inertia:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;128018685.50&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Average CPU Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;801.99&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;%&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Average Memory Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;12.59&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;%&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Peak CPU Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1261.70&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;%&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Peak Memory Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;17.07&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;%&lt;/span&gt;
+Running benchmark for &lt;span class=&quot;token number&quot;&gt;1000000&lt;/span&gt; samples&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;5&lt;/span&gt; clusters&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Execution time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;4.81&lt;/span&gt; seconds
+&lt;span class=&quot;token property&quot;&gt;Iterations:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Inertia:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;128018441.10&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Average CPU Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1014.51&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;%&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Average Memory Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;23.78&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;%&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Peak CPU Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1206.10&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;%&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Peak Memory Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;28.70&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;%&lt;/span&gt;
+Running benchmark for &lt;span class=&quot;token number&quot;&gt;5000000&lt;/span&gt; samples&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;3&lt;/span&gt; clusters&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Execution time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;11.90&lt;/span&gt; seconds
+&lt;span class=&quot;token property&quot;&gt;Iterations:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Inertia:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;640003227.45&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Average CPU Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;723.35&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;%&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Average Memory Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;69.71&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;%&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Peak CPU Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1208.10&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;%&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Peak Memory Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;92.17&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;%&lt;/span&gt;
+Running benchmark for &lt;span class=&quot;token number&quot;&gt;5000000&lt;/span&gt; samples&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;5&lt;/span&gt; clusters&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Execution time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;12.71&lt;/span&gt; seconds
+&lt;span class=&quot;token property&quot;&gt;Iterations:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Inertia:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;640002946.03&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Average CPU Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;945.65&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;%&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Average Memory Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;64.20&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;%&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Peak CPU Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1206.70&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;%&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Peak Memory Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;90.08&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;%&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Plotting Data Summary:&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Dataset Size:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1000000&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; Clusters&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;3&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Execution Time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;5.50s&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;CPU Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;52&lt;/span&gt; points&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; Range&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;0.0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1261.7&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Memory Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;52&lt;/span&gt; points&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; Range&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;6.5&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;17.1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Dataset Size:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1000000&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; Clusters&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;5&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Execution Time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;4.81s&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;CPU Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;47&lt;/span&gt; points&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; Range&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;93.4&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1206.1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Memory Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;47&lt;/span&gt; points&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; Range&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;18.0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;28.7&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Dataset Size:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;5000000&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; Clusters&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;3&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Execution Time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;11.90s&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;CPU Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;112&lt;/span&gt; points&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; Range&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;47.9&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1208.1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Memory Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;112&lt;/span&gt; points&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; Range&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;37.9&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;92.2&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Dataset Size:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;5000000&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; Clusters&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;5&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Execution Time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;12.71s&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;CPU Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;121&lt;/span&gt; points&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; Range&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;86.0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1206.7&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Memory Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;121&lt;/span&gt; points&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; Range&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;35.7&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;90.1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/details&gt;
+&lt;details&gt;
+&lt;summary&gt;(수행불가) 베이스 이미지 - Alpine 3.13 의 작업결과&lt;/summary&gt;
+&lt;p&gt;구동 불가!&lt;/p&gt;
+&lt;/details&gt;
+&lt;details&gt;
+&lt;summary&gt;베이스 이미지 - Debian 3.12 의 작업결과&lt;/summary&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;log&quot;&gt;&lt;pre class=&quot;language-log&quot;&gt;&lt;code class=&quot;language-log&quot;&gt;Running benchmark for &lt;span class=&quot;token number&quot;&gt;1000000&lt;/span&gt; samples&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;3&lt;/span&gt; clusters&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Execution time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;4.72&lt;/span&gt; seconds
+&lt;span class=&quot;token property&quot;&gt;Iterations:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Inertia:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;128018685.50&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Average CPU Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;907.44&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;%&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Average Memory Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;12.71&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;%&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Peak CPU Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1199.30&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;%&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Peak Memory Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;17.33&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;%&lt;/span&gt;
+Running benchmark for &lt;span class=&quot;token number&quot;&gt;1000000&lt;/span&gt; samples&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;5&lt;/span&gt; clusters&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Execution time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;4.90&lt;/span&gt; seconds
+&lt;span class=&quot;token property&quot;&gt;Iterations:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Inertia:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;128018441.10&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Average CPU Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1044.18&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;%&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Average Memory Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;12.94&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;%&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Peak CPU Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1218.20&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;%&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Peak Memory Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;18.36&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;%&lt;/span&gt;
+Running benchmark for &lt;span class=&quot;token number&quot;&gt;5000000&lt;/span&gt; samples&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;3&lt;/span&gt; clusters&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Execution time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;10.37&lt;/span&gt; seconds
+&lt;span class=&quot;token property&quot;&gt;Iterations:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Inertia:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;640003227.45&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Average CPU Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;793.64&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;%&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Average Memory Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;59.11&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;%&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Peak CPU Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1208.20&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;%&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Peak Memory Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;83.59&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;%&lt;/span&gt;
+Running benchmark for &lt;span class=&quot;token number&quot;&gt;5000000&lt;/span&gt; samples&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;5&lt;/span&gt; clusters&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Execution time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;12.18&lt;/span&gt; seconds
+&lt;span class=&quot;token property&quot;&gt;Iterations:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Inertia:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;640002946.03&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Average CPU Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;959.31&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;%&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Average Memory Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;57.18&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;%&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Peak CPU Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1210.40&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;%&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Peak Memory Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;83.59&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;%&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Plotting Data Summary:&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Dataset Size:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1000000&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; Clusters&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;3&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Execution Time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;4.72s&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;CPU Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;46&lt;/span&gt; points&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; Range&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;0.0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1199.3&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Memory Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;46&lt;/span&gt; points&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; Range&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;6.5&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;17.3&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Dataset Size:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1000000&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; Clusters&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;5&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Execution Time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;4.90s&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;CPU Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;48&lt;/span&gt; points&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; Range&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;93.4&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1218.2&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Memory Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;48&lt;/span&gt; points&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; Range&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;7.5&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;18.4&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Dataset Size:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;5000000&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; Clusters&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;3&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Execution Time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;10.37s&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;CPU Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;100&lt;/span&gt; points&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; Range&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;96.5&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1208.2&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Memory Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;100&lt;/span&gt; points&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; Range&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;29.2&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;83.6&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Dataset Size:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;5000000&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; Clusters&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;5&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Execution Time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;12.18s&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;CPU Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;118&lt;/span&gt; points&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; Range&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;88.9&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1210.4&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Memory Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;118&lt;/span&gt; points&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; Range&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;29.2&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;83.6&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/details&gt;
+&lt;details&gt;
+&lt;summary&gt;베이스 이미지 - Debian 3.13 의 작업결과&lt;/summary&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;log&quot;&gt;&lt;pre class=&quot;language-log&quot;&gt;&lt;code class=&quot;language-log&quot;&gt;Running benchmark for &lt;span class=&quot;token number&quot;&gt;100000&lt;/span&gt; samples&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;5&lt;/span&gt; clusters&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Execution time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;2.74&lt;/span&gt; seconds
+&lt;span class=&quot;token property&quot;&gt;Iterations:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Inertia:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;12800855.22&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Average CPU Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;392.67&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;%&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Average Memory Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;2.48&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;%&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Peak CPU Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;536.20&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;%&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Peak Memory Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;2.52&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;%&lt;/span&gt;
+Running benchmark for &lt;span class=&quot;token number&quot;&gt;100000&lt;/span&gt; samples&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;7&lt;/span&gt; clusters&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Execution time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;3.50&lt;/span&gt; seconds
+&lt;span class=&quot;token property&quot;&gt;Iterations:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Inertia:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;12800608.95&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Average CPU Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;400.08&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;%&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Average Memory Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;2.50&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;%&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Peak CPU Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;564.40&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;%&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Peak Memory Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;2.52&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;%&lt;/span&gt;
+Running benchmark for &lt;span class=&quot;token number&quot;&gt;500000&lt;/span&gt; samples&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;5&lt;/span&gt; clusters&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Execution time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;6.92&lt;/span&gt; seconds
+&lt;span class=&quot;token property&quot;&gt;Iterations:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Inertia:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;64009635.94&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Average CPU Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;366.32&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;%&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Average Memory Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;7.00&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;%&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Peak CPU Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;671.20&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;%&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Peak Memory Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;9.58&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;%&lt;/span&gt;
+Running benchmark for &lt;span class=&quot;token number&quot;&gt;500000&lt;/span&gt; samples&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;7&lt;/span&gt; clusters&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Execution time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;6.92&lt;/span&gt; seconds
+&lt;span class=&quot;token property&quot;&gt;Iterations:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Inertia:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;64009455.56&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Average CPU Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;382.56&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;%&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Average Memory Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;6.93&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;%&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Peak CPU Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;601.80&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;%&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Peak Memory Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;7.32&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;%&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Plotting Data Summary:&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Dataset Size:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;100000&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; Clusters&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;5&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Execution Time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;2.74s&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;CPU Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;26&lt;/span&gt; points&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; Range&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;0.0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;536.2&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Memory Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;26&lt;/span&gt; points&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; Range&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1.7&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;2.5&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Dataset Size:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;100000&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; Clusters&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;7&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Execution Time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;3.50s&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;CPU Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;33&lt;/span&gt; points&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; Range&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;157.3&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;564.4&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Memory Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;33&lt;/span&gt; points&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; Range&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;2.0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;2.5&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Dataset Size:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;500000&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; Clusters&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;5&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Execution Time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;6.92s&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;CPU Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;64&lt;/span&gt; points&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; Range&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;97.0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;671.2&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Memory Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;64&lt;/span&gt; points&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; Range&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;4.1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;9.6&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Dataset Size:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;500000&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; Clusters&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;7&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Execution Time:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;6.92s&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;CPU Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;65&lt;/span&gt; points&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; Range&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;95.2&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;601.8&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;token property&quot;&gt;Memory Usage:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;65&lt;/span&gt; points&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; Range&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;4.3&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;7.3&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/details&gt;
+&lt;h2 id=&quot;io-bound-태스크의-결과-1---10만-건의-데이터-조회-결과&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#io-bound-%ED%83%9C%EC%8A%A4%ED%81%AC%EC%9D%98-%EA%B2%B0%EA%B3%BC-1---10%EB%A7%8C-%EA%B1%B4%EC%9D%98-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A1%B0%ED%9A%8C-%EA%B2%B0%EA%B3%BC&quot; aria-label=&quot;io bound 태스크의 결과 1   10만 건의 데이터 조회 결과 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;I/O bound 태스크의 결과 (1) - 10만 건의 데이터 조회 결과&lt;/h2&gt;
+&lt;p&gt;Debian 기반의 컨테이너로 IO bound 태스크를 구동해본 결과는 아래와 같았습니다:&lt;/p&gt;
+&lt;p&gt;Alpine 기반의 컨테이너로 IO bound 태스크를 구동해본 결과는 아래와 같았습니다:&lt;/p&gt;
+&lt;h1 id=&quot;결론&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EA%B2%B0%EB%A1%A0&quot; aria-label=&quot;결론 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;결론&lt;/h1&gt;
+&lt;h2 id=&quot;cpu-bound&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#cpu-bound&quot; aria-label=&quot;cpu bound permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;CPU bound&lt;/h2&gt;
+&lt;p&gt;의외로, 미미한 차이가 있었고 심지어는 Alpine 기반 컨테이너가 근소하게나마 빨랐습니다.&lt;/p&gt;
+&lt;h2 id=&quot;io-bound&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#io-bound&quot; aria-label=&quot;io bound permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;I/O bound&lt;/h2&gt;
+&lt;h1 id=&quot;종합하여&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%A2%85%ED%95%A9%ED%95%98%EC%97%AC&quot; aria-label=&quot;종합하여 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;종합하여&lt;/h1&gt;
+&lt;p&gt;CPU bound task에서 의외로 미미한 차이로 Alpine이 앞섰다는 점에서 놀라웠습니다.&lt;/p&gt;</content:encoded></item><item><title><![CDATA[지난 6개월 간 업무 회고]]></title><description><![CDATA[입사 후 지난 6개월을 회고합니다. 지난 6개월간 무엇을 했고, 무엇을 반성하며 무엇을 향해 나아가야할지 썼습니다.]]></description><link>https://blog.s3ich4n.me/retrospect/2024-11-10-6-month-retrospect</link><guid isPermaLink="false">https://blog.s3ich4n.me/retrospect/2024-11-10-6-month-retrospect</guid><pubDate>Sun, 10 Nov 2024 23:20:16 GMT</pubDate><content:encoded>&lt;p&gt;이번 글은 몸이 안 좋아서 회사에서 있었던 일을 회고하는 글로 대체합니다.&lt;/p&gt;
 &lt;p&gt;현재 회사에 들어온 지도 벌써 6개월이 지났네요. 그간 어떤 일들이 있었는지 회고하려 합니다.&lt;/p&gt;
 &lt;p&gt;저는 현 회사에서 아래 내용들을 진행했습니다.&lt;/p&gt;
 &lt;ol&gt;
@@ -17099,7 +17834,45 @@ ENTRYPOINT &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;spa
 &lt;li&gt;VSCode의 Show all commands 가 정말 꿀기능 이었습니다. 필요한 커맨드를 찾고 바로 수행할 수가 있네요.&lt;/li&gt;
 &lt;/ol&gt;
 &lt;h2 id=&quot;마무리&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EB%A7%88%EB%AC%B4%EB%A6%AC&quot; aria-label=&quot;마무리 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;마무리&lt;/h2&gt;
-&lt;p&gt;별 것 아닌 내용이지만, 괜히 지웠다 깔 필요 없이 다음번에도 헤메지 않기 위해 메모했습니다. 별 것 아니지만, 여러분들께도 도움이 되길 바랍니다. 감사합니다.&lt;/p&gt;</content:encoded></item><item><title><![CDATA[pre-commit hook, 나도 한번 써보자 (1)]]></title><description><![CDATA[pre-commit hook 말만 들었지 실제로 써보지 못했는데, 이참에 써보고 팀원들에게 공유하기 위해 글을 씁니다. 제 1탄입니다.]]></description><link>https://blog.s3ich4n.me/tips/2021-07-11-how-to-use-pre-commit-hook-vol1</link><guid isPermaLink="false">https://blog.s3ich4n.me/tips/2021-07-11-how-to-use-pre-commit-hook-vol1</guid><pubDate>Thu, 03 Jun 2021 09:00:00 GMT</pubDate><content:encoded>&lt;p&gt;이 글은 pre-commit hook 을 사용하고 전파하기 위해 작성한 시리즈 글입니다.&lt;/p&gt;
+&lt;p&gt;별 것 아닌 내용이지만, 괜히 지웠다 깔 필요 없이 다음번에도 헤메지 않기 위해 메모했습니다. 별 것 아니지만, 여러분들께도 도움이 되길 바랍니다. 감사합니다.&lt;/p&gt;</content:encoded></item><item><title><![CDATA[PyCharm에서 파일 맨 위에 작성하는 주석을 작성하는 매크로 만들기]]></title><description><![CDATA[매일 입력하는 파일 설명(시그니처)을 귀찮지 않게 커맨드 하나로 자동입력되게 하는 방안을 찾았습니다. 회사 팀원들과 주변사람들에게만 공유하기는 아까워서 짧은 글을 써봤습니다.]]></description><link>https://blog.s3ich4n.me/tips/how-to-use-file-signature-in-pycharm</link><guid isPermaLink="false">https://blog.s3ich4n.me/tips/how-to-use-file-signature-in-pycharm</guid><pubDate>Thu, 03 Jun 2021 09:00:00 GMT</pubDate><content:encoded>&lt;p&gt;PyCharm에서 파일 시그니처를 바로 입력하려면?&lt;/p&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;Live Templates&lt;/code&gt; 기능을 사용하면 보다 손쉽게 사용할 수 있다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;shift 두번 눌러서 액션을 열고 &lt;code class=&quot;language-text&quot;&gt;Live Templates&lt;/code&gt; 를 연다.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;add를 하되, 파이썬 파일에서만 쓸거니까 파이썬에서 기능을 혀용하도록 한다.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;이런 식으로 시그니처를 작성한다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;json&quot;&gt;&lt;pre class=&quot;language-json&quot;&gt;&lt;code class=&quot;language-json&quot;&gt;#
+# (코드의 전반적인 내용을 설명해 주세요)
+#
+# @author      Seongeun Yu (seongeun.yu@somma.kr)
+# @date        $DATE$ $TIME$ created.
+# @modified    $DATE$ $TIME$ modified.
+# @copyright   MIT License
+#&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;ol&gt;
+&lt;li&gt;변수를 저렇게 두면 원하는 함수를 써서 매핑할 수 있다.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;$DATE$&lt;/code&gt;, &lt;code class=&quot;language-text&quot;&gt;$TIME$&lt;/code&gt; 값은 함수를 쓰면 된다. 관련 참고링크는 &lt;a href=&quot;https://www.jetbrains.com/help/pycharm/template-variables.html#predefined_functions&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;여기&lt;/a&gt;:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;date()&lt;/code&gt; 함수의 파라미터 규격은 자바의 (&lt;a href=&quot;https://docs.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;SimpleDateFormat&lt;/a&gt;)을 따라간다.&lt;/li&gt;
+&lt;li&gt;date, time의 규격은 이렇게 하면 된다.
+&lt;ol&gt;
+&lt;li&gt;date는? &lt;code class=&quot;language-text&quot;&gt;date(&quot;yyyy/MM/dd&quot;)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;time은? &lt;code class=&quot;language-text&quot;&gt;date(&quot;HH:mm&quot;)&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;파일을 열 때마다 &lt;code class=&quot;language-text&quot;&gt;sign_s3ich4n&lt;/code&gt; 를 한두글자만 치면 자동완성으로 알아서 완성된다.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;</content:encoded></item><item><title><![CDATA[pre-commit hook, 나도 한번 써보자 (1)]]></title><description><![CDATA[pre-commit hook 말만 들었지 실제로 써보지 못했는데, 이참에 써보고 팀원들에게 공유하기 위해 글을 씁니다. 제 1탄입니다.]]></description><link>https://blog.s3ich4n.me/tips/2021-07-11-how-to-use-pre-commit-hook-vol1</link><guid isPermaLink="false">https://blog.s3ich4n.me/tips/2021-07-11-how-to-use-pre-commit-hook-vol1</guid><pubDate>Thu, 03 Jun 2021 09:00:00 GMT</pubDate><content:encoded>&lt;p&gt;이 글은 pre-commit hook 을 사용하고 전파하기 위해 작성한 시리즈 글입니다.&lt;/p&gt;
 &lt;h2 id=&quot;설치-및-설정하기&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%84%A4%EC%B9%98-%EB%B0%8F-%EC%84%A4%EC%A0%95%ED%95%98%EA%B8%B0&quot; aria-label=&quot;설치 및 설정하기 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;설치 및 설정하기&lt;/h2&gt;
 &lt;ol&gt;
 &lt;li&gt;작업 환경에 맞게 &lt;a href=&quot;https://pre-commit.com/#installation&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;pre-commit hook을 설치한다&lt;/a&gt;&lt;/li&gt;
@@ -17159,45 +17932,7 @@ ENTRYPOINT &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;spa
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&quot;https://pre-commit.com/#usage-in-continuous-integration&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;CI 연동&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;더 없나 찾아보자&lt;/li&gt;
-&lt;/ul&gt;</content:encoded></item><item><title><![CDATA[PyCharm에서 파일 맨 위에 작성하는 주석을 작성하는 매크로 만들기]]></title><description><![CDATA[매일 입력하는 파일 설명(시그니처)을 귀찮지 않게 커맨드 하나로 자동입력되게 하는 방안을 찾았습니다. 회사 팀원들과 주변사람들에게만 공유하기는 아까워서 짧은 글을 써봤습니다.]]></description><link>https://blog.s3ich4n.me/tips/how-to-use-file-signature-in-pycharm</link><guid isPermaLink="false">https://blog.s3ich4n.me/tips/how-to-use-file-signature-in-pycharm</guid><pubDate>Thu, 03 Jun 2021 09:00:00 GMT</pubDate><content:encoded>&lt;p&gt;PyCharm에서 파일 시그니처를 바로 입력하려면?&lt;/p&gt;
-&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;Live Templates&lt;/code&gt; 기능을 사용하면 보다 손쉽게 사용할 수 있다.&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;
-&lt;p&gt;shift 두번 눌러서 액션을 열고 &lt;code class=&quot;language-text&quot;&gt;Live Templates&lt;/code&gt; 를 연다.&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;add를 하되, 파이썬 파일에서만 쓸거니까 파이썬에서 기능을 혀용하도록 한다.&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;이런 식으로 시그니처를 작성한다.&lt;/p&gt;
-&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;json&quot;&gt;&lt;pre class=&quot;language-json&quot;&gt;&lt;code class=&quot;language-json&quot;&gt;#
-# (코드의 전반적인 내용을 설명해 주세요)
-#
-# @author      Seongeun Yu (seongeun.yu@somma.kr)
-# @date        $DATE$ $TIME$ created.
-# @modified    $DATE$ $TIME$ modified.
-# @copyright   MIT License
-#&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;ol&gt;
-&lt;li&gt;변수를 저렇게 두면 원하는 함수를 써서 매핑할 수 있다.&lt;/li&gt;
-&lt;/ol&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;$DATE$&lt;/code&gt;, &lt;code class=&quot;language-text&quot;&gt;$TIME$&lt;/code&gt; 값은 함수를 쓰면 된다. 관련 참고링크는 &lt;a href=&quot;https://www.jetbrains.com/help/pycharm/template-variables.html#predefined_functions&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;여기&lt;/a&gt;:&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;date()&lt;/code&gt; 함수의 파라미터 규격은 자바의 (&lt;a href=&quot;https://docs.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;SimpleDateFormat&lt;/a&gt;)을 따라간다.&lt;/li&gt;
-&lt;li&gt;date, time의 규격은 이렇게 하면 된다.
-&lt;ol&gt;
-&lt;li&gt;date는? &lt;code class=&quot;language-text&quot;&gt;date(&quot;yyyy/MM/dd&quot;)&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;time은? &lt;code class=&quot;language-text&quot;&gt;date(&quot;HH:mm&quot;)&lt;/code&gt;&lt;/li&gt;
-&lt;/ol&gt;
-&lt;/li&gt;
-&lt;/ol&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;파일을 열 때마다 &lt;code class=&quot;language-text&quot;&gt;sign_s3ich4n&lt;/code&gt; 를 한두글자만 치면 자동완성으로 알아서 완성된다.&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ol&gt;</content:encoded></item><item><title><![CDATA[간략히 써본 서버 점검 가이드]]></title><description><![CDATA[서버 점검과 관련하여]]></description><link>https://blog.s3ich4n.me/tips/2021-02-03-server-maintenance-guide</link><guid isPermaLink="false">https://blog.s3ich4n.me/tips/2021-02-03-server-maintenance-guide</guid><pubDate>Wed, 03 Feb 2021 10:17:43 GMT</pubDate><content:encoded>&lt;p&gt;서버 점검과 관련하여 좋은글들을 추합한 내용을 공유합니다.&lt;/p&gt;
+&lt;/ul&gt;</content:encoded></item><item><title><![CDATA[간략히 써본 서버 점검 가이드]]></title><description><![CDATA[서버 점검과 관련하여]]></description><link>https://blog.s3ich4n.me/tips/2021-02-03-server-maintenance-guide</link><guid isPermaLink="false">https://blog.s3ich4n.me/tips/2021-02-03-server-maintenance-guide</guid><pubDate>Wed, 03 Feb 2021 10:17:43 GMT</pubDate><content:encoded>&lt;p&gt;서버 점검과 관련하여 좋은글들을 추합한 내용을 공유합니다.&lt;/p&gt;
 &lt;h1 id=&quot;작성에-앞서&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%9E%91%EC%84%B1%EC%97%90-%EC%95%9E%EC%84%9C&quot; aria-label=&quot;작성에 앞서 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;작성에 앞서…&lt;/h1&gt;
 &lt;p&gt;이 글은 좋은 글을 가져와 제 입맛에 맞게 정리한 것에 불과합니다. 제 스스로 되새김질 하기 위해 썼기 때문에, 하단의 참조링크를 반드시 보실 것을 권해드립니다.&lt;/p&gt;
 &lt;h1 id=&quot;prerequisite&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#prerequisite&quot; aria-label=&quot;prerequisite permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Prerequisite&lt;/h1&gt;

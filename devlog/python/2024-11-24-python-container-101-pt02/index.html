@@ -1,0 +1,816 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="ie=edge"/><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/><meta name="generator" content="Gatsby 4.25.4"/><meta name="description" content="파이썬 컨테이너 최적화 기법을 이용하여 CPU bound 작업과 IO bound 작업을 직접 구동해봅니다." data-gatsby-head="true"/><meta name="twitter:card" content="summary_large_image" data-gatsby-head="true"/><meta name="twitter:title" content="[연재] 파이썬 컨테이너 선택 제 3형 - 파이썬 컨테이너 실전비교 - 팔공산 창고" data-gatsby-head="true"/><meta name="twitter:description" content="파이썬 컨테이너 최적화 기법을 이용하여 CPU bound 작업과 IO bound 작업을 직접 구동해봅니다." data-gatsby-head="true"/><meta name="og:title" content="[연재] 파이썬 컨테이너 선택 제 3형 - 파이썬 컨테이너 실전비교 - 팔공산 창고" data-gatsby-head="true"/><meta name="og:type" content="website" data-gatsby-head="true"/><meta name="og:description" content="파이썬 컨테이너 최적화 기법을 이용하여 CPU bound 작업과 IO bound 작업을 직접 구동해봅니다." data-gatsby-head="true"/><meta name="image" content="https://blog.s3ich4n.me[object Object]" data-gatsby-head="true"/><meta name="og:image" content="https://blog.s3ich4n.me[object Object]" data-gatsby-head="true"/><meta name="twitter:image" content="https://blog.s3ich4n.me[object Object]" data-gatsby-head="true"/><meta name="theme-color" content="hsl(31, 92%, 62%)"/><style data-href="/styles.1fbe3e33e3d898c35e17.css" data-identity="gatsby-global-css">:after,:before,:root{--color-white:#fff;--color-primary:#5c92ff;--color-secondary:#f7a145;--color-prism-background:#eaeaeb;--color-typographic-base-font:#242933;--color-typographic-link-p-font:#5c92ff;--color-typographic-link-s-font:#f7a145;--color-page-border:#eaeaeb;--color-page-background:#fff;--color-sidebar-border:#eaeaeb;--color-sidebar-border-fade:#fff;--color-contacts-border:#eaeaeb;--color-button-border:#eaeaeb;--color-button-color:#242933;--color-theme-switcher:#3f485a;--color-theme-switcher-hover:#5c92ff}.dark :after,.dark :before,:root.dark{--color-white:#fff;--color-primary:#5c92ff;--color-secondary:#f7a145;--color-prism-background:#191d24;--color-typographic-base-font:#fff;--color-typographic-link-p-font:#5c92ff;--color-typographic-link-s-font:#f7a145;--color-page-border:#3f485a;--color-page-background:#242933;--color-sidebar-border:#3f485a;--color-sidebar-border-fade:#242933;--color-contacts-border:#3f485a;--color-button-border:#3f485a;--color-button-color:#fff;--color-theme-switcher:#eaeaeb;--color-theme-switcher-hover:#5c92ff}html{font-size:100}body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;background:var(--color-page-background);color:var(--color-typographic-base-font);font-size:16px;line-height:1.625;margin:0 0 0 calc(100vw - 100%);text-rendering:optimizelegibility}body,h1,h2,h3,h4,h5,h6{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif}h1,h2,h3,h4,h5,h6{font-weight:600}h1{font-size:40px;line-height:52px;margin-bottom:26px;margin-top:104px}h2{font-size:27px;line-height:39px}h2,h3{margin-bottom:13px;margin-top:52px}h3{font-size:22px;line-height:26px}h4{font-size:19.2px;margin-top:39px}h4,h5{line-height:26px;margin-bottom:13px}h5,h6{font-size:16px;margin-top:65px}h6{line-height:26px;margin-bottom:13px}img{max-width:100%}hr,img{border:0;display:block}hr{background-image:linear-gradient(180deg,transparent 1px,transparent 11px,#242933 0,#242933 15px,transparent 0,transparent 26px);background-size:100% 26px;color:var(--color-typographic-base-font);height:26px;margin:52px auto;width:100px}a{color:var(--color-typographic-link-p-font);text-decoration:none}a:active,a:focus,a:hover{color:var(--color-typographic-link-s-font)}b,strong{font-weight:600}ul{list-style:square;margin-bottom:26px}ul li{margin-bottom:10px;padding:0 5px}p{line-height:26px;margin-bottom:26px}blockquote{font-style:italic;padding:0;text-align:center}figure{display:block;height:auto;width:100%}figcaption{color:var(--color-typographic-base-font);font-size:14px;font-style:italic;line-height:19.5px;margin-bottom:0;margin-top:6.5px;text-align:center}@media screen and (min-width:685px){figure.float-left,figure.float-right{max-width:310px;padding:0 26px}.float-right{float:right}.float-left{float:left}}code[class*=language-],pre[class*=language-]{word-wrap:normal;color:#657b83;font-family:Consolas,Monaco,Andale Mono,Ubuntu Mono,monospace;font-size:1em;-webkit-hyphens:none;hyphens:none;line-height:1.5;-o-tab-size:4;tab-size:4;text-align:left;white-space:pre;word-break:normal;word-spacing:normal}pre[class*=language-]{border-radius:.3em;margin:.5em 0;overflow:auto;padding:1em}:not(pre)>code[class*=language-],pre[class*=language-]{background-color:var(--color-prism-background)}:not(pre)>code[class*=language-]{border-radius:.3em;padding:.1em}code[class*=language-] ::selection,code[class*=language-]::selection,pre[class*=language-] ::selection,pre[class*=language-]::selection{background:#073642}.token.cdata,.token.comment,.token.doctype,.token.prolog{color:#93a1a1}.token.punctuation{color:#586e75}.namespace{opacity:.7}.token.boolean,.token.constant,.token.deleted,.token.number,.token.property,.token.symbol,.token.tag{color:#268bd2}.token.attr-name,.token.builtin,.token.char,.token.inserted,.token.selector,.token.string,.token.url{color:#2aa198}.token.entity{background:#eee8d5;color:#657b83;cursor:help}.token.atrule,.token.attr-value,.token.keyword{color:#859900}.token.class-name,.token.function{color:#b58900}.token.important,.token.regex,.token.variable{color:#cb4b16}.token.bold,.token.important{font-weight:700}.token.italic{font-style:italic}.Feed-module--feed--a6204 .Feed-module--item--c7a63{margin-bottom:32.5px}.Feed-module--feed--a6204 .Feed-module--item--c7a63:last-child{margin-bottom:13px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f{font-size:27px;line-height:39px;margin-bottom:13px;margin-top:0}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f .Feed-module--link--6123b{color:var(--color-typographic-base-font)}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f .Feed-module--link--6123b:focus,.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f .Feed-module--link--6123b:hover{border-bottom:1px solid #242933;color:var(--color-typographic-base-font)}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--description--57348{font-size:16px;line-height:26px;margin-bottom:19.5px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--time--72864{color:var(--color-typographic-base-font);font-size:14px;font-weight:600;text-transform:uppercase}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--divider--81a18{margin:0 13px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--category--59f58 .Feed-module--link--6123b{color:var(--color-secondary);font-size:14px;font-weight:600;text-transform:uppercase}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--category--59f58 .Feed-module--link--6123b:focus,.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--category--59f58 .Feed-module--link--6123b:hover{color:#5c92ff}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--more--51a4e{color:var(--color-primary);font-size:16px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--more--51a4e:focus,.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--more--51a4e:hover{border-bottom:1px solid #5c92ff;color:var(--color-primary)}.Layout-module--layout--2c933{margin-left:auto;margin-right:auto;max-width:1070px}.Layout-module--layout--2c933:before{content:"";display:table}.Layout-module--layout--2c933:after{clear:both;content:"";display:table}.Page-module--page--24e03{margin-bottom:52px}.Page-module--page--24e03 .Page-module--inner--4b31d{padding:26px 19.5px 0}.Page-module--page--24e03 .Page-module--title--90338{font-size:40px;font-weight:600;line-height:52px;margin-bottom:37.7px;margin-top:0}.Page-module--page--24e03 .Page-module--body--561c4{font-size:16px;line-height:26px;margin:0 0 26px}@media screen and (min-width:685px){.Page-module--page--24e03{width:calc(58.275% - 12.5px)}.Page-module--page--24e03:nth-child(1n){clear:none;float:left;margin-right:30px}.Page-module--page--24e03:last-child{margin-right:0}.Page-module--page--24e03:nth-child(12n){float:right;margin-right:0}.Page-module--page--24e03:nth-child(12n+1){clear:both}.Page-module--page--24e03 .Page-module--inner--4b31d{padding:32.5px 19.5px 0}}@media screen and (min-width:960px){.Page-module--page--24e03{width:calc(66.6% - 10px)}.Page-module--page--24e03:nth-child(1n){clear:none;float:left;margin-right:30px}.Page-module--page--24e03:last-child{margin-right:0}.Page-module--page--24e03:nth-child(3n){float:right;margin-right:0}.Page-module--page--24e03:nth-child(3n+1){clear:both}.Page-module--page--24e03 .Page-module--inner--4b31d{padding:39px 26px 0}}.Pagination-module--pagination--d61cb{display:flex;margin-top:52px}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b{text-align:left;width:50%}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d{color:var(--color-secondary);font-size:26px;font-weight:700}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d:focus,.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d:hover{color:var(--color-primary)}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d.Pagination-module--disable--7e105{color:#3f485a;pointer-events:none}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8{text-align:right;width:50%}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff{color:var(--color-secondary);font-size:26px;font-weight:700}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff:focus,.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff:hover{color:var(--color-primary)}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff.Pagination-module--disable--7e105{color:#3f485a;pointer-events:none}.Button-module--button--b1113{border:1px solid var(--color-button-border);border-radius:20px;color:var(--color-button-color);display:inline-block;font-size:16px;font-weight:400;height:40px;line-height:40px;margin-left:auto;margin-right:auto;padding:0 26px;text-align:center;text-decoration:none}.Button-module--button--b1113:focus,.Button-module--button--b1113:hover{color:#5c92ff}.ThemeSwitcher-module--themeSwitcher--8a77f{--color:var(--color-theme-switcher)}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--button--7cb7b{align-items:center;background:transparent;border:0;cursor:pointer;display:flex;justify-content:center;outline:0}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--button--7cb7b svg{stroke:var(--color);pointer-events:none;transition:stroke .4s}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--button--7cb7b:hover{--color:var(--color-theme-switcher-hover)}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--moon--10537{stroke-dasharray:0 1px;opacity:0;transition:stroke-dasharray .2s ease-in,opacity .4s ease-in}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--sun--2163a{stroke-dasharray:1px 1px;opacity:1;transition:stroke-dasharray .2s ease-in,opacity .4s ease-in}.ThemeSwitcher-module--themeSwitcher--8a77f.ThemeSwitcher-module--dark--6db0c .ThemeSwitcher-module--moon--10537{stroke-dasharray:1px 1px;opacity:1}.ThemeSwitcher-module--themeSwitcher--8a77f.ThemeSwitcher-module--dark--6db0c .ThemeSwitcher-module--sun--2163a{stroke-dasharray:0 1px;opacity:0}.Author-module--author--cbd31 .Author-module--photo--9787b{background-clip:padding-box;border-radius:50%;display:inline-block;height:75px;margin-bottom:0;width:75px}.Author-module--author--cbd31 .Author-module--photo--9787b img{border-radius:50%}.Author-module--author--cbd31 .Author-module--title--cf7e5{font-size:18px;font-weight:600;line-height:29.25px;margin:0}.Author-module--author--cbd31 .Author-module--title--cf7e5 .Author-module--link--09c17,.Author-module--author--cbd31 .Author-module--title--cf7e5 .Author-module--link--09c17:focus,.Author-module--author--cbd31 .Author-module--title--cf7e5 .Author-module--link--09c17:hover{color:var(--color-typographic-base-font)}.Author-module--author--cbd31 .Author-module--bio--8168d,.Author-module--author--cbd31 .Author-module--subtitle--86ec5{color:#7f8ba4;line-height:26px;margin-bottom:26px}.Author-module--author--cbd31 .Author-module--titleContainer--4f576{align-items:center;display:flex;justify-content:space-between;margin:13px 0}.Categories-module--categories--f3389{color:#7f8ba4;font-size:14px}.Icon-module--icon--1d7da{fill:currentcolor;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;speak:none;stroke:currentcolor;stroke-width:0;display:inline-block;font-style:normal;font-variant:normal;font-weight:400;height:1em;line-height:1em;text-align:center;text-transform:none;width:1em}.Contacts-module--contacts--09178{margin-bottom:26px}.Contacts-module--contacts--09178 .Contacts-module--list--9670b{display:flex;flex-flow:row wrap;flex-grow:0;flex-shrink:0;list-style:none;margin:13px 0;max-width:165px;padding:0}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0{align-content:center;align-items:center;border:1px solid var(--color-contacts-border);border-radius:50%;display:flex;height:40px;justify-content:center;line-height:40px;margin:6.5px;padding:0;text-align:center;width:40px}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0:nth-child(3n+1){margin-left:0}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0 .Contacts-module--link--de1e0{border:0;color:var(--color-typographic-base-font);display:flex}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0 .Contacts-module--link--de1e0:focus,.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0 .Contacts-module--link--de1e0:hover{color:var(--color-typographic-link-p-font)}.Copyright-module--copyright--2c602{color:#7f8ba4;font-size:14px}.Menu-module--menu--113a9{margin-bottom:26px}.Menu-module--menu--113a9 .Menu-module--list--e1ae3{list-style:none;margin:0;padding:0}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679{margin:13px 0;padding:0}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02{border:0;color:var(--color-typographic-base-font);font-size:16px;font-weight:400}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02:focus,.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02:hover{border-bottom:1px solid #5c92ff;color:#5c92ff}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02.Menu-module--active--6cb74{border-bottom:1px solid var(--color-typographic-base-font);color:var(--color-typographic-base-font)}.Tags-module--tags--28a57{color:#7f8ba4;font-size:14px}.Sidebar-module--sidebar--1bfa1{width:100%}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0{padding:26px 19.5px 0;position:relative}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0:after{background:var(--color-sidebar-border);background:linear-gradient(to bottom,var(--color-sidebar-border) 0,var(--color-sidebar-border) 48%,var(--color-sidebar-border-fade) 100%)}@media screen and (min-width:685px){.Sidebar-module--sidebar--1bfa1{width:calc(41.625% - 17.5px)}.Sidebar-module--sidebar--1bfa1:nth-child(1n){clear:none;float:left;margin-right:30px}.Sidebar-module--sidebar--1bfa1:last-child{margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(12n){float:right;margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(12n+1){clear:both}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0{padding:32.5px 19.5px 0}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0:after{bottom:0;content:"";height:540px;position:absolute;right:-10px;top:30px;width:1px}}@media screen and (min-width:960px){.Sidebar-module--sidebar--1bfa1{width:calc(33.3% - 20px)}.Sidebar-module--sidebar--1bfa1:nth-child(1n){clear:none;float:left;margin-right:30px}.Sidebar-module--sidebar--1bfa1:last-child{margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(3n){float:right;margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(3n+1){clear:both}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0{padding:39px}}.Author-module--author--1c58d{border-top:1px solid var(--color-page-border);line-height:26px;margin-bottom:52px;margin-top:26px;max-width:920px;padding-top:26px}.Author-module--author--1c58d .Author-module--bio--08950 .Author-module--twitter--90647{display:block;text-decoration:underline}.Author-module--author--1c58d .Author-module--bio--08950 .Author-module--twitter--90647:focus,.Author-module--author--1c58d .Author-module--bio--08950 .Author-module--twitter--90647:hover{color:var(--color-typographic-link-s-font)}@media screen and (min-width:685px){.Author-module--author--1c58d{margin-left:auto;margin-right:auto}}.Content-module--content--80d58{margin:0 auto;max-width:1070px;padding:0 13px}.Content-module--content--80d58 .Content-module--title--09504{font-size:32px;font-weight:600;line-height:42.9px;margin:26px auto 0;max-width:920px;text-align:center}.Content-module--content--80d58 .Content-module--body--726c2 figure{margin-bottom:26px}.Content-module--content--80d58 .Content-module--body--726c2 figure blockquote{font-style:italic;margin-top:0;padding:26px 0;text-align:center}.Content-module--content--80d58 .Content-module--body--726c2 figure blockquote p{font-size:26.9072px;line-height:39px;margin-bottom:26px;margin-top:0;max-width:920px}.Content-module--content--80d58 .Content-module--body--726c2 a{text-decoration:underline}.Content-module--content--80d58 .Content-module--body--726c2 *{margin-left:auto;margin-right:auto;max-width:920px}.Content-module--content--80d58 .Content-module--body--726c2 h2>a{visibility:hidden}.Content-module--content--80d58 .Content-module--body--726c2 h2>a>svg{fill:var(--color-typographic-base-font)}.Content-module--content--80d58 .Content-module--body--726c2 img{max-width:100%}@media screen and (min-width:960px){.Content-module--content--80d58{padding:0}.Content-module--content--80d58 .Content-module--title--09504{font-size:48px;line-height:58.5px;margin-bottom:39px;margin-top:58.5px}.Content-module--content--80d58 .Content-module--body--726c2,.Content-module--content--80d58 .Content-module--body--726c2 p{font-size:18px;line-height:29.25px;margin-bottom:29.25px}.Content-module--content--80d58 .Content-module--body--726c2 h2>a{padding-right:13px;visibility:unset}}.Meta-module--meta--dae0a .Meta-module--date--4d30d{font-style:italic}.Tags-module--tags--18589{margin-bottom:13px}.Tags-module--tags--18589 .Tags-module--list--82ae6{list-style:none;padding:0}.Tags-module--tags--18589 .Tags-module--list--82ae6 .Tags-module--item--52015{display:inline-block;margin:6.5px 0}@media screen and (min-width:685px){.Tags-module--tags--18589 .Tags-module--list--82ae6 .Tags-module--item--52015:first-child{margin-left:0;padding-left:0}}.Post-module--post--3a994 .Post-module--content--3c6e5{margin:0 auto}.Post-module--post--3a994 .Post-module--comments--d3b99,.Post-module--post--3a994 .Post-module--footer--f8705{margin:0 auto;max-width:920px;padding:0 13px}.Post-module--post--3a994 .Post-module--buttons--2972d{align-items:center;display:flex;justify-content:center;margin:26px 0 0;text-align:center}.Post-module--post--3a994 .Post-module--buttons--2972d .Post-module--buttonArticles--d793a{margin:0 13px 0 0}@media screen and (min-width:960px){.Post-module--post--3a994 .Post-module--comments--d3b99,.Post-module--post--3a994 .Post-module--footer--f8705{padding:0}.Post-module--post--3a994 .Post-module--buttons--2972d{left:30px;margin:0 13px 0 0;max-width:none;position:fixed;top:30px}}</style><title data-gatsby-head="true">[연재] 파이썬 컨테이너 선택 제 3형 - 파이썬 컨테이너 실전비교 - 팔공산 창고</title><link rel="alternate" type="application/rss+xml" title="팔공산 창고" href="/rss.xml"/><style type="text/css">
+    .anchor.before {
+      position: absolute;
+      top: 0;
+      left: 0;
+      transform: translateX(-100%);
+      padding-right: 4px;
+    }
+    .anchor.after {
+      display: inline-block;
+      padding-left: 4px;
+    }
+    h1 .anchor svg,
+    h2 .anchor svg,
+    h3 .anchor svg,
+    h4 .anchor svg,
+    h5 .anchor svg,
+    h6 .anchor svg {
+      visibility: hidden;
+    }
+    h1:hover .anchor svg,
+    h2:hover .anchor svg,
+    h3:hover .anchor svg,
+    h4:hover .anchor svg,
+    h5:hover .anchor svg,
+    h6:hover .anchor svg,
+    h1 .anchor:focus svg,
+    h2 .anchor:focus svg,
+    h3 .anchor:focus svg,
+    h4 .anchor:focus svg,
+    h5 .anchor:focus svg,
+    h6 .anchor:focus svg {
+      visibility: visible;
+    }
+  </style><script>
+    document.addEventListener("DOMContentLoaded", function(event) {
+      var hash = window.decodeURI(location.hash.replace('#', ''))
+      if (hash !== '') {
+        var element = document.getElementById(hash)
+        if (element) {
+          var scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+          var clientTop = document.documentElement.clientTop || document.body.clientTop || 0
+          var offset = element.getBoundingClientRect().top + scrollTop - clientTop
+          // Wait for the browser to finish rendering before scrolling.
+          setTimeout((function() {
+            window.scrollTo(0, offset - 0)
+          }), 0)
+        }
+      }
+    })
+  </script><link rel="preconnect" href="https://www.googletagmanager.com"/><link rel="dns-prefetch" href="https://www.googletagmanager.com"/><script async="" src="https://www.googletagmanager.com/gtag/js?id="></script><script>
+      
+      
+      if(true) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){window.dataLayer && window.dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', '', {"send_page_view":false});
+      }
+      </script><link rel="sitemap" type="application/xml" href="/sitemap/sitemap-index.xml"/><link rel="icon" href="/favicon-32x32.png?v=4c2c993a06ee0fd0ee953020b09128a9" type="image/png"/><link rel="manifest" href="/manifest.webmanifest" crossorigin="anonymous"/><link rel="apple-touch-icon" sizes="48x48" href="/icons/icon-48x48.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="72x72" href="/icons/icon-72x72.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="96x96" href="/icons/icon-96x96.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="144x144" href="/icons/icon-144x144.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192x192.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="256x256" href="/icons/icon-256x256.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="384x384" href="/icons/icon-384x384.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="512x512" href="/icons/icon-512x512.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><style>.gatsby-image-wrapper{position:relative;overflow:hidden}.gatsby-image-wrapper picture.object-fit-polyfill{position:static!important}.gatsby-image-wrapper img{bottom:0;height:100%;left:0;margin:0;max-width:none;padding:0;position:absolute;right:0;top:0;width:100%;object-fit:cover}.gatsby-image-wrapper [data-main-image]{opacity:0;transform:translateZ(0);transition:opacity .25s linear;will-change:opacity}.gatsby-image-wrapper-constrained{display:inline-block;vertical-align:top}</style><noscript><style>.gatsby-image-wrapper noscript [data-main-image]{opacity:1!important}.gatsby-image-wrapper [data-placeholder-image]{opacity:0!important}</style></noscript><script type="module">const e="undefined"!=typeof HTMLImageElement&&"loading"in HTMLImageElement.prototype;e&&document.body.addEventListener("load",(function(e){const t=e.target;if(void 0===t.dataset.mainImage)return;if(void 0===t.dataset.gatsbyImageSsr)return;let a=null,n=t;for(;null===a&&n;)void 0!==n.parentNode.dataset.gatsbyImageWrapper&&(a=n.parentNode),n=n.parentNode;const o=a.querySelector("[data-placeholder-image]"),r=new Image;r.src=t.currentSrc,r.decode().catch((()=>{})).then((()=>{t.style.opacity=1,o&&(o.style.opacity=0,o.style.transition="opacity 500ms linear")}))}),!0);</script></head><body><script>
+          void function() {
+            var cachedMode;
+
+            try {
+              var preferredTheme = JSON.parse(localStorage.getItem('diesel:theme-atom'));
+
+              if (preferredTheme && preferredTheme.mode) {
+                cachedMode = preferredTheme.mode;
+              }
+            } catch (err) { }
+
+            function setTheme(newTheme) {
+              document.documentElement.className = newTheme;
+            }
+
+            var darkQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+            setTheme(cachedMode || (darkQuery.matches ? 'dark' : 'light'));
+          }()
+        </script><div id="___gatsby"><div style="outline:none" tabindex="-1" id="gatsby-focus-wrapper"><div class="Layout-module--layout--2c933"><div class="Post-module--post--3a994"><div class="Post-module--buttons--2972d"><a class="Button-module--button--b1113 Post-module--buttonArticles--d793a" href="/">All Articles</a></div><div class="Post-module--content--3c6e5"><div class="Content-module--content--80d58"><h1 class="Content-module--title--09504">[연재] 파이썬 컨테이너 선택 제 3형 - 파이썬 컨테이너 실전비교</h1><div class="Content-module--body--726c2"><p>이번 게시글에서는 Debian 기반의 컨테이너와 Alpine 기반의 컨테이너 간 성능을 비교해보도록 하겠습니다.</p>
+<p>지난 게시글에는 분명 이렇게 소개했습니다.</p>
+<ul>
+<li>I/O bound 태스크 중심: API 서비스를 만들고, DB에는 1억개의 데이터을 추가한 후, 쿼리 테스트 및 부하 테스트를 수행하여 성능을 리포트</li>
+<li>CPU bound 태스크 중심: 매우 큰 데이터를 pandas로 처리, matplotlib으로 연산하게 구성해보고 성능을 리포트</li>
+</ul>
+<p>하지만, 구동 시간이 너무 오래걸려 본 게시글에는 테스트 방안을 “소개”하고, 글을 수정하여 보강할 예정입니다. 벌써부터 이렇게 말씀드리는 점 양해 부탁드립니다. 🙇🙇</p>
+<p>아래와 같이 변경될 예정입니다:</p>
+<ul>
+<li>I/O bound 태스크 중심: <del>API 서비스를 만들고</del>, DB에는 10만 개의 데이터을 추가한 후, 쿼리 테스트 <del>및 부하 테스트를</del> 수행하여 성능을 리포트</li>
+<li>CPU bound 태스크 중심: K-means clustering 과 랜덤 포레스트 기법을 <del>SVD 연산(준비만 되어있습니다!)</del> 사용하여 <del>매우 큰 데이터를 pandas로 처리, matplotlib으로 연산하게 구성해보고</del> CPU, 메모리 사용량을 리포트</li>
+</ul>
+<p>그렇다면, 목표와 준비 후, 가절을 세우고 직접 실험해봅시다.</p>
+<h1 id="목표" style="position:relative;"><a href="#%EB%AA%A9%ED%91%9C" aria-label="목표 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><strong>목표</strong></h1>
+<p>파이썬으로 작성한 cpu bound task와 io bound task 를 각각 컨테이너화 했을 때, glibc, musl 구현체의 성능 벤치마킹을 통해 적절한 구현체가 무엇인지 파악해봅시다.</p>
+<h2 id="준비" style="position:relative;"><a href="#%EC%A4%80%EB%B9%84" aria-label="준비 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><strong>준비</strong></h2>
+<ol>
+<li>c 라이브러리 구현체 선택
+<ul>
+<li>앞어 설명드린 바 대로, C 라이브러리의 구현체는 glibc/musl 이 있습니다.</li>
+</ul>
+</li>
+<li>저희는 2부에서 설명드린 바와 같이, 도커 컨테이너를 아래와 같이 선택하기로 했습니다
+<ul>
+<li><code class="language-text">glibc</code> C 라이브러리 기반의 운영체제 이미지</li>
+<li><code class="language-text">musl</code> C 라이브러리 기반의 운영체제 이밎</li>
+</ul>
+</li>
+<li>성능을 가리는 조건은 두가지로 한정짓습니다.
+<ol>
+<li>cpu bound
+<ul>
+<li>cpu를 많이 쓰는 태스크 (cpu 연산 그 자체)</li>
+</ul>
+</li>
+<li>io bound
+<ul>
+<li>io작업이 많은 태스크 (E.g., 서버 업/다운로드, db 콜)</li>
+</ul>
+</li>
+</ol>
+</li>
+<li>해당 코드를 구동하는 환경은 아래와 같습니다
+<ol>
+<li>(로컬 테스트) - M3 Pro 맥북</li>
+<li>(<strong>예정</strong>, 실제 환경과 유사한 테스트) - GitHub Actions</li>
+</ol>
+</li>
+</ol>
+<h3 id="cpu-bound-작업을-선별합시다" style="position:relative;"><a href="#cpu-bound-%EC%9E%91%EC%97%85%EC%9D%84-%EC%84%A0%EB%B3%84%ED%95%A9%EC%8B%9C%EB%8B%A4" aria-label="cpu bound 작업을 선별합시다 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>CPU bound 작업을 선별합시다</h3>
+<p>CPU bound 태스크를 테스트하기 위해, 랜덤 포레스트와 K-means clustering을 각각 구동해보기로 했습니다.</p>
+<ol>
+<li>각종 머신러닝 기법을 진짜 맛만보는 코드를 작성했습니다. 아래는 제가 구동하려는 태스크들입니다.</li>
+</ol>
+<ul>
+<li>랜덤 포레스트
+<ul>
+<li>다량의 서로 다른 샘플과 특성이 반영된 decision tree를 구성한다.</li>
+<li>트리 연산은 병렬로 수행하고, 결과값은 다수결로/평균값으로 도출된다</li>
+<li>overfitting(과적합)을 방지하는 앙상블 방법이다</li>
+</ul>
+</li>
+<li>k-means clustering
+<ul>
+<li>k-means - 비지도 학습(unsupervised learning) 알고리즘 - 을 기반으로 한 클러스터링 알고리즘</li>
+<li>데이터 포인트들을 K개의 그룹(클러스터)으로 나눈다</li>
+<li>비슷한 특성을 가진 데이터끼리 같은 그룹으로 묶음</li>
+<li>“비슷하다”의 기준은 데이터 포인트 간의 거리 (주로 유클리드 거리 사용)</li>
+</ul>
+</li>
+</ul>
+<p>이 태스크로 선정한 이유는 아래와 같습니다:</p>
+<ol>
+<li>여러 복합적인 연산을 수행하기 위해 CPython 구현체나 C 코드로 빌드된 코드를 사용함으로 인해 발생하는 성능차이가 분명히 있을 것이라고 생각했기 때문입니다.</li>
+<li>단순 연산(소수 구하기, 해쉬연산 지속적으로 수행하기)는 CPU 레벨에서 최적화되어 인터프리트 되면 크게 의미없다고 판단했기 때문입니다.</li>
+</ol>
+<h3 id="io-bound-작업을-선별합니다" style="position:relative;"><a href="#io-bound-%EC%9E%91%EC%97%85%EC%9D%84-%EC%84%A0%EB%B3%84%ED%95%A9%EB%8B%88%EB%8B%A4" aria-label="io bound 작업을 선별합니다 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>IO bound 작업을 선별합니다.</h3>
+<p>아래와 같이 테이블 구성</p>
+<ol>
+<li>기관 테이블을 구성, 기관의 고유식별자를 fk로 쓰는 ‘기관정보’ 테이블 구성</li>
+<li>유저 테이블을 생성</li>
+<li>이 테이블의 uuid 값을 fk로 쓰는 테이블을 아래와 같이 구성
+<ul>
+<li>‘유저 개인정보’</li>
+<li>‘유저 프로필 정보’</li>
+</ul>
+</li>
+</ol>
+<h1 id="가설" style="position:relative;"><a href="#%EA%B0%80%EC%84%A4" aria-label="가설 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><strong>가설</strong></h1>
+<p>이번 실험을 통해 세운 가설은 아래와 같습니다.</p>
+<ul>
+<li>glibc, musl은 cpu bound task, io bound task 별로 성능차이가 있을 것입니다.
+<ul>
+<li>근거: 여러 작업(precondition, postcondition 이나 실제 구현체 이용)을 많이 하면 각 구현체별 성능차가 있을 것이기 때문입니다.</li>
+</ul>
+</li>
+</ul>
+<h1 id="작업-순서" style="position:relative;"><a href="#%EC%9E%91%EC%97%85-%EC%88%9C%EC%84%9C" aria-label="작업 순서 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><strong>작업 순서</strong></h1>
+<p>여기서부터는 작성한 코드를 참고해주세요. 코드는 <a href="">이 github 링크</a> 에 준비되어 있습니다.</p>
+<ol>
+<li>컨테이너 만들기
+<ol>
+<li>debian based (slim 이미지인가, 아닌가의 차이도 명확한지 파악 필요)</li>
+<li>alpine based</li>
+</ol>
+</li>
+<li>cpu bound task를 수행하는 코드 작성하기 (wip)
+<ol>
+<li>random forest를 병렬 작업하는 코드</li>
+<li>k-means clustering을 병렬 작업하는 코드</li>
+</ol>
+</li>
+<li>io bound task를 수행하는 코드 작성하기
+<ol>
+<li>10만 건의 유저 데이터(하위 테이블 포함)를 추가하고, 개별 유저에 대해 개인정보를 추가하여 쿼리를 수행</li>
+<li>유저를 1000명씩 임의로 쿼리 수행</li>
+</ol>
+</li>
+<li>python 버전, 태스크 별로 각각 테스트 수행</li>
+</ol>
+<h1 id="리뷰-1" style="position:relative;"><a href="#%EB%A6%AC%EB%B7%B0-1" aria-label="리뷰 1 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><strong>리뷰 (1)</strong></h1>
+<p>하지만 작업 중간에, 아래와 같은 리뷰사항을 받고 태스크의 내용을 한 번 수정했습니다. 확실히 조사가 필요한 부분 및 보강이 가능한 부분에 대해 다듬었습니다.</p>
+<ol>
+<li>
+<p>cpu bound task 보완</p>
+<ul>
+<li>데이터셋 크기, 하이퍼 파라미터는 수행 전 별도로 기재하여 실험상에 어떻게 쓰였는지 글로 작성</li>
+<li>멀티 프로세싱을 고려해야하나? - 현재는 포기
+<ul>
+<li>(“확실한” 조사 필요) 파이썬에서 이런 태스크가 GIL이 처리하려면 <code class="language-text">n_jobs</code> 파라미터 만으로 처리가능한지</li>
+<li>(“확실한” 조사 필요) 이걸 컨테이너로 처리하면 환경변수로 처리하고, 개별 컨테이너 별 부여받은 최대 CPU만큼 쓰면 되는지</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>io bound task 보완</p>
+<ul>
+<li>rdbms는 postgres 15버전 사용 예정.</li>
+<li><del>커넥션 풀링은 sqlalchemy의 기본 사용량을 써보고, 너무 처참한 p95 값이 나오면 (1초 이상) 조절 예정</del> (API로 부하 테스트까지 해보는 것이 목표입니다만, 거기까지는 아직 진행을 못했습니다.. 🥲)</li>
+<li>쿼리 유형 다각화 - 어떻게 진행하면 좋을지?
+<ul>
+<li>실질적으로 많이 일어나는건 쿼리라고 판단함</li>
+</ul>
+</li>
+<li>db에 추가하는 건 어떻게 보면 테스트 데이터 준비과정으로 이해하고, 쿼리의 성능을 살펴보는 것이 중요할 것으로 판단. 일반적인 시스템에서 추가보다는 조회가 훨씬 더 많이 일어나기 때문.</li>
+</ul>
+</li>
+</ol>
+<h1 id="실제-실험결과" style="position:relative;"><a href="#%EC%8B%A4%EC%A0%9C-%EC%8B%A4%ED%97%98%EA%B2%B0%EA%B3%BC" aria-label="실제 실험결과 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><strong>실제 실험결과</strong></h1>
+<p>실험 결과는 위에서 소개시켜드렸던 결과로 구동하려 합니다.</p>
+<h2 id="cpu-bound-태스크의-결과-1---random-forest" style="position:relative;"><a href="#cpu-bound-%ED%83%9C%EC%8A%A4%ED%81%AC%EC%9D%98-%EA%B2%B0%EA%B3%BC-1---random-forest" aria-label="cpu bound 태스크의 결과 1   random forest permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>CPU bound 태스크의 결과 (1) - Random forest</h2>
+<p>Debian 기반의 컨테이너로 CPU bound 태스크를 구동해본 결과는 아래와 같았습니다:</p>
+<table>
+<thead>
+<tr>
+<th>Image</th>
+<th>Version</th>
+<th>Trees</th>
+<th>Training (s)</th>
+<th>Prediction (s)</th>
+<th>Total (s)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Alpine</td>
+<td><code class="language-text">3.12</code></td>
+<td>1</td>
+<td>1.87</td>
+<td>0.02</td>
+<td>1.89</td>
+</tr>
+<tr>
+<td>Alpine</td>
+<td><code class="language-text">3.12</code></td>
+<td>10</td>
+<td>5.98</td>
+<td>0.06</td>
+<td>6.04</td>
+</tr>
+<tr>
+<td>Alpine</td>
+<td><code class="language-text">3.12</code></td>
+<td>100</td>
+<td>46.62</td>
+<td>0.44</td>
+<td>47.06</td>
+</tr>
+<tr>
+<td>Alpine</td>
+<td><code class="language-text">3.13</code></td>
+<td>1</td>
+<td>2.40</td>
+<td>0.03</td>
+<td>2.43</td>
+</tr>
+<tr>
+<td>Alpine</td>
+<td><code class="language-text">3.13</code></td>
+<td>10</td>
+<td>6.16</td>
+<td>0.07</td>
+<td>6.23</td>
+</tr>
+<tr>
+<td>Alpine</td>
+<td><code class="language-text">3.13</code></td>
+<td>100</td>
+<td>48.25</td>
+<td>0.53</td>
+<td>48.78</td>
+</tr>
+<tr>
+<td>Debian</td>
+<td><code class="language-text">3.12</code></td>
+<td>1</td>
+<td>1.93</td>
+<td>0.02</td>
+<td>1.96</td>
+</tr>
+<tr>
+<td>Debian</td>
+<td><code class="language-text">3.12</code></td>
+<td>10</td>
+<td>5.93</td>
+<td>0.07</td>
+<td>6.00</td>
+</tr>
+<tr>
+<td>Debian</td>
+<td><code class="language-text">3.12</code></td>
+<td>100</td>
+<td>46.82</td>
+<td>0.42</td>
+<td>47.24</td>
+</tr>
+<tr>
+<td>Debian</td>
+<td><code class="language-text">3.13</code></td>
+<td>1</td>
+<td>2.35</td>
+<td>0.03</td>
+<td>2.38</td>
+</tr>
+<tr>
+<td>Debian</td>
+<td><code class="language-text">3.13</code></td>
+<td>10</td>
+<td>6.34</td>
+<td>0.10</td>
+<td>6.44</td>
+</tr>
+<tr>
+<td>Debian</td>
+<td><code class="language-text">3.13</code></td>
+<td>100</td>
+<td>49.17</td>
+<td>0.49</td>
+<td>49.66</td>
+</tr>
+</tbody>
+</table>
+<details>
+<summary>베이스 이미지 - Alpine 3.12 의 작업결과</summary>
+<div class="gatsby-highlight" data-language="log"><pre class="language-log"><code class="language-log"><span class="token property">Dataset generated:</span> <span class="token number">100000</span> samples with <span class="token number">100</span> features
+
+Testing RandomForest with <span class="token number">1</span> trees<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token property">Training time:</span> <span class="token number">1.87</span> seconds
+<span class="token property">Prediction time:</span> <span class="token number">0.02</span> seconds
+<span class="token property">Total time:</span> <span class="token number">1.89</span> seconds
+
+Testing RandomForest with <span class="token number">2</span> trees<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token property">Training time:</span> <span class="token number">1.92</span> seconds
+<span class="token property">Prediction time:</span> <span class="token number">0.03</span> seconds
+<span class="token property">Total time:</span> <span class="token number">1.95</span> seconds
+
+Testing RandomForest with <span class="token number">5</span> trees<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token property">Training time:</span> <span class="token number">3.51</span> seconds
+<span class="token property">Prediction time:</span> <span class="token number">0.05</span> seconds
+<span class="token property">Total time:</span> <span class="token number">3.56</span> seconds
+
+Testing RandomForest with <span class="token number">10</span> trees<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token property">Training time:</span> <span class="token number">5.98</span> seconds
+<span class="token property">Prediction time:</span> <span class="token number">0.06</span> seconds
+<span class="token property">Total time:</span> <span class="token number">6.04</span> seconds
+
+Testing RandomForest with <span class="token number">25</span> trees<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token property">Training time:</span> <span class="token number">11.93</span> seconds
+<span class="token property">Prediction time:</span> <span class="token number">0.14</span> seconds
+<span class="token property">Total time:</span> <span class="token number">12.07</span> seconds
+
+Testing RandomForest with <span class="token number">50</span> trees<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token property">Training time:</span> <span class="token number">22.90</span> seconds
+<span class="token property">Prediction time:</span> <span class="token number">0.24</span> seconds
+<span class="token property">Total time:</span> <span class="token number">23.14</span> seconds
+
+Testing RandomForest with <span class="token number">100</span> trees<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token property">Training time:</span> <span class="token number">46.62</span> seconds
+<span class="token property">Prediction time:</span> <span class="token number">0.44</span> seconds
+<span class="token property">Total time:</span> <span class="token number">47.06</span> seconds
+
+<span class="token property">Summary:</span>
+ Trees   Train<span class="token operator">(</span>s<span class="token operator">)</span> Predict<span class="token operator">(</span>s<span class="token operator">)</span>   Total<span class="token operator">(</span>s<span class="token operator">)</span>
+<span class="token separator comment">----------------------------------------</span>
+     <span class="token number">1</span>       <span class="token number">1.87</span>       <span class="token number">0.02</span>       <span class="token number">1.89</span>
+     <span class="token number">2</span>       <span class="token number">1.92</span>       <span class="token number">0.03</span>       <span class="token number">1.95</span>
+     <span class="token number">5</span>       <span class="token number">3.51</span>       <span class="token number">0.05</span>       <span class="token number">3.56</span>
+    <span class="token number">10</span>       <span class="token number">5.98</span>       <span class="token number">0.06</span>       <span class="token number">6.04</span>
+    <span class="token number">25</span>      <span class="token number">11.93</span>       <span class="token number">0.14</span>      <span class="token number">12.07</span>
+    <span class="token number">50</span>      <span class="token number">22.90</span>       <span class="token number">0.24</span>      <span class="token number">23.14</span>
+   <span class="token number">100</span>      <span class="token number">46.62</span>       <span class="token number">0.44</span>      <span class="token number">47.06</span></code></pre></div>
+</details>
+<details>
+<summary>베이스 이미지 - Alpine 3.13 의 작업결과</summary>
+<div class="gatsby-highlight" data-language="log"><pre class="language-log"><code class="language-log"><span class="token property">Dataset generated:</span> <span class="token number">100000</span> samples with <span class="token number">100</span> features
+
+Testing RandomForest with <span class="token number">1</span> trees<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token property">Training time:</span> <span class="token number">2.40</span> seconds
+<span class="token property">Prediction time:</span> <span class="token number">0.03</span> seconds
+<span class="token property">Total time:</span> <span class="token number">2.43</span> seconds
+
+Testing RandomForest with <span class="token number">2</span> trees<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token property">Training time:</span> <span class="token number">2.32</span> seconds
+<span class="token property">Prediction time:</span> <span class="token number">0.05</span> seconds
+<span class="token property">Total time:</span> <span class="token number">2.37</span> seconds
+
+Testing RandomForest with <span class="token number">5</span> trees<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token property">Training time:</span> <span class="token number">4.15</span> seconds
+<span class="token property">Prediction time:</span> <span class="token number">0.08</span> seconds
+<span class="token property">Total time:</span> <span class="token number">4.23</span> seconds
+
+Testing RandomForest with <span class="token number">10</span> trees<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token property">Training time:</span> <span class="token number">6.16</span> seconds
+<span class="token property">Prediction time:</span> <span class="token number">0.07</span> seconds
+<span class="token property">Total time:</span> <span class="token number">6.23</span> seconds
+
+Testing RandomForest with <span class="token number">25</span> trees<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token property">Training time:</span> <span class="token number">12.64</span> seconds
+<span class="token property">Prediction time:</span> <span class="token number">0.15</span> seconds
+<span class="token property">Total time:</span> <span class="token number">12.80</span> seconds
+
+Testing RandomForest with <span class="token number">50</span> trees<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token property">Training time:</span> <span class="token number">24.41</span> seconds
+<span class="token property">Prediction time:</span> <span class="token number">0.27</span> seconds
+<span class="token property">Total time:</span> <span class="token number">24.68</span> seconds
+
+Testing RandomForest with <span class="token number">100</span> trees<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token property">Training time:</span> <span class="token number">48.25</span> seconds
+<span class="token property">Prediction time:</span> <span class="token number">0.53</span> seconds
+<span class="token property">Total time:</span> <span class="token number">48.78</span> seconds
+
+<span class="token property">Summary:</span>
+ Trees   Train<span class="token operator">(</span>s<span class="token operator">)</span> Predict<span class="token operator">(</span>s<span class="token operator">)</span>   Total<span class="token operator">(</span>s<span class="token operator">)</span>
+<span class="token separator comment">----------------------------------------</span>
+     <span class="token number">1</span>       <span class="token number">2.40</span>       <span class="token number">0.03</span>       <span class="token number">2.43</span>
+     <span class="token number">2</span>       <span class="token number">2.32</span>       <span class="token number">0.05</span>       <span class="token number">2.37</span>
+     <span class="token number">5</span>       <span class="token number">4.15</span>       <span class="token number">0.08</span>       <span class="token number">4.23</span>
+    <span class="token number">10</span>       <span class="token number">6.16</span>       <span class="token number">0.07</span>       <span class="token number">6.23</span>
+    <span class="token number">25</span>      <span class="token number">12.64</span>       <span class="token number">0.15</span>      <span class="token number">12.80</span>
+    <span class="token number">50</span>      <span class="token number">24.41</span>       <span class="token number">0.27</span>      <span class="token number">24.68</span>
+   <span class="token number">100</span>      <span class="token number">48.25</span>       <span class="token number">0.53</span>      <span class="token number">48.78</span></code></pre></div>
+</details>
+<details>
+<summary>베이스 이미지 - Debian 3.12 의 작업결과</summary>
+<div class="gatsby-highlight" data-language="log"><pre class="language-log"><code class="language-log"><span class="token property">Dataset generated:</span> <span class="token number">100000</span> samples with <span class="token number">100</span> features
+
+Testing RandomForest with <span class="token number">1</span> trees<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token property">Training time:</span> <span class="token number">1.93</span> seconds
+<span class="token property">Prediction time:</span> <span class="token number">0.02</span> seconds
+<span class="token property">Total time:</span> <span class="token number">1.96</span> seconds
+
+Testing RandomForest with <span class="token number">2</span> trees<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token property">Training time:</span> <span class="token number">2.01</span> seconds
+<span class="token property">Prediction time:</span> <span class="token number">0.03</span> seconds
+<span class="token property">Total time:</span> <span class="token number">2.04</span> seconds
+
+Testing RandomForest with <span class="token number">5</span> trees<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token property">Training time:</span> <span class="token number">3.83</span> seconds
+<span class="token property">Prediction time:</span> <span class="token number">0.05</span> seconds
+<span class="token property">Total time:</span> <span class="token number">3.88</span> seconds
+
+Testing RandomForest with <span class="token number">10</span> trees<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token property">Training time:</span> <span class="token number">5.93</span> seconds
+<span class="token property">Prediction time:</span> <span class="token number">0.07</span> seconds
+<span class="token property">Total time:</span> <span class="token number">6.00</span> seconds
+
+Testing RandomForest with <span class="token number">25</span> trees<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token property">Training time:</span> <span class="token number">12.12</span> seconds
+<span class="token property">Prediction time:</span> <span class="token number">0.12</span> seconds
+<span class="token property">Total time:</span> <span class="token number">12.24</span> seconds
+
+Testing RandomForest with <span class="token number">50</span> trees<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token property">Training time:</span> <span class="token number">23.62</span> seconds
+<span class="token property">Prediction time:</span> <span class="token number">0.27</span> seconds
+<span class="token property">Total time:</span> <span class="token number">23.89</span> seconds
+
+Testing RandomForest with <span class="token number">100</span> trees<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token property">Training time:</span> <span class="token number">46.82</span> seconds
+<span class="token property">Prediction time:</span> <span class="token number">0.42</span> seconds
+<span class="token property">Total time:</span> <span class="token number">47.24</span> seconds
+
+<span class="token property">Summary:</span>
+ Trees   Train<span class="token operator">(</span>s<span class="token operator">)</span> Predict<span class="token operator">(</span>s<span class="token operator">)</span>   Total<span class="token operator">(</span>s<span class="token operator">)</span>
+<span class="token separator comment">----------------------------------------</span>
+     <span class="token number">1</span>       <span class="token number">1.93</span>       <span class="token number">0.02</span>       <span class="token number">1.96</span>
+     <span class="token number">2</span>       <span class="token number">2.01</span>       <span class="token number">0.03</span>       <span class="token number">2.04</span>
+     <span class="token number">5</span>       <span class="token number">3.83</span>       <span class="token number">0.05</span>       <span class="token number">3.88</span>
+    <span class="token number">10</span>       <span class="token number">5.93</span>       <span class="token number">0.07</span>       <span class="token number">6.00</span>
+    <span class="token number">25</span>      <span class="token number">12.12</span>       <span class="token number">0.12</span>      <span class="token number">12.24</span>
+    <span class="token number">50</span>      <span class="token number">23.62</span>       <span class="token number">0.27</span>      <span class="token number">23.89</span>
+   <span class="token number">100</span>      <span class="token number">46.82</span>       <span class="token number">0.42</span>      <span class="token number">47.24</span></code></pre></div>
+</details>
+<details>
+<summary>베이스 이미지 - Debian 3.13 의 작업결과</summary>
+<div class="gatsby-highlight" data-language="log"><pre class="language-log"><code class="language-log"><span class="token property">Dataset generated:</span> <span class="token number">100000</span> samples with <span class="token number">100</span> features
+
+Testing RandomForest with <span class="token number">1</span> trees<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token property">Training time:</span> <span class="token number">2.35</span> seconds
+<span class="token property">Prediction time:</span> <span class="token number">0.03</span> seconds
+<span class="token property">Total time:</span> <span class="token number">2.38</span> seconds
+
+Testing RandomForest with <span class="token number">2</span> trees<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token property">Training time:</span> <span class="token number">2.21</span> seconds
+<span class="token property">Prediction time:</span> <span class="token number">0.05</span> seconds
+<span class="token property">Total time:</span> <span class="token number">2.26</span> seconds
+
+Testing RandomForest with <span class="token number">5</span> trees<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token property">Training time:</span> <span class="token number">4.18</span> seconds
+<span class="token property">Prediction time:</span> <span class="token number">0.05</span> seconds
+<span class="token property">Total time:</span> <span class="token number">4.23</span> seconds
+
+Testing RandomForest with <span class="token number">10</span> trees<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token property">Training time:</span> <span class="token number">6.34</span> seconds
+<span class="token property">Prediction time:</span> <span class="token number">0.10</span> seconds
+<span class="token property">Total time:</span> <span class="token number">6.44</span> seconds
+
+Testing RandomForest with <span class="token number">25</span> trees<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token property">Training time:</span> <span class="token number">12.59</span> seconds
+<span class="token property">Prediction time:</span> <span class="token number">0.13</span> seconds
+<span class="token property">Total time:</span> <span class="token number">12.72</span> seconds
+
+Testing RandomForest with <span class="token number">50</span> trees<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token property">Training time:</span> <span class="token number">25.04</span> seconds
+<span class="token property">Prediction time:</span> <span class="token number">0.27</span> seconds
+<span class="token property">Total time:</span> <span class="token number">25.30</span> seconds
+
+Testing RandomForest with <span class="token number">100</span> trees<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token property">Training time:</span> <span class="token number">49.17</span> seconds
+<span class="token property">Prediction time:</span> <span class="token number">0.49</span> seconds
+<span class="token property">Total time:</span> <span class="token number">49.66</span> seconds
+
+<span class="token property">Summary:</span>
+ Trees   Train<span class="token operator">(</span>s<span class="token operator">)</span> Predict<span class="token operator">(</span>s<span class="token operator">)</span>   Total<span class="token operator">(</span>s<span class="token operator">)</span>
+<span class="token separator comment">----------------------------------------</span>
+     <span class="token number">1</span>       <span class="token number">2.35</span>       <span class="token number">0.03</span>       <span class="token number">2.38</span>
+     <span class="token number">2</span>       <span class="token number">2.21</span>       <span class="token number">0.05</span>       <span class="token number">2.26</span>
+     <span class="token number">5</span>       <span class="token number">4.18</span>       <span class="token number">0.05</span>       <span class="token number">4.23</span>
+    <span class="token number">10</span>       <span class="token number">6.34</span>       <span class="token number">0.10</span>       <span class="token number">6.44</span>
+    <span class="token number">25</span>      <span class="token number">12.59</span>       <span class="token number">0.13</span>      <span class="token number">12.72</span>
+    <span class="token number">50</span>      <span class="token number">25.04</span>       <span class="token number">0.27</span>      <span class="token number">25.30</span>
+   <span class="token number">100</span>      <span class="token number">49.17</span>       <span class="token number">0.49</span>      <span class="token number">49.66</span></code></pre></div>
+</details>
+<h2 id="cpu-bound-태스크의-결과-2---k-means-clustering" style="position:relative;"><a href="#cpu-bound-%ED%83%9C%EC%8A%A4%ED%81%AC%EC%9D%98-%EA%B2%B0%EA%B3%BC-2---k-means-clustering" aria-label="cpu bound 태스크의 결과 2   k means clustering permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>CPU bound 태스크의 결과 (2) - K-means clustering</h2>
+<p>표로 정리하면 아래와 같습니다:</p>
+<table>
+<thead>
+<tr>
+<th>Image</th>
+<th>Version</th>
+<th>Samples</th>
+<th>Clusters</th>
+<th>Execution Time (s)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Debian</td>
+<td><code class="language-text">3.12</code></td>
+<td>1,000,000</td>
+<td>3</td>
+<td>4.72</td>
+</tr>
+<tr>
+<td>Debian</td>
+<td><code class="language-text">3.12</code></td>
+<td>1,000,000</td>
+<td>5</td>
+<td>4.90</td>
+</tr>
+<tr>
+<td>Debian</td>
+<td><code class="language-text">3.12</code></td>
+<td>5,000,000</td>
+<td>3</td>
+<td>10.37</td>
+</tr>
+<tr>
+<td>Debian</td>
+<td><code class="language-text">3.12</code></td>
+<td>5,000,000</td>
+<td>5</td>
+<td>12.18</td>
+</tr>
+<tr>
+<td>Alpine</td>
+<td><code class="language-text">3.12</code></td>
+<td>1,000,000</td>
+<td>3</td>
+<td>5.50</td>
+</tr>
+<tr>
+<td>Alpine</td>
+<td><code class="language-text">3.12</code></td>
+<td>1,000,000</td>
+<td>5</td>
+<td>4.81</td>
+</tr>
+<tr>
+<td>Alpine</td>
+<td><code class="language-text">3.12</code></td>
+<td>5,000,000</td>
+<td>3</td>
+<td>11.90</td>
+</tr>
+<tr>
+<td>Alpine</td>
+<td><code class="language-text">3.12</code></td>
+<td>5,000,000</td>
+<td>5</td>
+<td>12.71</td>
+</tr>
+<tr>
+<td>Debian</td>
+<td><code class="language-text">3.13</code></td>
+<td>100,000</td>
+<td>5</td>
+<td>2.74</td>
+</tr>
+<tr>
+<td>Debian</td>
+<td><code class="language-text">3.13</code></td>
+<td>100,000</td>
+<td>7</td>
+<td>3.50</td>
+</tr>
+<tr>
+<td>Debian</td>
+<td><code class="language-text">3.13</code></td>
+<td>500,000</td>
+<td>5</td>
+<td>6.92</td>
+</tr>
+<tr>
+<td>Debian</td>
+<td><code class="language-text">3.13</code></td>
+<td>500,000</td>
+<td>7</td>
+<td>6.92</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>🍅 disclaimer</p>
+<p><code class="language-text">scikit-learn</code> 의 공식 지원이 3.12 까지라, Alpine 리눅스에서는 3.13 베이스 이미지에서 구동이 어려웠습니다.</p>
+</blockquote>
+<details>
+<summary>베이스 이미지 - Alpine 3.12 의 작업결과</summary>
+<div class="gatsby-highlight" data-language="log"><pre class="language-log"><code class="language-log">Running benchmark for <span class="token number">1000000</span> samples<span class="token punctuation">,</span> <span class="token number">3</span> clusters<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+<span class="token property">Execution time:</span> <span class="token number">5.50</span> seconds
+<span class="token property">Iterations:</span> <span class="token number">2</span>
+<span class="token property">Inertia:</span> <span class="token number">128018685.50</span>
+<span class="token property">Average CPU Usage:</span> <span class="token number">801.99</span><span class="token operator">%</span>
+<span class="token property">Average Memory Usage:</span> <span class="token number">12.59</span><span class="token operator">%</span>
+<span class="token property">Peak CPU Usage:</span> <span class="token number">1261.70</span><span class="token operator">%</span>
+<span class="token property">Peak Memory Usage:</span> <span class="token number">17.07</span><span class="token operator">%</span>
+Running benchmark for <span class="token number">1000000</span> samples<span class="token punctuation">,</span> <span class="token number">5</span> clusters<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token property">Execution time:</span> <span class="token number">4.81</span> seconds
+<span class="token property">Iterations:</span> <span class="token number">2</span>
+<span class="token property">Inertia:</span> <span class="token number">128018441.10</span>
+<span class="token property">Average CPU Usage:</span> <span class="token number">1014.51</span><span class="token operator">%</span>
+<span class="token property">Average Memory Usage:</span> <span class="token number">23.78</span><span class="token operator">%</span>
+<span class="token property">Peak CPU Usage:</span> <span class="token number">1206.10</span><span class="token operator">%</span>
+<span class="token property">Peak Memory Usage:</span> <span class="token number">28.70</span><span class="token operator">%</span>
+Running benchmark for <span class="token number">5000000</span> samples<span class="token punctuation">,</span> <span class="token number">3</span> clusters<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token property">Execution time:</span> <span class="token number">11.90</span> seconds
+<span class="token property">Iterations:</span> <span class="token number">2</span>
+<span class="token property">Inertia:</span> <span class="token number">640003227.45</span>
+<span class="token property">Average CPU Usage:</span> <span class="token number">723.35</span><span class="token operator">%</span>
+<span class="token property">Average Memory Usage:</span> <span class="token number">69.71</span><span class="token operator">%</span>
+<span class="token property">Peak CPU Usage:</span> <span class="token number">1208.10</span><span class="token operator">%</span>
+<span class="token property">Peak Memory Usage:</span> <span class="token number">92.17</span><span class="token operator">%</span>
+Running benchmark for <span class="token number">5000000</span> samples<span class="token punctuation">,</span> <span class="token number">5</span> clusters<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token property">Execution time:</span> <span class="token number">12.71</span> seconds
+<span class="token property">Iterations:</span> <span class="token number">2</span>
+<span class="token property">Inertia:</span> <span class="token number">640002946.03</span>
+<span class="token property">Average CPU Usage:</span> <span class="token number">945.65</span><span class="token operator">%</span>
+<span class="token property">Average Memory Usage:</span> <span class="token number">64.20</span><span class="token operator">%</span>
+<span class="token property">Peak CPU Usage:</span> <span class="token number">1206.70</span><span class="token operator">%</span>
+<span class="token property">Peak Memory Usage:</span> <span class="token number">90.08</span><span class="token operator">%</span>
+<span class="token property">Plotting Data Summary:</span>
+<span class="token property">Dataset Size:</span> <span class="token number">1000000</span><span class="token punctuation">,</span> Clusters<span class="token operator">:</span> <span class="token number">3</span>
+<span class="token property">Execution Time:</span> <span class="token number">5.50s</span>
+<span class="token property">CPU Usage:</span> <span class="token number">52</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">0.0</span><span class="token punctuation">,</span> <span class="token number">1261.7</span><span class="token punctuation">]</span>
+<span class="token property">Memory Usage:</span> <span class="token number">52</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">6.5</span><span class="token punctuation">,</span> <span class="token number">17.1</span><span class="token punctuation">]</span>
+<span class="token property">Dataset Size:</span> <span class="token number">1000000</span><span class="token punctuation">,</span> Clusters<span class="token operator">:</span> <span class="token number">5</span>
+<span class="token property">Execution Time:</span> <span class="token number">4.81s</span>
+<span class="token property">CPU Usage:</span> <span class="token number">47</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">93.4</span><span class="token punctuation">,</span> <span class="token number">1206.1</span><span class="token punctuation">]</span>
+<span class="token property">Memory Usage:</span> <span class="token number">47</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">18.0</span><span class="token punctuation">,</span> <span class="token number">28.7</span><span class="token punctuation">]</span>
+<span class="token property">Dataset Size:</span> <span class="token number">5000000</span><span class="token punctuation">,</span> Clusters<span class="token operator">:</span> <span class="token number">3</span>
+<span class="token property">Execution Time:</span> <span class="token number">11.90s</span>
+<span class="token property">CPU Usage:</span> <span class="token number">112</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">47.9</span><span class="token punctuation">,</span> <span class="token number">1208.1</span><span class="token punctuation">]</span>
+<span class="token property">Memory Usage:</span> <span class="token number">112</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">37.9</span><span class="token punctuation">,</span> <span class="token number">92.2</span><span class="token punctuation">]</span>
+<span class="token property">Dataset Size:</span> <span class="token number">5000000</span><span class="token punctuation">,</span> Clusters<span class="token operator">:</span> <span class="token number">5</span>
+<span class="token property">Execution Time:</span> <span class="token number">12.71s</span>
+<span class="token property">CPU Usage:</span> <span class="token number">121</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">86.0</span><span class="token punctuation">,</span> <span class="token number">1206.7</span><span class="token punctuation">]</span>
+<span class="token property">Memory Usage:</span> <span class="token number">121</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">35.7</span><span class="token punctuation">,</span> <span class="token number">90.1</span><span class="token punctuation">]</span></code></pre></div>
+</details>
+<details>
+<summary>(수행불가) 베이스 이미지 - Alpine 3.13 의 작업결과</summary>
+<p>구동 불가!</p>
+</details>
+<details>
+<summary>베이스 이미지 - Debian 3.12 의 작업결과</summary>
+<div class="gatsby-highlight" data-language="log"><pre class="language-log"><code class="language-log">Running benchmark for <span class="token number">1000000</span> samples<span class="token punctuation">,</span> <span class="token number">3</span> clusters<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token property">Execution time:</span> <span class="token number">4.72</span> seconds
+<span class="token property">Iterations:</span> <span class="token number">2</span>
+<span class="token property">Inertia:</span> <span class="token number">128018685.50</span>
+<span class="token property">Average CPU Usage:</span> <span class="token number">907.44</span><span class="token operator">%</span>
+<span class="token property">Average Memory Usage:</span> <span class="token number">12.71</span><span class="token operator">%</span>
+<span class="token property">Peak CPU Usage:</span> <span class="token number">1199.30</span><span class="token operator">%</span>
+<span class="token property">Peak Memory Usage:</span> <span class="token number">17.33</span><span class="token operator">%</span>
+Running benchmark for <span class="token number">1000000</span> samples<span class="token punctuation">,</span> <span class="token number">5</span> clusters<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token property">Execution time:</span> <span class="token number">4.90</span> seconds
+<span class="token property">Iterations:</span> <span class="token number">2</span>
+<span class="token property">Inertia:</span> <span class="token number">128018441.10</span>
+<span class="token property">Average CPU Usage:</span> <span class="token number">1044.18</span><span class="token operator">%</span>
+<span class="token property">Average Memory Usage:</span> <span class="token number">12.94</span><span class="token operator">%</span>
+<span class="token property">Peak CPU Usage:</span> <span class="token number">1218.20</span><span class="token operator">%</span>
+<span class="token property">Peak Memory Usage:</span> <span class="token number">18.36</span><span class="token operator">%</span>
+Running benchmark for <span class="token number">5000000</span> samples<span class="token punctuation">,</span> <span class="token number">3</span> clusters<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token property">Execution time:</span> <span class="token number">10.37</span> seconds
+<span class="token property">Iterations:</span> <span class="token number">2</span>
+<span class="token property">Inertia:</span> <span class="token number">640003227.45</span>
+<span class="token property">Average CPU Usage:</span> <span class="token number">793.64</span><span class="token operator">%</span>
+<span class="token property">Average Memory Usage:</span> <span class="token number">59.11</span><span class="token operator">%</span>
+<span class="token property">Peak CPU Usage:</span> <span class="token number">1208.20</span><span class="token operator">%</span>
+<span class="token property">Peak Memory Usage:</span> <span class="token number">83.59</span><span class="token operator">%</span>
+Running benchmark for <span class="token number">5000000</span> samples<span class="token punctuation">,</span> <span class="token number">5</span> clusters<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token property">Execution time:</span> <span class="token number">12.18</span> seconds
+<span class="token property">Iterations:</span> <span class="token number">2</span>
+<span class="token property">Inertia:</span> <span class="token number">640002946.03</span>
+<span class="token property">Average CPU Usage:</span> <span class="token number">959.31</span><span class="token operator">%</span>
+<span class="token property">Average Memory Usage:</span> <span class="token number">57.18</span><span class="token operator">%</span>
+<span class="token property">Peak CPU Usage:</span> <span class="token number">1210.40</span><span class="token operator">%</span>
+<span class="token property">Peak Memory Usage:</span> <span class="token number">83.59</span><span class="token operator">%</span>
+<span class="token property">Plotting Data Summary:</span>
+<span class="token property">Dataset Size:</span> <span class="token number">1000000</span><span class="token punctuation">,</span> Clusters<span class="token operator">:</span> <span class="token number">3</span>
+<span class="token property">Execution Time:</span> <span class="token number">4.72s</span>
+<span class="token property">CPU Usage:</span> <span class="token number">46</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">0.0</span><span class="token punctuation">,</span> <span class="token number">1199.3</span><span class="token punctuation">]</span>
+<span class="token property">Memory Usage:</span> <span class="token number">46</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">6.5</span><span class="token punctuation">,</span> <span class="token number">17.3</span><span class="token punctuation">]</span>
+<span class="token property">Dataset Size:</span> <span class="token number">1000000</span><span class="token punctuation">,</span> Clusters<span class="token operator">:</span> <span class="token number">5</span>
+<span class="token property">Execution Time:</span> <span class="token number">4.90s</span>
+<span class="token property">CPU Usage:</span> <span class="token number">48</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">93.4</span><span class="token punctuation">,</span> <span class="token number">1218.2</span><span class="token punctuation">]</span>
+<span class="token property">Memory Usage:</span> <span class="token number">48</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">7.5</span><span class="token punctuation">,</span> <span class="token number">18.4</span><span class="token punctuation">]</span>
+<span class="token property">Dataset Size:</span> <span class="token number">5000000</span><span class="token punctuation">,</span> Clusters<span class="token operator">:</span> <span class="token number">3</span>
+<span class="token property">Execution Time:</span> <span class="token number">10.37s</span>
+<span class="token property">CPU Usage:</span> <span class="token number">100</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">96.5</span><span class="token punctuation">,</span> <span class="token number">1208.2</span><span class="token punctuation">]</span>
+<span class="token property">Memory Usage:</span> <span class="token number">100</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">29.2</span><span class="token punctuation">,</span> <span class="token number">83.6</span><span class="token punctuation">]</span>
+<span class="token property">Dataset Size:</span> <span class="token number">5000000</span><span class="token punctuation">,</span> Clusters<span class="token operator">:</span> <span class="token number">5</span>
+<span class="token property">Execution Time:</span> <span class="token number">12.18s</span>
+<span class="token property">CPU Usage:</span> <span class="token number">118</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">88.9</span><span class="token punctuation">,</span> <span class="token number">1210.4</span><span class="token punctuation">]</span>
+<span class="token property">Memory Usage:</span> <span class="token number">118</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">29.2</span><span class="token punctuation">,</span> <span class="token number">83.6</span><span class="token punctuation">]</span></code></pre></div>
+</details>
+<details>
+<summary>베이스 이미지 - Debian 3.13 의 작업결과</summary>
+<div class="gatsby-highlight" data-language="log"><pre class="language-log"><code class="language-log">Running benchmark for <span class="token number">100000</span> samples<span class="token punctuation">,</span> <span class="token number">5</span> clusters<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token property">Execution time:</span> <span class="token number">2.74</span> seconds
+<span class="token property">Iterations:</span> <span class="token number">2</span>
+<span class="token property">Inertia:</span> <span class="token number">12800855.22</span>
+<span class="token property">Average CPU Usage:</span> <span class="token number">392.67</span><span class="token operator">%</span>
+<span class="token property">Average Memory Usage:</span> <span class="token number">2.48</span><span class="token operator">%</span>
+<span class="token property">Peak CPU Usage:</span> <span class="token number">536.20</span><span class="token operator">%</span>
+<span class="token property">Peak Memory Usage:</span> <span class="token number">2.52</span><span class="token operator">%</span>
+Running benchmark for <span class="token number">100000</span> samples<span class="token punctuation">,</span> <span class="token number">7</span> clusters<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token property">Execution time:</span> <span class="token number">3.50</span> seconds
+<span class="token property">Iterations:</span> <span class="token number">2</span>
+<span class="token property">Inertia:</span> <span class="token number">12800608.95</span>
+<span class="token property">Average CPU Usage:</span> <span class="token number">400.08</span><span class="token operator">%</span>
+<span class="token property">Average Memory Usage:</span> <span class="token number">2.50</span><span class="token operator">%</span>
+<span class="token property">Peak CPU Usage:</span> <span class="token number">564.40</span><span class="token operator">%</span>
+<span class="token property">Peak Memory Usage:</span> <span class="token number">2.52</span><span class="token operator">%</span>
+Running benchmark for <span class="token number">500000</span> samples<span class="token punctuation">,</span> <span class="token number">5</span> clusters<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token property">Execution time:</span> <span class="token number">6.92</span> seconds
+<span class="token property">Iterations:</span> <span class="token number">2</span>
+<span class="token property">Inertia:</span> <span class="token number">64009635.94</span>
+<span class="token property">Average CPU Usage:</span> <span class="token number">366.32</span><span class="token operator">%</span>
+<span class="token property">Average Memory Usage:</span> <span class="token number">7.00</span><span class="token operator">%</span>
+<span class="token property">Peak CPU Usage:</span> <span class="token number">671.20</span><span class="token operator">%</span>
+<span class="token property">Peak Memory Usage:</span> <span class="token number">9.58</span><span class="token operator">%</span>
+Running benchmark for <span class="token number">500000</span> samples<span class="token punctuation">,</span> <span class="token number">7</span> clusters<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token property">Execution time:</span> <span class="token number">6.92</span> seconds
+<span class="token property">Iterations:</span> <span class="token number">2</span>
+<span class="token property">Inertia:</span> <span class="token number">64009455.56</span>
+<span class="token property">Average CPU Usage:</span> <span class="token number">382.56</span><span class="token operator">%</span>
+<span class="token property">Average Memory Usage:</span> <span class="token number">6.93</span><span class="token operator">%</span>
+<span class="token property">Peak CPU Usage:</span> <span class="token number">601.80</span><span class="token operator">%</span>
+<span class="token property">Peak Memory Usage:</span> <span class="token number">7.32</span><span class="token operator">%</span>
+<span class="token property">Plotting Data Summary:</span>
+<span class="token property">Dataset Size:</span> <span class="token number">100000</span><span class="token punctuation">,</span> Clusters<span class="token operator">:</span> <span class="token number">5</span>
+<span class="token property">Execution Time:</span> <span class="token number">2.74s</span>
+<span class="token property">CPU Usage:</span> <span class="token number">26</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">0.0</span><span class="token punctuation">,</span> <span class="token number">536.2</span><span class="token punctuation">]</span>
+<span class="token property">Memory Usage:</span> <span class="token number">26</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">1.7</span><span class="token punctuation">,</span> <span class="token number">2.5</span><span class="token punctuation">]</span>
+<span class="token property">Dataset Size:</span> <span class="token number">100000</span><span class="token punctuation">,</span> Clusters<span class="token operator">:</span> <span class="token number">7</span>
+<span class="token property">Execution Time:</span> <span class="token number">3.50s</span>
+<span class="token property">CPU Usage:</span> <span class="token number">33</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">157.3</span><span class="token punctuation">,</span> <span class="token number">564.4</span><span class="token punctuation">]</span>
+<span class="token property">Memory Usage:</span> <span class="token number">33</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">2.0</span><span class="token punctuation">,</span> <span class="token number">2.5</span><span class="token punctuation">]</span>
+<span class="token property">Dataset Size:</span> <span class="token number">500000</span><span class="token punctuation">,</span> Clusters<span class="token operator">:</span> <span class="token number">5</span>
+<span class="token property">Execution Time:</span> <span class="token number">6.92s</span>
+<span class="token property">CPU Usage:</span> <span class="token number">64</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">97.0</span><span class="token punctuation">,</span> <span class="token number">671.2</span><span class="token punctuation">]</span>
+<span class="token property">Memory Usage:</span> <span class="token number">64</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">4.1</span><span class="token punctuation">,</span> <span class="token number">9.6</span><span class="token punctuation">]</span>
+<span class="token property">Dataset Size:</span> <span class="token number">500000</span><span class="token punctuation">,</span> Clusters<span class="token operator">:</span> <span class="token number">7</span>
+<span class="token property">Execution Time:</span> <span class="token number">6.92s</span>
+<span class="token property">CPU Usage:</span> <span class="token number">65</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">95.2</span><span class="token punctuation">,</span> <span class="token number">601.8</span><span class="token punctuation">]</span>
+<span class="token property">Memory Usage:</span> <span class="token number">65</span> points<span class="token punctuation">,</span> Range<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">4.3</span><span class="token punctuation">,</span> <span class="token number">7.3</span><span class="token punctuation">]</span></code></pre></div>
+</details>
+<h2 id="io-bound-태스크의-결과-1---10만-건의-데이터-조회-결과" style="position:relative;"><a href="#io-bound-%ED%83%9C%EC%8A%A4%ED%81%AC%EC%9D%98-%EA%B2%B0%EA%B3%BC-1---10%EB%A7%8C-%EA%B1%B4%EC%9D%98-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A1%B0%ED%9A%8C-%EA%B2%B0%EA%B3%BC" aria-label="io bound 태스크의 결과 1   10만 건의 데이터 조회 결과 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>I/O bound 태스크의 결과 (1) - 10만 건의 데이터 조회 결과</h2>
+<p>Debian 기반의 컨테이너로 IO bound 태스크를 구동해본 결과는 아래와 같았습니다:</p>
+<p>Alpine 기반의 컨테이너로 IO bound 태스크를 구동해본 결과는 아래와 같았습니다:</p>
+<h1 id="결론" style="position:relative;"><a href="#%EA%B2%B0%EB%A1%A0" aria-label="결론 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>결론</h1>
+<h2 id="cpu-bound" style="position:relative;"><a href="#cpu-bound" aria-label="cpu bound permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>CPU bound</h2>
+<p>의외로, 미미한 차이가 있었고 심지어는 Alpine 기반 컨테이너가 근소하게나마 빨랐습니다.</p>
+<h2 id="io-bound" style="position:relative;"><a href="#io-bound" aria-label="io bound permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>I/O bound</h2>
+<h1 id="종합하여" style="position:relative;"><a href="#%EC%A2%85%ED%95%A9%ED%95%98%EC%97%AC" aria-label="종합하여 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>종합하여</h1>
+<p>CPU bound task에서 의외로 미미한 차이로 Alpine이 앞섰다는 점에서 놀라웠습니다.</p></div></div></div><div class="Post-module--footer--f8705"><div class="Meta-module--meta--dae0a"><p class="Meta-module--date--4d30d">Published<!-- --> <!-- -->Nov 24, 2024</p></div><div class="Tags-module--tags--18589"><ul class="Tags-module--list--82ae6"><li class="Tags-module--item--52015"><a class="Button-module--button--b1113" href="/tag/python/">python</a></li><li class="Tags-module--item--52015"><a class="Button-module--button--b1113" href="/tag/geultto/">geultto</a></li></ul></div><div class="Author-module--author--1c58d"><p class="Non scholæ sed vitæ discimus.">Non scholæ sed vitæ discimus.</p><p class="Author-module--bio--08950">his/him</p></div></div><div class="Post-module--comments--d3b99"><div></div></div></div></div></div><div id="gatsby-announcer" style="position:absolute;top:0;width:1px;height:1px;padding:0;overflow:hidden;clip:rect(0, 0, 0, 0);white-space:nowrap;border:0" aria-live="assertive" aria-atomic="true"></div></div><script id="gatsby-script-loader">/*<![CDATA[*/window.pagePath="/devlog/python/2024-11-24-python-container-101-pt02";window.___webpackCompilationHash="43e681196d34fe1c4edf";/*]]>*/</script><script id="gatsby-chunk-mapping">/*<![CDATA[*/window.___chunkMapping={"polyfill":["/polyfill-29ec2187e6089b998329.js"],"app":["/app-2d58cf3dd5a5a15ad8a0.js"],"component---cache-caches-gatsby-plugin-offline-app-shell-js":["/component---cache-caches-gatsby-plugin-offline-app-shell-js-0c915c7b1bdb5eac4fdf.js"],"component---src-templates-categories-template-categories-template-tsx":["/component---src-templates-categories-template-categories-template-tsx-e2d2add397e32e3517ca.js"],"component---src-templates-category-template-category-template-tsx":["/component---src-templates-category-template-category-template-tsx-078f2adfba160a34229f.js"],"component---src-templates-index-template-index-template-tsx":["/component---src-templates-index-template-index-template-tsx-83380c7954c9f6621026.js"],"component---src-templates-not-found-template-not-found-template-tsx":["/component---src-templates-not-found-template-not-found-template-tsx-56fe4d3b015459d56c99.js"],"component---src-templates-page-template-page-template-tsx":["/component---src-templates-page-template-page-template-tsx-c6c21d7369a9356db3a1.js"],"component---src-templates-post-template-post-template-tsx":["/component---src-templates-post-template-post-template-tsx-119cd0258cb38628d01f.js"],"component---src-templates-tag-template-tag-template-tsx":["/component---src-templates-tag-template-tag-template-tsx-8d0b3090e775aa3c4584.js"],"component---src-templates-tags-template-tags-template-tsx":["/component---src-templates-tags-template-tags-template-tsx-30027e87af7d042f3afb.js"]};/*]]>*/</script><script src="/polyfill-29ec2187e6089b998329.js" nomodule=""></script><script src="/app-2d58cf3dd5a5a15ad8a0.js" async=""></script><script src="/framework-481a1b6416c14416b2fb.js" async=""></script><script src="/webpack-runtime-de5a94456c9c32f6cdb9.js" async=""></script></body></html>
