@@ -1,4 +1,177 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[팔공산 창고]]></title><description><![CDATA[팔공산 창고]]></description><link>http://github.com/dylang/node-rss</link><generator>GatsbyJS</generator><lastBuildDate>Sun, 24 Nov 2024 15:43:01 GMT</lastBuildDate><item><title><![CDATA[[연재] 파이썬 컨테이너 선택 제 3형 - 파이썬 컨테이너 실전비교]]></title><description><![CDATA[파이썬 컨테이너 최적화 기법을 이용하여 CPU bound 작업과 IO bound 작업을 직접 구동해봅니다.]]></description><link>https://blog.s3ich4n.me/devlog/python/2024-11-24-python-container-101-pt03</link><guid isPermaLink="false">https://blog.s3ich4n.me/devlog/python/2024-11-24-python-container-101-pt03</guid><pubDate>Sun, 24 Nov 2024 23:57:00 GMT</pubDate><content:encoded>&lt;p&gt;이번 게시글에서는 Debian 기반의 컨테이너와 Alpine 기반의 컨테이너 간 성능을 비교해보도록 하겠습니다.&lt;/p&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[팔공산 창고]]></title><description><![CDATA[팔공산 창고]]></description><link>http://github.com/dylang/node-rss</link><generator>GatsbyJS</generator><lastBuildDate>Sun, 22 Dec 2024 10:37:16 GMT</lastBuildDate><item><title><![CDATA[지난 6개월 간 업무 회고]]></title><description><![CDATA[2024년의 저를 회고합니다. 부끄러움이 많은 한 해를 보냈습니다. 함께의 힘을 알게되었습니다. 그리고 다음 나아갈 길을 확인해보았습니다.]]></description><link>https://blog.s3ich4n.me/retrospect/2024-12-22-2024-retrospect</link><guid isPermaLink="false">https://blog.s3ich4n.me/retrospect/2024-12-22-2024-retrospect</guid><pubDate>Sun, 22 Dec 2024 18:59:16 GMT</pubDate><content:encoded>&lt;p&gt;이 글은 2024년 한 해를 바라보고, 앞으로의 액션 아이템을 세워보는 게시글입니다.&lt;/p&gt;
+&lt;h1 id=&quot;와-세상에-이런-모임이-있네&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%99%80-%EC%84%B8%EC%83%81%EC%97%90-%EC%9D%B4%EB%9F%B0-%EB%AA%A8%EC%9E%84%EC%9D%B4-%EC%9E%88%EB%84%A4&quot; aria-label=&quot;와 세상에 이런 모임이 있네 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;와 세상에 이런 모임이 있네?!&lt;/h1&gt;
+&lt;p&gt;오늘은 글또10기 분들과 함께 만나 1년회고를 진행해볼 수 있었습니다. 너무 즐거운 경험이었습니다! 글 쓰는 것 만으로 사람을 만날 수 있었다는 게 너무 좋았어요.&lt;/p&gt;
+&lt;p&gt;&lt;figure class=&quot;gatsby-resp-image-figure&quot; style=&quot;&quot;&gt;
+    &lt;span
+      class=&quot;gatsby-resp-image-wrapper&quot;
+      style=&quot;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 934px; &quot;
+    &gt;
+      &lt;a
+    class=&quot;gatsby-resp-image-link&quot;
+    href=&quot;/static/6fe84ed1420d15321fb34db3f6d14339/078fe/01.png&quot;
+    style=&quot;display: block&quot;
+    target=&quot;_blank&quot;
+    rel=&quot;noopener&quot;
+  &gt;
+    &lt;span
+    class=&quot;gatsby-resp-image-background-image&quot;
+    style=&quot;padding-bottom: 63.74999999999999%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAANCAYAAACpUE5eAAAACXBIWXMAABYlAAAWJQFJUiTwAAAB80lEQVQ4y31T2XLaQBDkKxwbEELoAN3S6hYSiBBX5TXlcg4nX5GH5PM7NQ2bolJ2Hkba2Zmd6e7ZnUVxijBKYLs+HC/AfLmm3c9XWK42r9rCsN602e9fP/H95Ruenr/i+csL8qJBpio4rs/CkqSb/M903syPUixMG20/oh+OOH/4iG5/RNXsiUYna3sLpeTJ/kyoiRNEGYqqQ5KV8MMUTTfST/MKbTeirHvU7Z5/VTRIsoIgiqqFKhueixKF2cJYY7V2ePiCckKcFlBly72uP2A/noi6bgfkqmZeWXUs3nQDqmszFtSUpEMY5wymeUlf0LF7WrB4nCoekmaCUmLrjQfNkhrqgpIYRCnRyWCiJKeJFBLLi5qNFGOKzSUuA9R0d0F8KShiFmWLqukxHE4cjlAXhMN44oDkL5SbdkDbH0hb8kVriWs9WdAwbXbbODvqeTtJ8SUuvqxNy4Vle6Qqa9NyuG/ZW/p/KYdRBj9MYHsB3F10pZDQ5NJv/RgPCxN390u8ezBo4mvtZC12pWwhyWt0w4SmblDmF83240QJDtMZ4/E99ZUG3i7iqxLk/95TFpwbG9RlBqVypI9PsKdPcHcx4kRRBkHubkMOSP76mb5aUD538zXOQ4Ai8+GcP2Px+ANukMH1AlKTa3Frmt7tk9MF/wAYq4O5GtgWKAAAAABJRU5ErkJggg==&apos;); background-size: cover; display: block;&quot;
+  &gt;&lt;/span&gt;
+  &lt;picture&gt;
+          &lt;source
+              srcset=&quot;/static/6fe84ed1420d15321fb34db3f6d14339/8ac56/01.webp 240w,
+/static/6fe84ed1420d15321fb34db3f6d14339/d3be9/01.webp 480w,
+/static/6fe84ed1420d15321fb34db3f6d14339/7d4d8/01.webp 934w&quot;
+              sizes=&quot;(max-width: 934px) 100vw, 934px&quot;
+              type=&quot;image/webp&quot;
+            /&gt;
+          &lt;source
+            srcset=&quot;/static/6fe84ed1420d15321fb34db3f6d14339/8ff5a/01.png 240w,
+/static/6fe84ed1420d15321fb34db3f6d14339/e85cb/01.png 480w,
+/static/6fe84ed1420d15321fb34db3f6d14339/078fe/01.png 934w&quot;
+            sizes=&quot;(max-width: 934px) 100vw, 934px&quot;
+            type=&quot;image/png&quot;
+          /&gt;
+          &lt;img
+            class=&quot;gatsby-resp-image-image&quot;
+            src=&quot;/static/6fe84ed1420d15321fb34db3f6d14339/078fe/01.png&quot;
+            alt=&quot;회사에서 딴짓한 게 이런 좋은 경험을 만들어 줄 거라곤ㅋㅋㅋ&quot;
+            title=&quot;회사에서 딴짓한 게 이런 좋은 경험을 만들어 줄 거라곤ㅋㅋㅋ&quot;
+            loading=&quot;lazy&quot;
+            decoding=&quot;async&quot;
+            style=&quot;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&quot;
+          /&gt;
+        &lt;/picture&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;
+    &lt;figcaption class=&quot;gatsby-resp-image-figcaption&quot;&gt;&lt;p&gt;회사에서 딴짓한 게 이런 좋은 경험을 만들어 줄 거라곤ㅋㅋㅋ&lt;/p&gt;&lt;/figcaption&gt;
+  &lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;결론부터 이야기하자면 너무 행복했습니다. 열정있는 사람과 함께 여러 대화를 나누고 이걸로 함께 한 해를 마무리하다니, 그저 영광이라 생각합니다. 이 자리를 빌어서 다시금 감사하다 말씀드리고 싶네요! 🥰🥰&lt;/p&gt;
+&lt;h1 id=&quot;저는-이렇게-살았어요&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%A0%80%EB%8A%94-%EC%9D%B4%EB%A0%87%EA%B2%8C-%EC%82%B4%EC%95%98%EC%96%B4%EC%9A%94&quot; aria-label=&quot;저는 이렇게 살았어요 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;저는 이렇게 살았어요&lt;/h1&gt;
+&lt;p&gt;그럼 본격적으로 저의 한 해를 돌이켜 보겠습니다.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://images.unsplash.com/photo-1592903204858-e288251ad9cc?q=80&amp;#x26;w=3266&amp;#x26;auto=format&amp;#x26;fit=crop&amp;#x26;ixlib=rb-4.0.3&amp;#x26;ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&quot; alt=&quot;한번 뒤돌아볼까요.&quot;&gt;&lt;/p&gt;
+&lt;h2 id=&quot;해왔던-것들---회사에서&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%ED%95%B4%EC%99%94%EB%8D%98-%EA%B2%83%EB%93%A4---%ED%9A%8C%EC%82%AC%EC%97%90%EC%84%9C&quot; aria-label=&quot;해왔던 것들   회사에서 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;해왔던 것들 - 회사에서&lt;/h2&gt;
+&lt;p&gt;직전 회사에서 나온 후 현 회사에서의 일들을 쭉 살펴본 결과를 보니, 아주 대충 산 건 아니었구나 하는 안도감이 들었습니다. 감사하게도 자리가 생겨서 &lt;a href=&quot;https://pyweb.python.or.kr/talks/talk8/&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;발표도 한 번 해보고&lt;/a&gt; 리뷰도 받아볼 수 있었습니다.&lt;/p&gt;
+&lt;p&gt;현재 회사는 퇴근 시 오늘 한 일을 모두 쓰는 시스템이 되어있다보니 그걸 적극적으로 활용했습니다. 쓸 때는 너무 귀찮다가도, 미래의 저를 생각했을 때 도움되겠다라 생각하면 쓰겠다던게 벌써 8개월이 지났군요. 잘했다 과거의 나!&lt;/p&gt;
+&lt;p&gt;기술적으로는 아래 일들이 핵심이었습니다:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;기존 레거시와 설계문서를 통해 전면 리뉴얼 완료&lt;/li&gt;
+&lt;li&gt;전체 인프라를 네이티브 클라우드 형식으로 전면 리뉴얼 및 IaC 도입&lt;/li&gt;
+&lt;li&gt;기존 프로젝트 리팩터링 및 테스트코드 확보&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;기술적인-부분&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EA%B8%B0%EC%88%A0%EC%A0%81%EC%9D%B8-%EB%B6%80%EB%B6%84&quot; aria-label=&quot;기술적인 부분 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;기술적인 부분?&lt;/h3&gt;
+&lt;p&gt;암만 생각해도 도무지 개선의 여지가 보이지 않았던 레거시를 버리기로 결정했습니다. 치명적인 버그와 유지보수가 배배꼬인 테이블, 그리고 비협조적으로 나오던 외주처의 태도를 보고 시원하게 던졌습니다. “이거 못 합니다. 제게 맡기시면 정말 잘 만들 수 있습니다.” 하고 자신있게 말했습니다.&lt;/p&gt;
+&lt;p&gt;그렇다보니 면접때부터 이야기한 네이티브 클라우드 구성부터, 재설계와 전면 리뉴얼을 진행했습니다. 기존 프로젝트 리팩터링 및 배포도 계속 이어가면서 작업하다보니 효율을 찾기 위해 전에 쓰던 IaC를 도입했습니다. 그러다보니 자연스럽게 테라폼 모듈에서 Terragrunt로 이어지게 되었습니다. 개발서버도 회사 내에서만 접근할 수 있도록 했어야해서요.&lt;/p&gt;
+&lt;p&gt;실제 비즈니스 로직을 짜기위해선 기획서부터 먼저 읽어보았습니다. 이후 담당자들이 공통적으로 쓰는 용어를 파악했구요. 파악하고 나서는 용어집으로 만들고 회의를 통해 확정지었지요. 이후 이를 코드화하기 위해 구조를 설계했습니다.&lt;/p&gt;
+&lt;p&gt;도메인부터 이를 영속화하는 과정, 그리고 API에 이르기까지 계속해서 생각했습니다. 정답은 없겠지만 오답을 피하기 위한 노력을 계속 했던 것 같습니다. 이 과정이 가장 머리아팠지만 그만큼 재밌었다고 생각합니다.&lt;/p&gt;
+&lt;h2 id=&quot;해왔던-것들---개인적으로&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%ED%95%B4%EC%99%94%EB%8D%98-%EA%B2%83%EB%93%A4---%EA%B0%9C%EC%9D%B8%EC%A0%81%EC%9C%BC%EB%A1%9C&quot; aria-label=&quot;해왔던 것들   개인적으로 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;해왔던 것들 - 개인적으로&lt;/h2&gt;
+&lt;p&gt;나를 찾는 과정이 가장 컸습니다. 이 것은 아마 평생 갈 일이 아닐까 합니다.&lt;/p&gt;
+&lt;p&gt;회사 사람과 언쟁을 높인일이 있었습니다. 블로그와 같이 공개된 자리에서 언급하기엔 너무 부끄럽긴 합니다만, 이를 통해 정말 많은 걸 배워 쓰게 되었습니다.&lt;/p&gt;
+&lt;h3 id=&quot;上善若水&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%E4%B8%8A%E5%96%84%E8%8B%A5%E6%B0%B4&quot; aria-label=&quot;上善若水 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;上善若水&lt;/h3&gt;
+&lt;p&gt;상선약수(上善若水) 라는 말, 아시나요? 이는 물의 성질을 닮아 다른 사람을 이롭게 하는 삶의 자세를 가리킵니다.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;물은 막히면 돌아서 흐르고, 깊으면 채워서 흐르며, 만물을 이롭게 할 뿐 다투지 않습니다.&lt;/p&gt;
+&lt;p&gt;물은 언제나 낮은 곳으로 흐르고, 깊은 연못처럼 고요하며, 어질고 선한 사람과 같습니다.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;img src=&quot;https://media4.giphy.com/media/O0AEyXviC1vtC/giphy.gif&quot; alt=&quot;上善若水. 물과 같이 되어라는 말은 이런 뜻이 아닐까요?&quot;&gt;&lt;/p&gt;
+&lt;p&gt;이는 물의 포용력을 일컫기도 하지만, 물의 단호함을 말하기도 하는 말입니다.&lt;/p&gt;
+&lt;p&gt;물은 겉으로는 부드럽고 순응하는 것 같지만, 끊임없이 흐르며 바위도 깎아내는 내면의 강인함을 가지고 있습니다. 이처럼 상선약수는 겸손하고 이로움을 주는 삶의 자세와 함께, 자신의 길을 묵묵히 걸어가는 단호함도 가르치고 있습니다.&lt;/p&gt;
+&lt;p&gt;상대의 입장을 헤아리고, 저의 입장을 함께 놓고 판단하여 최선의 결과를 낼 필요가 있습니다. 이 과정을 배웠고, 현재도 이를 실천하고 있습니다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;의견을 제시합니다&lt;/li&gt;
+&lt;li&gt;피드백을 받습니다. 이 때 의사소통에 특히 유의합니다
+&lt;ol&gt;
+&lt;li&gt;주장과 근거를 함께 제시하며, 자유로운 의사소통이 되게 합니다.&lt;/li&gt;
+&lt;li&gt;의견이 다르다면 그에 해당하는 명확한 근거와 데이터로 의사소통합니다. 이견을 최대한 줄이며, 나의 근거를 잘 표현하도록 노력합니다.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;정리된 내용을 해당 내용을 명문화하고 버저닝하여 후에 있을 논쟁을 피합니다.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;이렇게 상대방을 경청하고 의견을 존중해야 함께 일할 수 있다 생각합니다. 비록 상대가 그렇지 않더라도 내쪽에서 그리 해야할 것이며, 상대가 존중하려 하지만 내가 그렇지 않은지도 유의해야합니다.&lt;/p&gt;
+&lt;p&gt;이것이 올해 배운 가장 중요한 요소입니다.&lt;/p&gt;
+&lt;h1 id=&quot;look-back&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#look-back&quot; aria-label=&quot;look back permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Look back&lt;/h1&gt;
+&lt;p&gt;오늘까지 총 &lt;code class=&quot;language-text&quot;&gt;1141&lt;/code&gt;번의 커밋을 했습니다. 이슈 뿐 아니라 PR리뷰, 그리고 실제 커밋 등을 다 해낸 결과입니다.&lt;/p&gt;
+&lt;p&gt;&lt;figure class=&quot;gatsby-resp-image-figure&quot; style=&quot;&quot;&gt;
+    &lt;span
+      class=&quot;gatsby-resp-image-wrapper&quot;
+      style=&quot;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 960px; &quot;
+    &gt;
+      &lt;a
+    class=&quot;gatsby-resp-image-link&quot;
+    href=&quot;/static/5bd8c7fc04451205ad3e79225cd7b956/dd507/02.png&quot;
+    style=&quot;display: block&quot;
+    target=&quot;_blank&quot;
+    rel=&quot;noopener&quot;
+  &gt;
+    &lt;span
+    class=&quot;gatsby-resp-image-background-image&quot;
+    style=&quot;padding-bottom: 28.750000000000004%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAGCAYAAADDl76dAAAACXBIWXMAABYlAAAWJQFJUiTwAAABNElEQVQY002Qy2rdQBBEtY+v5iXNSKMZSaPXfeKQmxiDk23AOLv8/7+cRGNIvDh0UzRFVRfDfGY+PbLPfjqR1hvjcqHUDZ9EzYO0PKgPSPtPO+iGuh0yVTsg646ijUs28P1CN6zEdKQNM6aO+dDYiDIeZTqU9FR1n3WhPJWJuDbhfMJ1CVl5im7csru2AeP6jLIBd11w9yP1MqHjgJ4S9nnDXVaq24p9WnHftqyrzwtVGHOrIoxHhPHoPYkNqCogY4952WjfrsjvG+JxQnyZMT9PqK8L+veN5tcV/Xrm8GOlvM+U5xFRe4qPyXaqZkA1EX0asc8LMkbEGBFDRLYBtXOf0JcRsyTKdUBvCeUjpWnfDa1P1H7MNGGicj0H4TKlbP6jmlyr3HXR5D+LrqPe0vv+1/APPRydbNY6/qoAAAAASUVORK5CYII=&apos;); background-size: cover; display: block;&quot;
+  &gt;&lt;/span&gt;
+  &lt;picture&gt;
+          &lt;source
+              srcset=&quot;/static/5bd8c7fc04451205ad3e79225cd7b956/8ac56/02.webp 240w,
+/static/5bd8c7fc04451205ad3e79225cd7b956/d3be9/02.webp 480w,
+/static/5bd8c7fc04451205ad3e79225cd7b956/e46b2/02.webp 960w,
+/static/5bd8c7fc04451205ad3e79225cd7b956/f992d/02.webp 1440w,
+/static/5bd8c7fc04451205ad3e79225cd7b956/2be02/02.webp 1528w&quot;
+              sizes=&quot;(max-width: 960px) 100vw, 960px&quot;
+              type=&quot;image/webp&quot;
+            /&gt;
+          &lt;source
+            srcset=&quot;/static/5bd8c7fc04451205ad3e79225cd7b956/8ff5a/02.png 240w,
+/static/5bd8c7fc04451205ad3e79225cd7b956/e85cb/02.png 480w,
+/static/5bd8c7fc04451205ad3e79225cd7b956/d9199/02.png 960w,
+/static/5bd8c7fc04451205ad3e79225cd7b956/07a9c/02.png 1440w,
+/static/5bd8c7fc04451205ad3e79225cd7b956/dd507/02.png 1528w&quot;
+            sizes=&quot;(max-width: 960px) 100vw, 960px&quot;
+            type=&quot;image/png&quot;
+          /&gt;
+          &lt;img
+            class=&quot;gatsby-resp-image-image&quot;
+            src=&quot;/static/5bd8c7fc04451205ad3e79225cd7b956/d9199/02.png&quot;
+            alt=&quot;1141 commitments&quot;
+            title=&quot;1141 commitments&quot;
+            loading=&quot;lazy&quot;
+            decoding=&quot;async&quot;
+            style=&quot;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&quot;
+          /&gt;
+        &lt;/picture&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;
+    &lt;figcaption class=&quot;gatsby-resp-image-figcaption&quot;&gt;&lt;p&gt;1141 commitments&lt;/p&gt;&lt;/figcaption&gt;
+  &lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;많고 적음에 따라 한 조직에 정신놓고 이렇게 기여해본 것은 감사할 일입니다. 어떤 조직에서든 소프트웨어 엔지니어로서 이렇게 일할 수 있단 점에 감사히 생각하고 있습니다. 보다 더 나은 소프트웨어로 만들기 위한 여정은 더 멀지만, 언젠가 먼저 걸은 이 길이 참 밝은 횃불이었다는 평을 받고싶습니다.&lt;/p&gt;
+&lt;h1 id=&quot;and-look-forward&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#and-look-forward&quot; aria-label=&quot;and look forward permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;…and Look forward!&lt;/h1&gt;
+&lt;p&gt;그렇다면 앞으로의 저를 위해 무엇을 하면 좋을지 생각해봤습니다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;도메인 주도 설계에 대한 면밀한 이해&lt;/li&gt;
+&lt;li&gt;운동하기&lt;/li&gt;
+&lt;li&gt;파이썬 딥다이브 하기&lt;/li&gt;
+&lt;li&gt;자바로 이사갈 준비를 사이드 프로젝트로 하기&lt;/li&gt;
+&lt;li&gt;물과 같이 되려하기&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;결국 “문제를 풀기위한 사람”이 되기 위해 내가 다루는 도구와 언어를 공부하고, 외적으로든 내적으로든 준비해야겠다는 것이 되겠네요.&lt;/p&gt;
+&lt;h2 id=&quot;도메인-주도-설계에-대한-면밀한-이해&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EB%8F%84%EB%A9%94%EC%9D%B8-%EC%A3%BC%EB%8F%84-%EC%84%A4%EA%B3%84%EC%97%90-%EB%8C%80%ED%95%9C-%EB%A9%B4%EB%B0%80%ED%95%9C-%EC%9D%B4%ED%95%B4&quot; aria-label=&quot;도메인 주도 설계에 대한 면밀한 이해 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;도메인 주도 설계에 대한 면밀한 이해&lt;/h2&gt;
+&lt;p&gt;올해 도메인 기반 주도 설계의 사실과 오해 라는 강의를 참석한 적이 있습니다.&lt;/p&gt;
+&lt;p&gt;조영호님께 DDD는 방법론인가요? 라는 질문을 던졌는데요. 그 분이 답변하시기로,&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;DDD는 방법론&lt;sup id=&quot;fnref-1&quot;&gt;&lt;a href=&quot;#fn-1&quot; class=&quot;footnote-ref&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;이 아니라, 디자인 패턴과 같은 일련의 PATTERN LANGUAGE 입니다.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;라는 답변을 주셨습니다. 추측컨대 DDD는 오직 소프트웨어로 가치창출을 하기 위한 도구로서 받아들이라는 말씀으로 이해했어요. 이렇게 해석한다면 8시간 내도록 강조하신 말을 함축된다고 이해했기 때문이지요. 흔히 하는 오해로, ‘DDD’를 도입하기 위해 프로젝트를 바꾸었다, 내지는 DDD를 하느라고 일정이 딜레이됐다 라는 것이 나오면 안된다는 것이지요. 요구사항을 보다 빠르고 기민하게 대응하기 위한 전술∙전략 이기 때문이지요.&lt;/p&gt;
+&lt;h2 id=&quot;운동하기&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%9A%B4%EB%8F%99%ED%95%98%EA%B8%B0&quot; aria-label=&quot;운동하기 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;운동하기&lt;/h2&gt;
+&lt;p&gt;인간은 태어나고 죽기까지 노화합니다. 건강하게 살기 위해선 운동이 필수라는 것을 깨달았습니다. 오늘 모임에 열심히 운동하셔서 자존감과 건강해짐을 받았다는 분을 보고 깨달았습니다.&lt;/p&gt;
+&lt;p&gt;&lt;del&gt;왜 사람은 직접 경험해야 아는걸까요&lt;/del&gt;&lt;/p&gt;
+&lt;h2 id=&quot;파이썬-자바-둘-다를-하겠다고&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EC%9E%90%EB%B0%94-%EB%91%98-%EB%8B%A4%EB%A5%BC-%ED%95%98%EA%B2%A0%EB%8B%A4%EA%B3%A0&quot; aria-label=&quot;파이썬 자바 둘 다를 하겠다고 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;파이썬, 자바 둘 다를 하겠다고?&lt;/h2&gt;
+&lt;p&gt;물론 욕심이죠. 하지만 그 언어가 메인이 되는 순간에는 그 언어에 집중해야한다고 봅니다. 그런 뜻에서 사이드 프로젝트를 풀고, 파이썬 딥다이브도 함께 이어가야 하지 않을까 라고 생각합니다. 2025년에는 이런 게시글로도 여러분과 만나뵐 수 있을 것 같습니다.&lt;/p&gt;
+&lt;h1 id=&quot;끝으로&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EB%81%9D%EC%9C%BC%EB%A1%9C&quot; aria-label=&quot;끝으로 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;끝으로&lt;/h1&gt;
+&lt;p&gt;내년의 저는 과연 어떤 리뷰를 쓰게될까요?&lt;/p&gt;
+&lt;p&gt;기대됩니다.&lt;/p&gt;
+&lt;div class=&quot;footnotes&quot;&gt;
+&lt;hr&gt;
+&lt;ol&gt;
+&lt;li id=&quot;fn-1&quot;&gt;&lt;strong&gt;교조적인 의미&lt;/strong&gt;에서 쓰이는 방법론을 의미하는 것으로 보입니다.&lt;a href=&quot;#fnref-1&quot; class=&quot;footnote-backref&quot;&gt;↩&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;</content:encoded></item><item><title><![CDATA[[연재] 파이썬 컨테이너 선택 제 3형 - 파이썬 컨테이너 실전비교]]></title><description><![CDATA[파이썬 컨테이너 최적화 기법을 이용하여 CPU bound 작업과 IO bound 작업을 직접 구동해봅니다.]]></description><link>https://blog.s3ich4n.me/devlog/python/2024-11-24-python-container-101-pt03</link><guid isPermaLink="false">https://blog.s3ich4n.me/devlog/python/2024-11-24-python-container-101-pt03</guid><pubDate>Sun, 24 Nov 2024 23:57:00 GMT</pubDate><content:encoded>&lt;p&gt;이번 게시글에서는 Debian 기반의 컨테이너와 Alpine 기반의 컨테이너 간 성능을 비교해보도록 하겠습니다.&lt;/p&gt;
 &lt;p&gt;지난 게시글의 소개와는 다르게, 구동 시간이 너무 오래걸려 본 게시글에는 테스트 방안을 “소개”하고, 글을 수정하여 보강할 예정입니다. 벌써부터 이렇게 말씀드리는 점 양해 부탁드립니다. 🙇🙇&lt;/p&gt;
 &lt;p&gt;아래와 같이 변경될 예정입니다:&lt;/p&gt;
 &lt;ul&gt;
@@ -17910,7 +18083,45 @@ ENTRYPOINT &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;spa
 &lt;li&gt;VSCode의 Show all commands 가 정말 꿀기능 이었습니다. 필요한 커맨드를 찾고 바로 수행할 수가 있네요.&lt;/li&gt;
 &lt;/ol&gt;
 &lt;h2 id=&quot;마무리&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EB%A7%88%EB%AC%B4%EB%A6%AC&quot; aria-label=&quot;마무리 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;마무리&lt;/h2&gt;
-&lt;p&gt;별 것 아닌 내용이지만, 괜히 지웠다 깔 필요 없이 다음번에도 헤메지 않기 위해 메모했습니다. 별 것 아니지만, 여러분들께도 도움이 되길 바랍니다. 감사합니다.&lt;/p&gt;</content:encoded></item><item><title><![CDATA[pre-commit hook, 나도 한번 써보자 (1)]]></title><description><![CDATA[pre-commit hook 말만 들었지 실제로 써보지 못했는데, 이참에 써보고 팀원들에게 공유하기 위해 글을 씁니다. 제 1탄입니다.]]></description><link>https://blog.s3ich4n.me/tips/2021-07-11-how-to-use-pre-commit-hook-vol1</link><guid isPermaLink="false">https://blog.s3ich4n.me/tips/2021-07-11-how-to-use-pre-commit-hook-vol1</guid><pubDate>Thu, 03 Jun 2021 09:00:00 GMT</pubDate><content:encoded>&lt;p&gt;이 글은 pre-commit hook 을 사용하고 전파하기 위해 작성한 시리즈 글입니다.&lt;/p&gt;
+&lt;p&gt;별 것 아닌 내용이지만, 괜히 지웠다 깔 필요 없이 다음번에도 헤메지 않기 위해 메모했습니다. 별 것 아니지만, 여러분들께도 도움이 되길 바랍니다. 감사합니다.&lt;/p&gt;</content:encoded></item><item><title><![CDATA[PyCharm에서 파일 맨 위에 작성하는 주석을 작성하는 매크로 만들기]]></title><description><![CDATA[매일 입력하는 파일 설명(시그니처)을 귀찮지 않게 커맨드 하나로 자동입력되게 하는 방안을 찾았습니다. 회사 팀원들과 주변사람들에게만 공유하기는 아까워서 짧은 글을 써봤습니다.]]></description><link>https://blog.s3ich4n.me/tips/how-to-use-file-signature-in-pycharm</link><guid isPermaLink="false">https://blog.s3ich4n.me/tips/how-to-use-file-signature-in-pycharm</guid><pubDate>Thu, 03 Jun 2021 09:00:00 GMT</pubDate><content:encoded>&lt;p&gt;PyCharm에서 파일 시그니처를 바로 입력하려면?&lt;/p&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;Live Templates&lt;/code&gt; 기능을 사용하면 보다 손쉽게 사용할 수 있다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;shift 두번 눌러서 액션을 열고 &lt;code class=&quot;language-text&quot;&gt;Live Templates&lt;/code&gt; 를 연다.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;add를 하되, 파이썬 파일에서만 쓸거니까 파이썬에서 기능을 혀용하도록 한다.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;이런 식으로 시그니처를 작성한다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;json&quot;&gt;&lt;pre class=&quot;language-json&quot;&gt;&lt;code class=&quot;language-json&quot;&gt;#
+# (코드의 전반적인 내용을 설명해 주세요)
+#
+# @author      Seongeun Yu (seongeun.yu@somma.kr)
+# @date        $DATE$ $TIME$ created.
+# @modified    $DATE$ $TIME$ modified.
+# @copyright   MIT License
+#&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;ol&gt;
+&lt;li&gt;변수를 저렇게 두면 원하는 함수를 써서 매핑할 수 있다.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;$DATE$&lt;/code&gt;, &lt;code class=&quot;language-text&quot;&gt;$TIME$&lt;/code&gt; 값은 함수를 쓰면 된다. 관련 참고링크는 &lt;a href=&quot;https://www.jetbrains.com/help/pycharm/template-variables.html#predefined_functions&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;여기&lt;/a&gt;:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;date()&lt;/code&gt; 함수의 파라미터 규격은 자바의 (&lt;a href=&quot;https://docs.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;SimpleDateFormat&lt;/a&gt;)을 따라간다.&lt;/li&gt;
+&lt;li&gt;date, time의 규격은 이렇게 하면 된다.
+&lt;ol&gt;
+&lt;li&gt;date는? &lt;code class=&quot;language-text&quot;&gt;date(&quot;yyyy/MM/dd&quot;)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;time은? &lt;code class=&quot;language-text&quot;&gt;date(&quot;HH:mm&quot;)&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;파일을 열 때마다 &lt;code class=&quot;language-text&quot;&gt;sign_s3ich4n&lt;/code&gt; 를 한두글자만 치면 자동완성으로 알아서 완성된다.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;</content:encoded></item><item><title><![CDATA[pre-commit hook, 나도 한번 써보자 (1)]]></title><description><![CDATA[pre-commit hook 말만 들었지 실제로 써보지 못했는데, 이참에 써보고 팀원들에게 공유하기 위해 글을 씁니다. 제 1탄입니다.]]></description><link>https://blog.s3ich4n.me/tips/2021-07-11-how-to-use-pre-commit-hook-vol1</link><guid isPermaLink="false">https://blog.s3ich4n.me/tips/2021-07-11-how-to-use-pre-commit-hook-vol1</guid><pubDate>Thu, 03 Jun 2021 09:00:00 GMT</pubDate><content:encoded>&lt;p&gt;이 글은 pre-commit hook 을 사용하고 전파하기 위해 작성한 시리즈 글입니다.&lt;/p&gt;
 &lt;h2 id=&quot;설치-및-설정하기&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%84%A4%EC%B9%98-%EB%B0%8F-%EC%84%A4%EC%A0%95%ED%95%98%EA%B8%B0&quot; aria-label=&quot;설치 및 설정하기 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;설치 및 설정하기&lt;/h2&gt;
 &lt;ol&gt;
 &lt;li&gt;작업 환경에 맞게 &lt;a href=&quot;https://pre-commit.com/#installation&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;pre-commit hook을 설치한다&lt;/a&gt;&lt;/li&gt;
@@ -17970,45 +18181,7 @@ ENTRYPOINT &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;spa
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&quot;https://pre-commit.com/#usage-in-continuous-integration&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;CI 연동&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;더 없나 찾아보자&lt;/li&gt;
-&lt;/ul&gt;</content:encoded></item><item><title><![CDATA[PyCharm에서 파일 맨 위에 작성하는 주석을 작성하는 매크로 만들기]]></title><description><![CDATA[매일 입력하는 파일 설명(시그니처)을 귀찮지 않게 커맨드 하나로 자동입력되게 하는 방안을 찾았습니다. 회사 팀원들과 주변사람들에게만 공유하기는 아까워서 짧은 글을 써봤습니다.]]></description><link>https://blog.s3ich4n.me/tips/how-to-use-file-signature-in-pycharm</link><guid isPermaLink="false">https://blog.s3ich4n.me/tips/how-to-use-file-signature-in-pycharm</guid><pubDate>Thu, 03 Jun 2021 09:00:00 GMT</pubDate><content:encoded>&lt;p&gt;PyCharm에서 파일 시그니처를 바로 입력하려면?&lt;/p&gt;
-&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;Live Templates&lt;/code&gt; 기능을 사용하면 보다 손쉽게 사용할 수 있다.&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;
-&lt;p&gt;shift 두번 눌러서 액션을 열고 &lt;code class=&quot;language-text&quot;&gt;Live Templates&lt;/code&gt; 를 연다.&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;add를 하되, 파이썬 파일에서만 쓸거니까 파이썬에서 기능을 혀용하도록 한다.&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;이런 식으로 시그니처를 작성한다.&lt;/p&gt;
-&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;json&quot;&gt;&lt;pre class=&quot;language-json&quot;&gt;&lt;code class=&quot;language-json&quot;&gt;#
-# (코드의 전반적인 내용을 설명해 주세요)
-#
-# @author      Seongeun Yu (seongeun.yu@somma.kr)
-# @date        $DATE$ $TIME$ created.
-# @modified    $DATE$ $TIME$ modified.
-# @copyright   MIT License
-#&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;ol&gt;
-&lt;li&gt;변수를 저렇게 두면 원하는 함수를 써서 매핑할 수 있다.&lt;/li&gt;
-&lt;/ol&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;$DATE$&lt;/code&gt;, &lt;code class=&quot;language-text&quot;&gt;$TIME$&lt;/code&gt; 값은 함수를 쓰면 된다. 관련 참고링크는 &lt;a href=&quot;https://www.jetbrains.com/help/pycharm/template-variables.html#predefined_functions&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;여기&lt;/a&gt;:&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;date()&lt;/code&gt; 함수의 파라미터 규격은 자바의 (&lt;a href=&quot;https://docs.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;SimpleDateFormat&lt;/a&gt;)을 따라간다.&lt;/li&gt;
-&lt;li&gt;date, time의 규격은 이렇게 하면 된다.
-&lt;ol&gt;
-&lt;li&gt;date는? &lt;code class=&quot;language-text&quot;&gt;date(&quot;yyyy/MM/dd&quot;)&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;time은? &lt;code class=&quot;language-text&quot;&gt;date(&quot;HH:mm&quot;)&lt;/code&gt;&lt;/li&gt;
-&lt;/ol&gt;
-&lt;/li&gt;
-&lt;/ol&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;파일을 열 때마다 &lt;code class=&quot;language-text&quot;&gt;sign_s3ich4n&lt;/code&gt; 를 한두글자만 치면 자동완성으로 알아서 완성된다.&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ol&gt;</content:encoded></item><item><title><![CDATA[간략히 써본 서버 점검 가이드]]></title><description><![CDATA[서버 점검과 관련하여]]></description><link>https://blog.s3ich4n.me/tips/2021-02-03-server-maintenance-guide</link><guid isPermaLink="false">https://blog.s3ich4n.me/tips/2021-02-03-server-maintenance-guide</guid><pubDate>Wed, 03 Feb 2021 10:17:43 GMT</pubDate><content:encoded>&lt;p&gt;서버 점검과 관련하여 좋은글들을 추합한 내용을 공유합니다.&lt;/p&gt;
+&lt;/ul&gt;</content:encoded></item><item><title><![CDATA[간략히 써본 서버 점검 가이드]]></title><description><![CDATA[서버 점검과 관련하여]]></description><link>https://blog.s3ich4n.me/tips/2021-02-03-server-maintenance-guide</link><guid isPermaLink="false">https://blog.s3ich4n.me/tips/2021-02-03-server-maintenance-guide</guid><pubDate>Wed, 03 Feb 2021 10:17:43 GMT</pubDate><content:encoded>&lt;p&gt;서버 점검과 관련하여 좋은글들을 추합한 내용을 공유합니다.&lt;/p&gt;
 &lt;h1 id=&quot;작성에-앞서&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%9E%91%EC%84%B1%EC%97%90-%EC%95%9E%EC%84%9C&quot; aria-label=&quot;작성에 앞서 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;작성에 앞서…&lt;/h1&gt;
 &lt;p&gt;이 글은 좋은 글을 가져와 제 입맛에 맞게 정리한 것에 불과합니다. 제 스스로 되새김질 하기 위해 썼기 때문에, 하단의 참조링크를 반드시 보실 것을 권해드립니다.&lt;/p&gt;
 &lt;h1 id=&quot;prerequisite&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#prerequisite&quot; aria-label=&quot;prerequisite permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Prerequisite&lt;/h1&gt;
