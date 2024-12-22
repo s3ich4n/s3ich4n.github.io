@@ -1,5 +1,5 @@
 ---
-title: "지난 6개월 간 업무 회고"
+title: "2024년 회고"
 date: "2024-12-22T18:59:16.000Z"
 template: "post"
 draft: false
@@ -7,7 +7,7 @@ slug: "/retrospect/2024-12-22-2024-retrospect"
 category: "retrospect"
 tags:
   - "devlog"
-description: "2024년의 저를 회고합니다. 부끄러움이 많은 한 해를 보냈습니다. 함께의 힘을 알게되었습니다. 그리고 다음 나아갈 길을 확인해보았습니다."
+description: "2024년의 저를 회고합니다. 부끄러움이 많은 한 해를 보냈습니다. 함께의 힘을 알게되었습니다. 그리고 다음 나아갈 길을 확인해 보았습니다."
 socialImage: { "publicURL": "./media/under_construction.jpg" }
 ---
 
