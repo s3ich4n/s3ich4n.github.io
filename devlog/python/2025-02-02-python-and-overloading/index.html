@@ -1,0 +1,676 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="ie=edge"/><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/><meta name="generator" content="Gatsby 4.25.4"/><meta name="description" content="파이썬이 가지는 언어적 측면과 철학의 차이때문에 의도적으로 없습니다. 그렇다면 어떤 차이가 있고 어떤 개념 차이가 있는지 파악 후 왜 오버로딩이 없으며, 대체제는 무엇인지 살펴봅시다." data-gatsby-head="true"/><meta name="twitter:card" content="summary_large_image" data-gatsby-head="true"/><meta name="twitter:title" content="파이썬에는 오버로딩이 없다고요? - 팔공산 창고" data-gatsby-head="true"/><meta name="twitter:description" content="파이썬이 가지는 언어적 측면과 철학의 차이때문에 의도적으로 없습니다. 그렇다면 어떤 차이가 있고 어떤 개념 차이가 있는지 파악 후 왜 오버로딩이 없으며, 대체제는 무엇인지 살펴봅시다." data-gatsby-head="true"/><meta name="og:title" content="파이썬에는 오버로딩이 없다고요? - 팔공산 창고" data-gatsby-head="true"/><meta name="og:type" content="website" data-gatsby-head="true"/><meta name="og:description" content="파이썬이 가지는 언어적 측면과 철학의 차이때문에 의도적으로 없습니다. 그렇다면 어떤 차이가 있고 어떤 개념 차이가 있는지 파악 후 왜 오버로딩이 없으며, 대체제는 무엇인지 살펴봅시다." data-gatsby-head="true"/><meta name="image" content="https://blog.s3ich4n.me[object Object]" data-gatsby-head="true"/><meta name="og:image" content="https://blog.s3ich4n.me[object Object]" data-gatsby-head="true"/><meta name="twitter:image" content="https://blog.s3ich4n.me[object Object]" data-gatsby-head="true"/><meta name="theme-color" content="hsl(31, 92%, 62%)"/><style data-href="/styles.1fbe3e33e3d898c35e17.css" data-identity="gatsby-global-css">:after,:before,:root{--color-white:#fff;--color-primary:#5c92ff;--color-secondary:#f7a145;--color-prism-background:#eaeaeb;--color-typographic-base-font:#242933;--color-typographic-link-p-font:#5c92ff;--color-typographic-link-s-font:#f7a145;--color-page-border:#eaeaeb;--color-page-background:#fff;--color-sidebar-border:#eaeaeb;--color-sidebar-border-fade:#fff;--color-contacts-border:#eaeaeb;--color-button-border:#eaeaeb;--color-button-color:#242933;--color-theme-switcher:#3f485a;--color-theme-switcher-hover:#5c92ff}.dark :after,.dark :before,:root.dark{--color-white:#fff;--color-primary:#5c92ff;--color-secondary:#f7a145;--color-prism-background:#191d24;--color-typographic-base-font:#fff;--color-typographic-link-p-font:#5c92ff;--color-typographic-link-s-font:#f7a145;--color-page-border:#3f485a;--color-page-background:#242933;--color-sidebar-border:#3f485a;--color-sidebar-border-fade:#242933;--color-contacts-border:#3f485a;--color-button-border:#3f485a;--color-button-color:#fff;--color-theme-switcher:#eaeaeb;--color-theme-switcher-hover:#5c92ff}html{font-size:100}body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;background:var(--color-page-background);color:var(--color-typographic-base-font);font-size:16px;line-height:1.625;margin:0 0 0 calc(100vw - 100%);text-rendering:optimizelegibility}body,h1,h2,h3,h4,h5,h6{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif}h1,h2,h3,h4,h5,h6{font-weight:600}h1{font-size:40px;line-height:52px;margin-bottom:26px;margin-top:104px}h2{font-size:27px;line-height:39px}h2,h3{margin-bottom:13px;margin-top:52px}h3{font-size:22px;line-height:26px}h4{font-size:19.2px;margin-top:39px}h4,h5{line-height:26px;margin-bottom:13px}h5,h6{font-size:16px;margin-top:65px}h6{line-height:26px;margin-bottom:13px}img{max-width:100%}hr,img{border:0;display:block}hr{background-image:linear-gradient(180deg,transparent 1px,transparent 11px,#242933 0,#242933 15px,transparent 0,transparent 26px);background-size:100% 26px;color:var(--color-typographic-base-font);height:26px;margin:52px auto;width:100px}a{color:var(--color-typographic-link-p-font);text-decoration:none}a:active,a:focus,a:hover{color:var(--color-typographic-link-s-font)}b,strong{font-weight:600}ul{list-style:square;margin-bottom:26px}ul li{margin-bottom:10px;padding:0 5px}p{line-height:26px;margin-bottom:26px}blockquote{font-style:italic;padding:0;text-align:center}figure{display:block;height:auto;width:100%}figcaption{color:var(--color-typographic-base-font);font-size:14px;font-style:italic;line-height:19.5px;margin-bottom:0;margin-top:6.5px;text-align:center}@media screen and (min-width:685px){figure.float-left,figure.float-right{max-width:310px;padding:0 26px}.float-right{float:right}.float-left{float:left}}code[class*=language-],pre[class*=language-]{word-wrap:normal;color:#657b83;font-family:Consolas,Monaco,Andale Mono,Ubuntu Mono,monospace;font-size:1em;-webkit-hyphens:none;hyphens:none;line-height:1.5;-o-tab-size:4;tab-size:4;text-align:left;white-space:pre;word-break:normal;word-spacing:normal}pre[class*=language-]{border-radius:.3em;margin:.5em 0;overflow:auto;padding:1em}:not(pre)>code[class*=language-],pre[class*=language-]{background-color:var(--color-prism-background)}:not(pre)>code[class*=language-]{border-radius:.3em;padding:.1em}code[class*=language-] ::selection,code[class*=language-]::selection,pre[class*=language-] ::selection,pre[class*=language-]::selection{background:#073642}.token.cdata,.token.comment,.token.doctype,.token.prolog{color:#93a1a1}.token.punctuation{color:#586e75}.namespace{opacity:.7}.token.boolean,.token.constant,.token.deleted,.token.number,.token.property,.token.symbol,.token.tag{color:#268bd2}.token.attr-name,.token.builtin,.token.char,.token.inserted,.token.selector,.token.string,.token.url{color:#2aa198}.token.entity{background:#eee8d5;color:#657b83;cursor:help}.token.atrule,.token.attr-value,.token.keyword{color:#859900}.token.class-name,.token.function{color:#b58900}.token.important,.token.regex,.token.variable{color:#cb4b16}.token.bold,.token.important{font-weight:700}.token.italic{font-style:italic}.Feed-module--feed--a6204 .Feed-module--item--c7a63{margin-bottom:32.5px}.Feed-module--feed--a6204 .Feed-module--item--c7a63:last-child{margin-bottom:13px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f{font-size:27px;line-height:39px;margin-bottom:13px;margin-top:0}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f .Feed-module--link--6123b{color:var(--color-typographic-base-font)}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f .Feed-module--link--6123b:focus,.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f .Feed-module--link--6123b:hover{border-bottom:1px solid #242933;color:var(--color-typographic-base-font)}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--description--57348{font-size:16px;line-height:26px;margin-bottom:19.5px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--time--72864{color:var(--color-typographic-base-font);font-size:14px;font-weight:600;text-transform:uppercase}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--divider--81a18{margin:0 13px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--category--59f58 .Feed-module--link--6123b{color:var(--color-secondary);font-size:14px;font-weight:600;text-transform:uppercase}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--category--59f58 .Feed-module--link--6123b:focus,.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--category--59f58 .Feed-module--link--6123b:hover{color:#5c92ff}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--more--51a4e{color:var(--color-primary);font-size:16px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--more--51a4e:focus,.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--more--51a4e:hover{border-bottom:1px solid #5c92ff;color:var(--color-primary)}.Layout-module--layout--2c933{margin-left:auto;margin-right:auto;max-width:1070px}.Layout-module--layout--2c933:before{content:"";display:table}.Layout-module--layout--2c933:after{clear:both;content:"";display:table}.Page-module--page--24e03{margin-bottom:52px}.Page-module--page--24e03 .Page-module--inner--4b31d{padding:26px 19.5px 0}.Page-module--page--24e03 .Page-module--title--90338{font-size:40px;font-weight:600;line-height:52px;margin-bottom:37.7px;margin-top:0}.Page-module--page--24e03 .Page-module--body--561c4{font-size:16px;line-height:26px;margin:0 0 26px}@media screen and (min-width:685px){.Page-module--page--24e03{width:calc(58.275% - 12.5px)}.Page-module--page--24e03:nth-child(1n){clear:none;float:left;margin-right:30px}.Page-module--page--24e03:last-child{margin-right:0}.Page-module--page--24e03:nth-child(12n){float:right;margin-right:0}.Page-module--page--24e03:nth-child(12n+1){clear:both}.Page-module--page--24e03 .Page-module--inner--4b31d{padding:32.5px 19.5px 0}}@media screen and (min-width:960px){.Page-module--page--24e03{width:calc(66.6% - 10px)}.Page-module--page--24e03:nth-child(1n){clear:none;float:left;margin-right:30px}.Page-module--page--24e03:last-child{margin-right:0}.Page-module--page--24e03:nth-child(3n){float:right;margin-right:0}.Page-module--page--24e03:nth-child(3n+1){clear:both}.Page-module--page--24e03 .Page-module--inner--4b31d{padding:39px 26px 0}}.Pagination-module--pagination--d61cb{display:flex;margin-top:52px}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b{text-align:left;width:50%}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d{color:var(--color-secondary);font-size:26px;font-weight:700}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d:focus,.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d:hover{color:var(--color-primary)}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d.Pagination-module--disable--7e105{color:#3f485a;pointer-events:none}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8{text-align:right;width:50%}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff{color:var(--color-secondary);font-size:26px;font-weight:700}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff:focus,.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff:hover{color:var(--color-primary)}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff.Pagination-module--disable--7e105{color:#3f485a;pointer-events:none}.Button-module--button--b1113{border:1px solid var(--color-button-border);border-radius:20px;color:var(--color-button-color);display:inline-block;font-size:16px;font-weight:400;height:40px;line-height:40px;margin-left:auto;margin-right:auto;padding:0 26px;text-align:center;text-decoration:none}.Button-module--button--b1113:focus,.Button-module--button--b1113:hover{color:#5c92ff}.ThemeSwitcher-module--themeSwitcher--8a77f{--color:var(--color-theme-switcher)}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--button--7cb7b{align-items:center;background:transparent;border:0;cursor:pointer;display:flex;justify-content:center;outline:0}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--button--7cb7b svg{stroke:var(--color);pointer-events:none;transition:stroke .4s}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--button--7cb7b:hover{--color:var(--color-theme-switcher-hover)}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--moon--10537{stroke-dasharray:0 1px;opacity:0;transition:stroke-dasharray .2s ease-in,opacity .4s ease-in}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--sun--2163a{stroke-dasharray:1px 1px;opacity:1;transition:stroke-dasharray .2s ease-in,opacity .4s ease-in}.ThemeSwitcher-module--themeSwitcher--8a77f.ThemeSwitcher-module--dark--6db0c .ThemeSwitcher-module--moon--10537{stroke-dasharray:1px 1px;opacity:1}.ThemeSwitcher-module--themeSwitcher--8a77f.ThemeSwitcher-module--dark--6db0c .ThemeSwitcher-module--sun--2163a{stroke-dasharray:0 1px;opacity:0}.Author-module--author--cbd31 .Author-module--photo--9787b{background-clip:padding-box;border-radius:50%;display:inline-block;height:75px;margin-bottom:0;width:75px}.Author-module--author--cbd31 .Author-module--photo--9787b img{border-radius:50%}.Author-module--author--cbd31 .Author-module--title--cf7e5{font-size:18px;font-weight:600;line-height:29.25px;margin:0}.Author-module--author--cbd31 .Author-module--title--cf7e5 .Author-module--link--09c17,.Author-module--author--cbd31 .Author-module--title--cf7e5 .Author-module--link--09c17:focus,.Author-module--author--cbd31 .Author-module--title--cf7e5 .Author-module--link--09c17:hover{color:var(--color-typographic-base-font)}.Author-module--author--cbd31 .Author-module--bio--8168d,.Author-module--author--cbd31 .Author-module--subtitle--86ec5{color:#7f8ba4;line-height:26px;margin-bottom:26px}.Author-module--author--cbd31 .Author-module--titleContainer--4f576{align-items:center;display:flex;justify-content:space-between;margin:13px 0}.Categories-module--categories--f3389{color:#7f8ba4;font-size:14px}.Icon-module--icon--1d7da{fill:currentcolor;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;speak:none;stroke:currentcolor;stroke-width:0;display:inline-block;font-style:normal;font-variant:normal;font-weight:400;height:1em;line-height:1em;text-align:center;text-transform:none;width:1em}.Contacts-module--contacts--09178{margin-bottom:26px}.Contacts-module--contacts--09178 .Contacts-module--list--9670b{display:flex;flex-flow:row wrap;flex-grow:0;flex-shrink:0;list-style:none;margin:13px 0;max-width:165px;padding:0}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0{align-content:center;align-items:center;border:1px solid var(--color-contacts-border);border-radius:50%;display:flex;height:40px;justify-content:center;line-height:40px;margin:6.5px;padding:0;text-align:center;width:40px}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0:nth-child(3n+1){margin-left:0}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0 .Contacts-module--link--de1e0{border:0;color:var(--color-typographic-base-font);display:flex}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0 .Contacts-module--link--de1e0:focus,.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0 .Contacts-module--link--de1e0:hover{color:var(--color-typographic-link-p-font)}.Copyright-module--copyright--2c602{color:#7f8ba4;font-size:14px}.Menu-module--menu--113a9{margin-bottom:26px}.Menu-module--menu--113a9 .Menu-module--list--e1ae3{list-style:none;margin:0;padding:0}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679{margin:13px 0;padding:0}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02{border:0;color:var(--color-typographic-base-font);font-size:16px;font-weight:400}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02:focus,.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02:hover{border-bottom:1px solid #5c92ff;color:#5c92ff}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02.Menu-module--active--6cb74{border-bottom:1px solid var(--color-typographic-base-font);color:var(--color-typographic-base-font)}.Tags-module--tags--28a57{color:#7f8ba4;font-size:14px}.Sidebar-module--sidebar--1bfa1{width:100%}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0{padding:26px 19.5px 0;position:relative}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0:after{background:var(--color-sidebar-border);background:linear-gradient(to bottom,var(--color-sidebar-border) 0,var(--color-sidebar-border) 48%,var(--color-sidebar-border-fade) 100%)}@media screen and (min-width:685px){.Sidebar-module--sidebar--1bfa1{width:calc(41.625% - 17.5px)}.Sidebar-module--sidebar--1bfa1:nth-child(1n){clear:none;float:left;margin-right:30px}.Sidebar-module--sidebar--1bfa1:last-child{margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(12n){float:right;margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(12n+1){clear:both}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0{padding:32.5px 19.5px 0}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0:after{bottom:0;content:"";height:540px;position:absolute;right:-10px;top:30px;width:1px}}@media screen and (min-width:960px){.Sidebar-module--sidebar--1bfa1{width:calc(33.3% - 20px)}.Sidebar-module--sidebar--1bfa1:nth-child(1n){clear:none;float:left;margin-right:30px}.Sidebar-module--sidebar--1bfa1:last-child{margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(3n){float:right;margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(3n+1){clear:both}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0{padding:39px}}.Author-module--author--1c58d{border-top:1px solid var(--color-page-border);line-height:26px;margin-bottom:52px;margin-top:26px;max-width:920px;padding-top:26px}.Author-module--author--1c58d .Author-module--bio--08950 .Author-module--twitter--90647{display:block;text-decoration:underline}.Author-module--author--1c58d .Author-module--bio--08950 .Author-module--twitter--90647:focus,.Author-module--author--1c58d .Author-module--bio--08950 .Author-module--twitter--90647:hover{color:var(--color-typographic-link-s-font)}@media screen and (min-width:685px){.Author-module--author--1c58d{margin-left:auto;margin-right:auto}}.Content-module--content--80d58{margin:0 auto;max-width:1070px;padding:0 13px}.Content-module--content--80d58 .Content-module--title--09504{font-size:32px;font-weight:600;line-height:42.9px;margin:26px auto 0;max-width:920px;text-align:center}.Content-module--content--80d58 .Content-module--body--726c2 figure{margin-bottom:26px}.Content-module--content--80d58 .Content-module--body--726c2 figure blockquote{font-style:italic;margin-top:0;padding:26px 0;text-align:center}.Content-module--content--80d58 .Content-module--body--726c2 figure blockquote p{font-size:26.9072px;line-height:39px;margin-bottom:26px;margin-top:0;max-width:920px}.Content-module--content--80d58 .Content-module--body--726c2 a{text-decoration:underline}.Content-module--content--80d58 .Content-module--body--726c2 *{margin-left:auto;margin-right:auto;max-width:920px}.Content-module--content--80d58 .Content-module--body--726c2 h2>a{visibility:hidden}.Content-module--content--80d58 .Content-module--body--726c2 h2>a>svg{fill:var(--color-typographic-base-font)}.Content-module--content--80d58 .Content-module--body--726c2 img{max-width:100%}@media screen and (min-width:960px){.Content-module--content--80d58{padding:0}.Content-module--content--80d58 .Content-module--title--09504{font-size:48px;line-height:58.5px;margin-bottom:39px;margin-top:58.5px}.Content-module--content--80d58 .Content-module--body--726c2,.Content-module--content--80d58 .Content-module--body--726c2 p{font-size:18px;line-height:29.25px;margin-bottom:29.25px}.Content-module--content--80d58 .Content-module--body--726c2 h2>a{padding-right:13px;visibility:unset}}.Meta-module--meta--dae0a .Meta-module--date--4d30d{font-style:italic}.Tags-module--tags--18589{margin-bottom:13px}.Tags-module--tags--18589 .Tags-module--list--82ae6{list-style:none;padding:0}.Tags-module--tags--18589 .Tags-module--list--82ae6 .Tags-module--item--52015{display:inline-block;margin:6.5px 0}@media screen and (min-width:685px){.Tags-module--tags--18589 .Tags-module--list--82ae6 .Tags-module--item--52015:first-child{margin-left:0;padding-left:0}}.Post-module--post--3a994 .Post-module--content--3c6e5{margin:0 auto}.Post-module--post--3a994 .Post-module--comments--d3b99,.Post-module--post--3a994 .Post-module--footer--f8705{margin:0 auto;max-width:920px;padding:0 13px}.Post-module--post--3a994 .Post-module--buttons--2972d{align-items:center;display:flex;justify-content:center;margin:26px 0 0;text-align:center}.Post-module--post--3a994 .Post-module--buttons--2972d .Post-module--buttonArticles--d793a{margin:0 13px 0 0}@media screen and (min-width:960px){.Post-module--post--3a994 .Post-module--comments--d3b99,.Post-module--post--3a994 .Post-module--footer--f8705{padding:0}.Post-module--post--3a994 .Post-module--buttons--2972d{left:30px;margin:0 13px 0 0;max-width:none;position:fixed;top:30px}}</style><title data-gatsby-head="true">파이썬에는 오버로딩이 없다고요? - 팔공산 창고</title><link rel="alternate" type="application/rss+xml" title="팔공산 창고" href="/rss.xml"/><style type="text/css">
+    .anchor.before {
+      position: absolute;
+      top: 0;
+      left: 0;
+      transform: translateX(-100%);
+      padding-right: 4px;
+    }
+    .anchor.after {
+      display: inline-block;
+      padding-left: 4px;
+    }
+    h1 .anchor svg,
+    h2 .anchor svg,
+    h3 .anchor svg,
+    h4 .anchor svg,
+    h5 .anchor svg,
+    h6 .anchor svg {
+      visibility: hidden;
+    }
+    h1:hover .anchor svg,
+    h2:hover .anchor svg,
+    h3:hover .anchor svg,
+    h4:hover .anchor svg,
+    h5:hover .anchor svg,
+    h6:hover .anchor svg,
+    h1 .anchor:focus svg,
+    h2 .anchor:focus svg,
+    h3 .anchor:focus svg,
+    h4 .anchor:focus svg,
+    h5 .anchor:focus svg,
+    h6 .anchor:focus svg {
+      visibility: visible;
+    }
+  </style><script>
+    document.addEventListener("DOMContentLoaded", function(event) {
+      var hash = window.decodeURI(location.hash.replace('#', ''))
+      if (hash !== '') {
+        var element = document.getElementById(hash)
+        if (element) {
+          var scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+          var clientTop = document.documentElement.clientTop || document.body.clientTop || 0
+          var offset = element.getBoundingClientRect().top + scrollTop - clientTop
+          // Wait for the browser to finish rendering before scrolling.
+          setTimeout((function() {
+            window.scrollTo(0, offset - 0)
+          }), 0)
+        }
+      }
+    })
+  </script><link rel="preconnect" href="https://www.googletagmanager.com"/><link rel="dns-prefetch" href="https://www.googletagmanager.com"/><script async="" src="https://www.googletagmanager.com/gtag/js?id="></script><script>
+      
+      
+      if(true) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){window.dataLayer && window.dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', '', {"send_page_view":false});
+      }
+      </script><link rel="sitemap" type="application/xml" href="/sitemap/sitemap-index.xml"/><link rel="icon" href="/favicon-32x32.png?v=4c2c993a06ee0fd0ee953020b09128a9" type="image/png"/><link rel="manifest" href="/manifest.webmanifest" crossorigin="anonymous"/><link rel="apple-touch-icon" sizes="48x48" href="/icons/icon-48x48.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="72x72" href="/icons/icon-72x72.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="96x96" href="/icons/icon-96x96.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="144x144" href="/icons/icon-144x144.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192x192.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="256x256" href="/icons/icon-256x256.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="384x384" href="/icons/icon-384x384.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="512x512" href="/icons/icon-512x512.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><style>.gatsby-image-wrapper{position:relative;overflow:hidden}.gatsby-image-wrapper picture.object-fit-polyfill{position:static!important}.gatsby-image-wrapper img{bottom:0;height:100%;left:0;margin:0;max-width:none;padding:0;position:absolute;right:0;top:0;width:100%;object-fit:cover}.gatsby-image-wrapper [data-main-image]{opacity:0;transform:translateZ(0);transition:opacity .25s linear;will-change:opacity}.gatsby-image-wrapper-constrained{display:inline-block;vertical-align:top}</style><noscript><style>.gatsby-image-wrapper noscript [data-main-image]{opacity:1!important}.gatsby-image-wrapper [data-placeholder-image]{opacity:0!important}</style></noscript><script type="module">const e="undefined"!=typeof HTMLImageElement&&"loading"in HTMLImageElement.prototype;e&&document.body.addEventListener("load",(function(e){const t=e.target;if(void 0===t.dataset.mainImage)return;if(void 0===t.dataset.gatsbyImageSsr)return;let a=null,n=t;for(;null===a&&n;)void 0!==n.parentNode.dataset.gatsbyImageWrapper&&(a=n.parentNode),n=n.parentNode;const o=a.querySelector("[data-placeholder-image]"),r=new Image;r.src=t.currentSrc,r.decode().catch((()=>{})).then((()=>{t.style.opacity=1,o&&(o.style.opacity=0,o.style.transition="opacity 500ms linear")}))}),!0);</script></head><body><script>
+          void function() {
+            var cachedMode;
+
+            try {
+              var preferredTheme = JSON.parse(localStorage.getItem('diesel:theme-atom'));
+
+              if (preferredTheme && preferredTheme.mode) {
+                cachedMode = preferredTheme.mode;
+              }
+            } catch (err) { }
+
+            function setTheme(newTheme) {
+              document.documentElement.className = newTheme;
+            }
+
+            var darkQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+            setTheme(cachedMode || (darkQuery.matches ? 'dark' : 'light'));
+          }()
+        </script><div id="___gatsby"><div style="outline:none" tabindex="-1" id="gatsby-focus-wrapper"><div class="Layout-module--layout--2c933"><div class="Post-module--post--3a994"><div class="Post-module--buttons--2972d"><a class="Button-module--button--b1113 Post-module--buttonArticles--d793a" href="/">All Articles</a></div><div class="Post-module--content--3c6e5"><div class="Content-module--content--80d58"><h1 class="Content-module--title--09504">파이썬에는 오버로딩이 없다고요?</h1><div class="Content-module--body--726c2"><p><a href="https://blog.s3ich4n.me/devlog/python/2025-01-19-refactoring-and-design-pattern" target="_blank" rel="nofollow noopener noreferrer">지난 글에 소개드린</a> 글또10기 디자인패턴 스터디를 통해 이야기를 나누다가, 파이썬에선 오버로딩이 되는지를 가만 생각해보았습니다.</p>
+<h1 id="오버로딩이-되던가" style="position:relative;"><a href="#%EC%98%A4%EB%B2%84%EB%A1%9C%EB%94%A9%EC%9D%B4-%EB%90%98%EB%8D%98%EA%B0%80" aria-label="오버로딩이 되던가 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>오버로딩이 되던가..?</h1>
+<div class="gatsby-highlight" data-language="java"><pre class="language-java"><code class="language-java"><span class="token keyword">class</span> <span class="token class-name">Calculator</span> <span class="token punctuation">{</span>
+    <span class="token keyword">int</span> <span class="token function">add</span><span class="token punctuation">(</span><span class="token keyword">int</span> a<span class="token punctuation">,</span> <span class="token keyword">int</span> b<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> a <span class="token operator">+</span> b<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    
+    <span class="token class-name">String</span> <span class="token function">add</span><span class="token punctuation">(</span><span class="token class-name">String</span> a<span class="token punctuation">,</span> <span class="token class-name">String</span> b<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> a <span class="token operator">+</span> b<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre></div>
+<p>그러니까, 이런 코드가 도는지 말이죠. 두 <code class="language-text">add</code> 메소드는 공존할까요?</p>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token keyword">import</span> pytest
+
+<span class="token keyword">class</span> <span class="token class-name">Calculator</span><span class="token punctuation">:</span>
+    <span class="token keyword">def</span> <span class="token function">add</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> a<span class="token punctuation">,</span> b<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> a <span class="token operator">+</span> b
+
+    <span class="token comment"># 같은 이름으로 다른 메소드 정의 시도</span>
+    <span class="token keyword">def</span> <span class="token function">add</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> a<span class="token punctuation">,</span> b<span class="token punctuation">,</span> c<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> a <span class="token operator">+</span> b <span class="token operator">+</span> c</code></pre></div>
+<p>테스트코드를 짜고,</p>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token keyword">def</span> <span class="token function">test_method_overloading</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    calc <span class="token operator">=</span> Calculator<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+    <span class="token comment"># 두 개의 인자를 받는 add는 이미 덮어씌워졌으므로 </span>
+    <span class="token comment"># TypeError가 발생해야 함</span>
+    <span class="token keyword">with</span> pytest<span class="token punctuation">.</span>raises<span class="token punctuation">(</span>TypeError<span class="token punctuation">)</span> <span class="token keyword">as</span> exc_info<span class="token punctuation">:</span>
+        result <span class="token operator">=</span> calc<span class="token punctuation">.</span>add<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span>
+
+    <span class="token comment"># 에러 메시지 검증</span>
+    <span class="token keyword">assert</span> <span class="token string">"add() missing 1 required positional argument"</span> <span class="token keyword">in</span> <span class="token builtin">str</span><span class="token punctuation">(</span>exc_info<span class="token punctuation">.</span>value<span class="token punctuation">)</span>
+
+    <span class="token comment"># 세 개의 인자를 받는 add는 정상 작동</span>
+    <span class="token keyword">assert</span> calc<span class="token punctuation">.</span>add<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">6</span>
+
+<span class="token keyword">def</span> <span class="token function">test_method_signature</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token comment"># Calculator 클래스의 add 메소드가 하나만 존재하는지 확인</span>
+    methods <span class="token operator">=</span> <span class="token punctuation">[</span>method <span class="token keyword">for</span> method <span class="token keyword">in</span> <span class="token builtin">dir</span><span class="token punctuation">(</span>Calculator<span class="token punctuation">)</span> <span class="token keyword">if</span> method <span class="token operator">==</span> <span class="token string">"add"</span><span class="token punctuation">]</span>
+    <span class="token keyword">assert</span> <span class="token builtin">len</span><span class="token punctuation">(</span>methods<span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">1</span></code></pre></div>
+<p>…한번 테스트해봅시다.</p>
+<div class="gatsby-highlight" data-language="shell"><pre class="language-shell"><code class="language-shell">$ pytest <span class="token parameter variable">-v</span> test/qna/test_python_overloading01.py
+<span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">=</span> <span class="token builtin class-name">test</span> session starts <span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span>
+platform darwin -- Python <span class="token number">3.12</span>.6, pytest-8.3.4, pluggy-1.5.0 -- <span class="token operator">&lt;</span>PYTHONPATH<span class="token operator">></span>
+cachedir: .pytest_cache
+rootdir: <span class="token operator">&lt;</span>BASEDIR<span class="token operator">></span>
+configfile: pytest.ini
+collected <span class="token number">2</span> items
+
+test_python_overloading01.py::test_method_overloading PASSED    <span class="token punctuation">[</span> <span class="token number">50</span>%<span class="token punctuation">]</span>
+test_python_overloading01.py::test_method_signature PASSED      <span class="token punctuation">[</span><span class="token number">100</span>%<span class="token punctuation">]</span>
+
+<span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span> <span class="token number">2</span> passed <span class="token keyword">in</span> <span class="token number">0</span>.00s <span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">=</span></code></pre></div>
+<p>주석으로 이미 작성했다시피, 테스트는 통과했습니다. <code class="language-text">TypeError</code>가 런타임에 <code class="language-text">raise</code>된 것이 캐치된 것이죠. 그렇다는 건 위의 자바코드와 같은 구성은 사용할 수 없다는 내용입니다. 😱🙀</p>
+<p>그렇다면 왜 안되는걸까요?</p>
+<h1 id="먼저-파이썬의-특징을-살펴봅시다" style="position:relative;"><a href="#%EB%A8%BC%EC%A0%80-%ED%8C%8C%EC%9D%B4%EC%8D%AC%EC%9D%98-%ED%8A%B9%EC%A7%95%EC%9D%84-%EC%82%B4%ED%8E%B4%EB%B4%85%EC%8B%9C%EB%8B%A4" aria-label="먼저 파이썬의 특징을 살펴봅시다 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>먼저 파이썬의 특징을 살펴봅시다</h1>
+<p>파이썬에서의 타입에 대해 살펴보고, 파이썬 객체가 가지는 특징을 통해 오버로딩의 대체방안을 살펴봅시다.</p>
+<h2 id="초식-1---동적-타입" style="position:relative;"><a href="#%EC%B4%88%EC%8B%9D-1---%EB%8F%99%EC%A0%81-%ED%83%80%EC%9E%85" aria-label="초식 1   동적 타입 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>초식 (1) - 동적 타입</h2>
+<p>아마도 동적타입에 대한 이야기는 들어보셨을 겁니다<sup id="fnref-1"><a href="#fn-1" class="footnote-ref">1</a></sup>. 타입을 별도로 지정해줄 필요가 없다보니 이런 행동이 가능합니다:</p>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token keyword">def</span> <span class="token function">test_dynamic_type</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    x <span class="token operator">=</span> <span class="token number">10</span>  <span class="token comment"># int 타입이었다가</span>
+
+    <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token builtin">id</span><span class="token punctuation">(</span>x<span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token keyword">assert</span> <span class="token builtin">type</span><span class="token punctuation">(</span>x<span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token builtin">int</span>
+
+    x <span class="token operator">=</span> <span class="token string">"hello"</span>  <span class="token comment"># 문자열로도 바꿀 수 있고</span>
+
+    <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token builtin">id</span><span class="token punctuation">(</span>x<span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token keyword">assert</span> <span class="token builtin">type</span><span class="token punctuation">(</span>x<span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token builtin">str</span>
+
+    x <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">]</span>  <span class="token comment"># 리스트로도 수정할 수 있습니다.</span>
+    <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token builtin">id</span><span class="token punctuation">(</span>x<span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token keyword">assert</span> <span class="token builtin">type</span><span class="token punctuation">(</span>x<span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token builtin">list</span>
+
+<span class="token operator">>></span><span class="token operator">></span> python <span class="token operator">-</span>vs test_dynamic_type<span class="token punctuation">.</span>py
+test_dynamic_type<span class="token punctuation">.</span>py<span class="token punctuation">:</span><span class="token punctuation">:</span>test_dynamic_type <span class="token number">4356563592</span>
+<span class="token number">4363171952</span>
+<span class="token number">4363299584</span>
+PASSED</code></pre></div>
+<p>다시말해 이렇게 됩니다:</p>
+<ol>
+<li>새로운 객체가 생성되고</li>
+<li>변수 <code class="language-text">x</code>는 이 새로운 객체를 가리키게 됩니다</li>
+<li>이전에 참조하던 객체와의 연결은 끊어집니다</li>
+</ol>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python">x <span class="token operator">=</span> <span class="token number">10</span>        <span class="token comment"># x ----> [10] (id: 4356563592)</span>
+x <span class="token operator">=</span> <span class="token string">"hello"</span>   <span class="token comment"># x ----> ["hello"] (id: 4363171952)</span>
+x <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">]</span>   <span class="token comment"># x ----> [[1,2,3]] (id: 4363299584)</span></code></pre></div>
+<h2 id="초식-2---duck-typing" style="position:relative;"><a href="#%EC%B4%88%EC%8B%9D-2---duck-typing" aria-label="초식 2   duck typing permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>초식 (2) - Duck typing</h2>
+<p>그리고 파이썬은 Duck typing을 지원합니다. 아주 유명한 말이죠:</p>
+<blockquote>
+<p>오리처럼 생기고, 오리처럼 헤엄치고, 오리처럼 우는 게 있다면 그건 오리일 가능성이 높다.</p>
+</blockquote>
+<p>객체에 빗대자면 이렇게 되겠죠:</p>
+<p>객체가 해당 타입에서 요구하는 모든 메서드와 속성을 가지고 있다면 그 타입으로 간주됩니다. 상속관계를 보지 않고 필요 메소드와 속성을 가지는지만 체크합니다.</p>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token keyword">class</span> <span class="token class-name">Duck</span><span class="token punctuation">:</span>
+    <span class="token keyword">def</span> <span class="token function">sound</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> <span class="token string">"꽥꽥"</span>
+
+<span class="token keyword">class</span> <span class="token class-name">Dog</span><span class="token punctuation">:</span>
+    <span class="token keyword">def</span> <span class="token function">sound</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> <span class="token string">"멍멍"</span>
+
+<span class="token keyword">def</span> <span class="token function">make_sound</span><span class="token punctuation">(</span>animal<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token comment"># animal의 구체적인 타입은 중요하지 않음</span>
+    <span class="token comment"># sound() 메소드만 있으면 됨</span>
+    <span class="token keyword">return</span> animal<span class="token punctuation">.</span>sound<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+<span class="token keyword">def</span> <span class="token function">test_duck_typing</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">assert</span> make_sound<span class="token punctuation">(</span>Duck<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token string">"꽥꽥"</span>
+    <span class="token keyword">assert</span> make_sound<span class="token punctuation">(</span>Dog<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token string">"멍멍"</span>
+<span class="token operator">>></span><span class="token operator">></span> python <span class="token operator">-</span>vs test_duck_typing<span class="token punctuation">.</span>py
+test_duck_typing<span class="token punctuation">.</span>py<span class="token punctuation">:</span><span class="token punctuation">:</span>test_duck_typing PASSED</code></pre></div>
+<p>즉, 앞서 살펴보았던 자바와 같은 정적 타입 언어는 컴파일 시점에 메서드 시그니처로 오버로딩을 결정합니다. 하지만 파이썬은 런타임에 메서드의 존재 여부만 확인하죠.</p>
+<h2 id="초식-3---the-dunder-methods" style="position:relative;"><a href="#%EC%B4%88%EC%8B%9D-3---the-dunder-methods" aria-label="초식 3   the dunder methods permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>초식 (3) - The dunder methods</h2>
+<p>파이썬 클래스는 설계 시 dunder methods<sup id="fnref-2"><a href="#fn-2" class="footnote-ref">2</a></sup> 를 이용하여 설계할 수도 있습니다<sup id="fnref-3"><a href="#fn-3" class="footnote-ref">3</a></sup>. 이로 인해 파이썬은 특정 인터페이스를 구현하지 않고도 주요 타입에 대해 동작을 정해줄 수 있지요.</p>
+<h3 id="기본-dunder-method를-살펴봅시다" style="position:relative;"><a href="#%EA%B8%B0%EB%B3%B8-dunder-method%EB%A5%BC-%EC%82%B4%ED%8E%B4%EB%B4%85%EC%8B%9C%EB%8B%A4" aria-label="기본 dunder method를 살펴봅시다 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>기본 dunder method를 살펴봅시다</h3>
+<p>예를 들어 이런 테스트를 한다고 합시다.</p>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token keyword">import</span> pytest
+
+<span class="token keyword">def</span> <span class="token function">test_dunder_methods</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">with</span> pytest<span class="token punctuation">.</span>raises<span class="token punctuation">(</span>TypeError<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token number">1</span> <span class="token operator">+</span> <span class="token string">"2"</span>     <span class="token comment"># 이걸 해주는 연산이 정의되지 않아서 안 되었던거고,</span>
+    
+    <span class="token keyword">assert</span> <span class="token builtin">str</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">"2"</span> <span class="token operator">==</span> <span class="token string">"12"</span>     <span class="token comment"># 서로 맞는 타입끼리의 `__add__`는 있으니 가능한 것이지요</span>
+
+<span class="token operator">>></span><span class="token operator">></span> pytest <span class="token operator">-</span>vs test_dunder_methods<span class="token punctuation">(</span><span class="token punctuation">)</span>
+test_dunder_methods<span class="token punctuation">.</span>py<span class="token punctuation">:</span><span class="token punctuation">:</span>test_dunder_methods PASSED</code></pre></div>
+<h3 id="예시를-살펴봅시다" style="position:relative;"><a href="#%EC%98%88%EC%8B%9C%EB%A5%BC-%EC%82%B4%ED%8E%B4%EB%B4%85%EC%8B%9C%EB%8B%A4" aria-label="예시를 살펴봅시다 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>예시를 살펴봅시다</h3>
+<p>그렇다면, 다양한 dunder를 직접 구현하고 이를 살펴봅시다. 예를들어, 길이를 표현하는 <code class="language-text">Length</code> 라는 객체를 구상하고 이를 파이썬의 클래스로 표현해봅시다.</p>
+<p>이 클래스는 아래와 같은 기능을 제공합니다:</p>
+<ul>
+<li><code class="language-text">Length</code> 클래스를 쓰고자 하는 이에게 값을 설명함
+<ul>
+<li>단순 엔드유저를 위한 출력 기능</li>
+<li><code class="language-text">Length</code> 클래스 개발 중 디버깅 등을 하기 위한 출력기능</li>
+</ul>
+</li>
+<li>값의 길이, 동등여부, less than 연산여부를 가릴 수 있음</li>
+</ul>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token keyword">class</span> <span class="token class-name">Length</span><span class="token punctuation">:</span>
+    <span class="token keyword">def</span> <span class="token function">__init__</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> meters<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        self<span class="token punctuation">.</span>meters <span class="token operator">=</span> meters
+
+    <span class="token keyword">def</span> <span class="token function">__str__</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> <span class="token string-interpolation"><span class="token string">f"</span><span class="token interpolation"><span class="token punctuation">{</span>self<span class="token punctuation">.</span>meters<span class="token punctuation">}</span></span><span class="token string">m"</span></span>      <span class="token comment"># print() 출력용</span>
+    
+    <span class="token keyword">def</span> <span class="token function">__repr__</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> <span class="token string-interpolation"><span class="token string">f"Length(</span><span class="token interpolation"><span class="token punctuation">{</span>self<span class="token punctuation">.</span>meters<span class="token punctuation">}</span></span><span class="token string">)"</span></span>  <span class="token comment"># 개발자용 상세 출력</span>
+    
+    <span class="token keyword">def</span> <span class="token function">__len__</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> <span class="token builtin">int</span><span class="token punctuation">(</span>self<span class="token punctuation">.</span>meters<span class="token punctuation">)</span>       <span class="token comment"># len() 호출 시</span>
+    
+    <span class="token keyword">def</span> <span class="token function">__eq__</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> other<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> self<span class="token punctuation">.</span>meters <span class="token operator">==</span> other<span class="token punctuation">.</span>meters  <span class="token comment"># == 연산자</span>
+    
+    <span class="token keyword">def</span> <span class="token function">__lt__</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> other<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> self<span class="token punctuation">.</span>meters <span class="token operator">&lt;</span> other<span class="token punctuation">.</span>meters   <span class="token comment"># &lt; 연산자</span></code></pre></div>
+<p>이를 테스트하면 아래와 같겠죠.</p>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token keyword">def</span> <span class="token function">test_custom_dunder</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    distance <span class="token operator">=</span> Length<span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">)</span>
+    
+    <span class="token comment"># __str__: 사용자(Length 사용자) 친화적 출력</span>
+    <span class="token keyword">assert</span> <span class="token builtin">str</span><span class="token punctuation">(</span>distance<span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token string">"5m"</span>
+    
+    <span class="token comment"># __repr__: 개발자(Length 개발자)를 위한 상세 출력</span>
+    <span class="token keyword">assert</span> <span class="token builtin">repr</span><span class="token punctuation">(</span>distance<span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token string">"Length(5)"</span>
+    
+    <span class="token comment"># __len__: len() 함수 지원</span>
+    <span class="token keyword">assert</span> <span class="token builtin">len</span><span class="token punctuation">(</span>distance<span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">5</span>
+    
+    <span class="token comment"># __eq__, __lt__: 비교 연산자 지원</span>
+    <span class="token keyword">assert</span> Length<span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">)</span> <span class="token operator">==</span> Length<span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">)</span>
+    <span class="token keyword">assert</span> Length<span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span> <span class="token operator">&lt;</span> Length<span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">)</span>
+<span class="token operator">>></span><span class="token operator">></span> pytest <span class="token operator">-</span>vs test_custom_dunder<span class="token punctuation">(</span><span class="token punctuation">)</span>
+test_custom_dunder<span class="token punctuation">.</span>py<span class="token punctuation">:</span><span class="token punctuation">:</span>test_custom_dunder PASSED</code></pre></div>
+<p>이런 식으로, 파이썬의 기본문법을 써서 내가 원하는 개념을 표현할 수 있게 됩니다.</p>
+<h2 id="파이썬의-특징-정리" style="position:relative;"><a href="#%ED%8C%8C%EC%9D%B4%EC%8D%AC%EC%9D%98-%ED%8A%B9%EC%A7%95-%EC%A0%95%EB%A6%AC" aria-label="파이썬의 특징 정리 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>파이썬의 특징 정리</h2>
+<p>언어의 특성이 가지는 구조적 설계방안으로 인해 오버로딩 불가능이 아닌, 구현 방법이 달랐던 것입니다.</p>
+<ol>
+<li>변수에 타입을 지정해주지 않아도 되고</li>
+<li>덕 타이핑의 개념이 지원되고</li>
+<li>파이썬의 문법을 그대로 활용할 수 있도록 dunder method를 구현하면<sup id="fnref-4"><a href="#fn-4" class="footnote-ref">4</a></sup> 됩니다.</li>
+</ol>
+<p>그렇지만 이런 부분이 문제가 있죠.</p>
+<ol>
+<li>런타임에 프로그램 크래쉬를 유발할 수 있다는 점</li>
+<li>명확성 감소 (파이썬이 추구하는 명확성이 떨어짐이 문제)</li>
+<li>‘되겠거니’ 하다보니 유지보수가 힘들어짐 - 이런 코드가 쌓이면 코드의 예측이 어려움</li>
+</ol>
+<h1 id="그렇지만-타입을-아예-모르고-쓰고싶진-않아요" style="position:relative;"><a href="#%EA%B7%B8%EB%A0%87%EC%A7%80%EB%A7%8C-%ED%83%80%EC%9E%85%EC%9D%84-%EC%95%84%EC%98%88-%EB%AA%A8%EB%A5%B4%EA%B3%A0-%EC%93%B0%EA%B3%A0%EC%8B%B6%EC%A7%84-%EC%95%8A%EC%95%84%EC%9A%94" aria-label="그렇지만 타입을 아예 모르고 쓰고싶진 않아요 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>그렇지만 타입을 아예 모르고 쓰고싶진 않아요…</h1>
+<p>파이썬은 이런 부분에 대해 충분히 인지하고 있었기 때문에 현재는 타입에 <em>힌트를 줄 수도</em> 있고, 런타임 레벨에서 어느정도 강제할 수 있는 방안을 제공합니다. 이에 대해 하나씩 설명하고자 합니다.</p>
+<h2 id="타입-힌팅" style="position:relative;"><a href="#%ED%83%80%EC%9E%85-%ED%9E%8C%ED%8C%85" aria-label="타입 힌팅 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>타입 힌팅</h2>
+<blockquote>
+<p>파이썬 3.5부터 처음 나온 개념입니다.</p>
+</blockquote>
+<p>타입 힌팅은 파이썬 코드에 타입 정보를 명시적으로 추가하는 방법입니다. 파이썬 3.5에서 처음 도입되었고, 코드의 가독성과 유지보수성을 높이는데 큰 도움을 줍니다.</p>
+<p>파이썬 타입힌팅의 주요 특징은 아래와 같습니다:</p>
+<ul>
+<li>런타임에는 영향을 주지 않음 (단순한 힌트일 뿐)</li>
+<li>IDE와 타입 체커가 코드 분석 시 활용</li>
+<li>코드의 의도를 명확히 전달 가능</li>
+</ul>
+<p>타입 힌팅은 아래와 같은 장점을 가집니다.</p>
+<ol>
+<li>코드 이해도 향상
+<ul>
+<li>함수나 변수의 예상되는 타입을 바로 알 수 있음</li>
+<li>문서화 효과</li>
+</ul>
+</li>
+<li>버그 조기 발견
+<ul>
+<li>IDE나 타입 체커가 타입 관련 오류를 사전에 발견</li>
+<li>런타임 에러를 줄일 수 있음</li>
+</ul>
+</li>
+<li>리팩터링 용이성</li>
+</ol>
+<ul>
+<li>타입 정보가 있어 안전한 코드 수정 가능</li>
+<li>자동 완성 기능 강화</li>
+</ul>
+<p>파이썬에서 타입힌팅은 다양한 방법으로 기재할 수 있습니다.</p>
+<ul>
+<li>실제 구동할 코드에 타입힌팅을 주는 법(가장 널리 알려진 타입힌팅, 이쪽을 사용)</li>
+<li><code class="language-text">.pyi</code> 파일 등에 기록하는 것
+<ul>
+<li>기존 파일을 그대로 두고 타입 힌팅만 제공합니다</li>
+<li>CPython 인터페이스에 주로 사용됩니다</li>
+</ul>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token comment"># mylib.pyi</span>
+<span class="token keyword">def</span> <span class="token function">add</span><span class="token punctuation">(</span>a<span class="token punctuation">:</span> <span class="token builtin">int</span><span class="token punctuation">,</span> b<span class="token punctuation">:</span> <span class="token builtin">int</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> <span class="token builtin">int</span><span class="token punctuation">:</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token keyword">def</span> <span class="token function">greet</span><span class="token punctuation">(</span>name<span class="token punctuation">:</span> <span class="token builtin">str</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> <span class="token builtin">str</span><span class="token punctuation">:</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span></code></pre></div>
+</li>
+<li><code class="language-text">py.typed</code> 파일로 기록하는 것
+<ul>
+<li>패키지가 타입 힌트를 공식제공함을 알리는 마커 파일입니다</li>
+<li>패키지 루트에 두고 정적 타입 체커가 이를 인식하게 합니다</li>
+</ul>
+</li>
+</ul>
+<p>이렇다보니 보통은 실제 구동코드에 타입힌팅을 주는 부분이 더 익숙합니다. 본 문서에서는 이 내용을 짚고 넘어가려 합니다.</p>
+<h3 id="타입-힌팅을-어떻게-하나요" style="position:relative;"><a href="#%ED%83%80%EC%9E%85-%ED%9E%8C%ED%8C%85%EC%9D%84-%EC%96%B4%EB%96%BB%EA%B2%8C-%ED%95%98%EB%82%98%EC%9A%94" aria-label="타입 힌팅을 어떻게 하나요 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>타입 힌팅을 어떻게 하나요?</h3>
+<p>파이썬 공식문서의 예시를 살펴볼까요.</p>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token keyword">def</span> <span class="token function">surface_area_of_cube</span><span class="token punctuation">(</span>edge_length<span class="token punctuation">:</span> <span class="token builtin">float</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> <span class="token builtin">str</span><span class="token punctuation">:</span>
+    <span class="token keyword">return</span> <span class="token string-interpolation"><span class="token string">f"The surface area of the cube is </span><span class="token interpolation"><span class="token punctuation">{</span><span class="token number">6</span> <span class="token operator">*</span> edge_length <span class="token operator">**</span> <span class="token number">2</span><span class="token punctuation">}</span></span><span class="token string">."</span></span></code></pre></div>
+<p>함수 시그니처를 이렇게 힌팅할 수 있습니다. <code class="language-text">float</code> 타입을 받고 <code class="language-text">str</code> 타입을 리턴하는 형식이죠.</p>
+<p>타입에 대한 힌트도 줄 수 있습니다.</p>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python">Vector <span class="token operator">=</span> <span class="token builtin">list</span><span class="token punctuation">[</span><span class="token builtin">float</span><span class="token punctuation">]</span>
+
+<span class="token keyword">def</span> <span class="token function">scale</span><span class="token punctuation">(</span>scalar<span class="token punctuation">:</span> <span class="token builtin">float</span><span class="token punctuation">,</span> vector<span class="token punctuation">:</span> Vector<span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> Vector<span class="token punctuation">:</span>
+    <span class="token keyword">return</span> <span class="token punctuation">[</span>scalar <span class="token operator">*</span> num <span class="token keyword">for</span> num <span class="token keyword">in</span> vector<span class="token punctuation">]</span>
+
+<span class="token comment"># passes type checking; a list of floats qualifies as a Vector.</span>
+new_vector <span class="token operator">=</span> scale<span class="token punctuation">(</span><span class="token number">2.0</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token number">1.0</span><span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">4.2</span><span class="token punctuation">,</span> <span class="token number">5.4</span><span class="token punctuation">]</span><span class="token punctuation">)</span></code></pre></div>
+<p>아니면 아예 이런식으로 <code class="language-text">TypeAlias</code> 를 써줄 수도 있지요.</p>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token keyword">from</span> typing <span class="token keyword">import</span> TypeAlias
+
+Vector<span class="token punctuation">:</span> TypeAlias <span class="token operator">=</span> <span class="token builtin">list</span><span class="token punctuation">[</span><span class="token builtin">float</span><span class="token punctuation">]</span></code></pre></div>
+<h3 id="타입힌팅-심화" style="position:relative;"><a href="#%ED%83%80%EC%9E%85%ED%9E%8C%ED%8C%85-%EC%8B%AC%ED%99%94" aria-label="타입힌팅 심화 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>타입힌팅 심화</h3>
+<ol>
+<li>TypeVar로 제네릭 타입 만들기</li>
+</ol>
+<p><code class="language-text">TypeVar</code>는 파이썬에서 제네릭 타입을 정의할 때 사용하는 특별한 타입입니다. Java의 제네릭과 유사한 역할을 하며, 타입의 재사용성과 유연성을 높여줍니다.</p>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token keyword">from</span> typing <span class="token keyword">import</span> TypeVar<span class="token punctuation">,</span> List<span class="token punctuation">,</span> Sequence
+
+T <span class="token operator">=</span> TypeVar<span class="token punctuation">(</span><span class="token string">'T'</span><span class="token punctuation">)</span>  <span class="token comment"># 어떤 타입이든 될 수 있는 타입 변수</span>
+
+<span class="token keyword">def</span> <span class="token function">first</span><span class="token punctuation">(</span>lst<span class="token punctuation">:</span> Sequence<span class="token punctuation">[</span>T<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> T<span class="token punctuation">:</span>
+    <span class="token keyword">if</span> <span class="token keyword">not</span> lst<span class="token punctuation">:</span>
+        <span class="token keyword">raise</span> ValueError<span class="token punctuation">(</span><span class="token string">"Empty sequence"</span><span class="token punctuation">)</span>
+    <span class="token keyword">return</span> lst<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span>
+
+<span class="token comment"># 사용 예시</span>
+numbers<span class="token punctuation">:</span> List<span class="token punctuation">[</span><span class="token builtin">int</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">]</span>
+first_num<span class="token punctuation">:</span> <span class="token builtin">int</span> <span class="token operator">=</span> first<span class="token punctuation">(</span>numbers<span class="token punctuation">)</span>  <span class="token comment"># T는 int로 추론됨</span>
+
+strings<span class="token punctuation">:</span> List<span class="token punctuation">[</span><span class="token builtin">str</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string">"hello"</span><span class="token punctuation">,</span> <span class="token string">"world"</span><span class="token punctuation">]</span>
+first_str<span class="token punctuation">:</span> <span class="token builtin">str</span> <span class="token operator">=</span> first<span class="token punctuation">(</span>strings<span class="token punctuation">)</span>  <span class="token comment"># T는 str로 추론됨</span></code></pre></div>
+<p><code class="language-text">bound</code> 값을 추가하여 타입을 제한할 수도 있습니다.</p>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token comment"># bound를 이용한 타입 제한</span>
+<span class="token keyword">class</span> <span class="token class-name">Animal</span><span class="token punctuation">:</span>
+    <span class="token keyword">def</span> <span class="token function">feed</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> <span class="token boolean">None</span><span class="token punctuation">:</span>
+        <span class="token keyword">pass</span>
+
+<span class="token keyword">class</span> <span class="token class-name">Dog</span><span class="token punctuation">(</span>Animal<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">def</span> <span class="token function">bark</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> <span class="token boolean">None</span><span class="token punctuation">:</span>
+        <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"멍멍!"</span><span class="token punctuation">)</span>
+
+<span class="token comment"># Animal이나 Animal의 서브클래스만 허용</span>
+BoundT <span class="token operator">=</span> TypeVar<span class="token punctuation">(</span><span class="token string">'BoundT'</span><span class="token punctuation">,</span> bound<span class="token operator">=</span>Animal<span class="token punctuation">)</span>
+
+<span class="token keyword">def</span> <span class="token function">take_care</span><span class="token punctuation">(</span>animal<span class="token punctuation">:</span> BoundT<span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> BoundT<span class="token punctuation">:</span>
+    animal<span class="token punctuation">.</span>feed<span class="token punctuation">(</span><span class="token punctuation">)</span>  <span class="token comment"># Animal의 메소드는 항상 사용 가능</span>
+    <span class="token keyword">return</span> animal
+
+<span class="token comment"># 사용 예시</span>
+dog <span class="token operator">=</span> Dog<span class="token punctuation">(</span><span class="token punctuation">)</span>
+take_care<span class="token punctuation">(</span>dog<span class="token punctuation">)</span>  <span class="token comment"># OK</span>
+take_care<span class="token punctuation">(</span><span class="token string">"cat"</span><span class="token punctuation">)</span>  <span class="token comment"># 타입 체커 에러: str은 Animal의 서브타입이 아님</span></code></pre></div>
+<ol start="2">
+<li>제약 조건이 있는 TypeVar</li>
+</ol>
+<p>특정 타입들로만 제한하고 싶을 때는 <code class="language-text">TypeVar</code>에 제약 조건을 걸 수 있습니다:</p>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token keyword">from</span> typing <span class="token keyword">import</span> TypeVar<span class="token punctuation">,</span> Union<span class="token punctuation">,</span> List
+
+<span class="token comment"># str이나 bytes 타입만 허용</span>
+StrOrBytes <span class="token operator">=</span> TypeVar<span class="token punctuation">(</span><span class="token string">'StrOrBytes'</span><span class="token punctuation">,</span> <span class="token builtin">str</span><span class="token punctuation">,</span> <span class="token builtin">bytes</span><span class="token punctuation">)</span>
+
+<span class="token keyword">def</span> <span class="token function">concat</span><span class="token punctuation">(</span>x<span class="token punctuation">:</span> StrOrBytes<span class="token punctuation">,</span> y<span class="token punctuation">:</span> StrOrBytes<span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> StrOrBytes<span class="token punctuation">:</span>
+    <span class="token keyword">return</span> x <span class="token operator">+</span> y
+
+<span class="token comment"># 이렇게 하면 됨</span>
+result1 <span class="token operator">=</span> concat<span class="token punctuation">(</span><span class="token string">"Hello, "</span><span class="token punctuation">,</span> <span class="token string">"World"</span><span class="token punctuation">)</span>  <span class="token comment"># OK</span>
+result2 <span class="token operator">=</span> concat<span class="token punctuation">(</span><span class="token string">b"Hello, "</span><span class="token punctuation">,</span> <span class="token string">b"World"</span><span class="token punctuation">)</span>  <span class="token comment"># OK</span>
+
+<span class="token comment"># 이건 타입 체커가 에러를 발생시킴</span>
+<span class="token comment"># result3 = concat(1, 2)  # Error: int는 허용되지 않음</span></code></pre></div>
+<ol start="3">
+<li>overload 데코레이터 활용하기</li>
+</ol>
+<p><code class="language-text">@overload</code> 데코레이터를 사용하면 함수가 여러 타입 시그니처를 가질 수 있음을 타입 체커에 알려줄 수 있습니다. 런타임에는 영향을 주지 않지만, 개발 시점에 타입 안전성을 보장하는데 도움을 줍니다.</p>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token keyword">from</span> typing <span class="token keyword">import</span> overload<span class="token punctuation">,</span> Union
+
+<span class="token keyword">class</span> <span class="token class-name">StringProcessor</span><span class="token punctuation">:</span>
+    <span class="token decorator annotation punctuation">@overload</span>
+    <span class="token keyword">def</span> <span class="token function">process</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> value<span class="token punctuation">:</span> <span class="token builtin">str</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> <span class="token builtin">str</span><span class="token punctuation">:</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+    
+    <span class="token decorator annotation punctuation">@overload</span>
+    <span class="token keyword">def</span> <span class="token function">process</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> value<span class="token punctuation">:</span> <span class="token builtin">list</span><span class="token punctuation">[</span><span class="token builtin">str</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> <span class="token builtin">list</span><span class="token punctuation">[</span><span class="token builtin">str</span><span class="token punctuation">]</span><span class="token punctuation">:</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+    
+    <span class="token keyword">def</span> <span class="token function">process</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> value<span class="token punctuation">:</span> Union<span class="token punctuation">[</span><span class="token builtin">str</span><span class="token punctuation">,</span> <span class="token builtin">list</span><span class="token punctuation">[</span><span class="token builtin">str</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> Union<span class="token punctuation">[</span><span class="token builtin">str</span><span class="token punctuation">,</span> <span class="token builtin">list</span><span class="token punctuation">[</span><span class="token builtin">str</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">:</span>
+        <span class="token keyword">if</span> <span class="token builtin">isinstance</span><span class="token punctuation">(</span>value<span class="token punctuation">,</span> <span class="token builtin">str</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+            <span class="token keyword">return</span> value<span class="token punctuation">.</span>upper<span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token keyword">return</span> <span class="token punctuation">[</span>v<span class="token punctuation">.</span>upper<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">for</span> v <span class="token keyword">in</span> value<span class="token punctuation">]</span>
+
+<span class="token keyword">def</span> <span class="token function">test_string_processor</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    processor <span class="token operator">=</span> StringProcessor<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    
+    <span class="token comment"># 둘 다 타입 체크를 통과함</span>
+    result1<span class="token punctuation">:</span> <span class="token builtin">str</span> <span class="token operator">=</span> processor<span class="token punctuation">.</span>process<span class="token punctuation">(</span><span class="token string">"hello"</span><span class="token punctuation">)</span>  <span class="token comment"># "HELLO"</span>
+    result2<span class="token punctuation">:</span> <span class="token builtin">list</span><span class="token punctuation">[</span><span class="token builtin">str</span><span class="token punctuation">]</span> <span class="token operator">=</span> processor<span class="token punctuation">.</span>process<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token string">"hello"</span><span class="token punctuation">,</span> <span class="token string">"world"</span><span class="token punctuation">]</span><span class="token punctuation">)</span>  <span class="token comment"># ["HELLO", "WORLD"]</span></code></pre></div>
+<ol start="4">
+<li>선택적 매개변수와 기본값</li>
+</ol>
+<p><code class="language-text">Optional</code> 표기를 통해 필요한 값을 추가적으로 쓸 수 있게 표기할 수도 있습니다. 그리고 기본값도 줄 수 있지요.</p>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token keyword">from</span> typing <span class="token keyword">import</span> Optional
+
+<span class="token keyword">def</span> <span class="token function">greet</span><span class="token punctuation">(</span>name<span class="token punctuation">:</span> <span class="token builtin">str</span><span class="token punctuation">,</span> title<span class="token punctuation">:</span> Optional<span class="token punctuation">[</span><span class="token builtin">str</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token boolean">None</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> <span class="token builtin">str</span><span class="token punctuation">:</span>
+    <span class="token keyword">if</span> title<span class="token punctuation">:</span>
+        <span class="token keyword">return</span> <span class="token string-interpolation"><span class="token string">f"Hello, </span><span class="token interpolation"><span class="token punctuation">{</span>title<span class="token punctuation">}</span></span><span class="token string"> </span><span class="token interpolation"><span class="token punctuation">{</span>name<span class="token punctuation">}</span></span><span class="token string">!"</span></span>
+    <span class="token keyword">return</span> <span class="token string-interpolation"><span class="token string">f"Hello, </span><span class="token interpolation"><span class="token punctuation">{</span>name<span class="token punctuation">}</span></span><span class="token string">!"</span></span>
+
+result1 <span class="token operator">=</span> greet<span class="token punctuation">(</span><span class="token string">"Alice"</span><span class="token punctuation">,</span> <span class="token string">"Ms."</span><span class="token punctuation">)</span>  <span class="token comment"># "Hello, Ms. Alice!"</span>
+result2 <span class="token operator">=</span> greet<span class="token punctuation">(</span><span class="token string">"Bob"</span><span class="token punctuation">)</span>  <span class="token comment"># "Hello, Bob!"</span></code></pre></div>
+<ol start="5">
+<li>Union 타입과 Literal 타입</li>
+</ol>
+<p>Literal 은 말 그대로(<em>literally</em>) 동일한 문자열이 오기를 기대하는 타입입니다.</p>
+<p>Union은 이 값 중 하나의 값을 선택하겠다라는 의미로 사용합니다. 파이썬 3.11부터는 <code class="language-text">|</code> 연산자로 표기할 수도 있지요.</p>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token keyword">from</span> typing <span class="token keyword">import</span> Union<span class="token punctuation">,</span> Literal
+
+<span class="token comment"># 특정 문자열만 허용하는 타입</span>
+LogLevel <span class="token operator">=</span> Literal<span class="token punctuation">[</span><span class="token string">"DEBUG"</span><span class="token punctuation">,</span> <span class="token string">"INFO"</span><span class="token punctuation">,</span> <span class="token string">"WARNING"</span><span class="token punctuation">,</span> <span class="token string">"ERROR"</span><span class="token punctuation">]</span>
+
+<span class="token keyword">def</span> <span class="token function">log</span><span class="token punctuation">(</span>
+    message<span class="token punctuation">:</span> <span class="token builtin">str</span><span class="token punctuation">,</span>
+    level<span class="token punctuation">:</span> LogLevel<span class="token punctuation">,</span>
+    code<span class="token punctuation">:</span> Union<span class="token punctuation">[</span><span class="token builtin">int</span><span class="token punctuation">,</span> <span class="token builtin">str</span><span class="token punctuation">]</span>
+    <span class="token comment"># 파이썬 3.11 이상부터는</span>
+    <span class="token comment"># code: int | str 도 가능합니다.</span>
+<span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> <span class="token boolean">None</span><span class="token punctuation">:</span>
+    <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f"[</span><span class="token interpolation"><span class="token punctuation">{</span>level<span class="token punctuation">}</span></span><span class="token string">] </span><span class="token interpolation"><span class="token punctuation">{</span>code<span class="token punctuation">}</span></span><span class="token string">: </span><span class="token interpolation"><span class="token punctuation">{</span>message<span class="token punctuation">}</span></span><span class="token string">"</span></span><span class="token punctuation">)</span>
+
+<span class="token comment"># 모두 유효한 호출입니다.</span>
+log<span class="token punctuation">(</span><span class="token string">"System starting"</span><span class="token punctuation">,</span> <span class="token string">"INFO"</span><span class="token punctuation">,</span> <span class="token number">100</span><span class="token punctuation">)</span>
+log<span class="token punctuation">(</span><span class="token string">"File not found"</span><span class="token punctuation">,</span> <span class="token string">"ERROR"</span><span class="token punctuation">,</span> <span class="token string">"E404"</span><span class="token punctuation">)</span>
+
+<span class="token comment"># 타입 체커가 에러를 발생시키는 경우</span>
+<span class="token comment"># log("Test", "INVALID", 200)  # Error: "INVALID"는 LogLevel에 없으니 안되죠.</span></code></pre></div>
+<ol start="6">
+<li>콜백 함수의 타입 힌팅</li>
+</ol>
+<p>파이썬의 모든 것은 객체이므로, 이를 <code class="language-text">Callable</code> 이라는 이름으로 매개변수로 받을 수 있게 힌트를 줄 수 있습니다. 이를 이용한 예시는 아래와 같습니다:</p>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token keyword">from</span> typing <span class="token keyword">import</span> Callable<span class="token punctuation">,</span> TypeVar
+
+T <span class="token operator">=</span> TypeVar<span class="token punctuation">(</span><span class="token string">'T'</span><span class="token punctuation">)</span>
+R <span class="token operator">=</span> TypeVar<span class="token punctuation">(</span><span class="token string">'R'</span><span class="token punctuation">)</span>
+
+<span class="token comment"># Callable의 특징을 기재함</span>
+<span class="token keyword">def</span> <span class="token function">map_list</span><span class="token punctuation">(</span>func<span class="token punctuation">:</span> Callable<span class="token punctuation">[</span><span class="token punctuation">[</span>T<span class="token punctuation">]</span><span class="token punctuation">,</span> R<span class="token punctuation">]</span><span class="token punctuation">,</span> items<span class="token punctuation">:</span> <span class="token builtin">list</span><span class="token punctuation">[</span>T<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> <span class="token builtin">list</span><span class="token punctuation">[</span>R<span class="token punctuation">]</span><span class="token punctuation">:</span>
+    <span class="token keyword">return</span> <span class="token punctuation">[</span>func<span class="token punctuation">(</span>item<span class="token punctuation">)</span> <span class="token keyword">for</span> item <span class="token keyword">in</span> items<span class="token punctuation">]</span>
+
+<span class="token comment"># 사용 예시</span>
+numbers <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">]</span>
+squares <span class="token operator">=</span> map_list<span class="token punctuation">(</span><span class="token keyword">lambda</span> x<span class="token punctuation">:</span> x <span class="token operator">*</span> x<span class="token punctuation">,</span> numbers<span class="token punctuation">)</span>  <span class="token comment"># [1, 4, 9]</span></code></pre></div>
+<ol start="7">
+<li>클래스 메서드와 프로퍼티</li>
+</ol>
+<p><code class="language-text">Protocol</code> 로 클래스 정의를 미리 흉내낼 때는 이렇게 프로퍼티를 미리 정의할 수도 있습니다.</p>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token keyword">from</span> typing <span class="token keyword">import</span> ClassVar<span class="token punctuation">,</span> Protocol
+
+<span class="token keyword">class</span> <span class="token class-name">DataProcessor</span><span class="token punctuation">(</span>Protocol<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    MAX_ITEMS<span class="token punctuation">:</span> ClassVar<span class="token punctuation">[</span><span class="token builtin">int</span><span class="token punctuation">]</span>  <span class="token comment"># 클래스 변수</span>
+    
+    <span class="token decorator annotation punctuation">@property</span>
+    <span class="token keyword">def</span> <span class="token function">item_count</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> <span class="token builtin">int</span><span class="token punctuation">:</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+    
+    <span class="token keyword">def</span> <span class="token function">process</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> data<span class="token punctuation">:</span> <span class="token builtin">list</span><span class="token punctuation">[</span><span class="token builtin">str</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> <span class="token boolean">None</span><span class="token punctuation">:</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+<span class="token keyword">class</span> <span class="token class-name">CSVProcessor</span><span class="token punctuation">:</span>
+    MAX_ITEMS<span class="token punctuation">:</span> ClassVar<span class="token punctuation">[</span><span class="token builtin">int</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">1000</span>
+    
+    <span class="token keyword">def</span> <span class="token function">__init__</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> <span class="token boolean">None</span><span class="token punctuation">:</span>
+        self<span class="token punctuation">.</span>_items<span class="token punctuation">:</span> <span class="token builtin">list</span><span class="token punctuation">[</span><span class="token builtin">str</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+    
+    <span class="token decorator annotation punctuation">@property</span>
+    <span class="token keyword">def</span> <span class="token function">item_count</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> <span class="token builtin">int</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> <span class="token builtin">len</span><span class="token punctuation">(</span>self<span class="token punctuation">.</span>_items<span class="token punctuation">)</span>
+    
+    <span class="token keyword">def</span> <span class="token function">process</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> data<span class="token punctuation">:</span> <span class="token builtin">list</span><span class="token punctuation">[</span><span class="token builtin">str</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> <span class="token boolean">None</span><span class="token punctuation">:</span>
+        <span class="token keyword">if</span> <span class="token builtin">len</span><span class="token punctuation">(</span>data<span class="token punctuation">)</span> <span class="token operator">></span> self<span class="token punctuation">.</span>MAX_ITEMS<span class="token punctuation">:</span>
+            <span class="token keyword">raise</span> ValueError<span class="token punctuation">(</span><span class="token string">"Too many items"</span><span class="token punctuation">)</span>
+        self<span class="token punctuation">.</span>_items<span class="token punctuation">.</span>extend<span class="token punctuation">(</span>data<span class="token punctuation">)</span></code></pre></div>
+<p>이러한 타입 힌팅을 활용하면 코드의 안정성을 높이고 개발자의 실수를 줄일 수 있습니다. IDE나 타입 체커를 통해 많은 오류를 사전에 발견할 수 있으며, 코드의 자동완성 기능도 더욱 정확해집니다.</p>
+<h3 id="타입힌팅---structural-subtyping으로" style="position:relative;"><a href="#%ED%83%80%EC%9E%85%ED%9E%8C%ED%8C%85---structural-subtyping%EC%9C%BC%EB%A1%9C" aria-label="타입힌팅   structural subtyping으로 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>타입힌팅 - Structural Subtyping으로</h3>
+<p>파이썬의 타입 힌팅은 시간이 지나면서 더 파이썬스러운 방식으로 발전했습니다. 위에서 보았던 예시를 다시 살펴볼까요?</p>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token keyword">class</span> <span class="token class-name">Duck</span><span class="token punctuation">:</span>
+    <span class="token keyword">def</span> <span class="token function">sound</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> <span class="token string">"꽥꽥"</span>
+
+<span class="token keyword">class</span> <span class="token class-name">Dog</span><span class="token punctuation">:</span>
+    <span class="token keyword">def</span> <span class="token function">sound</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> <span class="token string">"멍멍"</span>
+
+<span class="token keyword">def</span> <span class="token function">make_sound</span><span class="token punctuation">(</span>animal<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token comment"># animal의 구체적인 타입은 중요하지 않음</span>
+    <span class="token comment"># sound() 메소드만 있으면 됨</span>
+    <span class="token keyword">return</span> animal<span class="token punctuation">.</span>sound<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+<span class="token keyword">def</span> <span class="token function">test_duck_typing</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">assert</span> make_sound<span class="token punctuation">(</span>Duck<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token string">"꽥꽥"</span>
+    <span class="token keyword">assert</span> make_sound<span class="token punctuation">(</span>Dog<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token string">"멍멍"</span>
+<span class="token operator">>></span><span class="token operator">></span> python <span class="token operator">-</span>vs test_duck_typing<span class="token punctuation">.</span>py
+test_duck_typing<span class="token punctuation">.</span>py<span class="token punctuation">:</span><span class="token punctuation">:</span>test_duck_typing PASSED</code></pre></div>
+<p>이후 structural subtyping 이 도입되면서, 클래스가 특정 메서드들을 구현하기만 하면 자동으로 해당 타입으로 인식되도록 변경되었습니다. <code class="language-text">Protocol</code> 클래스를 통해 새 인터페이스를 정의할 수도 있지요.</p>
+<blockquote>
+<p>파이썬 3.8에서 처음 나온 개념입니다.</p>
+</blockquote>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token keyword">from</span> typing <span class="token keyword">import</span> Protocol
+
+<span class="token keyword">class</span> <span class="token class-name">Animal</span><span class="token punctuation">(</span>Protocol<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">def</span> <span class="token function">sound</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> <span class="token builtin">str</span><span class="token punctuation">:</span>
+        <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>  <span class="token comment"># Protocol은 구현부 없이 메서드 시그니처만 정의</span>
+
+<span class="token comment"># make_sound에서, `Animal` 을 정의해주었으니</span>
+<span class="token comment"># 컴파일 타임에 Protocol이 요구하는 메소드/속성이 있는지 정적으로 확인한다</span>
+<span class="token comment"># 이제 Duck과 Dog는 자동으로 Animal 프로토콜을 구현한 것으로 인식한다!</span>
+<span class="token keyword">def</span> <span class="token function">make_sound</span><span class="token punctuation">(</span>animal<span class="token punctuation">:</span> Animal<span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> <span class="token builtin">str</span><span class="token punctuation">:</span>
+    <span class="token keyword">return</span> animal<span class="token punctuation">.</span>sound<span class="token punctuation">(</span><span class="token punctuation">)</span></code></pre></div>
+<p>다만 이런 정적 타입 체커(static type checker)를 활용하면 실제 개발에만 도움을 줄 뿐, 기저에 있는 덕 타이핑 방식대로 동작하며 개발 시 문제를 잡을 수 있게 도움을 의미합니다.</p>
+<h3 id="타입힌팅을-도와주는-도구" style="position:relative;"><a href="#%ED%83%80%EC%9E%85%ED%9E%8C%ED%8C%85%EC%9D%84-%EB%8F%84%EC%99%80%EC%A3%BC%EB%8A%94-%EB%8F%84%EA%B5%AC" aria-label="타입힌팅을 도와주는 도구 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>타입힌팅을 도와주는 도구</h3>
+<p>앞서말했듯 타입 힌트를 도와주는 도구들을 통해 도움을 받을 수 있습니다. 가령 PyCharm 에서 저장 시 프로젝트의 모든 내 파이썬 파일에 대해 린트를 하는 등의 조치를 의미하죠. 때로는 타입이 맞지 않아 실제 코드를 잘못 사용하고있음을 알 수도 있습니다.</p>
+<p>정적 타입 검사기로는 아래 작업을 수행할 수 있습니다:
+- 코드 실행 없이 타입 오류를 분석
+- MyPy, Pyright, Pyre 등이 대표적
+- PEP 484(타입 힌트) 및 PEP 544(Protocol) 같은 제안을 기반으로 동작</p>
+<p>이런 도구들이 IDE와 결합되면 저장과 동시에 린팅, 타입검사 후 에러체크를 수행해주기도 합니다.</p>
+<p>반면 런타임에 타입을 검사하는 건 <code class="language-text">isinstance()</code> 나 <code class="language-text">type()</code> 이 있습니다. 이런 부분도 적절히 코드에 잘 녹여내서 해결할 수 있지요.</p>
+<h3 id="타입-힌팅에-대한-예시" style="position:relative;"><a href="#%ED%83%80%EC%9E%85-%ED%9E%8C%ED%8C%85%EC%97%90-%EB%8C%80%ED%95%9C-%EC%98%88%EC%8B%9C" aria-label="타입 힌팅에 대한 예시 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>타입 힌팅에 대한 예시</h3>
+<p><code class="language-text">pyproject.toml</code> 에 기재하는 타입 힌팅 및 린팅(Black 사용법)을 기존으로 간단한 예시를 설명드리고자 합니다.</p>
+<p>아래 설정은 다음과 같은 내용을 강제합니다:</p>
+<ol>
+<li>모든 함수에 타입 힌트 필수 (<code class="language-text">disallow_untyped_defs = true</code>)</li>
+<li>불완전한 타입 힌트 불허 (<code class="language-text">disallow_incomplete_defs = true</code>)</li>
+<li>Any 타입 반환 시 경고 (<code class="language-text">warn_return_any = true</code>)</li>
+<li>테스트 코드는 타입 힌트 옵션 (<code class="language-text">[[tool.mypy.overrides]]</code> 섹션)</li>
+</ol>
+<div class="gatsby-highlight" data-language="toml"><pre class="language-toml"><code class="language-toml"><span class="token punctuation">[</span><span class="token table class-name">tool.black</span><span class="token punctuation">]</span>
+<span class="token key property">line-length</span> <span class="token punctuation">=</span> <span class="token number">108</span>
+<span class="token key property">target-version</span> <span class="token punctuation">=</span> <span class="token punctuation">[</span><span class="token string">'py311'</span><span class="token punctuation">]</span>
+<span class="token key property">include</span> <span class="token punctuation">=</span> <span class="token string">'\.pyi?$'</span>
+
+<span class="token punctuation">[</span><span class="token table class-name">tool.mypy</span><span class="token punctuation">]</span>
+<span class="token key property">python_version</span> <span class="token punctuation">=</span> <span class="token string">"3.11"</span>
+<span class="token key property">warn_return_any</span> <span class="token punctuation">=</span> <span class="token boolean">true</span>
+<span class="token key property">warn_unused_configs</span> <span class="token punctuation">=</span> <span class="token boolean">true</span>
+<span class="token key property">disallow_untyped_defs</span> <span class="token punctuation">=</span> <span class="token boolean">true</span>
+<span class="token key property">disallow_incomplete_defs</span> <span class="token punctuation">=</span> <span class="token boolean">true</span>
+<span class="token key property">check_untyped_defs</span> <span class="token punctuation">=</span> <span class="token boolean">true</span>
+<span class="token key property">disallow_untyped_decorators</span> <span class="token punctuation">=</span> <span class="token boolean">true</span>
+<span class="token key property">no_implicit_optional</span> <span class="token punctuation">=</span> <span class="token boolean">true</span>
+<span class="token key property">warn_redundant_casts</span> <span class="token punctuation">=</span> <span class="token boolean">true</span>
+<span class="token key property">warn_unused_ignores</span> <span class="token punctuation">=</span> <span class="token boolean">true</span>
+<span class="token key property">warn_no_return</span> <span class="token punctuation">=</span> <span class="token boolean">true</span>
+<span class="token key property">warn_unreachable</span> <span class="token punctuation">=</span> <span class="token boolean">true</span>
+
+<span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token table class-name">tool.mypy.overrides</span><span class="token punctuation">]</span><span class="token punctuation">]</span>
+<span class="token key property">module</span> <span class="token punctuation">=</span> <span class="token punctuation">[</span><span class="token string">"tests.*"</span><span class="token punctuation">]</span>
+<span class="token key property">disallow_untyped_defs</span> <span class="token punctuation">=</span> <span class="token boolean">false</span>
+
+<span class="token punctuation">[</span><span class="token table class-name">tool.isort</span><span class="token punctuation">]</span>
+<span class="token key property">profile</span> <span class="token punctuation">=</span> <span class="token string">"black"</span>
+<span class="token key property">multi_line_output</span> <span class="token punctuation">=</span> <span class="token number">3</span></code></pre></div>
+<p>black과 함께 사용하면 코드 스타일과 타입 안정성을 모두 확보할 수 있습니다.</p>
+<h1 id="진짜-오버로딩을-하려면-어떻게-해야해요" style="position:relative;"><a href="#%EC%A7%84%EC%A7%9C-%EC%98%A4%EB%B2%84%EB%A1%9C%EB%94%A9%EC%9D%84-%ED%95%98%EB%A0%A4%EB%A9%B4-%EC%96%B4%EB%96%BB%EA%B2%8C-%ED%95%B4%EC%95%BC%ED%95%B4%EC%9A%94" aria-label="진짜 오버로딩을 하려면 어떻게 해야해요 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>진짜 오버로딩을 하려면 어떻게 해야해요..?</h1>
+<p>이런 특성대신 실제 오버로딩을 활용하고자 한다면 파이썬 기본제공 도구를 사용하거나, 서드파티 라이브러리를 사용하여 해결할 수 있습니다.</p>
+<h2 id="singledispatch-활용" style="position:relative;"><a href="#singledispatch-%ED%99%9C%EC%9A%A9" aria-label="singledispatch 활용 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code class="language-text">@singledispatch</code> 활용</h2>
+<p>실제 목적으로서의 오버로딩을 구현하기 위해선 <code class="language-text">functools</code> 의 <code class="language-text">@singledispatch</code> 를 이용할 수 있습니다. 예를 들어 아래와 같은 계산기가 있다고 가정합시다.</p>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token keyword">class</span> <span class="token class-name">Calculator</span><span class="token punctuation">:</span>
+    <span class="token decorator annotation punctuation">@singledispatchmethod</span>
+    <span class="token keyword">def</span> <span class="token function">add</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> data1<span class="token punctuation">,</span> data2<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">raise</span> NotImplementedError<span class="token punctuation">(</span><span class="token string">"Cannot process data of unknown type!"</span><span class="token punctuation">)</span>
+    
+    <span class="token comment"># 그마저도 한 타입만 체크. 그래서 이름이 `single dispatch`</span>
+    <span class="token decorator annotation punctuation">@add<span class="token punctuation">.</span>register</span><span class="token punctuation">(</span><span class="token builtin">int</span><span class="token punctuation">)</span>
+    <span class="token keyword">def</span> <span class="token function">_</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> data1<span class="token punctuation">,</span> data2<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> data1 <span class="token operator">+</span> data2
+
+    <span class="token decorator annotation punctuation">@add<span class="token punctuation">.</span>register</span><span class="token punctuation">(</span><span class="token builtin">str</span><span class="token punctuation">)</span>
+    <span class="token keyword">def</span> <span class="token function">_</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> data1<span class="token punctuation">,</span> data2<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> data1 <span class="token operator">+</span> data2</code></pre></div>
+<p>이런 식으로 변경 후, 아래와 같이 사용할 수 있습니다:</p>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token keyword">def</span> <span class="token function">test_calc_int</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    calc <span class="token operator">=</span> Calculator<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+    result <span class="token operator">=</span> calc<span class="token punctuation">.</span>add<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span>     <span class="token comment"># int 값 만을 받는 것은 허용</span>
+
+    <span class="token keyword">assert</span> result <span class="token operator">==</span> <span class="token number">3</span></code></pre></div>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token keyword">def</span> <span class="token function">test_calc_str</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    calc <span class="token operator">=</span> Calculator<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+    result <span class="token operator">=</span> calc<span class="token punctuation">.</span>add<span class="token punctuation">(</span><span class="token string">"1"</span><span class="token punctuation">,</span> <span class="token string">"2"</span><span class="token punctuation">)</span>     <span class="token comment"># str 값도 허용</span>
+
+    <span class="token keyword">assert</span> result <span class="token operator">==</span> <span class="token string">"12"</span></code></pre></div>
+<p>하지만, 파이썬 특유의 연산으로도 안 되는 건(프로토콜에 정의되지 않은 건) <code class="language-text">TypeError</code> 가 납니다.</p>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token keyword">def</span> <span class="token function">test_single_dispatch_limitation</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    calc <span class="token operator">=</span> Calculator<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    
+    <span class="token comment"># 런타임에 뭐가 들어올 지 몰라서, 일단 연산을 시키기 때문에 에러가 날 수 있음</span>
+    <span class="token keyword">with</span> pytest<span class="token punctuation">.</span>raises<span class="token punctuation">(</span>TypeError<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        calc<span class="token punctuation">.</span>add<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token string">"2"</span><span class="token punctuation">)</span>  <span class="token comment"># int + str는 불가능. 그걸 TypeError로 잡음</span>
+    
+    <span class="token keyword">with</span> pytest<span class="token punctuation">.</span>raises<span class="token punctuation">(</span>TypeError<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        calc<span class="token punctuation">.</span>add<span class="token punctuation">(</span><span class="token string">"1"</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span>  <span class="token comment"># str + int도 불가능. 그걸 TypeError로 잡음</span>
+    
+    <span class="token keyword">with</span> pytest<span class="token punctuation">.</span>raises<span class="token punctuation">(</span>TypeError<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        calc<span class="token punctuation">.</span>add<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">)</span>  <span class="token comment"># int + list도 불가능. 그걸 TypeError로 잡음</span></code></pre></div>
+<h3 id="한계점" style="position:relative;"><a href="#%ED%95%9C%EA%B3%84%EC%A0%90" aria-label="한계점 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>한계점?</h3>
+<p><code class="language-text">@singledispatch</code> 는 하나의 타입만 체크합니다. 그래서 <a href="https://pypi.org/project/multipledispatch/" target="_blank" rel="nofollow noopener noreferrer"><code class="language-text">multipledispatch</code></a> 를 사용한다면, <code class="language-text">TypeError</code> 가 아니라 <code class="language-text">NotImplementedError</code> 를 raise 할 수 있습니다.</p>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token keyword">from</span> multipledispatch <span class="token keyword">import</span> dispatch   <span class="token comment"># 이렇게 multipledispatch를 쓰면</span>
+<span class="token keyword">import</span> pytest
+
+<span class="token keyword">class</span> <span class="token class-name">Calculator</span><span class="token punctuation">:</span>
+    <span class="token decorator annotation punctuation">@dispatch</span><span class="token punctuation">(</span><span class="token builtin">int</span><span class="token punctuation">,</span> <span class="token builtin">int</span><span class="token punctuation">)</span>      <span class="token comment"># 여러 타입을 쓸 수 있습니다.</span>
+    <span class="token keyword">def</span> <span class="token function">add</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> data1<span class="token punctuation">,</span> data2<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> data1 <span class="token operator">+</span> data2
+
+    <span class="token decorator annotation punctuation">@dispatch</span><span class="token punctuation">(</span><span class="token builtin">str</span><span class="token punctuation">,</span> <span class="token builtin">str</span><span class="token punctuation">)</span>
+    <span class="token keyword">def</span> <span class="token function">add</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> data1<span class="token punctuation">,</span> data2<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> data1 <span class="token operator">+</span> data2</code></pre></div>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token keyword">def</span> <span class="token function">test_calc_valid</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    calc <span class="token operator">=</span> Calculator<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+    <span class="token comment"># 정상 케이스</span>
+    <span class="token keyword">assert</span> calc<span class="token punctuation">.</span>add<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">3</span>
+    <span class="token keyword">assert</span> calc<span class="token punctuation">.</span>add<span class="token punctuation">(</span><span class="token string">"Hello, "</span><span class="token punctuation">,</span> <span class="token string">"World!"</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token string">"Hello, World!"</span>
+
+<span class="token keyword">def</span> <span class="token function">test_calc_invalid</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    calc <span class="token operator">=</span> Calculator<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+    <span class="token comment"># 타입이 맞지 않는 경우 NotImplementedError 발생.</span>
+    <span class="token comment"># 기존 TypeError와는 달랐다는 점에 주의.</span>
+    <span class="token comment"># 다른 타입은 구현을 안해서 NotImplementedError인 것.</span>
+    <span class="token keyword">with</span> pytest<span class="token punctuation">.</span>raises<span class="token punctuation">(</span>NotImplementedError<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        calc<span class="token punctuation">.</span>add<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token string">"2"</span><span class="token punctuation">)</span>  <span class="token comment"># int + str</span>
+
+    <span class="token keyword">with</span> pytest<span class="token punctuation">.</span>raises<span class="token punctuation">(</span>NotImplementedError<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        calc<span class="token punctuation">.</span>add<span class="token punctuation">(</span><span class="token string">"1"</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span>  <span class="token comment"># str + int</span>
+
+    <span class="token keyword">with</span> pytest<span class="token punctuation">.</span>raises<span class="token punctuation">(</span>NotImplementedError<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        calc<span class="token punctuation">.</span>add<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">)</span>  <span class="token comment"># int + list</span></code></pre></div>
+<h1 id="끝으로" style="position:relative;"><a href="#%EB%81%9D%EC%9C%BC%EB%A1%9C" aria-label="끝으로 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>끝으로</h1>
+<p>정리하면 아래와 같습니다:</p>
+<p>파이썬은 덕 타이핑과 구조적 타이핑을 지원하는 언어이므로, 전통적인 오버로딩 개념이 잘 맞지 않습니다. 그러나 <code class="language-text">@singledispatch</code>, <code class="language-text">Protocol</code>, <code class="language-text">TypeVar</code> 등을 활용하면 타입 체크를 강화할 수도 있습니다.</p>
+<p>언어가 지니는 특징과 구현방안을 이해한다면 보다 그 언어가 추구하는 방향으로 코드를 짤 수 있을 것입니다.</p>
+<div class="footnotes">
+<hr>
+<ol>
+<li id="fn-1"><a href="https://en.wikipedia.org/wiki/Type_system" target="_blank" rel="nofollow noopener noreferrer">https://en.wikipedia.org/wiki/Type_system</a> 을 함께 살펴보면 더욱 좋습니다.<a href="#fnref-1" class="footnote-backref">↩</a></li>
+<li id="fn-2"><a href="https://docs.python.org/3/glossary.html#term-special-method" target="_blank" rel="nofollow noopener noreferrer">https://docs.python.org/3/glossary.html#term-special-method</a> 를 의미합니다. dunder(<em>double underscore</em>) methods, special methods, 매직 메소드(<em>magic methods</em>) 라고 부르기도 합니다.<a href="#fnref-2" class="footnote-backref">↩</a></li>
+<li id="fn-3"><a href="https://docs.python.org/3/reference/datamodel.html#special-method-names" target="_blank" rel="nofollow noopener noreferrer">https://docs.python.org/3/reference/datamodel.html#special-method-names</a> 을 참고해 주세요.<a href="#fnref-3" class="footnote-backref">↩</a></li>
+<li id="fn-4">이를 프로토콜 구현이라고 부르기도 합니다.<a href="#fnref-4" class="footnote-backref">↩</a></li>
+</ol>
+</div></div></div></div><div class="Post-module--footer--f8705"><div class="Meta-module--meta--dae0a"><p class="Meta-module--date--4d30d">Published<!-- --> <!-- -->Feb 2, 2025</p></div><div class="Tags-module--tags--18589"><ul class="Tags-module--list--82ae6"><li class="Tags-module--item--52015"><a class="Button-module--button--b1113" href="/tag/python/">python</a></li><li class="Tags-module--item--52015"><a class="Button-module--button--b1113" href="/tag/geultto/">geultto</a></li></ul></div><div class="Author-module--author--1c58d"><p class="Non scholæ sed vitæ discimus.">Non scholæ sed vitæ discimus.</p><p class="Author-module--bio--08950">his/him</p></div></div><div class="Post-module--comments--d3b99"><div></div></div></div></div></div><div id="gatsby-announcer" style="position:absolute;top:0;width:1px;height:1px;padding:0;overflow:hidden;clip:rect(0, 0, 0, 0);white-space:nowrap;border:0" aria-live="assertive" aria-atomic="true"></div></div><script id="gatsby-script-loader">/*<![CDATA[*/window.pagePath="/devlog/python/2025-02-02-python-and-overloading";window.___webpackCompilationHash="c5fb56c9f367f5c7f8e0";/*]]>*/</script><script id="gatsby-chunk-mapping">/*<![CDATA[*/window.___chunkMapping={"polyfill":["/polyfill-328fd19d4059cb67d01c.js"],"app":["/app-eb4d5137cb22ec8a2bf2.js"],"component---cache-caches-gatsby-plugin-offline-app-shell-js":["/component---cache-caches-gatsby-plugin-offline-app-shell-js-0c915c7b1bdb5eac4fdf.js"],"component---src-templates-categories-template-categories-template-tsx":["/component---src-templates-categories-template-categories-template-tsx-e2d2add397e32e3517ca.js"],"component---src-templates-category-template-category-template-tsx":["/component---src-templates-category-template-category-template-tsx-078f2adfba160a34229f.js"],"component---src-templates-index-template-index-template-tsx":["/component---src-templates-index-template-index-template-tsx-83380c7954c9f6621026.js"],"component---src-templates-not-found-template-not-found-template-tsx":["/component---src-templates-not-found-template-not-found-template-tsx-56fe4d3b015459d56c99.js"],"component---src-templates-page-template-page-template-tsx":["/component---src-templates-page-template-page-template-tsx-c6c21d7369a9356db3a1.js"],"component---src-templates-post-template-post-template-tsx":["/component---src-templates-post-template-post-template-tsx-119cd0258cb38628d01f.js"],"component---src-templates-tag-template-tag-template-tsx":["/component---src-templates-tag-template-tag-template-tsx-8d0b3090e775aa3c4584.js"],"component---src-templates-tags-template-tags-template-tsx":["/component---src-templates-tags-template-tags-template-tsx-30027e87af7d042f3afb.js"]};/*]]>*/</script><script src="/polyfill-328fd19d4059cb67d01c.js" nomodule=""></script><script src="/app-eb4d5137cb22ec8a2bf2.js" async=""></script><script src="/framework-481a1b6416c14416b2fb.js" async=""></script><script src="/webpack-runtime-de5a94456c9c32f6cdb9.js" async=""></script></body></html>
