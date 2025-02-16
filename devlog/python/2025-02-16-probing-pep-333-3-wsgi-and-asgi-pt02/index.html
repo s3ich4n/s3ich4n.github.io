@@ -1,0 +1,734 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="ie=edge"/><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/><meta name="generator" content="Gatsby 4.25.4"/><meta name="description" content="PEP 시리즈 - PEP 333, PEP 3333 을 탐구합니다. 이번 글에서는 ASGI 구현체에 대해 살펴봅니다." data-gatsby-head="true"/><meta name="twitter:card" content="summary_large_image" data-gatsby-head="true"/><meta name="twitter:title" content="PEP 공부해보기 - PEP 333, PEP 3333에 대하여 (2) - 팔공산 창고" data-gatsby-head="true"/><meta name="twitter:description" content="PEP 시리즈 - PEP 333, PEP 3333 을 탐구합니다. 이번 글에서는 ASGI 구현체에 대해 살펴봅니다." data-gatsby-head="true"/><meta name="og:title" content="PEP 공부해보기 - PEP 333, PEP 3333에 대하여 (2) - 팔공산 창고" data-gatsby-head="true"/><meta name="og:type" content="website" data-gatsby-head="true"/><meta name="og:description" content="PEP 시리즈 - PEP 333, PEP 3333 을 탐구합니다. 이번 글에서는 ASGI 구현체에 대해 살펴봅니다." data-gatsby-head="true"/><meta name="image" content="https://blog.s3ich4n.me[object Object]" data-gatsby-head="true"/><meta name="og:image" content="https://blog.s3ich4n.me[object Object]" data-gatsby-head="true"/><meta name="twitter:image" content="https://blog.s3ich4n.me[object Object]" data-gatsby-head="true"/><meta name="theme-color" content="hsl(31, 92%, 62%)"/><style data-href="/styles.1fbe3e33e3d898c35e17.css" data-identity="gatsby-global-css">:after,:before,:root{--color-white:#fff;--color-primary:#5c92ff;--color-secondary:#f7a145;--color-prism-background:#eaeaeb;--color-typographic-base-font:#242933;--color-typographic-link-p-font:#5c92ff;--color-typographic-link-s-font:#f7a145;--color-page-border:#eaeaeb;--color-page-background:#fff;--color-sidebar-border:#eaeaeb;--color-sidebar-border-fade:#fff;--color-contacts-border:#eaeaeb;--color-button-border:#eaeaeb;--color-button-color:#242933;--color-theme-switcher:#3f485a;--color-theme-switcher-hover:#5c92ff}.dark :after,.dark :before,:root.dark{--color-white:#fff;--color-primary:#5c92ff;--color-secondary:#f7a145;--color-prism-background:#191d24;--color-typographic-base-font:#fff;--color-typographic-link-p-font:#5c92ff;--color-typographic-link-s-font:#f7a145;--color-page-border:#3f485a;--color-page-background:#242933;--color-sidebar-border:#3f485a;--color-sidebar-border-fade:#242933;--color-contacts-border:#3f485a;--color-button-border:#3f485a;--color-button-color:#fff;--color-theme-switcher:#eaeaeb;--color-theme-switcher-hover:#5c92ff}html{font-size:100}body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;background:var(--color-page-background);color:var(--color-typographic-base-font);font-size:16px;line-height:1.625;margin:0 0 0 calc(100vw - 100%);text-rendering:optimizelegibility}body,h1,h2,h3,h4,h5,h6{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif}h1,h2,h3,h4,h5,h6{font-weight:600}h1{font-size:40px;line-height:52px;margin-bottom:26px;margin-top:104px}h2{font-size:27px;line-height:39px}h2,h3{margin-bottom:13px;margin-top:52px}h3{font-size:22px;line-height:26px}h4{font-size:19.2px;margin-top:39px}h4,h5{line-height:26px;margin-bottom:13px}h5,h6{font-size:16px;margin-top:65px}h6{line-height:26px;margin-bottom:13px}img{max-width:100%}hr,img{border:0;display:block}hr{background-image:linear-gradient(180deg,transparent 1px,transparent 11px,#242933 0,#242933 15px,transparent 0,transparent 26px);background-size:100% 26px;color:var(--color-typographic-base-font);height:26px;margin:52px auto;width:100px}a{color:var(--color-typographic-link-p-font);text-decoration:none}a:active,a:focus,a:hover{color:var(--color-typographic-link-s-font)}b,strong{font-weight:600}ul{list-style:square;margin-bottom:26px}ul li{margin-bottom:10px;padding:0 5px}p{line-height:26px;margin-bottom:26px}blockquote{font-style:italic;padding:0;text-align:center}figure{display:block;height:auto;width:100%}figcaption{color:var(--color-typographic-base-font);font-size:14px;font-style:italic;line-height:19.5px;margin-bottom:0;margin-top:6.5px;text-align:center}@media screen and (min-width:685px){figure.float-left,figure.float-right{max-width:310px;padding:0 26px}.float-right{float:right}.float-left{float:left}}code[class*=language-],pre[class*=language-]{word-wrap:normal;color:#657b83;font-family:Consolas,Monaco,Andale Mono,Ubuntu Mono,monospace;font-size:1em;-webkit-hyphens:none;hyphens:none;line-height:1.5;-o-tab-size:4;tab-size:4;text-align:left;white-space:pre;word-break:normal;word-spacing:normal}pre[class*=language-]{border-radius:.3em;margin:.5em 0;overflow:auto;padding:1em}:not(pre)>code[class*=language-],pre[class*=language-]{background-color:var(--color-prism-background)}:not(pre)>code[class*=language-]{border-radius:.3em;padding:.1em}code[class*=language-] ::selection,code[class*=language-]::selection,pre[class*=language-] ::selection,pre[class*=language-]::selection{background:#073642}.token.cdata,.token.comment,.token.doctype,.token.prolog{color:#93a1a1}.token.punctuation{color:#586e75}.namespace{opacity:.7}.token.boolean,.token.constant,.token.deleted,.token.number,.token.property,.token.symbol,.token.tag{color:#268bd2}.token.attr-name,.token.builtin,.token.char,.token.inserted,.token.selector,.token.string,.token.url{color:#2aa198}.token.entity{background:#eee8d5;color:#657b83;cursor:help}.token.atrule,.token.attr-value,.token.keyword{color:#859900}.token.class-name,.token.function{color:#b58900}.token.important,.token.regex,.token.variable{color:#cb4b16}.token.bold,.token.important{font-weight:700}.token.italic{font-style:italic}.Feed-module--feed--a6204 .Feed-module--item--c7a63{margin-bottom:32.5px}.Feed-module--feed--a6204 .Feed-module--item--c7a63:last-child{margin-bottom:13px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f{font-size:27px;line-height:39px;margin-bottom:13px;margin-top:0}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f .Feed-module--link--6123b{color:var(--color-typographic-base-font)}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f .Feed-module--link--6123b:focus,.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--title--f252f .Feed-module--link--6123b:hover{border-bottom:1px solid #242933;color:var(--color-typographic-base-font)}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--description--57348{font-size:16px;line-height:26px;margin-bottom:19.5px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--time--72864{color:var(--color-typographic-base-font);font-size:14px;font-weight:600;text-transform:uppercase}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--divider--81a18{margin:0 13px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--category--59f58 .Feed-module--link--6123b{color:var(--color-secondary);font-size:14px;font-weight:600;text-transform:uppercase}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--category--59f58 .Feed-module--link--6123b:focus,.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--meta--250c2 .Feed-module--category--59f58 .Feed-module--link--6123b:hover{color:#5c92ff}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--more--51a4e{color:var(--color-primary);font-size:16px}.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--more--51a4e:focus,.Feed-module--feed--a6204 .Feed-module--item--c7a63 .Feed-module--more--51a4e:hover{border-bottom:1px solid #5c92ff;color:var(--color-primary)}.Layout-module--layout--2c933{margin-left:auto;margin-right:auto;max-width:1070px}.Layout-module--layout--2c933:before{content:"";display:table}.Layout-module--layout--2c933:after{clear:both;content:"";display:table}.Page-module--page--24e03{margin-bottom:52px}.Page-module--page--24e03 .Page-module--inner--4b31d{padding:26px 19.5px 0}.Page-module--page--24e03 .Page-module--title--90338{font-size:40px;font-weight:600;line-height:52px;margin-bottom:37.7px;margin-top:0}.Page-module--page--24e03 .Page-module--body--561c4{font-size:16px;line-height:26px;margin:0 0 26px}@media screen and (min-width:685px){.Page-module--page--24e03{width:calc(58.275% - 12.5px)}.Page-module--page--24e03:nth-child(1n){clear:none;float:left;margin-right:30px}.Page-module--page--24e03:last-child{margin-right:0}.Page-module--page--24e03:nth-child(12n){float:right;margin-right:0}.Page-module--page--24e03:nth-child(12n+1){clear:both}.Page-module--page--24e03 .Page-module--inner--4b31d{padding:32.5px 19.5px 0}}@media screen and (min-width:960px){.Page-module--page--24e03{width:calc(66.6% - 10px)}.Page-module--page--24e03:nth-child(1n){clear:none;float:left;margin-right:30px}.Page-module--page--24e03:last-child{margin-right:0}.Page-module--page--24e03:nth-child(3n){float:right;margin-right:0}.Page-module--page--24e03:nth-child(3n+1){clear:both}.Page-module--page--24e03 .Page-module--inner--4b31d{padding:39px 26px 0}}.Pagination-module--pagination--d61cb{display:flex;margin-top:52px}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b{text-align:left;width:50%}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d{color:var(--color-secondary);font-size:26px;font-weight:700}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d:focus,.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d:hover{color:var(--color-primary)}.Pagination-module--pagination--d61cb .Pagination-module--previous--4a76b .Pagination-module--previousLink--5590d.Pagination-module--disable--7e105{color:#3f485a;pointer-events:none}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8{text-align:right;width:50%}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff{color:var(--color-secondary);font-size:26px;font-weight:700}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff:focus,.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff:hover{color:var(--color-primary)}.Pagination-module--pagination--d61cb .Pagination-module--next--1cab8 .Pagination-module--nextLink--532ff.Pagination-module--disable--7e105{color:#3f485a;pointer-events:none}.Button-module--button--b1113{border:1px solid var(--color-button-border);border-radius:20px;color:var(--color-button-color);display:inline-block;font-size:16px;font-weight:400;height:40px;line-height:40px;margin-left:auto;margin-right:auto;padding:0 26px;text-align:center;text-decoration:none}.Button-module--button--b1113:focus,.Button-module--button--b1113:hover{color:#5c92ff}.ThemeSwitcher-module--themeSwitcher--8a77f{--color:var(--color-theme-switcher)}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--button--7cb7b{align-items:center;background:transparent;border:0;cursor:pointer;display:flex;justify-content:center;outline:0}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--button--7cb7b svg{stroke:var(--color);pointer-events:none;transition:stroke .4s}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--button--7cb7b:hover{--color:var(--color-theme-switcher-hover)}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--moon--10537{stroke-dasharray:0 1px;opacity:0;transition:stroke-dasharray .2s ease-in,opacity .4s ease-in}.ThemeSwitcher-module--themeSwitcher--8a77f .ThemeSwitcher-module--sun--2163a{stroke-dasharray:1px 1px;opacity:1;transition:stroke-dasharray .2s ease-in,opacity .4s ease-in}.ThemeSwitcher-module--themeSwitcher--8a77f.ThemeSwitcher-module--dark--6db0c .ThemeSwitcher-module--moon--10537{stroke-dasharray:1px 1px;opacity:1}.ThemeSwitcher-module--themeSwitcher--8a77f.ThemeSwitcher-module--dark--6db0c .ThemeSwitcher-module--sun--2163a{stroke-dasharray:0 1px;opacity:0}.Author-module--author--cbd31 .Author-module--photo--9787b{background-clip:padding-box;border-radius:50%;display:inline-block;height:75px;margin-bottom:0;width:75px}.Author-module--author--cbd31 .Author-module--photo--9787b img{border-radius:50%}.Author-module--author--cbd31 .Author-module--title--cf7e5{font-size:18px;font-weight:600;line-height:29.25px;margin:0}.Author-module--author--cbd31 .Author-module--title--cf7e5 .Author-module--link--09c17,.Author-module--author--cbd31 .Author-module--title--cf7e5 .Author-module--link--09c17:focus,.Author-module--author--cbd31 .Author-module--title--cf7e5 .Author-module--link--09c17:hover{color:var(--color-typographic-base-font)}.Author-module--author--cbd31 .Author-module--bio--8168d,.Author-module--author--cbd31 .Author-module--subtitle--86ec5{color:#7f8ba4;line-height:26px;margin-bottom:26px}.Author-module--author--cbd31 .Author-module--titleContainer--4f576{align-items:center;display:flex;justify-content:space-between;margin:13px 0}.Categories-module--categories--f3389{color:#7f8ba4;font-size:14px}.Icon-module--icon--1d7da{fill:currentcolor;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;speak:none;stroke:currentcolor;stroke-width:0;display:inline-block;font-style:normal;font-variant:normal;font-weight:400;height:1em;line-height:1em;text-align:center;text-transform:none;width:1em}.Contacts-module--contacts--09178{margin-bottom:26px}.Contacts-module--contacts--09178 .Contacts-module--list--9670b{display:flex;flex-flow:row wrap;flex-grow:0;flex-shrink:0;list-style:none;margin:13px 0;max-width:165px;padding:0}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0{align-content:center;align-items:center;border:1px solid var(--color-contacts-border);border-radius:50%;display:flex;height:40px;justify-content:center;line-height:40px;margin:6.5px;padding:0;text-align:center;width:40px}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0:nth-child(3n+1){margin-left:0}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0 .Contacts-module--link--de1e0{border:0;color:var(--color-typographic-base-font);display:flex}.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0 .Contacts-module--link--de1e0:focus,.Contacts-module--contacts--09178 .Contacts-module--list--9670b .Contacts-module--item--f9cb0 .Contacts-module--link--de1e0:hover{color:var(--color-typographic-link-p-font)}.Copyright-module--copyright--2c602{color:#7f8ba4;font-size:14px}.Menu-module--menu--113a9{margin-bottom:26px}.Menu-module--menu--113a9 .Menu-module--list--e1ae3{list-style:none;margin:0;padding:0}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679{margin:13px 0;padding:0}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02{border:0;color:var(--color-typographic-base-font);font-size:16px;font-weight:400}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02:focus,.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02:hover{border-bottom:1px solid #5c92ff;color:#5c92ff}.Menu-module--menu--113a9 .Menu-module--list--e1ae3 .Menu-module--item--8b679 .Menu-module--link--a6f02.Menu-module--active--6cb74{border-bottom:1px solid var(--color-typographic-base-font);color:var(--color-typographic-base-font)}.Tags-module--tags--28a57{color:#7f8ba4;font-size:14px}.Sidebar-module--sidebar--1bfa1{width:100%}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0{padding:26px 19.5px 0;position:relative}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0:after{background:var(--color-sidebar-border);background:linear-gradient(to bottom,var(--color-sidebar-border) 0,var(--color-sidebar-border) 48%,var(--color-sidebar-border-fade) 100%)}@media screen and (min-width:685px){.Sidebar-module--sidebar--1bfa1{width:calc(41.625% - 17.5px)}.Sidebar-module--sidebar--1bfa1:nth-child(1n){clear:none;float:left;margin-right:30px}.Sidebar-module--sidebar--1bfa1:last-child{margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(12n){float:right;margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(12n+1){clear:both}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0{padding:32.5px 19.5px 0}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0:after{bottom:0;content:"";height:540px;position:absolute;right:-10px;top:30px;width:1px}}@media screen and (min-width:960px){.Sidebar-module--sidebar--1bfa1{width:calc(33.3% - 20px)}.Sidebar-module--sidebar--1bfa1:nth-child(1n){clear:none;float:left;margin-right:30px}.Sidebar-module--sidebar--1bfa1:last-child{margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(3n){float:right;margin-right:0}.Sidebar-module--sidebar--1bfa1:nth-child(3n+1){clear:both}.Sidebar-module--sidebar--1bfa1 .Sidebar-module--inner--344d0{padding:39px}}.Author-module--author--1c58d{border-top:1px solid var(--color-page-border);line-height:26px;margin-bottom:52px;margin-top:26px;max-width:920px;padding-top:26px}.Author-module--author--1c58d .Author-module--bio--08950 .Author-module--twitter--90647{display:block;text-decoration:underline}.Author-module--author--1c58d .Author-module--bio--08950 .Author-module--twitter--90647:focus,.Author-module--author--1c58d .Author-module--bio--08950 .Author-module--twitter--90647:hover{color:var(--color-typographic-link-s-font)}@media screen and (min-width:685px){.Author-module--author--1c58d{margin-left:auto;margin-right:auto}}.Content-module--content--80d58{margin:0 auto;max-width:1070px;padding:0 13px}.Content-module--content--80d58 .Content-module--title--09504{font-size:32px;font-weight:600;line-height:42.9px;margin:26px auto 0;max-width:920px;text-align:center}.Content-module--content--80d58 .Content-module--body--726c2 figure{margin-bottom:26px}.Content-module--content--80d58 .Content-module--body--726c2 figure blockquote{font-style:italic;margin-top:0;padding:26px 0;text-align:center}.Content-module--content--80d58 .Content-module--body--726c2 figure blockquote p{font-size:26.9072px;line-height:39px;margin-bottom:26px;margin-top:0;max-width:920px}.Content-module--content--80d58 .Content-module--body--726c2 a{text-decoration:underline}.Content-module--content--80d58 .Content-module--body--726c2 *{margin-left:auto;margin-right:auto;max-width:920px}.Content-module--content--80d58 .Content-module--body--726c2 h2>a{visibility:hidden}.Content-module--content--80d58 .Content-module--body--726c2 h2>a>svg{fill:var(--color-typographic-base-font)}.Content-module--content--80d58 .Content-module--body--726c2 img{max-width:100%}@media screen and (min-width:960px){.Content-module--content--80d58{padding:0}.Content-module--content--80d58 .Content-module--title--09504{font-size:48px;line-height:58.5px;margin-bottom:39px;margin-top:58.5px}.Content-module--content--80d58 .Content-module--body--726c2,.Content-module--content--80d58 .Content-module--body--726c2 p{font-size:18px;line-height:29.25px;margin-bottom:29.25px}.Content-module--content--80d58 .Content-module--body--726c2 h2>a{padding-right:13px;visibility:unset}}.Meta-module--meta--dae0a .Meta-module--date--4d30d{font-style:italic}.Tags-module--tags--18589{margin-bottom:13px}.Tags-module--tags--18589 .Tags-module--list--82ae6{list-style:none;padding:0}.Tags-module--tags--18589 .Tags-module--list--82ae6 .Tags-module--item--52015{display:inline-block;margin:6.5px 0}@media screen and (min-width:685px){.Tags-module--tags--18589 .Tags-module--list--82ae6 .Tags-module--item--52015:first-child{margin-left:0;padding-left:0}}.Post-module--post--3a994 .Post-module--content--3c6e5{margin:0 auto}.Post-module--post--3a994 .Post-module--comments--d3b99,.Post-module--post--3a994 .Post-module--footer--f8705{margin:0 auto;max-width:920px;padding:0 13px}.Post-module--post--3a994 .Post-module--buttons--2972d{align-items:center;display:flex;justify-content:center;margin:26px 0 0;text-align:center}.Post-module--post--3a994 .Post-module--buttons--2972d .Post-module--buttonArticles--d793a{margin:0 13px 0 0}@media screen and (min-width:960px){.Post-module--post--3a994 .Post-module--comments--d3b99,.Post-module--post--3a994 .Post-module--footer--f8705{padding:0}.Post-module--post--3a994 .Post-module--buttons--2972d{left:30px;margin:0 13px 0 0;max-width:none;position:fixed;top:30px}}</style><title data-gatsby-head="true">PEP 공부해보기 - PEP 333, PEP 3333에 대하여 (2) - 팔공산 창고</title><link rel="alternate" type="application/rss+xml" title="팔공산 창고" href="/rss.xml"/><style type="text/css">
+    .anchor.before {
+      position: absolute;
+      top: 0;
+      left: 0;
+      transform: translateX(-100%);
+      padding-right: 4px;
+    }
+    .anchor.after {
+      display: inline-block;
+      padding-left: 4px;
+    }
+    h1 .anchor svg,
+    h2 .anchor svg,
+    h3 .anchor svg,
+    h4 .anchor svg,
+    h5 .anchor svg,
+    h6 .anchor svg {
+      visibility: hidden;
+    }
+    h1:hover .anchor svg,
+    h2:hover .anchor svg,
+    h3:hover .anchor svg,
+    h4:hover .anchor svg,
+    h5:hover .anchor svg,
+    h6:hover .anchor svg,
+    h1 .anchor:focus svg,
+    h2 .anchor:focus svg,
+    h3 .anchor:focus svg,
+    h4 .anchor:focus svg,
+    h5 .anchor:focus svg,
+    h6 .anchor:focus svg {
+      visibility: visible;
+    }
+  </style><script>
+    document.addEventListener("DOMContentLoaded", function(event) {
+      var hash = window.decodeURI(location.hash.replace('#', ''))
+      if (hash !== '') {
+        var element = document.getElementById(hash)
+        if (element) {
+          var scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+          var clientTop = document.documentElement.clientTop || document.body.clientTop || 0
+          var offset = element.getBoundingClientRect().top + scrollTop - clientTop
+          // Wait for the browser to finish rendering before scrolling.
+          setTimeout((function() {
+            window.scrollTo(0, offset - 0)
+          }), 0)
+        }
+      }
+    })
+  </script><link rel="preconnect" href="https://www.googletagmanager.com"/><link rel="dns-prefetch" href="https://www.googletagmanager.com"/><script async="" src="https://www.googletagmanager.com/gtag/js?id="></script><script>
+      
+      
+      if(true) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){window.dataLayer && window.dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', '', {"send_page_view":false});
+      }
+      </script><link rel="sitemap" type="application/xml" href="/sitemap/sitemap-index.xml"/><link rel="icon" href="/favicon-32x32.png?v=4c2c993a06ee0fd0ee953020b09128a9" type="image/png"/><link rel="manifest" href="/manifest.webmanifest" crossorigin="anonymous"/><link rel="apple-touch-icon" sizes="48x48" href="/icons/icon-48x48.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="72x72" href="/icons/icon-72x72.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="96x96" href="/icons/icon-96x96.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="144x144" href="/icons/icon-144x144.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192x192.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="256x256" href="/icons/icon-256x256.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="384x384" href="/icons/icon-384x384.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><link rel="apple-touch-icon" sizes="512x512" href="/icons/icon-512x512.png?v=4c2c993a06ee0fd0ee953020b09128a9"/><style>.gatsby-image-wrapper{position:relative;overflow:hidden}.gatsby-image-wrapper picture.object-fit-polyfill{position:static!important}.gatsby-image-wrapper img{bottom:0;height:100%;left:0;margin:0;max-width:none;padding:0;position:absolute;right:0;top:0;width:100%;object-fit:cover}.gatsby-image-wrapper [data-main-image]{opacity:0;transform:translateZ(0);transition:opacity .25s linear;will-change:opacity}.gatsby-image-wrapper-constrained{display:inline-block;vertical-align:top}</style><noscript><style>.gatsby-image-wrapper noscript [data-main-image]{opacity:1!important}.gatsby-image-wrapper [data-placeholder-image]{opacity:0!important}</style></noscript><script type="module">const e="undefined"!=typeof HTMLImageElement&&"loading"in HTMLImageElement.prototype;e&&document.body.addEventListener("load",(function(e){const t=e.target;if(void 0===t.dataset.mainImage)return;if(void 0===t.dataset.gatsbyImageSsr)return;let a=null,n=t;for(;null===a&&n;)void 0!==n.parentNode.dataset.gatsbyImageWrapper&&(a=n.parentNode),n=n.parentNode;const o=a.querySelector("[data-placeholder-image]"),r=new Image;r.src=t.currentSrc,r.decode().catch((()=>{})).then((()=>{t.style.opacity=1,o&&(o.style.opacity=0,o.style.transition="opacity 500ms linear")}))}),!0);</script></head><body><script>
+          void function() {
+            var cachedMode;
+
+            try {
+              var preferredTheme = JSON.parse(localStorage.getItem('diesel:theme-atom'));
+
+              if (preferredTheme && preferredTheme.mode) {
+                cachedMode = preferredTheme.mode;
+              }
+            } catch (err) { }
+
+            function setTheme(newTheme) {
+              document.documentElement.className = newTheme;
+            }
+
+            var darkQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+            setTheme(cachedMode || (darkQuery.matches ? 'dark' : 'light'));
+          }()
+        </script><div id="___gatsby"><div style="outline:none" tabindex="-1" id="gatsby-focus-wrapper"><div class="Layout-module--layout--2c933"><div class="Post-module--post--3a994"><div class="Post-module--buttons--2972d"><a class="Button-module--button--b1113 Post-module--buttonArticles--d793a" href="/">All Articles</a></div><div class="Post-module--content--3c6e5"><div class="Content-module--content--80d58"><h1 class="Content-module--title--09504">PEP 공부해보기 - PEP 333, PEP 3333에 대하여 (2)</h1><div class="Content-module--body--726c2"><h1 id="들어가며" style="position:relative;"><a href="#%EB%93%A4%EC%96%B4%EA%B0%80%EB%A9%B0" aria-label="들어가며 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>들어가며</h1>
+<p>지난 글에서 살펴보았던 WSGI의 간단한 구현체 작성에 이어 이번에는 ASGI 스펙을 읽고, 어떤 점과 차이가 있는지 살펴봅니다. 그리고 어떤 부분에서 다른지 추가로 구현해봅니다.</p>
+<h1 id="제한사항" style="position:relative;"><a href="#%EC%A0%9C%ED%95%9C%EC%82%AC%ED%95%AD" aria-label="제한사항 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>제한사항</h1>
+<p>이 글에서는 이벤트 루프를 다루지 않습니다. 그저 이벤트 루프를 쓴다 정도에만 한정하고, ASGI의 구현에 집중합니다.</p>
+<p>이벤트 루프에 대해서는 아래 글과 영상을 참고해주세요:</p>
+<ul>
+<li><a href="https://docs.python.org/ko/3.13/library/asyncio-eventloop.html" target="_blank" rel="nofollow noopener noreferrer">Python 공식 문서 - 이벤트 루프</a></li>
+<li><a href="https://ks1171-park.tistory.com/81" target="_blank" rel="nofollow noopener noreferrer">블로그 - [ python ] event loop (1)</a></li>
+<li><a href="https://www.youtube.com/watch?v=8I9Rc2Zaos4" target="_blank" rel="nofollow noopener noreferrer">YouTube -  Talks - Arthur Pastel: Demystifying AsyncIO: Building Your Own Event Loop in Python </a></li>
+</ul>
+<h1 id="asgi란" style="position:relative;"><a href="#asgi%EB%9E%80" aria-label="asgi란 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>ASGI란?</h1>
+<p>ASGI는 네트워크 프로토콜 서버(특히 웹 서버)와 Python 애플리케이션 간의 표준 인터페이스 확장입니다. WSGI는 HTTP 프로토콜만을 다루었지만 HTTP, HTTP/2, WebSocket을 포함한 여러 일반적인 프로토콜 스타일을 비동기 스타일로 처리할 수 있도록 하기 위한 확장(<em>superset</em>)입니다.</p>
+<p>ASGI는 기존의 동기처리와 새로운 비동기 처리를 모두 지원합니다. WSGI에서 동기 처리를 위헤 Callable 객체를 주고받았던 것 처럼, ASGI는 비동기 호출 모델로 구성되어 있습니다. 파이썬으로 작성된 비동기 처리 웹 앱과 웹 서버 간의 통신규약이라는 뜻이지요.</p>
+<p>그리고 ASGI는 다양한 구현체들이 있습니다. 유명한 구현체로는 <a href="https://www.uvicorn.org/" target="_blank" rel="nofollow noopener noreferrer">uvicorn</a>, <a href="https://github.com/pgjones/hypercorn/" target="_blank" rel="nofollow noopener noreferrer">hypercorn</a>, <a href="https://github.com/django/daphne" target="_blank" rel="nofollow noopener noreferrer">daphne</a> 가 있습니다. ASGI 공식 스펙에 필요한 주요 도구를 지속 개발중인 리포지토리도 알아주시면 좋습니다(<a href="https://github.com/django/asgiref" target="_blank" rel="nofollow noopener noreferrer">asgiref</a>)<sup id="fnref-1"><a href="#fn-1" class="footnote-ref">1</a></sup>.</p>
+<p>놀랍게도 앞선 글에서 언급한 WSGI는 PEP 표준이지만, ASGI는 PEP 표준은 아닙니다. 비동기 처리 대응용 확장 정도로 살펴보면 되겠네요.</p>
+<h1 id="asgi-소개" style="position:relative;"><a href="#asgi-%EC%86%8C%EA%B0%9C" aria-label="asgi 소개 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>ASGI 소개</h1>
+<h2 id="wsgi-처리의-한계점" style="position:relative;"><a href="#wsgi-%EC%B2%98%EB%A6%AC%EC%9D%98-%ED%95%9C%EA%B3%84%EC%A0%90" aria-label="wsgi 처리의 한계점 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>WSGI 처리의 한계점?</h2>
+<p>우선 WSGI는 살펴보았다시피 단일 콜러블 인터페이스로 구성됩니다. 이런 인터페이스는 단독 요청-응답에 맞게 설계되어있다보니 롱 폴링이 필요한 WebSocket 같은 웹 프로토콜에는 적합하지 않지요. 이런 프로토콜은 연결이 오래 지속되고 여러 이벤트가 발생합니다.</p>
+<p>따라서 단순히 비동기 처리를 하도록 바꾸기에는 어려우므로 WSGI를 바탕으로 한 새 설계가 시작된 것입니다.</p>
+<h2 id="asgi의-설계-기초" style="position:relative;"><a href="#asgi%EC%9D%98-%EC%84%A4%EA%B3%84-%EA%B8%B0%EC%B4%88" aria-label="asgi의 설계 기초 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>ASGI의 설계 기초</h2>
+<p>ASGI도 WSGI와 비슷하지만, <em>단일 비동기 콜러블</em> 인터페이스로 설계되었습니다. 이 메소드는 <code class="language-text">scope</code>, <code class="language-text">send</code>, <code class="language-text">receive</code>를 각각 가집니다. 아래에서 설명하겠습니다:</p>
+<ul>
+<li><code class="language-text">scope</code>: 딕셔너리 - 현재 커넥션 관련 상세정보를 저장함</li>
+<li><code class="language-text">send</code>: 비동기 콜러블 - 애플리케이션이 이벤트 메시지를 클라이언트에 전송해줌</li>
+<li><code class="language-text">receive</code>: 비동기 콜러블 - 애플리케이션이 클라이언트로부터 메시지를 받게 해줌</li>
+</ul>
+<p>이런 구조는 들어오고 나가는 이벤트를 각 애플리케이션 마다 처리할 수 있슬 뿐 아니라 백그라운드 코루틴을 허용하여 애플리케이션이 다른 작업을 수행할 수 있도록 합니다. 예를 들어 Redie queue를 통한 외부 트리거 리스닝 등이 있어요.</p>
+<p>예시를 보면 어떻게 되어있나 봅시다:</p>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token keyword">async</span> <span class="token keyword">def</span> <span class="token function">application</span><span class="token punctuation">(</span>scope<span class="token punctuation">,</span> receive<span class="token punctuation">,</span> send<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    event <span class="token operator">=</span> <span class="token keyword">await</span> receive<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+    <span class="token keyword">await</span> send<span class="token punctuation">(</span><span class="token punctuation">{</span><span class="token string">"type"</span><span class="token punctuation">:</span> <span class="token string">"websocket.send"</span><span class="token punctuation">,</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">}</span><span class="token punctuation">)</span></code></pre></div>
+<p><code class="language-text">send</code> 하고 <code class="language-text">receive</code> 하는 모든 이벤트는 사전에 정의된(<em>predefined</em>) <code class="language-text">dict</code> 타입입니다. 이렇게 되면 필요할 때 애플리케이션을 서버 간 교체를 할 수 있습니다. 다른 ASGI서버를 쓰더라도 잘 실행할 수 있다는 뜻이지요.</p>
+<p>모든 이벤트는 <code class="language-text">type</code> 이라는 값을 가집니다. 이 값을 통해 이벤트의 구조를 추론할 수 있지요. HTTP 프로토콜인지, WebSocket 프로토콜인지, 후술할 lifespan 프로토콜인지 설명해줍니다.</p>
+<p>이벤트는 이런 규칙을 가집니다:</p>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token punctuation">{</span>
+    <span class="token string">"type"</span><span class="token punctuation">:</span> <span class="token string">"http.request"</span><span class="token punctuation">,</span>        <span class="token comment"># HTTP 요청임을 나타내는 타입</span>
+    <span class="token string">"body"</span><span class="token punctuation">:</span> <span class="token string">b"Hello World"</span><span class="token punctuation">,</span>        <span class="token comment"># 요청 본문 (바이트 형식)</span>
+    <span class="token string">"more_body"</span><span class="token punctuation">:</span> <span class="token boolean">False</span><span class="token punctuation">,</span>            <span class="token comment"># 추가 본문이 없음을 표시</span>
+<span class="token punctuation">}</span></code></pre></div>
+<p>만일 웹소켓 이벤트라면:</p>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token punctuation">{</span>
+    <span class="token string">"type"</span><span class="token punctuation">:</span> <span class="token string">"websocket.send"</span><span class="token punctuation">,</span>      <span class="token comment"># WebSocket 메시지 전송을 나타내는 타입</span>
+    <span class="token string">"text"</span><span class="token punctuation">:</span> <span class="token string">"Hello world!"</span><span class="token punctuation">,</span>        <span class="token comment"># 전송할 텍스트 메시지</span>
+<span class="token punctuation">}</span></code></pre></div>
+<p>lifespan 프로토콜은 ASGI 애플리케이션의 수명주기를 관리합니다. 서버 시작/종료시점에 필요한 행위를 처리하는 이벤트임을 말해주는 것이죠.</p>
+<h2 id="wsgi-호환" style="position:relative;"><a href="#wsgi-%ED%98%B8%ED%99%98" aria-label="wsgi 호환 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>WSGI 호환</h2>
+<p>ASGI는 설계부터 WSGI의 superset으로 고려되었습니다. 따라서 WSGI 앱이 ASGI 앱 내에서도 작동되도록 하는 전환 wrapper가 따로 존재합니다(<code class="language-text">asgiref</code> 라이브러리에서 제공됩니다). 정확히는 스레드풀이 동기 WSGI 앱을 async event loop와 별개로 쓰이는 형식입니다(<code class="language-text">WsgiToAsgi</code> 를 참고하세요).</p>
+<h1 id="asgi-스펙-상세보기" style="position:relative;"><a href="#asgi-%EC%8A%A4%ED%8E%99-%EC%83%81%EC%84%B8%EB%B3%B4%EA%B8%B0" aria-label="asgi 스펙 상세보기 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>ASGI 스펙 상세보기</h1>
+<p>이제부터 본격적인 ASGI의 구성을 살펴봅시다.</p>
+<h2 id="구성요소와-하는-일" style="position:relative;"><a href="#%EA%B5%AC%EC%84%B1%EC%9A%94%EC%86%8C%EC%99%80-%ED%95%98%EB%8A%94-%EC%9D%BC" aria-label="구성요소와 하는 일 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>구성요소와 하는 일</h2>
+<p>ASGI는 크게 두 가지 구성요소를 가집니다:</p>
+<ol>
+<li>프로토콜 서버
+<ul>
+<li>소켓 연결을 관리하고, 이를 연결과 연결 별 이벤트 메시지로 변환</li>
+<li>비동기 이벤트 루프 관리</li>
+</ul>
+</li>
+<li>애플리케이션
+<ul>
+<li>프로토콜 서버 내부에 존재하며, 각 연결당 한 번씩 호출됨</li>
+<li>이벤트 메시지가 발생할 때마다 처리하고, 필요할 때 자체 이벤트 메시지를 전송</li>
+<li>메인 스레드에서 실행되며, 필요시 동기 코드를 위한 별도 스레드/프로세스 사용 가능</li>
+</ul>
+</li>
+</ol>
+<p>구조는 WSGI와 유사하지만, 애플리케이션은 비동기 Callable 객체임에 유의합니다. 데이터 처리는 단일 입력 스트림 대신 비동기 이벤트 메시지를 통해 이루어집니다. 그러므로 ASGI 애플리케이션은 <code class="language-text">async</code>/<code class="language-text">await</code> 호환 코루틴(i.e., <code class="language-text">asyncio</code> 호환)으로 실행되어야 합니다.</p>
+<p>ASGI 연결은 다음 두 가지 주요 부분으로 구성됩니다:</p>
+<ol>
+<li>연결 <code class="language-text">scope</code>
+<ul>
+<li>사용자와의 프로토콜 연결을 나타내는 정보</li>
+<li>연결이 종료될 때까지 유지됨</li>
+</ul>
+</li>
+<li>이벤트 처리
+<ul>
+<li>receive: 연결에서 발생하는 이벤트를 애플리케이션이 수신</li>
+<li>send: 애플리케이션이 서버로 응답을 전송(클라이언트에게 전달될 데이터 포함)</li>
+<li>두 가지 모두 awaitable callable로 구현</li>
+</ul>
+</li>
+</ol>
+<p>각 애플리케이션 호출은 하나의 연결에 매핑되며, 해당 연결의 수명과 정리 작업이 완료될 때까지 유지됩니다.</p>
+<h1 id="asgi-예시코드-짜보기" style="position:relative;"><a href="#asgi-%EC%98%88%EC%8B%9C%EC%BD%94%EB%93%9C-%EC%A7%9C%EB%B3%B4%EA%B8%B0" aria-label="asgi 예시코드 짜보기 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>ASGI 예시코드 짜보기</h1>
+<blockquote>
+<p>🍅 tips
+먼저 GET 요청을 받고 확인하는 로직을 구현합니다.
+POST 요청은 그 다음에 진행해봅시다.</p>
+</blockquote>
+<p>이제부터는 ASGI의 두 구성요소를 만들어봐야겠죠. 애플리케이션의 예시는 보았다시피 단순히 요청을 받고, 처리할 수 있기만 하면 됩니다. 그렇다면 우리는 소켓 연결을 관리하고, 메시지로 변환해주는 ASGI의 프로토콜 서버를 만들어봅시다. 그런데 예시가 너무 막막하네요. 이럴 땐 완성된 구현체를 한번 보는것부터 시작합시다.</p>
+<h2 id="asgi의-프로토콜-서버-만들기" style="position:relative;"><a href="#asgi%EC%9D%98-%ED%94%84%EB%A1%9C%ED%86%A0%EC%BD%9C-%EC%84%9C%EB%B2%84-%EB%A7%8C%EB%93%A4%EA%B8%B0" aria-label="asgi의 프로토콜 서버 만들기 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>ASGI의 프로토콜 서버 만들기</h2>
+<h3 id="uvicorn-구현체와-테스트-구동을-통한-확인" style="position:relative;"><a href="#uvicorn-%EA%B5%AC%ED%98%84%EC%B2%B4%EC%99%80-%ED%85%8C%EC%8A%A4%ED%8A%B8-%EA%B5%AC%EB%8F%99%EC%9D%84-%ED%86%B5%ED%95%9C-%ED%99%95%EC%9D%B8" aria-label="uvicorn 구현체와 테스트 구동을 통한 확인 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code class="language-text">uvicorn</code> 구현체와 테스트 구동을 통한 확인</h3>
+<p>우선 기념비적인 전체 테스트를 돌려봅시다.</p>
+<p><figure class="gatsby-resp-image-figure" style="">
+    <span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 960px; "
+    >
+      <a
+    class="gatsby-resp-image-link"
+    href="/static/b618d2a637db3add4918df48df012052/3b578/001.png"
+    style="display: block"
+    target="_blank"
+    rel="noopener"
+  >
+    <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 84.16666666666667%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAARCAYAAADdRIy+AAAACXBIWXMAABYlAAAWJQFJUiTwAAAD40lEQVQ4y02US6/aRhiG/VvaBgMGg/Hd4/v9hg02cJKT9OQsEmUXVlm3bBq6alctmy76K9vI1ryVTVRl8WhmNJpH73xzYdIs32oPp9+l7e6zWbZXP2+vycjhmpWna1Ycr1lxuqbl8ZoWx6sf769pfhzno3h3DaPdtSyrz2nZ/OYElcdoJPzbzRq4yR5OtIM3EO7gRw1cv4Yf7WF7W1h2CdMuQZwSllfdcbcwnRK2V8INKrhh/SujGeEfSX5E1fz4jx8UXRjXne3m3XJJugWnd9zyzmKhdxynd4ul0c3majedKd10pnaLpdYtlvK/khwijg4/MUFY3tLtaxTNhy4unmhcPsMJ9uDmKhyzgOtUsJwSmp1AElxohgtZIeDXKiasjDmn0gkr9oLgIArKCxOE2S3Odih3r7ska2g0bN3bguN0eGYBTY+wkVyIsofN2oYku1itCWacAnaqYDbX6AtW7gXBgOPEF8Z08pufNKMwSlsaJi0cf4vZTAVRIkTRDuFQH68CUVMYWgRFDTCbq2CnQ0KNfv9C6olioEqiC2NY6S3JD2hPT50X7uhwIEPCYYGuhHD9BrqeQtMirAQLC17HhJUwncqYzpRR+N0PUu8QG4equDDEzm5B3KA9PndZcaJR2sJ2S3ALHYrqQ1QCCKI3ynieYLkio5Bl5THhbK6OCXWZoEiSuzBMBuFTl34VmnaBjegijhuYVgbFCSBrFjaiCUk2IcoW+LWBOadjsSR0MlV6XXWQJdk3CR+eu7x6oEnejvVaCy68sIAXJRAMExvZxHpDsJHuLcfrmHEqFjyh7EzvPdNDsx2FyS1NH9HuPnRN9Y4W+VsQu8BKcBH5R+yqR+TxS3j2ETY5wBkw73j2CRapKb+xemL4CPz4wthecUuKR5S7d12SP9G8fo8oPSCIW8TJCWH0gCh5hSR9QByfEMUnhPHxKyf4UUvdoO6doIZhpZfh6d2CrEHVPnXDZFK8RGDECEQbvmRDk3zoUgBjbULkh5rpWPDGt9AlT3rLLWA5+YXR1ODmBlvUh9ddmp9omOwp0SNqaQE19ZBqekglyaHrtUlXa4tyC51OWImyU/l/JqzUWU4By80vTJIf/wzTFsX+1Zf94W0fJm2f5se+3j/2ZfWyb9o3fb177Ivy1Gt62PMr0k9YqWencs+ydyas9MV2clhu8TNj+9u/hh8mrx9QN28QD9fGykDMBAaJYdn3viR7kBUfguhgyRvjfRzhCfgVQRDWsJzsF0bYaI6sWJ9k1f6oG95ZlMh5xonnlaCdBdE484J25tfqeSMa43hAUsyzpFgjgmydZdX66Afxp5Wgyv8BpgcrPZHjbAcAAAAASUVORK5CYII='); background-size: cover; display: block;"
+  ></span>
+  <picture>
+          <source
+              srcset="/static/b618d2a637db3add4918df48df012052/8ac56/001.webp 240w,
+/static/b618d2a637db3add4918df48df012052/d3be9/001.webp 480w,
+/static/b618d2a637db3add4918df48df012052/e46b2/001.webp 960w,
+/static/b618d2a637db3add4918df48df012052/f992d/001.webp 1440w,
+/static/b618d2a637db3add4918df48df012052/882b9/001.webp 1920w,
+/static/b618d2a637db3add4918df48df012052/7f1f0/001.webp 3632w"
+              sizes="(max-width: 960px) 100vw, 960px"
+              type="image/webp"
+            />
+          <source
+            srcset="/static/b618d2a637db3add4918df48df012052/8ff5a/001.png 240w,
+/static/b618d2a637db3add4918df48df012052/e85cb/001.png 480w,
+/static/b618d2a637db3add4918df48df012052/d9199/001.png 960w,
+/static/b618d2a637db3add4918df48df012052/07a9c/001.png 1440w,
+/static/b618d2a637db3add4918df48df012052/29114/001.png 1920w,
+/static/b618d2a637db3add4918df48df012052/3b578/001.png 3632w"
+            sizes="(max-width: 960px) 100vw, 960px"
+            type="image/png"
+          />
+          <img
+            class="gatsby-resp-image-image"
+            src="/static/b618d2a637db3add4918df48df012052/d9199/001.png"
+            alt="M칩 맥 이슈를 제외하고선 모든 테스트가 성공적으로 도는군요"
+            title="M칩 맥 이슈를 제외하고선 모든 테스트가 성공적으로 도는군요"
+            loading="lazy"
+            decoding="async"
+            style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+          />
+        </picture>
+  </a>
+    </span>
+    <figcaption class="gatsby-resp-image-figcaption"><p>M칩 맥 이슈를 제외하고선 모든 테스트가 성공적으로 도는군요</p></figcaption>
+  </figure></p>
+<p>그렇다면, <code class="language-text">protocols</code> 디렉터리 내의 HTTP 프로토콜 테스트를 돌려봅시다.</p>
+<p><figure class="gatsby-resp-image-figure" style="">
+    <span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 960px; "
+    >
+      <a
+    class="gatsby-resp-image-link"
+    href="/static/3d111ef7c17314e6139fc4b10b4bd788/97bfd/002.png"
+    style="display: block"
+    target="_blank"
+    rel="noopener"
+  >
+    <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 168.75%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAiCAYAAABfqvm9AAAACXBIWXMAABYlAAAWJQFJUiTwAAAD5ElEQVRIx5VW2ZLiRhDkkxxzscAOEpKQROvq1gXiGi7b4whHeMcTfnE4vA/+8HRUSc0AK1j7IaMlIWVnVWVV0zEtBdef4bHr4e7BRvfTGA+PNu4fLDw+2XjqOoy7ews/3BnofRboD0P0ngWe+n6NnsfPh6ZEx7AlXDHF/dMYvZ4Py5IYDAT6/QmehxEGgwBDI8Kn7hh3dyN0BwI9IhyG6A8jxsCImk0CdAwrhO2FcOwUfrCG51UQfgVjpCBcBRnOEIklfPkrAvWKIJAY2QFjaNZ4NkQNM0THmcwQlgcIuYPIf0RS/oww3WNgTzEOKvjxCl60hZX8Ake+IlJ7uOGG4QhatwjkAaH6CSJeoUMP4s07Vq9fsXv9B8vD3yjXf0Jk75ik7/DT3zFJ3yDUF0zUF3jqje8JvnpDPP0D891fWOy/Yrr6DR1jFGEcKkyyAlItMfZTmHYM04owsiOYR8QNTp7RO04Mx5U1PIXOcBTB8VJMyhIqWyMrN4jkAoYVYzgiAomR0w76zXYVPFHAEzmDCUd2AlfliPI5pFpB5Wt+KYgrWGMFeqdGfIRpJwwiJtKxn8GbNISGGcOTOYK8OqqktZhuIaIZBFU6mfMGdB/GFWw3PRIaVlIrPRKOYrgyR1TUCvPpFmm+RqwWmM0PSNIVE03CKYOuTwlppUi+IQyLCjKtCSnsvFFKH/N71nnIH7lsCMUJIYUcUsjpGmnxwoWZLQ6siIiuFeaqQq9RSIQccvHCaulF/dEt3CQsZlsmTdSSQ07zFw5bK9Kb6GuyTzthXtVFKTesMJYLJiPEaokkXUJmta3oniKg67GXwRrL8xzqopAqIguTOe9Kpj+t6CmIhHAj5DmHTD4smkrTmhUv7DMi1uStOWxTSCGnJ5ahVW9Aa1nt4YmSzfz9Kjc5pJA1IV0TGeWM0kB5DKJZK6HbSpiuWAkVgkKW2ZpV0cva3NqXl53i3lJIZKSQw55uufkvu+NcoTwndE98SGRaIZFPqz0cLztT1NYp7rXhoPuYqks5o9x9j9C+2ct5TUS5pGI8mx+5ayO9nkPdy41VKFwij2Q9C6lLaPBeC7m1l2Vaz8GssYtWSqjnoPr/Idd2WTG0H2kTspQflP9N4WWnkDoiLGa7eiA0RwMV6HI+ftgma8lh0246fzT+VWNueqaHQZuxvw25KQofUuzFOnRay2rHObxu7Gu93BDqk49ApFTpvNnosjBXja1bjwvShJoVG7aK9qH24vFcPhlfR0KTFKqCO0WPfLZLsUFebnlytw3Yo0JH/4PI0fls0N+xEHao4CcFgqhiE9NpR9ObyOij00lzCRZl14f9vzTAB8/7HSsBAAAAAElFTkSuQmCC'); background-size: cover; display: block;"
+  ></span>
+  <picture>
+          <source
+              srcset="/static/3d111ef7c17314e6139fc4b10b4bd788/8ac56/002.webp 240w,
+/static/3d111ef7c17314e6139fc4b10b4bd788/d3be9/002.webp 480w,
+/static/3d111ef7c17314e6139fc4b10b4bd788/e46b2/002.webp 960w,
+/static/3d111ef7c17314e6139fc4b10b4bd788/cff29/002.webp 1078w"
+              sizes="(max-width: 960px) 100vw, 960px"
+              type="image/webp"
+            />
+          <source
+            srcset="/static/3d111ef7c17314e6139fc4b10b4bd788/8ff5a/002.png 240w,
+/static/3d111ef7c17314e6139fc4b10b4bd788/e85cb/002.png 480w,
+/static/3d111ef7c17314e6139fc4b10b4bd788/d9199/002.png 960w,
+/static/3d111ef7c17314e6139fc4b10b4bd788/97bfd/002.png 1078w"
+            sizes="(max-width: 960px) 100vw, 960px"
+            type="image/png"
+          />
+          <img
+            class="gatsby-resp-image-image"
+            src="/static/3d111ef7c17314e6139fc4b10b4bd788/d9199/002.png"
+            alt="여전히 많군요. 그렇다면 범위를 좁혀야겠죠"
+            title="여전히 많군요. 그렇다면 범위를 좁혀야겠죠"
+            loading="lazy"
+            decoding="async"
+            style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+          />
+        </picture>
+  </a>
+    </span>
+    <figcaption class="gatsby-resp-image-figcaption"><p>여전히 많군요. 그렇다면 범위를 좁혀야겠죠</p></figcaption>
+  </figure></p>
+<p>HTTP의 다양한 케이스에 대해 정리한 것을 볼 수 있습니다. 그러면 우리는 가장 쉬운 “일단 되기” 부터 만들기 위해 테스트 케이스를 분석해보죠.</p>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token keyword">async</span> <span class="token keyword">def</span> <span class="token function">test_get_request</span><span class="token punctuation">(</span>http_protocol_cls<span class="token punctuation">:</span> HTTPProtocol<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    app <span class="token operator">=</span> Response<span class="token punctuation">(</span><span class="token string">"Hello, world"</span><span class="token punctuation">,</span> media_type<span class="token operator">=</span><span class="token string">"text/plain"</span><span class="token punctuation">)</span>
+
+    protocol <span class="token operator">=</span> get_connected_protocol<span class="token punctuation">(</span>app<span class="token punctuation">,</span> http_protocol_cls<span class="token punctuation">)</span>
+    protocol<span class="token punctuation">.</span>data_received<span class="token punctuation">(</span>SIMPLE_GET_REQUEST<span class="token punctuation">)</span>
+    <span class="token keyword">await</span> protocol<span class="token punctuation">.</span>loop<span class="token punctuation">.</span>run_one<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token keyword">assert</span> <span class="token string">b"HTTP/1.1 200 OK"</span> <span class="token keyword">in</span> protocol<span class="token punctuation">.</span>transport<span class="token punctuation">.</span><span class="token builtin">buffer</span>
+    <span class="token keyword">assert</span> <span class="token string">b"Hello, world"</span> <span class="token keyword">in</span> protocol<span class="token punctuation">.</span>transport<span class="token punctuation">.</span><span class="token builtin">buffer</span></code></pre></div>
+<p>app은 ASGI의 애플리케이션 서버의 예시를 말합니다. 실제로도 코드에 그렇게 정의되어 있어요<sup id="fnref-2"><a href="#fn-2" class="footnote-ref">2</a></sup>. 우리가 관심있는 <code class="language-text">get_connected_protocol</code> 은 바로 윗줄에 있습니다<sup id="fnref-3"><a href="#fn-3" class="footnote-ref">3</a></sup>.</p>
+<p>이 코드를 보면 loop, transport, config, lifespan, 기타 등등이 있지만 우리의 주요 관심사인 <code class="language-text">protocol</code> 부터 봅시다.</p>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token keyword">def</span> <span class="token function">get_connected_protocol</span><span class="token punctuation">(</span>
+    app<span class="token punctuation">:</span> ASGIApplication<span class="token punctuation">,</span>
+    http_protocol_cls<span class="token punctuation">:</span> HTTPProtocol<span class="token punctuation">,</span>  <span class="token comment"># 이건 무슨타입일까요.</span>
+    lifespan<span class="token punctuation">:</span> LifespanOff <span class="token operator">|</span> LifespanOn <span class="token operator">|</span> <span class="token boolean">None</span> <span class="token operator">=</span> <span class="token boolean">None</span><span class="token punctuation">,</span>
+    <span class="token operator">**</span>kwargs<span class="token punctuation">:</span> Any<span class="token punctuation">,</span>
+<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span></code></pre></div>
+<p><code class="language-text">HTTPProtocol</code> 타입에 대해 봅시다.</p>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token keyword">if</span> TYPE_CHECKING<span class="token punctuation">:</span>
+    <span class="token comment"># (생략)</span>
+    HTTPProtocol<span class="token punctuation">:</span> TypeAlias <span class="token operator">=</span> <span class="token string">"type[HttpToolsProtocol | H11Protocol]"</span>   <span class="token comment"># 이 코드에 집중합시다!</span>
+    WSProtocol<span class="token punctuation">:</span> TypeAlias <span class="token operator">=</span> <span class="token string">"type[WebSocketProtocol | _WSProtocol]"</span></code></pre></div>
+<p>H11Protocol과 HttpToolsProtocol 둘 중 하나가 될 수 있는 모양이군요. <code class="language-text">conftest.py</code> 를 봤더니 둘 다 쓰고있도록 하고있구요<sup id="fnref-4"><a href="#fn-4" class="footnote-ref">4</a></sup>.</p>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token decorator annotation punctuation">@pytest<span class="token punctuation">.</span>fixture</span><span class="token punctuation">(</span>
+    params<span class="token operator">=</span><span class="token punctuation">[</span>
+        pytest<span class="token punctuation">.</span>param<span class="token punctuation">(</span>
+            <span class="token string">"uvicorn.protocols.http.httptools_impl:HttpToolsProtocol"</span><span class="token punctuation">,</span>
+            marks<span class="token operator">=</span>pytest<span class="token punctuation">.</span>mark<span class="token punctuation">.</span>skipif<span class="token punctuation">(</span>
+                <span class="token keyword">not</span> importlib<span class="token punctuation">.</span>util<span class="token punctuation">.</span>find_spec<span class="token punctuation">(</span><span class="token string">"httptools"</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                reason<span class="token operator">=</span><span class="token string">"httptools not installed."</span><span class="token punctuation">,</span>
+            <span class="token punctuation">)</span><span class="token punctuation">,</span>
+            <span class="token builtin">id</span><span class="token operator">=</span><span class="token string">"httptools"</span><span class="token punctuation">,</span>
+        <span class="token punctuation">)</span><span class="token punctuation">,</span>
+        pytest<span class="token punctuation">.</span>param<span class="token punctuation">(</span><span class="token string">"uvicorn.protocols.http.h11_impl:H11Protocol"</span><span class="token punctuation">,</span> <span class="token builtin">id</span><span class="token operator">=</span><span class="token string">"h11"</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token punctuation">]</span>
+<span class="token punctuation">)</span>
+<span class="token keyword">def</span> <span class="token function">http_protocol_cls</span><span class="token punctuation">(</span>request<span class="token punctuation">:</span> pytest<span class="token punctuation">.</span>FixtureRequest<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">return</span> import_from_string<span class="token punctuation">(</span>request<span class="token punctuation">.</span>param<span class="token punctuation">)</span>  <span class="token comment"># 이건 아래 4번 각주를 참고해주세요.</span></code></pre></div>
+<p>이런 식으로 픽스처 처리를 하면 parametrized 처리도 할 수 있나봅니다. 하나 배웠네요!</p>
+<p>…아무튼 본론으로 다시 돌아가서,</p>
+<p><code class="language-text">HttpToolsProtocol</code>과 <code class="language-text">H11Protocol</code> 구현체를 봅시다. 각각 아래와 같이 되어있습니다.</p>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token comment"># uvicorn/protocols/http/h11_impl.py</span>
+<span class="token keyword">class</span> <span class="token class-name">H11Protocol</span><span class="token punctuation">(</span>asyncio<span class="token punctuation">.</span>Protocol<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">def</span> <span class="token function">__init__</span><span class="token punctuation">(</span>
+        self<span class="token punctuation">,</span>
+        config<span class="token punctuation">:</span> Config<span class="token punctuation">,</span>
+        server_state<span class="token punctuation">:</span> ServerState<span class="token punctuation">,</span>
+        app_state<span class="token punctuation">:</span> <span class="token builtin">dict</span><span class="token punctuation">[</span><span class="token builtin">str</span><span class="token punctuation">,</span> Any<span class="token punctuation">]</span><span class="token punctuation">,</span>
+        _loop<span class="token punctuation">:</span> asyncio<span class="token punctuation">.</span>AbstractEventLoop <span class="token operator">|</span> <span class="token boolean">None</span> <span class="token operator">=</span> <span class="token boolean">None</span><span class="token punctuation">,</span>
+    <span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> <span class="token boolean">None</span><span class="token punctuation">:</span>
+        <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+<span class="token comment"># uvicorn/protocols/http/httptools_impl.py</span>
+<span class="token keyword">class</span> <span class="token class-name">HttpToolsProtocol</span><span class="token punctuation">(</span>asyncio<span class="token punctuation">.</span>Protocol<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">def</span> <span class="token function">__init__</span><span class="token punctuation">(</span>
+        self<span class="token punctuation">,</span>
+        config<span class="token punctuation">:</span> Config<span class="token punctuation">,</span>
+        server_state<span class="token punctuation">:</span> ServerState<span class="token punctuation">,</span>
+        app_state<span class="token punctuation">:</span> <span class="token builtin">dict</span><span class="token punctuation">[</span><span class="token builtin">str</span><span class="token punctuation">,</span> Any<span class="token punctuation">]</span><span class="token punctuation">,</span>
+        _loop<span class="token punctuation">:</span> asyncio<span class="token punctuation">.</span>AbstractEventLoop <span class="token operator">|</span> <span class="token boolean">None</span> <span class="token operator">=</span> <span class="token boolean">None</span><span class="token punctuation">,</span>
+    <span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> <span class="token boolean">None</span><span class="token punctuation">:</span>
+        <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span></code></pre></div>
+<p>공통적으로 <code class="language-text">asyncio.Protocol</code> 을 상속하고 있네요. 그렇다면 <code class="language-text">asyncio.Protocol</code> 은 무엇인지 볼까요?</p>
+<h3 id="asyncioprotocol-살펴보기-1---큰-개념" style="position:relative;"><a href="#asyncioprotocol-%EC%82%B4%ED%8E%B4%EB%B3%B4%EA%B8%B0-1---%ED%81%B0-%EA%B0%9C%EB%85%90" aria-label="asyncioprotocol 살펴보기 1   큰 개념 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code class="language-text">asyncio.Protocol</code> 살펴보기 (1) - 큰 개념</h3>
+<p><code class="language-text">asyncio.Protocol</code> 구현체를 이해하기 위해선 이 글<sup id="fnref-5"><a href="#fn-5" class="footnote-ref">5</a></sup> 에 대한 이해가 선행되어야 합니다. 하지만 하고자하는 목적에서 많이 벗어나지 않게, 우리가 필요한 최소한의 것만을 요약해보았습니다:</p>
+<ul>
+<li>큰 그림에서…
+<ul>
+<li><code class="language-text">Transport</code>와 <code class="language-text">Protocol</code>은 loop.create_connection()과 같은 저수준 이벤트 루프 API에서 사용</li>
+<li>콜백 기반 프로그래밍 스타일을 사용</li>
+<li>네트워크나 IPC 프로토콜(예: HTTP)의 고성능 구현을 위한 규약</li>
+</ul>
+</li>
+<li><code class="language-text">Transport</code>와 <code class="language-text">Protocol</code>의 책임 분리
+<ul>
+<li><code class="language-text">Transport</code>: “어떻게” 전송할지 (바이트 전송 메커니즘)</li>
+<li><code class="language-text">Protocol</code>: “무엇을” 전송할지 (바이트 내용과 타이밍)</li>
+</ul>
+</li>
+<li>추상화 수준
+<ul>
+<li><code class="language-text">Transport</code>: 소켓 수준의 추상화</li>
+<li><code class="language-text">Protocol</code>: 애플리케이션 수준의 추상화</li>
+</ul>
+</li>
+<li>1:1 관계
+<ul>
+<li>하나의 <code class="language-text">Transport</code>는 하나의 <code class="language-text">Protocol</code>과 연결</li>
+</ul>
+</li>
+<li>서로 호출하는 관계:
+<ul>
+<li><code class="language-text">Protocol</code> → <code class="language-text">Transport</code>: 데이터 전송 요청</li>
+<li><code class="language-text">Transport</code> → <code class="language-text">Protocol</code>: 수신된 데이터 전달</li>
+</ul>
+</li>
+<li>이벤트 루프와의 관계
+<ul>
+<li>protocol_factory를 통해 프로토콜 객체 생성</li>
+<li>(transport, protocol) 쌍으로 작동</li>
+</ul>
+</li>
+</ul>
+<p>이를 그림으로 그려보면 이렇습니다:</p>
+<div class="gatsby-highlight" data-language="text"><pre class="language-text"><code class="language-text">[클라이언트] HTTP 요청
+       ↓
+[OS 소켓/TCP]
+       ↓
+[이벤트 루프] (create_server로 생성된)
+       ↓
+[Transport] (TCP/소켓 추상화)
+    │  ↑ (1:1 관계)
+    ↓  │
+[Protocol] (HTTP 파싱/처리)
+       ↓
+[ASGI 애플리케이션]</code></pre></div>
+<h3 id="asyncioprotocol-살펴보기-2---http-파서-구현하기" style="position:relative;"><a href="#asyncioprotocol-%EC%82%B4%ED%8E%B4%EB%B3%B4%EA%B8%B0-2---http-%ED%8C%8C%EC%84%9C-%EA%B5%AC%ED%98%84%ED%95%98%EA%B8%B0" aria-label="asyncioprotocol 살펴보기 2   http 파서 구현하기 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code class="language-text">asyncio.Protocol</code> 살펴보기 (2) - HTTP 파서 구현하기</h3>
+<p>HTTP 파서를 구현하기 위해 <code class="language-text">asyncio.Protocol</code> 에서 구현(<em>implement</em>)해야하는<sup id="fnref-6"><a href="#fn-6" class="footnote-ref">6</a></sup> 메소드를 살펴봅시다.</p>
+<ol>
+<li>
+<p><strong><code class="language-text">connection_made(transport)</code></strong></p>
+<ul>
+<li>연결이 성립되었을 때 호출됨</li>
+<li>transport 인자로 Transport 객체를 받음</li>
+<li>일반적으로 이 transport 객체를 저장해두고 나중에 데이터 전송에 사용</li>
+<li>(<strong>중요</strong>) 이 코드의 존재로 인해 <code class="language-text">Transport</code> 객체는 자동으로 주입되고, 소켓 추상화는 처리하지 않아도 됩니다.</li>
+</ul>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token keyword">def</span> <span class="token function">connection_made</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> transport<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    self<span class="token punctuation">.</span>transport <span class="token operator">=</span> transport</code></pre></div>
+</li>
+<li>
+<p><strong><code class="language-text">data_received(data)</code></strong></p>
+<ul>
+<li>데이터가 수신될 때마다 호출됨</li>
+<li>data는 bytes 타입</li>
+<li>부분적으로 데이터가 올 수 있으므로 버퍼링이 필요할 수 있음</li>
+<li>(<strong>중요</strong>) 여기서 이벤트를 수신하고 HTTP 메시지를 파싱합니다!</li>
+</ul>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token keyword">def</span> <span class="token function">data_received</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> data<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    self<span class="token punctuation">.</span>_buffer <span class="token operator">+=</span> data
+    <span class="token comment"># 데이터 처리 로직</span></code></pre></div>
+</li>
+<li>
+<p><strong><code class="language-text">connection_lost(exc)</code></strong></p>
+<ul>
+<li>연결이 종료되었을 때 호출됨</li>
+<li>exc가 None이면 정상 종료, Exception이면 에러로 인한 종료</li>
+<li>(<strong>중요</strong>) 여기서 연결 종료 시의 예외처리를 수행합니다.</li>
+</ul>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token keyword">def</span> <span class="token function">connection_lost</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> exc<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">if</span> exc<span class="token punctuation">:</span>
+        <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f"에러로 인한 연결 종료: </span><span class="token interpolation"><span class="token punctuation">{</span>exc<span class="token punctuation">}</span></span><span class="token string">"</span></span><span class="token punctuation">)</span>
+    <span class="token keyword">else</span><span class="token punctuation">:</span>
+        <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"정상적인 연결 종료"</span><span class="token punctuation">)</span></code></pre></div>
+</li>
+</ol>
+<h2 id="my-first-protocol-implementation" style="position:relative;"><a href="#my-first-protocol-implementation" aria-label="my first protocol implementation permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>my first protocol implementation!</h2>
+<p>좋습니다. 방법을 알았으니 일단 짜보고 테스트를 구동해봅시다!</p>
+<p>먼저 기본적인 규약을 흉내내봅시다.</p>
+<h3 id="객체-초기화-따라하기" style="position:relative;"><a href="#%EA%B0%9D%EC%B2%B4-%EC%B4%88%EA%B8%B0%ED%99%94-%EB%94%B0%EB%9D%BC%ED%95%98%EA%B8%B0" aria-label="객체 초기화 따라하기 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>객체 초기화 따라하기</h3>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token keyword">import</span> asyncio
+<span class="token keyword">from</span> typing <span class="token keyword">import</span> Callable
+
+
+<span class="token keyword">class</span> <span class="token class-name">MyAsgiProtocol</span><span class="token punctuation">(</span>asyncio<span class="token punctuation">.</span>Protocol<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">def</span> <span class="token function">__init__</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> app<span class="token punctuation">:</span> Callable<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        self<span class="token punctuation">.</span>app <span class="token operator">=</span> app
+        self<span class="token punctuation">.</span>transport <span class="token operator">=</span> <span class="token boolean">None</span>
+        self<span class="token punctuation">.</span>_buffer <span class="token operator">=</span> <span class="token string">b''</span></code></pre></div>
+<p>객체 생성 시의 내용은 이대로 베낍시다. 후에 설명하겠습니다.</p>
+<h3 id="http-파서-구현하기-1---기본적인-것만" style="position:relative;"><a href="#http-%ED%8C%8C%EC%84%9C-%EA%B5%AC%ED%98%84%ED%95%98%EA%B8%B0-1---%EA%B8%B0%EB%B3%B8%EC%A0%81%EC%9D%B8-%EA%B2%83%EB%A7%8C" aria-label="http 파서 구현하기 1   기본적인 것만 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>HTTP 파서 구현하기 (1) - 기본적인 것만</h3>
+<p>이어서 필수로 구현해야하는 메소드를 만들어봅시다. 간단한 것 부터 설명하겠습니다.</p>
+<ol>
+<li><code class="language-text">connection_made</code>는 transport를 단순히 받기만 하면 됩니다. 이미 약속된 패턴입니다.</li>
+<li><code class="language-text">connection_lost</code>는 연결 단절 시 예외처리 구문을 추가하는 로직입니다. 간단히 만들어둡시다.</li>
+<li><code class="language-text">data_received</code> 는 TCP 데이터가 넘어오고난 후의 로직입니다. <code class="language-text">data</code> 를 버퍼에 그대로 담고, HTTP 로직인지 확인한 후 이벤트 루프에 태스크를 하나 생성합니다<sup id="fnref-7"><a href="#fn-7" class="footnote-ref">7</a></sup>.</li>
+</ol>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token keyword">def</span> <span class="token function">connection_made</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> transport<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    self<span class="token punctuation">.</span>transport <span class="token operator">=</span> transport
+
+<span class="token keyword">def</span> <span class="token function">data_received</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> data<span class="token punctuation">:</span> <span class="token builtin">bytes</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    self<span class="token punctuation">.</span>_buffer <span class="token operator">+=</span> data
+
+    <span class="token comment"># 올바른 HTTP 요청 헤더인지 확인</span>
+    <span class="token keyword">if</span> <span class="token string">b"\r\n\r\n"</span> <span class="token keyword">in</span> self<span class="token punctuation">.</span>_buffer<span class="token punctuation">:</span>
+        asyncio<span class="token punctuation">.</span>create_task<span class="token punctuation">(</span>self<span class="token punctuation">.</span>handle_request<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>  <span class="token comment"># 후술합니다</span>
+
+<span class="token keyword">def</span> <span class="token function">connection_lost</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> exc<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">if</span> exc<span class="token punctuation">:</span>
+        <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f"Connection lost: </span><span class="token interpolation"><span class="token punctuation">{</span>exc<span class="token punctuation">}</span></span><span class="token string">"</span></span><span class="token punctuation">)</span>
+    <span class="token keyword">else</span><span class="token punctuation">:</span>
+        <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f"Connection closed"</span></span><span class="token punctuation">)</span></code></pre></div>
+<h3 id="http-파서-구현하기-2---handle_request-구현" style="position:relative;"><a href="#http-%ED%8C%8C%EC%84%9C-%EA%B5%AC%ED%98%84%ED%95%98%EA%B8%B0-2---handle_request-%EA%B5%AC%ED%98%84" aria-label="http 파서 구현하기 2   handle_request 구현 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>HTTP 파서 구현하기 (2) - <code class="language-text">handle_request()</code> 구현</h3>
+<p>다음과정입니다. HTTP 요청 파싱을 위한 별도 태스크를 구현한 로직입니다.</p>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token keyword">async</span> <span class="token keyword">def</span> <span class="token function">handle_request</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    request_data <span class="token operator">=</span> self<span class="token punctuation">.</span>_buffer<span class="token punctuation">.</span>decode<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+    <span class="token comment"># HTTP 요청 자체를 헤더, 바디로 파싱</span>
+    headers<span class="token punctuation">,</span> _<span class="token punctuation">,</span> body <span class="token operator">=</span> request_data<span class="token punctuation">.</span>partition<span class="token punctuation">(</span><span class="token string">"\r\n\r\n"</span><span class="token punctuation">)</span>
+
+    <span class="token comment"># HTTP 요청 첫 줄 파싱 (예: "GET / HTTP/1.1")</span>
+    request_line<span class="token punctuation">,</span> <span class="token operator">*</span>_ <span class="token operator">=</span> headers<span class="token punctuation">.</span>split<span class="token punctuation">(</span><span class="token string">"\r\n"</span><span class="token punctuation">)</span>
+    <span class="token comment"># HTTP method와 경로를 파싱</span>
+    method<span class="token punctuation">,</span> path<span class="token punctuation">,</span> _ <span class="token operator">=</span> request_line<span class="token punctuation">.</span>split<span class="token punctuation">(</span><span class="token string">" "</span><span class="token punctuation">)</span>
+
+    scope <span class="token operator">=</span> <span class="token punctuation">{</span>
+        <span class="token string">"type"</span><span class="token punctuation">:</span> <span class="token string">"http"</span><span class="token punctuation">,</span>
+        <span class="token string">"method"</span><span class="token punctuation">:</span> method<span class="token punctuation">,</span>
+        <span class="token string">"path"</span><span class="token punctuation">:</span> path<span class="token punctuation">,</span>
+        <span class="token string">"headers"</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span>  <span class="token comment"># 헤더를 추가할 수 있음</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">async</span> <span class="token keyword">def</span> <span class="token function">receive</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token triple-quoted-string string">""" 애플리케이션이 클라이언트로부터 메시지를 받게 해줌
+
+        :return:
+        """</span>
+        <span class="token keyword">return</span> <span class="token punctuation">{</span><span class="token string">"type"</span><span class="token punctuation">:</span> <span class="token string">"http.request"</span><span class="token punctuation">,</span> <span class="token string">"body"</span><span class="token punctuation">:</span> body<span class="token punctuation">.</span>encode<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">"more_body"</span><span class="token punctuation">:</span> <span class="token boolean">False</span><span class="token punctuation">}</span>
+
+    <span class="token keyword">async</span> <span class="token keyword">def</span> <span class="token function">send</span><span class="token punctuation">(</span>message<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token triple-quoted-string string">""" 애플리케이션이 이벤트 메시지를 클라이언트에 전송해줌
+
+        :param message:
+        :return:
+        """</span>
+        <span class="token keyword">if</span> message<span class="token punctuation">[</span><span class="token string">"type"</span><span class="token punctuation">]</span> <span class="token operator">==</span> <span class="token string">"http.response.start"</span><span class="token punctuation">:</span>
+            response_headers <span class="token operator">=</span> <span class="token string">b"HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\n"</span>
+            self<span class="token punctuation">.</span>transport<span class="token punctuation">.</span>write<span class="token punctuation">(</span>response_headers<span class="token punctuation">)</span>
+        <span class="token keyword">elif</span> message<span class="token punctuation">[</span><span class="token string">"type"</span><span class="token punctuation">]</span> <span class="token operator">==</span> <span class="token string">"http.response.body"</span><span class="token punctuation">:</span>
+            self<span class="token punctuation">.</span>transport<span class="token punctuation">.</span>write<span class="token punctuation">(</span>message<span class="token punctuation">[</span><span class="token string">"body"</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+            self<span class="token punctuation">.</span>transport<span class="token punctuation">.</span>close<span class="token punctuation">(</span><span class="token punctuation">)</span>  <span class="token comment"># 응답 완료 후 연결 종료</span>
+
+    <span class="token keyword">await</span> self<span class="token punctuation">.</span>app<span class="token punctuation">(</span>scope<span class="token punctuation">,</span> receive<span class="token punctuation">,</span> send<span class="token punctuation">)</span>
+</code></pre></div>
+<h3 id="테스트합시다-1---get-요청-테스트" style="position:relative;"><a href="#%ED%85%8C%EC%8A%A4%ED%8A%B8%ED%95%A9%EC%8B%9C%EB%8B%A4-1---get-%EC%9A%94%EC%B2%AD-%ED%85%8C%EC%8A%A4%ED%8A%B8" aria-label="테스트합시다 1   get 요청 테스트 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>테스트합시다 (1) - GET 요청 테스트</h3>
+<p>그렇다면 제대로 도는지 테스트해볼까요. 필요한 최소한의 내용을 구성합시다.</p>
+<p>테스트를 위한 픽스처를 구성하고…</p>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token decorator annotation punctuation">@pytest<span class="token punctuation">.</span>fixture</span>
+<span class="token keyword">async</span> <span class="token keyword">def</span> <span class="token function">server</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token triple-quoted-string string">"""서버 fixture: 테스트용 서버를 시작하고 정리"""</span>
+    loop <span class="token operator">=</span> asyncio<span class="token punctuation">.</span>get_event_loop<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    server <span class="token operator">=</span> <span class="token keyword">await</span> loop<span class="token punctuation">.</span>create_server<span class="token punctuation">(</span>
+        <span class="token keyword">lambda</span><span class="token punctuation">:</span> MyAsgiProtocol<span class="token punctuation">(</span>app<span class="token punctuation">)</span><span class="token punctuation">,</span>
+        <span class="token string">"127.0.0.1"</span><span class="token punctuation">,</span>
+        <span class="token number">8000</span>
+    <span class="token punctuation">)</span>
+
+    <span class="token keyword">try</span><span class="token punctuation">:</span>
+        <span class="token keyword">await</span> asyncio<span class="token punctuation">.</span>sleep<span class="token punctuation">(</span><span class="token number">0.1</span><span class="token punctuation">)</span>    <span class="token comment"># 서버 인스턴스 생성을 위해 일시대기</span>
+        <span class="token keyword">yield</span> server
+    <span class="token keyword">finally</span><span class="token punctuation">:</span>
+        server<span class="token punctuation">.</span>close<span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token keyword">await</span> server<span class="token punctuation">.</span>wait_closed<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+
+<span class="token decorator annotation punctuation">@pytest<span class="token punctuation">.</span>fixture</span>
+<span class="token keyword">async</span> <span class="token keyword">def</span> <span class="token function">client</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token triple-quoted-string string">"""클라이언트 fixture: aiohttp 클라이언트 세션 생성 및 정리"""</span>
+    <span class="token keyword">async</span> <span class="token keyword">with</span> aiohttp<span class="token punctuation">.</span>ClientSession<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">as</span> session<span class="token punctuation">:</span>
+        <span class="token keyword">yield</span> session</code></pre></div>
+<p>테스트를 구동해봅시다!</p>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token decorator annotation punctuation">@pytest<span class="token punctuation">.</span>mark<span class="token punctuation">.</span>asyncio</span>
+<span class="token keyword">async</span> <span class="token keyword">def</span> <span class="token function">test_get_request_returns_hello_world</span><span class="token punctuation">(</span>server<span class="token punctuation">,</span> client<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token triple-quoted-string string">"""기본 HTTP GET 요청 테스트"""</span>
+    <span class="token keyword">async</span> <span class="token keyword">with</span> client<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">"http://127.0.0.1:8000"</span><span class="token punctuation">)</span> <span class="token keyword">as</span> response<span class="token punctuation">:</span>
+        <span class="token keyword">assert</span> response<span class="token punctuation">.</span>status <span class="token operator">==</span> <span class="token number">200</span>
+        text <span class="token operator">=</span> <span class="token keyword">await</span> response<span class="token punctuation">.</span>text<span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token keyword">assert</span> text <span class="token operator">==</span> <span class="token string">"Hello, World!"</span></code></pre></div>
+<div class="gatsby-highlight" data-language="shell"><pre class="language-shell"><code class="language-shell">$ pytest <span class="token parameter variable">-v</span>
+<span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span> <span class="token builtin class-name">test</span> session starts <span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">=</span>
+platform darwin -- Python <span class="token number">3.12</span>.6, pytest-8.3.4, pluggy-1.5.0 -- /Users/seongeun.yu/Library/Caches/pypoetry/virtualenvs/asgi-explained-S4wxQJIT-py3.12/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/seongeun.yu/workspace/asgi_explained
+configfile: pyproject.toml
+plugins: cov-6.0.0, asyncio-0.25.3
+asyncio: <span class="token assign-left variable">mode</span><span class="token operator">=</span>Mode.AUTO, <span class="token assign-left variable">asyncio_default_fixture_loop_scope</span><span class="token operator">=</span>function
+collected <span class="token number">1</span> item                                                                                                                                     
+
+tests/test_server.py::test_get_request_returns_hello_world PASSED                                                                              <span class="token punctuation">[</span><span class="token number">100</span>%<span class="token punctuation">]</span>
+
+<span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">=</span> <span class="token number">1</span> passed <span class="token keyword">in</span> <span class="token number">0</span>.16s <span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span></code></pre></div>
+<p>패스합니다! 그럼 내부적으로 어떻게 돌았던 건지 디버깅한 결과를 보여드릴게요:</p>
+<p><figure class="gatsby-resp-image-figure" style="">
+    <span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 960px; "
+    >
+      <a
+    class="gatsby-resp-image-link"
+    href="/static/1da30cef55541e04b46e8a5af3926f54/0f586/003.png"
+    style="display: block"
+    target="_blank"
+    rel="noopener"
+  >
+    <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 123.75%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAZCAYAAAAxFw7TAAAACXBIWXMAABYlAAAWJQFJUiTwAAADRUlEQVQ4y42V2W/cNhDG/f+/tehjg6I2ciFFj5ceQFGgDwX60gaOvbYT7xGvrNWx2tWKOimS+hWkLNmLep0QGJCUOB+/Gc5xpNqOquwQQlJVHW3bAR1dZ2coS43IpJOiUBhD/9901HWvJ0Tr1lbnKM/B9zUXFxGrlaYo2BvesuD09Jbzs4DZLKNte0CtIQoNk/OQi4uYKDLusiPLyDKTDW6uK4XWVrSTqjJIifvfNGB0z9zcMXTfa+4Z2tvs0EqTZSmrlc9qtXIShiFBsCLPc7QyI+vBHf3a7O2P7MbuZdMSxzFBYEECJ1EU4fu3RGFAVZZ0nR6VBz3L1IpdjwztxjIwRmNMP2ttb1ZEt98zefsVi/fP8GbfolWyx3IAHL4dDYvBN/vDkG9/I1y+JL59zdp/g1abzwfszehGcyygv3jBh7Mvmbz9An/+NUYng/d6vRGwe5zhCHjHsKlmVPmEIjvHtFO0Kp07bAT05+3Lm1HvACB7wa20DfCWbVowny+YTqd4ns9ul6EevL575UMM7/1ks0eS7VKEyFwIlWXBcv4zl++e8+7fEz5e/4g3/4l0/ecTJnf3jm+lpK7rPSaq/IPEf8Vyeszi/TcuAurs18cBR+AxeKGqG0ReEIYxSZKQJGvSdIOUFUa3Y5AfYNj7Rckl2foXFtc/cOZMe00S/oUQOUIIN2eZoGnkePGTgE15hTd9xs31sRN/cUxT/L1nuvVvY5P8UGA/ZvKgWJYlURSzXq/vzE4oigIp5dOAYxbonCz5nenlG07/OWbx4SXp5pI8r8lz4V7cvvwnGQ6AWqVE3iu82Qne7DnBzQltM9sz2bL7JMP9XDVsNglxHFEUuXPDwxS1ep+Zy0OuKoTYMZ9PXb0cMuhgceieqDadKYm87wiXr/DmL7idn9DWN2PMHag2d/naKnfImmidvdvtKEuBakOqYkmRf0S3AcZU99E+mG8eVGytO5SCXDSUhUQ2yuWqBbQhYZtSXffSV+j7wmE7Zit7fSuOoe1ytttdXcUEofl/1/Nyzs58JpOA+WyHetD14si4bnl5GRPHd12vaTqyrCNNW7Kdoam7PccLodlsJNutZJcq+jLY+y0XVk+x3bZubU3/D5hQkH0i1+cBAAAAAElFTkSuQmCC'); background-size: cover; display: block;"
+  ></span>
+  <picture>
+          <source
+              srcset="/static/1da30cef55541e04b46e8a5af3926f54/8ac56/003.webp 240w,
+/static/1da30cef55541e04b46e8a5af3926f54/d3be9/003.webp 480w,
+/static/1da30cef55541e04b46e8a5af3926f54/e46b2/003.webp 960w,
+/static/1da30cef55541e04b46e8a5af3926f54/f992d/003.webp 1440w,
+/static/1da30cef55541e04b46e8a5af3926f54/72539/003.webp 1498w"
+              sizes="(max-width: 960px) 100vw, 960px"
+              type="image/webp"
+            />
+          <source
+            srcset="/static/1da30cef55541e04b46e8a5af3926f54/8ff5a/003.png 240w,
+/static/1da30cef55541e04b46e8a5af3926f54/e85cb/003.png 480w,
+/static/1da30cef55541e04b46e8a5af3926f54/d9199/003.png 960w,
+/static/1da30cef55541e04b46e8a5af3926f54/07a9c/003.png 1440w,
+/static/1da30cef55541e04b46e8a5af3926f54/0f586/003.png 1498w"
+            sizes="(max-width: 960px) 100vw, 960px"
+            type="image/png"
+          />
+          <img
+            class="gatsby-resp-image-image"
+            src="/static/1da30cef55541e04b46e8a5af3926f54/d9199/003.png"
+            alt="GET만 있는 경우 이렇게 호출됩니다"
+            title="GET만 있는 경우 이렇게 호출됩니다"
+            loading="lazy"
+            decoding="async"
+            style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+          />
+        </picture>
+  </a>
+    </span>
+    <figcaption class="gatsby-resp-image-figcaption"><p>GET만 있는 경우 이렇게 호출됩니다</p></figcaption>
+  </figure></p>
+<p>즉, 아래와 같이 동작함을 볼 수 있습니다.</p>
+<ol>
+<li>TCP, HTTP까진 알아서 오고</li>
+<li>HTTP 요청인지 확인 후 HTTP 파싱을 요청 (비동기 태스크 시작)</li>
+<li>GET 요청은 body가 없으므로 <code class="language-text">receive()</code> 처리를 안함</li>
+<li>응답헤더, 바디 각각 완성될 때마다 도착</li>
+<li>완성되면 응답 완료 후 연결 종료</li>
+</ol>
+<h3 id="테스트합시다-2---post-요청-테스트" style="position:relative;"><a href="#%ED%85%8C%EC%8A%A4%ED%8A%B8%ED%95%A9%EC%8B%9C%EB%8B%A4-2---post-%EC%9A%94%EC%B2%AD-%ED%85%8C%EC%8A%A4%ED%8A%B8" aria-label="테스트합시다 2   post 요청 테스트 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>테스트합시다 (2) - POST 요청 테스트</h3>
+<p>이어서, POST 에 대한 케이스도 추가해볼까요. POST 처리를 위해 애플리케이션도 약간 수정해봅시다.</p>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token keyword">async</span> <span class="token keyword">def</span> <span class="token function">app</span><span class="token punctuation">(</span>scope<span class="token punctuation">,</span> receive<span class="token punctuation">,</span> send<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token triple-quoted-string string">""" ASGI 프로토콜 서버에서 데이터를 받고, 이를 가공
+
+    :param scope:
+    :param receive:
+    :param send:
+    :return:
+    """</span>
+    <span class="token keyword">if</span> scope<span class="token punctuation">[</span><span class="token string">"method"</span><span class="token punctuation">]</span> <span class="token operator">==</span> <span class="token string">"POST"</span><span class="token punctuation">:</span>
+        request <span class="token operator">=</span> <span class="token keyword">await</span> receive<span class="token punctuation">(</span><span class="token punctuation">)</span>
+        body <span class="token operator">=</span> request<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">"body"</span><span class="token punctuation">,</span> <span class="token string">b""</span><span class="token punctuation">)</span>  <span class="token comment"># 요청 데이터 가져오기</span>
+    <span class="token keyword">else</span><span class="token punctuation">:</span>
+        body <span class="token operator">=</span> <span class="token string">b"Hello, World!"</span>  <span class="token comment"># GET 요청에서는 바디가 필요 없음</span>
+    
+    <span class="token comment"># 생략</span></code></pre></div>
+<div class="gatsby-highlight" data-language="python"><pre class="language-python"><code class="language-python"><span class="token decorator annotation punctuation">@pytest<span class="token punctuation">.</span>mark<span class="token punctuation">.</span>asyncio</span>
+<span class="token keyword">async</span> <span class="token keyword">def</span> <span class="token function">test_post_request_returns_hello_world</span><span class="token punctuation">(</span>server<span class="token punctuation">,</span> client<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token triple-quoted-string string">"""기본 HTTP POST 요청 테스트"""</span>
+    <span class="token keyword">async</span> <span class="token keyword">with</span> client<span class="token punctuation">.</span>post<span class="token punctuation">(</span><span class="token string">"http://127.0.0.1:8000"</span><span class="token punctuation">,</span> data<span class="token operator">=</span><span class="token string">"Hello, ASGI!"</span><span class="token punctuation">)</span> <span class="token keyword">as</span> response<span class="token punctuation">:</span>
+        <span class="token keyword">assert</span> response<span class="token punctuation">.</span>status <span class="token operator">==</span> <span class="token number">200</span>
+        text <span class="token operator">=</span> <span class="token keyword">await</span> response<span class="token punctuation">.</span>text<span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token keyword">assert</span> text <span class="token operator">==</span> <span class="token string">"Hello, ASGI!"</span></code></pre></div>
+<p>둘 다 돌리면…</p>
+<div class="gatsby-highlight" data-language="shell"><pre class="language-shell"><code class="language-shell">$ pytest <span class="token parameter variable">-v</span>
+<span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span> <span class="token builtin class-name">test</span> session starts <span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">=</span>
+platform darwin -- Python <span class="token number">3.12</span>.6, pytest-8.3.4, pluggy-1.5.0 -- /Users/seongeun.yu/Library/Caches/pypoetry/virtualenvs/asgi-explained-S4wxQJIT-py3.12/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/seongeun.yu/workspace/asgi_explained
+configfile: pyproject.toml
+plugins: cov-6.0.0, asyncio-0.25.3
+asyncio: <span class="token assign-left variable">mode</span><span class="token operator">=</span>Mode.AUTO, <span class="token assign-left variable">asyncio_default_fixture_loop_scope</span><span class="token operator">=</span>function
+collected <span class="token number">2</span> items                                                                                                                                    
+
+tests/test_server.py::test_get_request_returns_hello_world PASSED                                                                              <span class="token punctuation">[</span> <span class="token number">50</span>%<span class="token punctuation">]</span>
+tests/test_server.py::test_post_request_returns_hello_world PASSED                                                                             <span class="token punctuation">[</span><span class="token number">100</span>%<span class="token punctuation">]</span>
+
+<span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">=</span> <span class="token number">2</span> passed <span class="token keyword">in</span> <span class="token number">0</span>.27s <span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span></code></pre></div>
+<p>다행입니다, 잘 되네요.</p>
+<h2 id="my-first-protocol-flow-charts" style="position:relative;"><a href="#my-first-protocol-flow-charts" aria-label="my first protocol flow charts permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>my first protocol flow charts</h2>
+<p>그렇다면 GET, POST 요청 각각에 대한 플로우차트를 읽어봅시다.</p>
+<p><figure class="gatsby-resp-image-figure" style="">
+    <span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 960px; "
+    >
+      <a
+    class="gatsby-resp-image-link"
+    href="/static/488fe61d2aa2d00d12bc91028c27b499/2a333/004.png"
+    style="display: block"
+    target="_blank"
+    rel="noopener"
+  >
+    <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 184.58333333333331%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAlCAYAAABCr8kFAAAACXBIWXMAABYlAAAWJQFJUiTwAAAEVElEQVRIx5VWW4+jNhjd//9UbXe7rboP3bYrte99aUdVpX2r1Gq3Mx2N5paQEEgCAQwYsLHNqT4bCJlJprOWLBuwj7/bOeZFWQJRJLFaFUhTAyk6AK4LYeAvc3heiuUyB8sUXKNvwGYj4HmJHevKvX/BGBCGEguvRJIAqsXYaL5ccNzfZ5jNcuxiia5zG+saCFbSflsua5BhFtCYDsbALswyhjjeIUkS7HY7pEmKLMuh2g7T1nW0p7N7OuP68PzCuUenpYjjDGVZoiiGXoCxDGXBkbMcYRja99QcQAetzDin0QISctPo0QJjaJE+sEppQIgWSqnRSrtWd/u5A3QfRSMhpQDLGNbrNTabCCzbImcz7KIbyCaE0dkI9r+ArdTQWlvrOgoKWSU8XJ+/xOXHV7g+/xLb1S/PBDQUi24SdAeo2wBx8BPWi58Rej+Csw8uEZ8D6BY7wFbM4V2/wfL2LWZXr8HT33DYOmhtesDuKcDhRAGtEhiVoTMZRJMgz3OkaYa6bvr16GvTlc9RwOno3AJYzuH7ARaLBebzGXx/gSjaoCyK3joFo83TFg6ukFtULlo7GslmgdXsLa4v3uDqn9e4+fcb+Hdfoy4vTgPugR2ThmTRK93GaIoPiMIzbFa/IgrOwLPfoaS/B6RsnWptq5GmKYIgsD0M1wjXEdI0B+fNhBCYFnZrLaiqCnEcI4oi1HVt3xEg1eiUy85yA16WdnyU5ZyVaJoadVVbPlMnwKZpLIuEkNbKLMtsphlj4Ly0Bpg+JgeAmHhM1mitiOXuWRnkeWFBHGhqR3ouinyfxCkgywpbWyRhYRAiCEI7JwsrXkOKFm2rHsW3qUVf3I41I6AUqlcZ02d4X4uc11ivN4iiGErpXgd7ySLqmSPi0DQSbeviRLpHipPnDEI0Nk5TunWYFn13xOVebUgDKX5KtaCkitrH4vZ73F6+w/LuB6TRHxO6fYba9GcDeobQe4/l3Xt4N98hi88AVH2BP1ttXAlw9ifC+5eYXX2Fq09f4O7yFbbLb7EL3pFS7u+W58iXk64AnP0Fwc9Rsr8hq3O09QWK7CO0kqPCuAvuScBDpbGl0RCDFDabFN4ixGw2sxSkAm+lGq/WJy10paPtwqriYCxFkTMkyc5Sk6qBAOm63XP5CcDpnJfcUpEqYLiz6Zm+n6TeafmC3URsIKvm8zl837e1SkAD8CNApQwOCD2xkABpY5ql7o8i3XOZLD7q8nCv06lt29o+uMJ5ZYGoU/yGTspz3MLOyRfRjE4ldyiLjOWQUlqlGfj6sJ2M4UC9h40Oo6SQRWE4KLY7kESY/n+OyhepzZC1QbEHUah4ZcWWsmzDIdsxLGXJj1jYu0ybKF7kItUYzW384gSiEeNGdPv8SalG+h0AdifuKBJYco/YUdg7+OHPQHdQu3tAs88yJYL6cDHRPUNlMqXmMbWhcQSkWJAOktsUv+12C865BeWTOD38s3gI+B//Dj7jvotv5AAAAABJRU5ErkJggg=='); background-size: cover; display: block;"
+  ></span>
+  <picture>
+          <source
+              srcset="/static/488fe61d2aa2d00d12bc91028c27b499/8ac56/004.webp 240w,
+/static/488fe61d2aa2d00d12bc91028c27b499/d3be9/004.webp 480w,
+/static/488fe61d2aa2d00d12bc91028c27b499/e46b2/004.webp 960w,
+/static/488fe61d2aa2d00d12bc91028c27b499/f992d/004.webp 1440w,
+/static/488fe61d2aa2d00d12bc91028c27b499/17fe2/004.webp 1484w"
+              sizes="(max-width: 960px) 100vw, 960px"
+              type="image/webp"
+            />
+          <source
+            srcset="/static/488fe61d2aa2d00d12bc91028c27b499/8ff5a/004.png 240w,
+/static/488fe61d2aa2d00d12bc91028c27b499/e85cb/004.png 480w,
+/static/488fe61d2aa2d00d12bc91028c27b499/d9199/004.png 960w,
+/static/488fe61d2aa2d00d12bc91028c27b499/07a9c/004.png 1440w,
+/static/488fe61d2aa2d00d12bc91028c27b499/2a333/004.png 1484w"
+            sizes="(max-width: 960px) 100vw, 960px"
+            type="image/png"
+          />
+          <img
+            class="gatsby-resp-image-image"
+            src="/static/488fe61d2aa2d00d12bc91028c27b499/d9199/004.png"
+            alt="GET, POST 둘 다 처리하는 경우의 플로우차트로 다시 살펴봅시다"
+            title="GET, POST 둘 다 처리하는 경우의 플로우차트로 다시 살펴봅시다"
+            loading="lazy"
+            decoding="async"
+            style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+          />
+        </picture>
+  </a>
+    </span>
+    <figcaption class="gatsby-resp-image-figcaption"><p>GET, POST 둘 다 처리하는 경우의 플로우차트로 다시 살펴봅시다</p></figcaption>
+  </figure></p>
+<p>내부적으로 어떻게 돌았던 건지 다시 살펴봅시다.</p>
+<ol>
+<li>TCP, HTTP까진 알아서 오고</li>
+<li>HTTP 요청인지 확인 후 HTTP 파싱을 요청 (비동기 태스크 시작)</li>
+<li>GET 요청은 body가 없으므로 <code class="language-text">receive()</code> 처리를 안함. POST는 이를 수행</li>
+<li>응답헤더, 바디 각각 완성될 때마다 도착</li>
+<li>완성되면 응답 완료 후 연결 종료</li>
+</ol>
+<h1 id="마무리" style="position:relative;"><a href="#%EB%A7%88%EB%AC%B4%EB%A6%AC" aria-label="마무리 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>마무리</h1>
+<p>이번 글에서는 WSGI와 ASGI의 차이를 살펴보고, ASGI가 등장하게 된 배경과 핵심 개념(<code class="language-text">scope</code>, <code class="language-text">receive</code>, <code class="language-text">send</code>)을 이해하는 데 초점을 맞췄습니다. 또한, 가장 기본적인 형태의 ASGI 애플리케이션을 구현하고, 이를 활용하여 간단한 ASGI 서버를 직접 만들어 보았습니다.</p>
+<p>다음 글에서는 보다 실전적인 활용과 최적화에 초점을 맞추려 합니다. 아래 내용을 다룰 예정입니다:</p>
+<ul>
+<li>ASGI 스펙 상세 분석(WebSocket, lifespan 이벤트 소개 등)</li>
+<li>ASGI 구현체 간단 분석</li>
+</ul>
+<p>2부에서 계속됩니다.</p>
+<p>감사합니다.</p>
+<div class="footnotes">
+<hr>
+<ol>
+<li id="fn-1">daphne 구현체와 asgiref는 현재 Django Software Foundation (DSF)가 현재 관리중입니다. 이번에 알게되었네요!<a href="#fnref-1" class="footnote-backref">↩</a></li>
+<li id="fn-2"><a href="https://github.com/encode/uvicorn/blob/master/tests/response.py" target="_blank" rel="nofollow noopener noreferrer">https://github.com/encode/uvicorn/blob/master/tests/response.py</a><a href="#fnref-2" class="footnote-backref">↩</a></li>
+<li id="fn-3"><a href="https://github.com/encode/uvicorn/blob/54d9575e75cd821cadef0eff64677ebd2fda4885/tests/protocols/test_http.py#L261-L279" target="_blank" rel="nofollow noopener noreferrer">https://github.com/encode/uvicorn/blob/54d9575e75cd821cadef0eff64677ebd2fda4885/tests/protocols/test_http.py#L261-L279</a><a href="#fnref-3" class="footnote-backref">↩</a></li>
+<li id="fn-4"><a href="https://github.com/encode/uvicorn/blob/master/uvicorn/importer.py" target="_blank" rel="nofollow noopener noreferrer">https://github.com/encode/uvicorn/blob/master/uvicorn/importer.py</a><a href="#fnref-4" class="footnote-backref">↩</a></li>
+<li id="fn-5"><a href="https://docs.python.org/3/library/asyncio-protocol.html" target="_blank" rel="nofollow noopener noreferrer">https://docs.python.org/3/library/asyncio-protocol.html</a><a href="#fnref-5" class="footnote-backref">↩</a></li>
+<li id="fn-6">다른 언어들처럼 overriding을 강제하지는 않지만, 구현을 안 하면 런타임에서 터집니다(!)<br /> 필수로 구현해야 할 메소드는 <code class="language-text">BaseProtocol</code> 을 살펴보시고, <code class="language-text">Protocol</code> 도 함께 살펴봐주세요.<a href="#fnref-6" class="footnote-backref">↩</a></li>
+<li id="fn-7">바디를 포함한 요청이라면 <code class="language-text">Content-Length</code> 까지 함께 파싱하는 편이 좋겠지요.<a href="#fnref-7" class="footnote-backref">↩</a></li>
+</ol>
+</div></div></div></div><div class="Post-module--footer--f8705"><div class="Meta-module--meta--dae0a"><p class="Meta-module--date--4d30d">Published<!-- --> <!-- -->Feb 16, 2025</p></div><div class="Tags-module--tags--18589"><ul class="Tags-module--list--82ae6"><li class="Tags-module--item--52015"><a class="Button-module--button--b1113" href="/tag/python/">python</a></li><li class="Tags-module--item--52015"><a class="Button-module--button--b1113" href="/tag/pep/">PEP</a></li></ul></div><div class="Author-module--author--1c58d"><p class="Non scholæ sed vitæ discimus.">Non scholæ sed vitæ discimus.</p><p class="Author-module--bio--08950">his/him</p></div></div><div class="Post-module--comments--d3b99"><div></div></div></div></div></div><div id="gatsby-announcer" style="position:absolute;top:0;width:1px;height:1px;padding:0;overflow:hidden;clip:rect(0, 0, 0, 0);white-space:nowrap;border:0" aria-live="assertive" aria-atomic="true"></div></div><script id="gatsby-script-loader">/*<![CDATA[*/window.pagePath="/devlog/python/2025-02-16-probing-pep-333-3-wsgi-and-asgi-pt02";window.___webpackCompilationHash="99140f849951e9650a94";/*]]>*/</script><script id="gatsby-chunk-mapping">/*<![CDATA[*/window.___chunkMapping={"polyfill":["/polyfill-956f4e5ec4338913da01.js"],"app":["/app-f2065abf858e83780ba5.js"],"component---cache-caches-gatsby-plugin-offline-app-shell-js":["/component---cache-caches-gatsby-plugin-offline-app-shell-js-0c915c7b1bdb5eac4fdf.js"],"component---src-templates-categories-template-categories-template-tsx":["/component---src-templates-categories-template-categories-template-tsx-e2d2add397e32e3517ca.js"],"component---src-templates-category-template-category-template-tsx":["/component---src-templates-category-template-category-template-tsx-078f2adfba160a34229f.js"],"component---src-templates-index-template-index-template-tsx":["/component---src-templates-index-template-index-template-tsx-83380c7954c9f6621026.js"],"component---src-templates-not-found-template-not-found-template-tsx":["/component---src-templates-not-found-template-not-found-template-tsx-56fe4d3b015459d56c99.js"],"component---src-templates-page-template-page-template-tsx":["/component---src-templates-page-template-page-template-tsx-c6c21d7369a9356db3a1.js"],"component---src-templates-post-template-post-template-tsx":["/component---src-templates-post-template-post-template-tsx-119cd0258cb38628d01f.js"],"component---src-templates-tag-template-tag-template-tsx":["/component---src-templates-tag-template-tag-template-tsx-8d0b3090e775aa3c4584.js"],"component---src-templates-tags-template-tags-template-tsx":["/component---src-templates-tags-template-tags-template-tsx-30027e87af7d042f3afb.js"]};/*]]>*/</script><script src="/polyfill-956f4e5ec4338913da01.js" nomodule=""></script><script src="/app-f2065abf858e83780ba5.js" async=""></script><script src="/framework-481a1b6416c14416b2fb.js" async=""></script><script src="/webpack-runtime-de5a94456c9c32f6cdb9.js" async=""></script></body></html>
