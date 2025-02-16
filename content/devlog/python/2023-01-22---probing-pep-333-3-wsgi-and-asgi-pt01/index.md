@@ -20,6 +20,7 @@ socialImage: { "publicURL": "./media/exotic_shorthair.jpg" }
 # 연재 안내
 
 - PEP 333 (1)
+- PEP 333 (2)
 
 # 들어가며
 
