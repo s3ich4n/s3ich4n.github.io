@@ -1,4 +1,107 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[팔공산 창고]]></title><description><![CDATA[팔공산 창고]]></description><link>http://github.com/dylang/node-rss</link><generator>GatsbyJS</generator><lastBuildDate>Sun, 16 Mar 2025 11:38:03 GMT</lastBuildDate><item><title><![CDATA[FastAPI 앱 개발 시 나만의 점검사항 (1) - 기본 구조와 테스팅]]></title><description><![CDATA[FastAPI 앱으로 트랜잭션 스크립트부터 도메인 기반 기초적 설계의 재구조를 잡기까지의 여정을 설명합니다. 1부에서는 어떻게 바꾸었고 어떤 식의 1차 작업을 완료했는지를 되짚어봅니다]]></description><link>https://blog.s3ich4n.me/devlog/python/2025-03-16-fastapi-lessons-learned-pt01</link><guid isPermaLink="false">https://blog.s3ich4n.me/devlog/python/2025-03-16-fastapi-lessons-learned-pt01</guid><pubDate>Sun, 16 Mar 2025 19:13:00 GMT</pubDate><content:encoded>&lt;h1 id=&quot;들어가며&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EB%93%A4%EC%96%B4%EA%B0%80%EB%A9%B0&quot; aria-label=&quot;들어가며 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;들어가며&lt;/h1&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[팔공산 창고]]></title><description><![CDATA[팔공산 창고]]></description><link>http://github.com/dylang/node-rss</link><generator>GatsbyJS</generator><lastBuildDate>Sun, 30 Mar 2025 11:19:20 GMT</lastBuildDate><item><title><![CDATA[글또10기 회고 - 이게 진짜 끝일까?]]></title><description><![CDATA[저는 다르게 봅니다. 뭘 배웠기에 이렇게 자신있게 이야기하는지 쓰려합니다.]]></description><link>https://blog.s3ich4n.me/retrospect/2025-03-30-is-this-the-real-end-of-geultto-10th</link><guid isPermaLink="false">https://blog.s3ich4n.me/retrospect/2025-03-30-is-this-the-real-end-of-geultto-10th</guid><pubDate>Sun, 30 Mar 2025 18:59:16 GMT</pubDate><content:encoded>&lt;p&gt;이번 글은 벌써 끝이 보이는 글또10기와, 저의 활동을 리뷰해봅니다. 이어서 글또가 제 삶에 어떤 긍정적인 영향을 주었는지 회고하고자 합니다.&lt;/p&gt;
+&lt;h1 id=&quot;글또-10기를-통해-무엇을-했나&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EA%B8%80%EB%98%90-10%EA%B8%B0%EB%A5%BC-%ED%86%B5%ED%95%B4-%EB%AC%B4%EC%97%87%EC%9D%84-%ED%96%88%EB%82%98&quot; aria-label=&quot;글또 10기를 통해 무엇을 했나 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;글또 10기를 통해 무엇을 했나&lt;/h1&gt;
+&lt;h2 id=&quot;첫-다짐에-비해-얼마나-했지&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%B2%AB-%EB%8B%A4%EC%A7%90%EC%97%90-%EB%B9%84%ED%95%B4-%EC%96%BC%EB%A7%88%EB%82%98-%ED%96%88%EC%A7%80&quot; aria-label=&quot;첫 다짐에 비해 얼마나 했지 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;첫 다짐에 비해 얼마나 했지?&lt;/h2&gt;
+&lt;p&gt;오늘은 글또10기의 마지막 제출일입니다. 첫 다짐때가 기억이 납니다. 기술 이야기를 자주 해보고도 싶고, 기술 검증에 대한 글도 써보고싶고, 업무를 통해 배운 점을 회고도 하고싶고, 여러 욕심들이 보이네요. 이중 얼마나 이루어졌나 보았더니 다섯 편의 기술 글과 세 편의 회고가 있었습니다. 기술을 다이브하며 글을 어떻게 다듬으면 좋을지도 함께 배웠어요.&lt;/p&gt;
+&lt;h2 id=&quot;모임은-얼마나-가졌지&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EB%AA%A8%EC%9E%84%EC%9D%80-%EC%96%BC%EB%A7%88%EB%82%98-%EA%B0%80%EC%A1%8C%EC%A7%80&quot; aria-label=&quot;모임은 얼마나 가졌지 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;모임은 얼마나 가졌지?&lt;/h2&gt;
+&lt;p&gt;생각보다 얼마 가진 않았네요.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;파이콘 2024때 모임을 가졌고&lt;/li&gt;
+&lt;li&gt;음악감상회도 가졌습니다.&lt;/li&gt;
+&lt;li&gt;2024년 회고도 했네요. 글로도 마무리했죠!&lt;/li&gt;
+&lt;li&gt;그리고 온라인으로 정기적으로 진행중인 디자인 패턴 모임도 참석중입니다. 최근에는 밀려서 죄송할 따름입니다 ㅠㅠ&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&quot;글또를-하며-얻고-잃은-것은&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EA%B8%80%EB%98%90%EB%A5%BC-%ED%95%98%EB%A9%B0-%EC%96%BB%EA%B3%A0-%EC%9E%83%EC%9D%80-%EA%B2%83%EC%9D%80&quot; aria-label=&quot;글또를 하며 얻고 잃은 것은 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;글또를 하며 얻고 잃은 것은?&lt;/h1&gt;
+&lt;h2 id=&quot;얻은-것&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%96%BB%EC%9D%80-%EA%B2%83&quot; aria-label=&quot;얻은 것 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;얻은 것&lt;/h2&gt;
+&lt;p&gt;아래와 같습니다:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;평소 딥다이브 해보고 싶던 글을 “일단” 발행함. 다음 글을 쓸 땐 기존 글을 참고하며 어떤 걸 더 나아지게 써야하는지 고심하게 됨&lt;/li&gt;
+&lt;li&gt;정기적 회고를 해봄. 그리고 글또 커뮤니티 내에서의 정기적 회고에 대한 방향성을 잡음
+&lt;ul&gt;
+&lt;li&gt;단순 회고가 목적이 아님&lt;/li&gt;
+&lt;li&gt;회고 이후 나아갈 방향과 다음 행동을 짚는 것이 가장 중요&lt;/li&gt;
+&lt;li&gt;겹침없이, 누락없이 다음방안을 체크하는 것&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;어제보다 더 낫게, 오늘 글을 짜매는걸 스스로 끌어올리는 힘이 생긴 것 같아요. 이제는 어떤 식으로 논리전개를 하고 풀어나갈지, 어떻게 해야 읽기 좋은지를 함께 고민하게 됐어요. 이런 습관과 방법이 이전엔 막연했다면, 이제는 남들의 내용을 보고 어떻게 해야할지를 보다 복합적으로 결정할 수 있게 됐어요. 커뮤니티가 아니었다면 상상도 못했을 거라고 감히 생각해요.&lt;/p&gt;
+&lt;h2 id=&quot;잃은-것은-없는데&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%9E%83%EC%9D%80-%EA%B2%83%EC%9D%80-%EC%97%86%EB%8A%94%EB%8D%B0&quot; aria-label=&quot;잃은 것은 없는데 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;잃은 것&lt;del&gt;은 없는데…&lt;/del&gt;&lt;/h2&gt;
+&lt;p&gt;요상한 강박이 하나 생겼어요.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;2주에 글을 쓴다. 혹은 써야한다. 라는 고민을 하게 돼요. 아마 글또 OT때 들었던 “습관 형성” 이 제 몸에 밴 것 같네요.
+&lt;ul&gt;
+&lt;li&gt;최소 글감이라도 떠올리자. 안되면 간단하게라도 남기자.&lt;/li&gt;
+&lt;li&gt;기술이 얕아도 되니, TIL 정도라도 올리는건 어떨까.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;글의 품질에 강박이 잡힌 것.
+&lt;ul&gt;
+&lt;li&gt;이건 이미 많은 리뷰를 받았어요.&lt;/li&gt;
+&lt;li&gt;한번 더 검토해보고 쉽게 접근해도 되니, 보다 쉬운 글을 쓰도록 하는게 더 좋을 것 같아요.&lt;/li&gt;
+&lt;li&gt;내 모든 글이 항상 가치있으면 좋겠지만, 그렇지 않더라도 고치면 되니까요. 물론 아예 거짓말을 하면 안되지만요.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h1 id=&quot;글또를-하며-인상깊었던-것&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EA%B8%80%EB%98%90%EB%A5%BC-%ED%95%98%EB%A9%B0-%EC%9D%B8%EC%83%81%EA%B9%8A%EC%97%88%EB%8D%98-%EA%B2%83&quot; aria-label=&quot;글또를 하며 인상깊었던 것 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;글또를 하며 인상깊었던 것&lt;/h1&gt;
+&lt;ol&gt;
+&lt;li&gt;정말 생각보다 많은 사람들이 각자의 영역에서 열심히 한다는 점이었어요.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;요즘은 다른 사람이 ‘열심히 하지 않는’ 것에 굉장한 실망감을 느끼고 혼자 괜히 꿍해있어요.
+누구나 ‘열심히’의 기준이 다르고, 그 노력에 기하는 시간과 다양한 것들이 모두 다른데 말이죠.
+하지만 이 커뮤니티에서는 저 보다 그 역치가 훨씬 높은 사람들을 많이 만나게 돼요. 단순 글만으로도 그 열정이 느껴지는 분들이 많기 때문이지 않을까 해요.
+하지만 그것으로 제 스스로가 FOMO&lt;sup id=&quot;fnref-1&quot;&gt;&lt;a href=&quot;#fn-1&quot; class=&quot;footnote-ref&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;에 빠지기 보단, 내 페이스를 더 높이기 위한 방안을 생각하게 돼요. 나보다 더 나은 사람은 저보다 많은 노력을 가했을테니까요.
+타인의 &lt;em&gt;&lt;strong&gt;맑고 투명함&lt;/strong&gt;&lt;/em&gt;은 저를 바라볼 수 있게 하는 거울이 되기도, 제가 빛나기 위해 깎아야 할 것을 알려주는 좋은 교보재로서 있기 때문이지요.&lt;/p&gt;
+&lt;ol start=&quot;2&quot;&gt;
+&lt;li&gt;감사하게도 큐레이션에 선정 되었어요&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;몇번씩 글을 깎고 LLM과 리뷰하고 이 정도면 좋겠다 하고 배포한 글이 큐레이션에 되고 너무 감사했어요.
+이 정도, 아니 더 나은 글을 계속 쓰려고 노력해봐야겠다 하는 자신감과 더불어 한편으론 불안했어요.
+‘내가 제대로 쓴 게 맞나?’ 하고 계속 검증하고 이를 점검하고 있는 제 자신을 보게돼요.
+강박까진 아니더라도, 실수를 유하게 받아들이고 얼마든 수정하며 완성도를 올리겠단 노력이 뒤따르면 되지 않을까 해요.&lt;/p&gt;
+&lt;h1 id=&quot;글또가-내-삶에-어떤-영향을-주었나&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EA%B8%80%EB%98%90%EA%B0%80-%EB%82%B4-%EC%82%B6%EC%97%90-%EC%96%B4%EB%96%A4-%EC%98%81%ED%96%A5%EC%9D%84-%EC%A3%BC%EC%97%88%EB%82%98&quot; aria-label=&quot;글또가 내 삶에 어떤 영향을 주었나 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;글또가 내 삶에 어떤 영향을 주었나?&lt;/h1&gt;
+&lt;ol&gt;
+&lt;li&gt;지식을 다듬을 수 있게 해줬어요&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;글 한편을 쓰며 지식을 전달하는 과정은 매우 힘들다는 것을 다시금 새겼어요.
+제가 명확히 알고 설명하기 위해 몇번이고 아티클을 보고, 테스트하고, 직접 구동을 해요.
+아티클을 쓰기 위해 회사일이든 개인공부든 어디서든 적용할 수 있는 학습 테스트&lt;sup id=&quot;fnref-2&quot;&gt;&lt;a href=&quot;#fn-2&quot; class=&quot;footnote-ref&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;를 알려줬고, 테스트코드로 다른 사람들 또한 이를 쫓아갈 수 있게 가이드 할 수 있게 되었어요. 회사에도 쉽게 제안할 수 있게 되었구요.&lt;/p&gt;
+&lt;ol start=&quot;2&quot;&gt;
+&lt;li&gt;안팎으로 더 친절하고, 더 베풀어보기로 했어요&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;회사 안에서만 열심히 하기엔 시간이 너무나 아까워요. 바깥에서 사람을 함께 만나고 더 교류하면 그 이상의 것들을 누릴 수 있다고 생각해요.
+일례로 회사 내에서 혼자서만 고민하던 답이 없는 질문을 밖에서 답을 찾기도 했죠. 보다 많은 사람들과 나누는 것이 더 현명하지 않을까요?
+혼자서는 실패할 가능성이 높지만, 타인과 함께해서 그 가능성을 낮춘다면 후자에 베팅할 것 같아요.
+또 받은만큼 내가 베풀어보면 그만큼 돌아오지 않을까요?&lt;/p&gt;
+&lt;ol start=&quot;3&quot;&gt;
+&lt;li&gt;기술로도 도움을 만들어내고 싶어요&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;2에 이어서, 더 많은 사람을 만나고 오픈소스에 기여하는 힘을 좀 길러보고 싶어요.
+typo 만 수정해서 PR올려도 충분히 좋은 기여라지만, 이를 위한 테스트코드를 짜고 이걸 하려면 뭘 해야하지? 를 알기 위해 테스트를 더 잘 알아야겠단 생각이 들어요. 직접 테스트를 돌려서 뭐가 뭔지 파악한 후, 내가 필요한 기능을 넣고 또 테스트해보면 어떨까? 하는 생각을 하게돼요.
+좋은 시작점을 알아보고 싶네요! 아마 이것도 글감이 될 수 있지 않을까 해요.&lt;/p&gt;
+&lt;h1 id=&quot;아쉬운-점은&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%95%84%EC%89%AC%EC%9A%B4-%EC%A0%90%EC%9D%80&quot; aria-label=&quot;아쉬운 점은 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;아쉬운 점은?&lt;/h1&gt;
+&lt;ol&gt;
+&lt;li&gt;커피챗을 많이 안해봤어요&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;좋은 글을 쓰신 분도 많고, 좋은 분들도 많다는 것을 알고있는데 바쁘다는 핑계로 주말에 약속을 잡기가 왜인지 두려워지더라구요.
+그게 가장 아쉬워요. 정말 끝나기 전에 두려움을 접고 요청해봐야 속이 후련할 것 같아요. 끝나고나서 후회하기엔 아직 시간이 있잖아요.&lt;/p&gt;
+&lt;ol start=&quot;2&quot;&gt;
+&lt;li&gt;완성도를 끌어올리는 시도를 못하고 있어요&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;마찬가지로, 과연 어디까지 해야할까에 대한 고민이 커요. 이 부분이 완성을 못 하게 하지 않을까란 고민을 하고있어요.&lt;/p&gt;
+&lt;h1 id=&quot;마지막으로&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EB%A7%88%EC%A7%80%EB%A7%89%EC%9C%BC%EB%A1%9C&quot; aria-label=&quot;마지막으로 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;마지막으로&lt;/h1&gt;
+&lt;p&gt;글또 10기에 들어와서 얼추 목표를 이룬 것 같긴해서 기분은 좋네요. 끝이 벌써 왔네요. 좋은 시간은 어째서 이렇게 빠르게 갈까요.&lt;/p&gt;
+&lt;p&gt;불씨는 혼자서 탈 수도, 함께 뭉쳐져 활활 타오를 수도 있습니다.
+제 마음속 불씨를 다시 지펴준 글또에 감사의 말을 전합니다.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;안녕은 영원한 헤어짐은 아니겠지요
+다시 만나기 위한 약속일 거야&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;div class=&quot;footnotes&quot;&gt;
+&lt;hr&gt;
+&lt;ol&gt;
+&lt;li id=&quot;fn-1&quot;&gt;&lt;em&gt;Fear of missing out&lt;/em&gt; 의 약어에요. 뒤쳐지는 것에 대한 두려움을 의미하죠. 마치 붉은 여왕 가설 (&lt;a href=&quot;https://en.wikipedia.org/wiki/Red_Queen_hypothesis&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;&lt;em&gt;Red Queen Hypothesis&lt;/em&gt;&lt;/a&gt;)을 떠올리게 하는 말이에요.&lt;a href=&quot;#fnref-1&quot; class=&quot;footnote-backref&quot;&gt;↩&lt;/a&gt;&lt;/li&gt;
+&lt;li id=&quot;fn-2&quot;&gt;학습 테스트는 Jim Newkirk라는 개발자가 처음 고안한 것입니다. 이를 켄트 벡의 테스트 주도 개발(TDDBE)에서도 소개하고, 로버트 마틴의 클린 코드 책에서도 학습 테스트를 소개합니다. &lt;a href=&quot;https://springwiki.readthedocs.io/en/latest/%ED%95%99%EC%8A%B5%20%ED%85%8C%EC%8A%A4%ED%8A%B8%EB%A1%9C%20%EB%B0%B0%EC%9A%B0%EB%8A%94%20%EC%8A%A4%ED%94%84%EB%A7%81/&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;이 링크&lt;/a&gt;도 참고해주세요.&lt;a href=&quot;#fnref-2&quot; class=&quot;footnote-backref&quot;&gt;↩&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;</content:encoded></item><item><title><![CDATA[FastAPI 앱 개발 시 나만의 점검사항 (1) - 기본 구조와 테스팅]]></title><description><![CDATA[FastAPI 앱으로 트랜잭션 스크립트부터 도메인 기반 기초적 설계의 재구조를 잡기까지의 여정을 설명합니다. 1부에서는 어떻게 바꾸었고 어떤 식의 1차 작업을 완료했는지를 되짚어봅니다]]></description><link>https://blog.s3ich4n.me/devlog/python/2025-03-16-fastapi-lessons-learned-pt01</link><guid isPermaLink="false">https://blog.s3ich4n.me/devlog/python/2025-03-16-fastapi-lessons-learned-pt01</guid><pubDate>Sun, 16 Mar 2025 19:13:00 GMT</pubDate><content:encoded>&lt;h1 id=&quot;들어가며&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EB%93%A4%EC%96%B4%EA%B0%80%EB%A9%B0&quot; aria-label=&quot;들어가며 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;들어가며&lt;/h1&gt;
 &lt;p&gt;이번 글은 회사 코드를 1차적으로 개선하며, 회사의 요구사항을 받아낼 수 있는 구조를 생각하기 위해 고군분투한 내용을 공유합니다. 이번 일은 자바 레거시를 정리하고 프로젝트를 어떻게 시작할지 가늠하던 중 생긴 일입니다. 일정이 여유롭다가 갑자기 1달내로 출시해야한다는 소식을 듣고 화들짝 놀라서 작업하기 시작했죠.&lt;/p&gt;
 &lt;h1 id=&quot;처음-구조는&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#%EC%B2%98%EC%9D%8C-%EA%B5%AC%EC%A1%B0%EB%8A%94&quot; aria-label=&quot;처음 구조는 permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;처음 구조는?&lt;/h1&gt;
 &lt;p&gt;레거시에서는 해야할 일을 코드로 풀어낸 것이 도저히 이해가 되지 않아, 아예 새로 만들자는 결론을 냈습니다. 그 외에도 여러 결함이 있었지만 제 손에서 새시작을 할 수 있는 시간과 당초 계획이 그랬어서 가능했죠.&lt;/p&gt;
